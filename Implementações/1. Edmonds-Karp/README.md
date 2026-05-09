@@ -1,170 +1,173 @@
 # [Edmonds-Karp](https://cp-algorithms.com/graph/edmonds_karp.html)
 
 ## CSES
- 1. [Download Speed](https://cses.fi/problemset/task/1694)
- 2. [School Dance](https://cses.fi/problemset/task/1696)
- 3. [Distinct Routes](https://cses.fi/problemset/task/1711)
- 4. [Police Chase](https://cses.fi/problemset/task/1695)
+
+1.  [Download Speed](https://cses.fi/problemset/task/1694)
+2.  [School Dance](https://cses.fi/problemset/task/1696)
+3.  [Distinct Routes](https://cses.fi/problemset/task/1711)
+4.  [Police Chase](https://cses.fi/problemset/task/1695)
 
 ## Beecrowd
- 1. [Time Travel](https://judge.beecrowd.com/en/problems/view/2082)
+
+1.  [Time Travel](https://judge.beecrowd.com/en/problems/view/2082)
 
 ## FlowNetwork
- ```cpp
- #include <algorithm>
- #include <iostream>
- #include <limits>
- #include <memory>
- #include <queue>
- #include <vector>
 
- using Long = long long;
- using Size = std::size_t;
+```cpp
+#include <algorithm>
+#include <iostream>
+#include <limits>
+#include <memory>
+#include <queue>
+#include <vector>
 
- constexpr Long INF = std::numeric_limits<Long>::max() >> 8;
- constexpr Size MAX = std::numeric_limits<Size>::max() >> 8;
+using Long = long long;
+using Size = std::size_t;
 
- class FlowNetwork
- {
- public:
- 	struct Edge
- 	{
- 		Size from, to;
- 		Long capacity, flow;
- 	};
+constexpr Long INF = std::numeric_limits<Long>::max() >> 8;
+constexpr Size MAX = std::numeric_limits<Size>::max() >> 8;
 
- 	explicit FlowNetwork(const Size n) : size(n), adj(n) {}
- 	virtual ~FlowNetwork() = default;
+class FlowNetwork
+{
+public:
+	struct Edge
+	{
+		Size from, to;
+		Long capacity, flow;
+	};
 
- 	virtual std::unique_ptr<FlowNetwork> make(const Size n) const = 0;
- 	virtual std::unique_ptr<FlowNetwork> clone() const = 0;
+	explicit FlowNetwork(const Size n) : size(n), adj(n) {}
+	virtual ~FlowNetwork() = default;
 
- 	virtual void add_edge(
- 	    const Size from, const Size to, const Long capacity,
- 	    const Long reverse_capacity = 0
- 	)
- 	{
- 		adj[from].push_back(edges.size());
- 		edges.push_back({from, to, capacity, 0});
- 		adj[to].push_back(edges.size());
- 		edges.push_back({to, from, reverse_capacity, 0});
- 	}
+	virtual std::unique_ptr<FlowNetwork> make(const Size n) const = 0;
+	virtual std::unique_ptr<FlowNetwork> clone() const = 0;
 
- 	virtual Long compute_max_flow(const Size source, const Size sink) = 0;
+	virtual void add_edge(
+	    const Size from, const Size to, const Long capacity,
+	    const Long reverse_capacity = 0
+	)
+	{
+		adj[from].push_back(edges.size());
+		edges.push_back({from, to, capacity, 0});
+		adj[to].push_back(edges.size());
+		edges.push_back({to, from, reverse_capacity, 0});
+	}
 
- 	[[nodiscard]] Size get_size() const
- 	{
- 		return size;
- 	}
+	virtual Long compute_max_flow(const Size source, const Size sink) = 0;
 
- 	[[nodiscard]] const std::vector<Edge> &get_edges() const
- 	{
- 		return edges;
- 	}
+	[[nodiscard]] Size get_size() const
+	{
+		return size;
+	}
 
- 	[[nodiscard]] const std::vector<std::vector<Size>> &get_adj() const
- 	{
- 		return adj;
- 	}
+	[[nodiscard]] const std::vector<Edge> &get_edges() const
+	{
+		return edges;
+	}
 
- protected:
- 	Size size;
- 	std::vector<Edge> edges;
- 	std::vector<std::vector<Size>> adj;
+	[[nodiscard]] const std::vector<std::vector<Size>> &get_adj() const
+	{
+		return adj;
+	}
 
- 	[[nodiscard]] Long get_residual_capacity(const Size edge_id) const
- 	{
- 		return edges[edge_id].capacity - edges[edge_id].flow;
- 	}
+protected:
+	Size size;
+	std::vector<Edge> edges;
+	std::vector<std::vector<Size>> adj;
 
- 	void push_flow(const Size edge_id, const Long flow_amount)
- 	{
- 		edges[edge_id].flow += flow_amount;
- 		edges[edge_id ^ 1ULL].flow -= flow_amount;
- 	}
- };
+	[[nodiscard]] Long get_residual_capacity(const Size edge_id) const
+	{
+		return edges[edge_id].capacity - edges[edge_id].flow;
+	}
 
- class EdmondsKarp : public FlowNetwork
- {
- public:
- 	explicit EdmondsKarp(const Size n) : FlowNetwork(n) {}
+	void push_flow(const Size edge_id, const Long flow_amount)
+	{
+		edges[edge_id].flow += flow_amount;
+		edges[edge_id ^ 1ULL].flow -= flow_amount;
+	}
+};
 
- 	static std::unique_ptr<FlowNetwork> create(const Size n)
- 	{
- 		return std::make_unique<EdmondsKarp>(n);
- 	}
+class EdmondsKarp : public FlowNetwork
+{
+public:
+	explicit EdmondsKarp(const Size n) : FlowNetwork(n) {}
 
- 	std::unique_ptr<FlowNetwork> make(const Size n) const override
- 	{
- 		return std::make_unique<EdmondsKarp>(n);
- 	}
+	static std::unique_ptr<FlowNetwork> create(const Size n)
+	{
+		return std::make_unique<EdmondsKarp>(n);
+	}
 
- 	std::unique_ptr<FlowNetwork> clone() const override
- 	{
- 		return std::make_unique<EdmondsKarp>(*this);
- 	}
+	std::unique_ptr<FlowNetwork> make(const Size n) const override
+	{
+		return std::make_unique<EdmondsKarp>(n);
+	}
 
- 	Long compute_max_flow(const Size source, const Size sink) override
- 	{
- 		Long total_flow = 0;
- 		Long new_flow = 0;
- 		std::vector<Size> parent_edge(size);
+	std::unique_ptr<FlowNetwork> clone() const override
+	{
+		return std::make_unique<EdmondsKarp>(*this);
+	}
 
- 		while ((new_flow = bfs(source, sink, parent_edge)) > 0)
- 		{
- 			total_flow += new_flow;
- 			update_path_flow(source, sink, parent_edge, new_flow);
- 		}
+	Long compute_max_flow(const Size source, const Size sink) override
+	{
+		Long total_flow = 0;
+		Long new_flow = 0;
+		std::vector<Size> parent_edge(size);
 
- 		return total_flow;
- 	}
+		while ((new_flow = bfs(source, sink, parent_edge)) > 0)
+		{
+			total_flow += new_flow;
+			update_path_flow(source, sink, parent_edge, new_flow);
+		}
 
- private:
- 	Long bfs(const Size source, const Size sink, std::vector<Size> &parent_edge)
- 	{
- 		std::fill(parent_edge.begin(), parent_edge.end(), MAX);
- 		std::queue<std::pair<Size, Long>> queue;
+		return total_flow;
+	}
 
- 		parent_edge[source] = source;
- 		queue.push({source, INF});
+private:
+	Long bfs(const Size source, const Size sink, std::vector<Size> &parent_edge)
+	{
+		std::fill(parent_edge.begin(), parent_edge.end(), MAX);
+		std::queue<std::pair<Size, Long>> queue;
 
- 		while (!queue.empty())
- 		{
- 			const auto [current_node, current_flow] = queue.front();
- 			queue.pop();
+		parent_edge[source] = source;
+		queue.push({source, INF});
 
- 			for (const Size edge_id : adj[current_node])
- 			{
- 				const Size next_node = edges[edge_id].to;
- 				const Long residual_capacity = get_residual_capacity(edge_id);
+		while (!queue.empty())
+		{
+			const auto [current_node, current_flow] = queue.front();
+			queue.pop();
 
- 				if (parent_edge[next_node] != MAX || residual_capacity <= 0)
- 					continue;
+			for (const Size edge_id : adj[current_node])
+			{
+				const Size next_node = edges[edge_id].to;
+				const Long residual_capacity = get_residual_capacity(edge_id);
 
- 				parent_edge[next_node] = edge_id;
- 				const Long pushed_flow = std::min(current_flow, residual_capacity);
+				if (parent_edge[next_node] != MAX || residual_capacity <= 0)
+					continue;
 
- 				if (next_node == sink)
- 					return pushed_flow;
+				parent_edge[next_node] = edge_id;
+				const Long pushed_flow = std::min(current_flow, residual_capacity);
 
- 				queue.push({next_node, pushed_flow});
- 			}
- 		}
- 		return 0;
- 	}
+				if (next_node == sink)
+					return pushed_flow;
 
- 	void update_path_flow(
- 	    const Size source, const Size sink, const std::vector<Size> &parent_edge,
- 	    const Long new_flow
- 	)
- 	{
- 		Size current_node = sink;
- 		while (current_node != source)
- 		{
- 			const Size edge_id = parent_edge[current_node];
- 			push_flow(edge_id, new_flow);
- 			current_node = edges[edge_id].from;
- 		}
- 	}
- };
- ```
+				queue.push({next_node, pushed_flow});
+			}
+		}
+		return 0;
+	}
+
+	void update_path_flow(
+	    const Size source, const Size sink, const std::vector<Size> &parent_edge,
+	    const Long new_flow
+	)
+	{
+		Size current_node = sink;
+		while (current_node != source)
+		{
+			const Size edge_id = parent_edge[current_node];
+			push_flow(edge_id, new_flow);
+			current_node = edges[edge_id].from;
+		}
+	}
+};
+```

@@ -1,16 +1,6 @@
 # TO-DO: Fixing
 
-- [ ] Teoria dos Digrafos
-- [ ] Digrafos Direcionados
-- [ ] Arco E
-- [ ] Arco e in E
-- [ ] Digrafo D = (V,E)
-- [ ] as arcos
-- [ ] toda arco
-- [ ] A genialidade matemática desta heurística reside na observação das quebras de continuidade no histograma.
-- [ ] A existência desta lacuna é uma prova topológica definitiva de que o sumidouro t tornou-se
-      fisicamente inalcançável para todo e qualquer vértice que possua altura estritamente supe-
-      rior a k.
+- [ ] None
 
 ---
 

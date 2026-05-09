@@ -1,181 +1,184 @@
 # [Dinic's Algorithm](https://cp-algorithms.com/graph/dinic.html)
 
 ## CSES
- 1. [Download Speed](https://cses.fi/problemset/task/1694)
- 2. [School Dance](https://cses.fi/problemset/task/1696)
- 3. [Distinct Routes](https://cses.fi/problemset/task/1711)
- 4. [Police Chase](https://cses.fi/problemset/task/1695)
+
+1.  [Download Speed](https://cses.fi/problemset/task/1694)
+2.  [School Dance](https://cses.fi/problemset/task/1696)
+3.  [Distinct Routes](https://cses.fi/problemset/task/1711)
+4.  [Police Chase](https://cses.fi/problemset/task/1695)
 
 ## Beecrowd
- 1. [Time Travel](https://judge.beecrowd.com/en/problems/view/2082)
+
+1.  [Time Travel](https://judge.beecrowd.com/en/problems/view/2082)
 
 ## FlowNetwork
- ```cpp
- #include <algorithm>
- #include <iostream>
- #include <limits>
- #include <memory>
- #include <queue>
- #include <vector>
 
- using Long = long long;
- using Size = std::size_t;
+```cpp
+#include <algorithm>
+#include <iostream>
+#include <limits>
+#include <memory>
+#include <queue>
+#include <vector>
 
- constexpr Long INF = std::numeric_limits<Long>::max() >> 8;
- constexpr Size MAX = std::numeric_limits<Size>::max() >> 8;
+using Long = long long;
+using Size = std::size_t;
 
- class FlowNetwork
- {
- public:
- 	struct Edge
- 	{
- 		Size from, to;
- 		Long capacity, flow;
- 	};
+constexpr Long INF = std::numeric_limits<Long>::max() >> 8;
+constexpr Size MAX = std::numeric_limits<Size>::max() >> 8;
 
- 	explicit FlowNetwork(const Size n) : size(n), adj(n) {}
- 	virtual ~FlowNetwork() = default;
+class FlowNetwork
+{
+public:
+	struct Edge
+	{
+		Size from, to;
+		Long capacity, flow;
+	};
 
- 	virtual std::unique_ptr<FlowNetwork> make(const Size n) const = 0;
- 	virtual std::unique_ptr<FlowNetwork> clone() const = 0;
+	explicit FlowNetwork(const Size n) : size(n), adj(n) {}
+	virtual ~FlowNetwork() = default;
 
- 	virtual void add_edge(
- 	    const Size from, const Size to, const Long capacity,
- 	    const Long reverse_capacity = 0
- 	)
- 	{
- 		adj[from].push_back(edges.size());
- 		edges.push_back({from, to, capacity, 0});
- 		adj[to].push_back(edges.size());
- 		edges.push_back({to, from, reverse_capacity, 0});
- 	}
+	virtual std::unique_ptr<FlowNetwork> make(const Size n) const = 0;
+	virtual std::unique_ptr<FlowNetwork> clone() const = 0;
 
- 	virtual Long compute_max_flow(const Size source, const Size sink) = 0;
+	virtual void add_edge(
+	    const Size from, const Size to, const Long capacity,
+	    const Long reverse_capacity = 0
+	)
+	{
+		adj[from].push_back(edges.size());
+		edges.push_back({from, to, capacity, 0});
+		adj[to].push_back(edges.size());
+		edges.push_back({to, from, reverse_capacity, 0});
+	}
 
- 	[[nodiscard]] Size get_size() const
- 	{
- 		return size;
- 	}
+	virtual Long compute_max_flow(const Size source, const Size sink) = 0;
 
- 	[[nodiscard]] const std::vector<Edge> &get_edges() const
- 	{
- 		return edges;
- 	}
+	[[nodiscard]] Size get_size() const
+	{
+		return size;
+	}
 
- 	[[nodiscard]] const std::vector<std::vector<Size>> &get_adj() const
- 	{
- 		return adj;
- 	}
+	[[nodiscard]] const std::vector<Edge> &get_edges() const
+	{
+		return edges;
+	}
 
- protected:
- 	Size size;
- 	std::vector<Edge> edges;
- 	std::vector<std::vector<Size>> adj;
+	[[nodiscard]] const std::vector<std::vector<Size>> &get_adj() const
+	{
+		return adj;
+	}
 
- 	[[nodiscard]] Long get_residual_capacity(const Size edge_id) const
- 	{
- 		return edges[edge_id].capacity - edges[edge_id].flow;
- 	}
+protected:
+	Size size;
+	std::vector<Edge> edges;
+	std::vector<std::vector<Size>> adj;
 
- 	void push_flow(const Size edge_id, const Long flow_amount)
- 	{
- 		edges[edge_id].flow += flow_amount;
- 		edges[edge_id ^ 1ULL].flow -= flow_amount;
- 	}
- };
+	[[nodiscard]] Long get_residual_capacity(const Size edge_id) const
+	{
+		return edges[edge_id].capacity - edges[edge_id].flow;
+	}
 
- class Dinic : public FlowNetwork
- {
- public:
- 	explicit Dinic(const Size n) : FlowNetwork(n), level(n), next_edge_ptr(n) {}
+	void push_flow(const Size edge_id, const Long flow_amount)
+	{
+		edges[edge_id].flow += flow_amount;
+		edges[edge_id ^ 1ULL].flow -= flow_amount;
+	}
+};
 
- 	static std::unique_ptr<FlowNetwork> create(const Size n)
- 	{
- 		return std::make_unique<Dinic>(n);
- 	}
+class Dinic : public FlowNetwork
+{
+public:
+	explicit Dinic(const Size n) : FlowNetwork(n), level(n), next_edge_ptr(n) {}
 
- 	std::unique_ptr<FlowNetwork> make(const Size n) const override
- 	{
- 		return std::make_unique<Dinic>(n);
- 	}
+	static std::unique_ptr<FlowNetwork> create(const Size n)
+	{
+		return std::make_unique<Dinic>(n);
+	}
 
- 	std::unique_ptr<FlowNetwork> clone() const override
- 	{
- 		return std::make_unique<Dinic>(*this);
- 	}
+	std::unique_ptr<FlowNetwork> make(const Size n) const override
+	{
+		return std::make_unique<Dinic>(n);
+	}
 
- 	Long compute_max_flow(const Size source, const Size sink) override
- 	{
- 		Long total_flow = 0;
- 		while (bfs(source, sink))
- 		{
- 			std::fill(next_edge_ptr.begin(), next_edge_ptr.end(), 0);
- 			while (const Long flow_pushed = dfs(source, sink, INF))
- 			{
- 				total_flow += flow_pushed;
- 			}
- 		}
- 		return total_flow;
- 	}
+	std::unique_ptr<FlowNetwork> clone() const override
+	{
+		return std::make_unique<Dinic>(*this);
+	}
 
- private:
- 	std::vector<Size> level;
- 	std::vector<Size> next_edge_ptr;
+	Long compute_max_flow(const Size source, const Size sink) override
+	{
+		Long total_flow = 0;
+		while (bfs(source, sink))
+		{
+			std::fill(next_edge_ptr.begin(), next_edge_ptr.end(), 0);
+			while (const Long flow_pushed = dfs(source, sink, INF))
+			{
+				total_flow += flow_pushed;
+			}
+		}
+		return total_flow;
+	}
 
- 	bool bfs(const Size source, const Size sink)
- 	{
- 		std::fill(level.begin(), level.end(), MAX);
- 		std::queue<Size> queue;
+private:
+	std::vector<Size> level;
+	std::vector<Size> next_edge_ptr;
 
- 		level[source] = 0;
- 		queue.push(source);
+	bool bfs(const Size source, const Size sink)
+	{
+		std::fill(level.begin(), level.end(), MAX);
+		std::queue<Size> queue;
 
- 		while (!queue.empty())
- 		{
- 			const Size current_node = queue.front();
- 			queue.pop();
+		level[source] = 0;
+		queue.push(source);
 
- 			for (const Size edge_id : adj[current_node])
- 			{
- 				const Size next_node = edges[edge_id].to;
- 				const Long residual_capacity = get_residual_capacity(edge_id);
+		while (!queue.empty())
+		{
+			const Size current_node = queue.front();
+			queue.pop();
 
- 				if (level[next_node] != MAX || residual_capacity <= 0)
- 					continue;
+			for (const Size edge_id : adj[current_node])
+			{
+				const Size next_node = edges[edge_id].to;
+				const Long residual_capacity = get_residual_capacity(edge_id);
 
- 				level[next_node] = level[current_node] + 1;
- 				queue.push(next_node);
- 			}
- 		}
- 		return level[sink] != MAX;
- 	}
+				if (level[next_node] != MAX || residual_capacity <= 0)
+					continue;
 
- 	Long dfs(const Size current_node, const Size sink, const Long flow_pushed)
- 	{
- 		if (flow_pushed == 0 || current_node == sink)
- 			return flow_pushed;
+				level[next_node] = level[current_node] + 1;
+				queue.push(next_node);
+			}
+		}
+		return level[sink] != MAX;
+	}
 
- 		for (Size &ptr = next_edge_ptr[current_node]; ptr < adj[current_node].size();
- 		     ++ptr)
- 		{
- 			const Size edge_id = adj[current_node][ptr];
- 			const Size next_node = edges[edge_id].to;
- 			const Long residual_capacity = get_residual_capacity(edge_id);
+	Long dfs(const Size current_node, const Size sink, const Long flow_pushed)
+	{
+		if (flow_pushed == 0 || current_node == sink)
+			return flow_pushed;
 
- 			if (level[current_node] + 1 != level[next_node] ||
- 			    residual_capacity <= 0)
- 				continue;
+		for (Size &ptr = next_edge_ptr[current_node]; ptr < adj[current_node].size();
+		     ++ptr)
+		{
+			const Size edge_id = adj[current_node][ptr];
+			const Size next_node = edges[edge_id].to;
+			const Long residual_capacity = get_residual_capacity(edge_id);
 
- 			const Long bottleneck = std::min(flow_pushed, residual_capacity);
- 			const Long flow_transmitted = dfs(next_node, sink, bottleneck);
+			if (level[current_node] + 1 != level[next_node] ||
+			    residual_capacity <= 0)
+				continue;
 
- 			if (flow_transmitted == 0)
- 				continue;
+			const Long bottleneck = std::min(flow_pushed, residual_capacity);
+			const Long flow_transmitted = dfs(next_node, sink, bottleneck);
 
- 			push_flow(edge_id, flow_transmitted);
- 			return flow_transmitted;
- 		}
- 		return 0;
- 	}
- };
- ```
+			if (flow_transmitted == 0)
+				continue;
+
+			push_flow(edge_id, flow_transmitted);
+			return flow_transmitted;
+		}
+		return 0;
+	}
+};
+```
