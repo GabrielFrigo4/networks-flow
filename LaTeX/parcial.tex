@@ -328,6 +328,7 @@ Embora existam algoritmos específicos para este fim, o problema pode ser elegan
     \item Para cada vértice $u \in L$, cria-se um arco direcionado $(s, u)$ com capacidade exatamente igual a 1.
     \item Para cada vértice $v \in R$, cria-se um arco direcionado $(v, t)$ com capacidade exatamente igual a 1.
     \item Todos os arcos originais do digrafo não-direcionado são orientados de $L$ para $R$, recebendo capacidade infinita (ou alternativamente, capacidade 1).
+\end{enumerate}
 
 A prova de correção desta modelagem repousa sobre o Teorema da Integralidade (veja~\cite{korte2018combinatorial}). Como todas as capacidades do subdigrafo injetor ($s \rightarrow L$) e extrator ($R \rightarrow t$) são inteiras (estritamente 1), os algoritmos de fluxo garantem matematicamente o retorno de um vetor de fluxo viável inteiramente composto por zeros e uns.
 
