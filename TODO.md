@@ -1,3 +1,11 @@
+# TO-DO: IC
+
+- [ ] Listar todos os algoritmos implementados
+- [ ] Listar todos os problemas resolvidos
+- [ ] Buscar sobre segmentação de imagem com cortes (https://vision.cs.uwaterloo.ca/data/maxflow)
+
+---
+
 # TO-DO: Fixing
 
 - [ ] None
