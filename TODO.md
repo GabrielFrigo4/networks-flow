@@ -1,33 +1,11 @@
-# TO-DO: IC
-
-- [ ] Listar todos os algoritmos implementados
-- [ ] Listar todos os problemas resolvidos
-- [ ] Buscar sobre segmentação de imagem com cortes (https://vision.cs.uwaterloo.ca/data/maxflow)
+# TO-DO: Cristiane Sato
 
 ---
 
-# TO-DO: Fixing
-
-- [ ] None
-
----
-
-# TO-DO: Improve
+# TO-DO: Melhorar e Pendencias
 
 - [ ] Melhorar a parte do `Ford-Fulkerson`
 - [ ] Imitar a estrutura do `Ford-Fulkerson` para o `Push-Relabel`
-
----
-
-# TO-DO: Geral
-
-- [x] Implementar `Ford-Fulkerson`
-- [x] Implementar `Edmonds-Karp`
-- [x] Implementar `Dinic's Algorithm`
-- [x] Implementar `Push-Relabel`
-- [x] Implementar `Push-Relabel Improved`
-- [ ] Reduzir Problemas para `MaxFlow`
-- [ ] Modelar Problemas para `MaxFlow`
 
 ---
 

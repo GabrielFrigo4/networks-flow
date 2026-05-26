@@ -63,12 +63,37 @@ Introduzida por Goldberg e Tarjan, esta família quebra o paradigma dos caminhos
 
 ## 💻 Implementações e Códigos
 
+### 🧑‍💻 Algoritmos Implementados
+
 Abaixo estão listados os algoritmos já implementados no escopo deste projeto:
 
 - 🐢 **[Edmonds-Karp][edmonds_karp]**
-- 🚀 **[Dinic's Algorithm][dinic_algorithm]**
-- ⚙️ **[Push-Relabel][push_relabel]**
-- ⚡ **[Push-Relabel Improved][push_relabel_faster]**
+- 🚀 **[Dinic Algorithm][dinic_algorithm]**
+- ⚙️ **[Push Relabel FIFO][push_relabel]**
+- ⚡ **[Push Relabel Improved][push_relabel_faster]**
+
+### 🎯 Problemas Resolvidos
+
+Abaixo estão listados os problemas clássicos que foram modelados e resolvidos:
+
+- 🌊 **[Fluxo Máximo (_Download Speed_)][download_speed]**
+- 🤝 **[Emparelhamento Bipartido Máximo (_School Dance_)][school_dance]**
+- 🛣️ **[Caminhos Disjuntos por Arcos (_Distinct Routes_)][distinct_routes]**
+- ✂️ **[Teorema do Fluxo Máximo-Corte Mínimo (_Police Chase_)][police_chase]**
+- 🌐 **[Corte Mínimo Global (_Time Travel_)][time_travel]**
+
+---
+
+## 🖼️ Aplicações Práticas e Software
+
+Além das implementações base, o projeto também foca na aplicação de fluxos em redes para a resolução de problemas do mundo real.
+
+### Segmentação de Imagens Interativa (Max Flow / Min Cut)
+
+Software desenvolvido para separar o "fundo" do "objeto principal" em fotografias utilizando a modelagem de corte mínimo em grafos.
+
+- 🔗 **[Código-Fonte do Software][segmentacao_imagens_codigo]**
+- 📚 **[Waterloo Image Segmentation Flow Dataset][segmentacao_imagens_dataset]**
 
 ---
 
@@ -99,3 +124,10 @@ Caso queira gerar o projeto de pesquisa (`ic.pdf`) localmente a partir do códig
 [baixar_pdf_parcial_icon]: https://img.shields.io/badge/Parcial-Baixar-red?style=for-the-badge&logo=adobeacrobatreader
 [baixar_pdf_final]: https://github.com/GabrielFrigo4/IC_Networks_Flow/releases/latest/download/final.pdf
 [baixar_pdf_final_icon]: https://img.shields.io/badge/Final-Baixar-red?style=for-the-badge&logo=adobeacrobatreader
+[download_speed]: https://cses.fi/problemset/task/1694
+[school_dance]: https://cses.fi/problemset/task/1696
+[distinct_routes]: https://cses.fi/problemset/task/1711
+[police_chase]: https://cses.fi/problemset/task/1695
+[time_travel]: https://judge.beecrowd.com/en/problems/view/2082
+[segmentacao_imagens_codigo]: ./Aplicações/1.%20Segmentacao_de_Imagens/README.md
+[segmentacao_imagens_dataset]: https://vision.cs.uwaterloo.ca/data/maxflow/
