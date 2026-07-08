@@ -1,99 +1,71 @@
 # 💻 Implementações e Códigos
 
-Abaixo estão listados os algoritmos já implementados no escopo deste projeto:
+Biblioteca de algoritmos de fluxo máximo em redes implementados em C++. Cada algoritmo é encapsulado em um arquivo de cabeçalho (`.hpp`) que herda da interface base polimórfica [`FlowNetwork`](./FlowNetwork.hpp).
 
-- 🐢 **[Edmonds-Karp][edmonds_karp]**
-- 🚀 **[Dinic's Algorithm][dinic_algorithm]**
-- ⚙️ **[Push-Relabel][push_relabel]**
-- ⚡ **[Push-Relabel Improved][push_relabel_faster]**
+## 🧑‍💻 Algoritmos Implementados
 
-## 🔗 Lista de Problemas
+| Algoritmo             | Header                                                 | Complexidade                       | Descrição                                     |
+| :-------------------- | :----------------------------------------------------- | :--------------------------------- | :-------------------------------------------- |
+| Ford-Fulkerson        | [`FordFulkerson.hpp`](./FordFulkerson.hpp)             | $\mathcal{O}(\|A\| \cdot \|f^*\|)$ | Método genérico com DFS (pseudopolinomial).   |
+| Edmonds-Karp          | [`EdmondsKarp.hpp`](./EdmondsKarp.hpp)                 | $\mathcal{O}(V \cdot E^2)$         | Caminhos mais curtos via BFS.                 |
+| Dinic                 | [`Dinic.hpp`](./Dinic.hpp)                             | $\mathcal{O}(V^2 \cdot E)$         | Digrafo de níveis + fluxo bloqueador via DFS. |
+| Push-Relabel FIFO     | [`PushRelabel.hpp`](./PushRelabel.hpp)                 | $\mathcal{O}(V^3)$                 | Pré-fluxo com fila FIFO.                      |
+| Push-Relabel Improved | [`PushRelabelImproved.hpp`](./PushRelabelImproved.hpp) | $\mathcal{O}(V^3)$                 | Push-Relabel com Gap Heuristic.               |
+
+## 📐 Arquitetura
+
+Todos os algoritmos herdam da classe base abstrata [`FlowNetwork`](./FlowNetwork.hpp), que provê:
+
+- Representação topológica via lista de adjacências com arcos em pares (direto + reverso)
+- Métodos `get_residual_capacity()` e `push_flow()` com truque XOR (`id ^ 1`) para acessar arcos reversos em $\mathcal{O}(1)$
+- Padrões Factory Method (`make`) e Prototype (`clone`)
+- Interface pública `compute_max_flow(source, sink)`, `get_edges()`, `get_adj()`
+
+## 🎯 Como Usar
+
+A utilização da biblioteca é projetada para facilitar a alternância entre os algoritmos disponíveis. Para resolver um problema de fluxo, basta incluir os cabeçalhos desejados e selecionar o algoritmo via `using`:
+
+```cpp
+#include "FordFulkerson.hpp"
+#include "EdmondsKarp.hpp"
+#include "Dinic.hpp"
+#include "PushRelabel.hpp"
+#include "PushRelabelImproved.hpp"
+
+// Selecione o algoritmo que você deseja utilizar:
+using FlowSolver = PushRelabelImproved;
+
+int main() {
+    // Instancie a rede com o número total de vértices
+    auto fn = FlowSolver::create(num_nodes);
+
+    // Adicione as arestas direcionadas
+    fn->add_edge(from, to, capacity);
+
+    // Calcule o fluxo máximo da origem (source) para o destino (sink)
+    Long max_flow = fn->compute_max_flow(source, sink);
+}
+```
+
+> [!TIP]
+> Confira o código completo e estruturado no nosso [Template](./Problemas/Template/main.cpp) para iniciar rapidamente a resolução de novos problemas.
+
+## 🔗 Problemas Resolvidos
+
+Todos os problemas estão na pasta [`Problemas/`](./Problemas/) e utilizam a arquitetura unificada com todos os algoritmos disponíveis:
+
+| Problema                                          | Juiz                                                              | Técnica                         |
+| :------------------------------------------------ | :---------------------------------------------------------------- | :------------------------------ |
+| [Download Speed](./Problemas/Download%20Speed/)   | [CSES 1694](https://cses.fi/problemset/task/1694)                 | Fluxo Máximo direto             |
+| [School Dance](./Problemas/School%20Dance/)       | [CSES 1696](https://cses.fi/problemset/task/1696)                 | Emparelhamento Bipartido Máximo |
+| [Distinct Routes](./Problemas/Distinct%20Routes/) | [CSES 1711](https://cses.fi/problemset/task/1711)                 | Caminhos Disjuntos por Arcos    |
+| [Police Chase](./Problemas/Police%20Chase/)       | [CSES 1695](https://cses.fi/problemset/task/1695)                 | Corte Mínimo (Max-Flow Min-Cut) |
+| [Time Travel](./Problemas/Time%20Travel/)         | [Beecrowd 2082](https://judge.beecrowd.com/en/problems/view/2082) | Corte Mínimo Global             |
+
+### 📚 Lista de Problemas Adicionais
 
 1.  [Fast Maximum Flow](https://www.spoj.com/problems/FASTFLOW/)
 2.  [Petya and Graph](https://codeforces.com/problemset/problem/1082/G)
 3.  [Array and Operations](https://codeforces.com/problemset/problem/498/C)
 4.  [Maximum Flow](https://codeforces.com/problemset/problem/843/E)
-5.  [Array and Operations](https://codeforces.com/contest/498/problem/c)
-6.  [Red-Blue Graph](https://codeforces.com/contest/1288/problem/f)
-
-## FlowNetwork
-
-```cpp
-#include <algorithm>
-#include <iostream>
-#include <limits>
-#include <memory>
-#include <queue>
-#include <vector>
-
-using Long = long long;
-using Size = std::size_t;
-
-constexpr Long INF = std::numeric_limits<Long>::max() >> 8;
-constexpr Size MAX = std::numeric_limits<Size>::max() >> 8;
-
-class FlowNetwork
-{
-public:
-	struct Edge
-	{
-		Size from, to;
-		Long capacity, flow;
-	};
-
-	explicit FlowNetwork(const Size n) : size(n), adj(n) {}
-	virtual ~FlowNetwork() = default;
-
-	virtual std::unique_ptr<FlowNetwork> make(const Size n) const = 0;
-	virtual std::unique_ptr<FlowNetwork> clone() const = 0;
-
-	virtual void add_edge(
-	    const Size from, const Size to, const Long capacity,
-	    const Long reverse_capacity = 0
-	)
-	{
-		adj[from].push_back(edges.size());
-		edges.push_back({from, to, capacity, 0});
-		adj[to].push_back(edges.size());
-		edges.push_back({to, from, reverse_capacity, 0});
-	}
-
-	virtual Long compute_max_flow(const Size source, const Size sink) = 0;
-
-	[[nodiscard]] Size get_size() const
-	{
-		return size;
-	}
-
-	[[nodiscard]] const std::vector<Edge> &get_edges() const
-	{
-		return edges;
-	}
-
-	[[nodiscard]] const std::vector<std::vector<Size>> &get_adj() const
-	{
-		return adj;
-	}
-
-protected:
-	Size size;
-	std::vector<Edge> edges;
-	std::vector<std::vector<Size>> adj;
-
-	[[nodiscard]] Long get_residual_capacity(const Size edge_id) const
-	{
-		return edges[edge_id].capacity - edges[edge_id].flow;
-	}
-
-	void push_flow(const Size edge_id, const Long flow_amount)
-	{
-		edges[edge_id].flow += flow_amount;
-		edges[edge_id ^ 1ULL].flow -= flow_amount;
-	}
-};
-```
-
-[edmonds_karp]: ./1.%20Edmonds-Karp/README.md
-[dinic_algorithm]: ./2.%20Dinic's%20Algorithm/README.md
-[push_relabel]: ./3.%20Push-Relabel/README.md
-[push_relabel_faster]: ./4.%20Push-Relabel%20Improved/README.md
+5.  [Red-Blue Graph](https://codeforces.com/contest/1288/problem/f)

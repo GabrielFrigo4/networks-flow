@@ -1,0 +1,16 @@
+# Seeds para circle_20x20.ppm
+# Centro como foreground
+10 10 F
+9 10 F
+11 10 F
+10 9 F
+10 11 F
+# Cantos como background
+0 0 B
+19 0 B
+0 19 B
+19 19 B
+0 10 B
+19 10 B
+10 0 B
+10 19 B
