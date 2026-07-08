@@ -1,11 +1,12 @@
 # IC | Problemas de Fluxos em Redes: Teoria, Algoritmos e Implementações
 
-## Documentação da Iniciação Científica
+## 📚 Documentação e Relatórios da Pesquisa
 
-|                           Definição e Síntese                           |                             Desenvolvimento e Entrega                             |
-| :---------------------------------------------------------------------: | :-------------------------------------------------------------------------------: |
-| [![Baixar PDF do Projeto][baixar_pdf_projeto_icon]][baixar_pdf_projeto] | [![Baixar PDF do Relatório Parcial][baixar_pdf_parcial_icon]][baixar_pdf_parcial] |
-|        [![Baixar PDF da IC][baixar_pdf_ic_icon]][baixar_pdf_ic]         |    [![Baixar PDF do Relatório Final][baixar_pdf_final_icon]][baixar_pdf_final]    |
+<div align="center">
+
+[![Baixar PDF do Projeto][baixar_pdf_projeto_icon]][baixar_pdf_projeto] &nbsp;&nbsp;&nbsp; [![Baixar PDF do Relatório][baixar_pdf_relatorio_icon]][baixar_pdf_relatorio] &nbsp;&nbsp;&nbsp; [![Baixar PDF da IC][baixar_pdf_ic_icon]][baixar_pdf_ic]
+
+</div>
 
 ---
 
@@ -120,10 +121,8 @@ Caso queira gerar o projeto de pesquisa (`ic.pdf`) localmente a partir do códig
 [baixar_pdf_ic_icon]: https://img.shields.io/badge/IC-Baixar-red?style=for-the-badge&logo=adobeacrobatreader
 [baixar_pdf_projeto]: https://github.com/GabrielFrigo4/IC_Networks_Flow/releases/latest/download/projeto.pdf
 [baixar_pdf_projeto_icon]: https://img.shields.io/badge/Projeto-Baixar-red?style=for-the-badge&logo=adobeacrobatreader
-[baixar_pdf_parcial]: https://github.com/GabrielFrigo4/IC_Networks_Flow/releases/latest/download/parcial.pdf
-[baixar_pdf_parcial_icon]: https://img.shields.io/badge/Parcial-Baixar-red?style=for-the-badge&logo=adobeacrobatreader
-[baixar_pdf_final]: https://github.com/GabrielFrigo4/IC_Networks_Flow/releases/latest/download/final.pdf
-[baixar_pdf_final_icon]: https://img.shields.io/badge/Final-Baixar-red?style=for-the-badge&logo=adobeacrobatreader
+[baixar_pdf_relatorio]: https://github.com/GabrielFrigo4/IC_Networks_Flow/releases/latest/download/relat%C3%B3rio.pdf
+[baixar_pdf_relatorio_icon]: https://img.shields.io/badge/Relatório-Baixar-red?style=for-the-badge&logo=adobeacrobatreader
 [download_speed]: https://cses.fi/problemset/task/1694
 [school_dance]: https://cses.fi/problemset/task/1696
 [distinct_routes]: https://cses.fi/problemset/task/1711
