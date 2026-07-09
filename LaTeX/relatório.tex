@@ -13,7 +13,7 @@
 \usepackage[pdftex]{graphicx}
 \usepackage{color}
 \usepackage{tikz}
-\usetikzlibrary{arrows, calc, external}
+\usetikzlibrary{arrows.meta, calc, positioning, decorations.markings}
 \usepackage{verbatim}
 \usepackage{url}
 \usepackage{longtable}
@@ -150,6 +150,27 @@ Para a formulação rigorosa do problema de fluxo, baseamo-nos nas definições 
 
 A topologia desta rede é dotada de dois vértices terminais distintos: uma origem $s \in V$ (fonte ou \textit{source}) e um destino $t \in V$ (sumidouro ou \textit{sink}). Cada arco $a \in A$, que conecta um vértice $u$ a um vizinho $v$, é representado pelo par ordenado $(u,v)$ e possui associada uma capacidade não-negativa estipulada por uma função $c: A \rightarrow \mathbb{R}_{\ge 0}$. Esta capacidade $c(u,v)$ dita o limite superior do recurso (físico ou informacional) que pode transitar diretamente através desta conexão.
 
+A Figura~\ref{fig:rede_fluxo_basica} ilustra uma rede de fluxo elementar com quatro vértices, onde as capacidades estão indicadas sobre os arcos.
+
+\begin{figure}[h]
+\centering
+\begin{tikzpicture}[>=Stealth, node distance=2.5cm, thick,
+    main/.style={circle, draw, minimum size=9mm, font=\small}]
+    \node[main, fill=green!20] (s) {$s$};
+    \node[main, above right=1.2cm and 2.5cm of s] (u) {$u$};
+    \node[main, below right=1.2cm and 2.5cm of s] (v) {$v$};
+    \node[main, fill=red!20, right=2.5cm of u, yshift=-1.2cm] (t) {$t$};
+
+    \draw[->] (s) -- node[above left] {$10$} (u);
+    \draw[->] (s) -- node[below left] {$8$} (v);
+    \draw[->] (u) -- node[right] {$5$} (v);
+    \draw[->] (u) -- node[above right] {$7$} (t);
+    \draw[->] (v) -- node[below right] {$10$} (t);
+\end{tikzpicture}
+\caption{Rede de fluxo com fonte $s$, sumidouro $t$ e capacidades nos arcos.}
+\label{fig:rede_fluxo_basica}
+\end{figure}
+
 Um fluxo em $D$ é caracterizado por uma função $f: A \rightarrow \mathbb{R}_{\ge 0}$ que atribui a cada arco $(u,v)$ um valor de tráfego $f(u,v)$. Para que este roteamento seja classificado como um fluxo factível (ou viável) do ponto de vista matemático, a função $f$ deve satisfazer estritamente dois axiomas fundamentais (veja~\cite{ford1956maximal, cook1998combinatorial}):
 
 \begin{enumerate}
@@ -190,6 +211,38 @@ A demonstração deste teorema é construtiva e apoia-se diretamente na topologi
 Suponha que $f$ seja um fluxo máximo. Por definição, não existe um caminho aumentante de $s$ para $t$ na rede residual $D_f$ (veja~\cite{ahuja1993network}). Definimos o conjunto $S$ como o conjunto de todos os vértices que são alcançáveis a partir da fonte $s$ em $D_f$ através de arcos com capacidade residual estritamente positiva ($c_f > 0$). Definimos $T = V \setminus S$ como o restante dos vértices.
 
 Como não há caminho aumentante, o sumidouro $t$ é inalcançável a partir de $s$ em $D_f$, logo $t \in T$ e $s \in S$. Temos, portanto, um corte $s-t$ válido particionando a rede.
+
+\begin{figure}[h]
+\centering
+\begin{tikzpicture}[>=Stealth, node distance=2cm, thick,
+    main/.style={circle, draw, minimum size=8mm, font=\small}]
+    % Conjunto S
+    \node[main, fill=green!20] (s) {$s$};
+    \node[main, fill=green!10, right=2cm of s] (a) {$a$};
+    \node[main, fill=green!10, above=1cm of a] (b) {$b$};
+    % Conjunto T
+    \node[main, fill=red!10, right=2cm of a] (c) {$c$};
+    \node[main, fill=red!20, right=2cm of c] (t) {$t$};
+    \node[main, fill=red!10, above=1cm of c] (d) {$d$};
+
+    % Arcos saturados (cruzando o corte)
+    \draw[->, line width=1.5pt, red] (a) -- node[below] {\footnotesize$f=c$} (c);
+    \draw[->, line width=1.5pt, red] (b) -- node[above] {\footnotesize$f=c$} (d);
+    % Arcos internos
+    \draw[->] (s) -- (a);
+    \draw[->] (s) -- (b);
+    \draw[->] (c) -- (t);
+    \draw[->] (d) -- (t);
+    \draw[->] (b) -- (a);
+    \draw[->] (d) -- (c);
+
+    % Regions
+    \draw[dashed, blue, rounded corners, thick] (-0.8,-1.2) rectangle (3.2,2.5) node[above left] {$S$};
+    \draw[dashed, orange, rounded corners, thick] (3.5,-1.2) rectangle (7.8,2.5) node[above left] {$T$};
+\end{tikzpicture}
+\caption{Corte mínimo $(S,T)$: os arcos que cruzam de $S$ para $T$ (em vermelho) estão saturados ($f = c$).}
+\label{fig:min_cut}
+\end{figure}
 
 Para qualquer arco original $(u,v) \in A$ tal que $u \in S$ e $v \in T$, sabemos que $v$ não é alcançável a partir de $u$ em $D_f$. Isto implica obrigatoriamente que a capacidade residual $c_f(u,v) = 0$. Pela definição de capacidade residual, isto só ocorre se o arco original estiver completamente saturado, ou seja, $f(u,v) = c(u,v)$. De forma análoga, para qualquer arco no sentido reverso, de $T$ para $S$, o fluxo deve ser nulo ($f(v,u) = 0$), caso contrário haveria capacidade residual reversa permitindo a travessia de $S$ para $T$ (veja~\cite{cook1998combinatorial}).
 
@@ -406,11 +459,248 @@ No caso do \textit{Vertex Splitting}, a BFS varre o digrafo residual particionan
 
 Estes resultados confirmam a versatilidade do modelo de fluxo em redes. Através de abstrações adequadas e da implementação orientada a objetos, o núcleo algorítmico demonstra a capacidade de resolver problemas que variam desde a alocação de recursos em grafos bipartidos até a análise de conectividade topológica.
 
+\subsubsection{Prova do Teorema de Menger (Versão por Arcos)}
+
+A prova da versão por arcos decorre diretamente do Teorema do Fluxo Máximo-Corte Mínimo aplicado a redes com capacidades unitárias (veja~\cite{ahuja1993network, cook1998combinatorial}).
+
+Seja $D = (V, A)$ um digrafo e sejam $s, t \in V$ dois vértices distintos e não-adjacentes. Construa uma rede de fluxo atribuindo capacidade $c(u,v) = 1$ a cada arco $(u,v) \in A$.
+
+Pelo Teorema da Integralidade, como todas as capacidades são inteiras, existe um fluxo máximo inteiro $f$, onde cada arco transporta $f(u,v) \in \{0, 1\}$. Um arco com $f(u,v) = 1$ pertence a exatamente um caminho de $s$ a $t$. Como nenhum arco pode transportar mais que $1$ unidade, dois caminhos distintos não podem compartilhar um mesmo arco. Portanto, o valor do fluxo máximo $|f|$ é exatamente o número de caminhos disjuntos por arcos.
+
+Pelo Teorema Max-Flow Min-Cut, $|f| = \text{cap}(S,T)$ para algum corte mínimo $(S,T)$. Como $c(u,v) = 1$, a capacidade do corte é precisamente o número de arcos que cruzam de $S$ para $T$, ou seja, o número mínimo de arcos cuja remoção desconecta $s$ de $t$. Conclui-se:
+$$\max\{\text{caminhos disjuntos por arcos de } s \text{ a } t\} = \min\{\text{arcos cuja remoção desconecta } s \text{ de } t\}.$$
+
+\subsubsection{Prova do Teorema de Menger (Versão por Vértices)}
+
+A versão por vértices é reduzida à versão por arcos através da técnica de \textit{Vertex Splitting} (veja~\cite{korte2018combinatorial}).
+
+Seja $D = (V, A)$ um digrafo e sejam $s, t \in V$ não-adjacentes. Construa a rede expandida $D'$ substituindo cada vértice $v \in V \setminus \{s, t\}$ por dois vértices $v_{in}$ e $v_{out}$, conectados por um arco interno $(v_{in}, v_{out})$ com capacidade $1$. Todos os arcos que originalmente apontavam para $v$ são redirecionados para $v_{in}$, e os que emergiam de $v$ passam a emergir de $v_{out}$, ambos com capacidade infinita (ou suficientemente grande).
+
+Nesta construção, a restrição de capacidade unitária no arco $(v_{in}, v_{out})$ garante que no máximo $1$ unidade de fluxo pode transitar pelo vértice original $v$. Portanto, caminhos disjuntos por arcos em $D'$ correspondem bijetivamente a caminhos disjuntos por vértices em $D$.
+
+Aplicando o Teorema de Menger por arcos a $D'$, obtemos que o número máximo de caminhos disjuntos por arcos em $D'$ (= caminhos disjuntos por vértices em $D$) é igual ao número mínimo de arcos internos $(v_{in}, v_{out})$ no corte mínimo, que correspondem exatamente aos vértices originais cuja remoção desconecta $s$ de $t$. Logo:
+$$\max\{\text{caminhos disjuntos por vértices de } s \text{ a } t\} = \min\{\text{vértices cuja remoção desconecta } s \text{ de } t\}. \qquad \blacksquare$$
+
+\subsubsection{O Teorema de Hall}
+
+O Teorema de Hall (ou Teorema do Casamento) estabelece uma condição necessária e suficiente para a existência de um emparelhamento que sature completamente um dos lados de um grafo bipartido (veja~\cite{bondy2008graph, diestel2017graph}).
+
+Seja $G = (L \cup R, E)$ um grafo bipartido. Um emparelhamento $M$ é dito $L$-saturante se cada vértice de $L$ é coberto por alguma aresta de $M$ (i.e., $|M| = |L|$). Para qualquer subconjunto $S \subseteq L$, denotemos por $N(S) = \{v \in R : \exists\, u \in S, \, (u,v) \in E\}$ a vizinhança de $S$ em $R$.
+
+\textbf{Teorema (Hall, 1935).} \textit{Existe um emparelhamento $L$-saturante em $G$ se, e somente se, a condição de Hall é satisfeita:}
+\begin{equation}
+    |N(S)| \ge |S|, \quad \forall\, S \subseteq L.
+\end{equation}
+
+\textbf{Prova.}
+A necessidade é imediata: se $M$ é $L$-saturante, cada vértice $u \in S$ é emparelhado com um vértice distinto em $N(S)$, logo $|N(S)| \ge |S|$.
+
+Para a suficiência, empregamos a dualidade de König-Egerváry (veja~\cite{korte2018combinatorial}). Suponha por contradição que a condição de Hall vale mas o emparelhamento máximo $M$ tem $|M| < |L|$. Pelo Teorema de König, a cobertura de vértices mínima $C$ satisfaz $|C| = |M| < |L|$. Defina $C_L = C \cap L$ e $C_R = C \cap R$. Como $C$ é cobertura, todo arco incide em $C$, logo os vértices de $S = L \setminus C_L$ só se conectam a vértices em $C_R$, ou seja, $N(S) \subseteq C_R$. Assim:
+$$|N(S)| \le |C_R| = |C| - |C_L| = |M| - |C_L| < |L| - |C_L| = |S|,$$
+contradizendo a condição de Hall. Portanto, $|M| = |L|$. $\blacksquare$
+
+\begin{figure}[h]
+\centering
+\begin{tikzpicture}[>=Stealth, thick,
+    lnode/.style={circle, draw, fill=blue!15, minimum size=7mm, font=\small},
+    rnode/.style={circle, draw, fill=orange!15, minimum size=7mm, font=\small}]
+    % Left nodes
+    \node[lnode] (l1) at (0,3) {$l_1$};
+    \node[lnode] (l2) at (0,1.5) {$l_2$};
+    \node[lnode] (l3) at (0,0) {$l_3$};
+    % Right nodes
+    \node[rnode] (r1) at (3,3) {$r_1$};
+    \node[rnode] (r2) at (3,1.5) {$r_2$};
+    \node[rnode] (r3) at (3,0) {$r_3$};
+    % Matching edges (bold)
+    \draw[-, line width=2pt, blue] (l1) -- (r1);
+    \draw[-, line width=2pt, blue] (l2) -- (r2);
+    \draw[-, line width=2pt, blue] (l3) -- (r3);
+    % Non-matching edges
+    \draw[-, gray] (l1) -- (r2);
+    \draw[-, gray] (l2) -- (r3);
+    \draw[-, gray] (l3) -- (r1);
+    % Labels
+    \node[above] at (0,3.5) {$L$};
+    \node[above] at (3,3.5) {$R$};
+\end{tikzpicture}
+\caption{Emparelhamento $L$-saturante (arestas azuis) em um grafo bipartido: cada vértice de $L$ é coberto. A condição de Hall $|N(S)| \ge |S|$ é satisfeita para todo $S \subseteq L$.}
+\label{fig:hall_matching}
+\end{figure}
+
+\subsection{Transformações de Rede}
+
+As reduções anteriores assumem a existência de uma única fonte e um único sumidouro. Na prática, muitos problemas reais envolvem generalizações da topologia de rede que exigem transformações prévias para adequar-se ao modelo canônico $s$-$t$.
+
+\subsubsection{Múltiplas Fontes e Múltiplos Sumidouros}
+
+Em cenários logísticos e de telecomunicações, é comum que a rede possua mais de um ponto de geração de recursos (fontes $s_1, s_2, \ldots, s_k$) e mais de um ponto de consumo (sumidouros $t_1, t_2, \ldots, t_m$). Para reduzir este problema multi-terminal ao modelo $s$-$t$ padrão, emprega-se uma técnica de construção que preserva todas as propriedades de otimalidade (veja~\cite{ahuja1993network}).
+
+A transformação consiste em expandir a rede $D = (V, A)$ para uma rede estendida $D' = (V', A')$ adicionando:
+\begin{enumerate}
+    \item Uma \textbf{super-fonte} $s^*$, conectada a cada fonte original $s_i$ por um arco $(s^*, s_i)$ com capacidade infinita (ou igual à capacidade total de saída de $s_i$).
+    \item Um \textbf{super-sumidouro} $t^*$, conectado a partir de cada sumidouro original $t_j$ por um arco $(t_j, t^*)$ com capacidade infinita (ou igual à capacidade total de entrada de $t_j$).
+\end{enumerate}
+
+\begin{figure}[h]
+\centering
+\begin{tikzpicture}[>=Stealth, node distance=1.8cm, thick,
+    main/.style={circle, draw, minimum size=8mm, font=\small}]
+    \node[main, fill=green!30] (ss) {$s^*$};
+    \node[main, fill=green!10, above right=0.5cm and 1.8cm of ss] (s1) {$s_1$};
+    \node[main, fill=green!10, below right=0.5cm and 1.8cm of ss] (s2) {$s_2$};
+    \node[main, right=1.5cm of s1, yshift=-0.7cm] (v) {$v$};
+    \node[main, fill=red!10, above right=0.5cm and 1.5cm of v] (t1) {$t_1$};
+    \node[main, fill=red!10, below right=0.5cm and 1.5cm of v] (t2) {$t_2$};
+    \node[main, fill=red!30, right=1.8cm of v, xshift=1.5cm] (ts) {$t^*$};
+
+    \draw[->, dashed, blue] (ss) -- node[above] {$\infty$} (s1);
+    \draw[->, dashed, blue] (ss) -- node[below] {$\infty$} (s2);
+    \draw[->] (s1) -- (v);
+    \draw[->] (s2) -- (v);
+    \draw[->] (v) -- (t1);
+    \draw[->] (v) -- (t2);
+    \draw[->, dashed, red] (t1) -- node[above] {$\infty$} (ts);
+    \draw[->, dashed, red] (t2) -- node[below] {$\infty$} (ts);
+\end{tikzpicture}
+\caption{Redução de múltiplas fontes/sumidouros: a super-fonte $s^*$ e o super-sumidouro $t^*$ (arcos tracejados com capacidade $\infty$) unificam a rede.}
+\label{fig:multi_source_sink}
+\end{figure}
+
+Formalmente, $V' = V \cup \{s^*, t^*\}$ e $A' = A \cup \{(s^*, s_i) : i = 1,\ldots,k\} \cup \{(t_j, t^*) : j = 1,\ldots,m\}$. O fluxo máximo de $s^*$ a $t^*$ em $D'$ é equivalente ao fluxo máximo total que pode ser transportado das fontes originais aos sumidouros originais em $D$.
+
+A correção desta redução decorre da lei de conservação: toda unidade de fluxo que emerge de $s^*$ deve necessariamente ingressar em alguma fonte original $s_i$ e, eventualmente, alcançar algum sumidouro $t_j$ antes de convergir para $t^*$.
+
+\subsubsection{Arestas Bidirecionais e Grafos Não-Direcionados}
+
+Os algoritmos de fluxo desenvolvidos neste projeto operam sobre digrafos estritamente direcionados. Quando o problema original é formulado sobre um grafo não-direcionado $G = (V, E)$ (onde cada aresta $\{u,v\} \in E$ pode ser percorrida em ambos os sentidos), é necessária uma transformação de modelagem (veja~\cite{ahuja1993network}).
+
+A conversão padrão consiste em substituir cada aresta não-direcionada $\{u,v\}$ com capacidade $c$ por dois arcos direcionados antiparalelos:
+\begin{itemize}
+    \item Um arco $(u,v)$ com capacidade $c$.
+    \item Um arco $(v,u)$ com capacidade $c$.
+\end{itemize}
+
+Na implementação desta biblioteca, esta modelagem é realizada nativamente pelo parâmetro \lstinline{reverse_capacity} do método \lstinline{add_edge}. Ao invocar \lstinline{add_edge(u, v, c, c)}, ambos os arcos são criados simultaneamente com as capacidades desejadas, preservando a propriedade de emparelhamento por XOR.
+
+É importante distinguir dois cenários: em problemas de corte mínimo em grafos não-direcionados (como o problema \textit{Police Chase}), esta modelagem bidirecional é obrigatória; já em problemas de fluxo puro em digrafos, apenas o arco reverso com capacidade $0$ é necessário (comportamento padrão do \lstinline{add_edge}).
+
+\subsection{Decomposição de Fluxo}
+
+Após o cômputo do fluxo máximo, a solução obtida é representada como um vetor de fluxos individuais sobre os arcos da rede. Contudo, muitas aplicações práticas exigem uma descrição mais estruturada da solução: quais são os caminhos individuais de $s$ a $t$ que compõem o fluxo total, e quanto fluxo transita em cada um?
+
+O Teorema da Decomposição de Fluxo fornece a fundamentação matemática para esta extração (veja~\cite{ahuja1993network, schrijver2003combinatorial}).
+
+\subsubsection{Teorema da Decomposição de Fluxo}
+
+\textbf{Teorema.} \textit{Todo fluxo viável $f$ em uma rede $D = (V, A)$ pode ser decomposto em um conjunto de no máximo $|A|$ caminhos simples de $s$ a $t$ e ciclos simples, cada um com um valor de fluxo positivo associado. A soma dos fluxos dos caminhos é igual a $|f|$, e o fluxo total em cada arco é a soma dos fluxos dos caminhos e ciclos que o utilizam.}
+
+\textbf{Prova.}
+Procedemos por indução no número de arcos com fluxo positivo (veja~\cite{ahuja1993network}).
+
+\textit{Caso base:} Se nenhum arco transporta fluxo ($f \equiv 0$), a decomposição é trivialmente vazia.
+
+\textit{Passo indutivo:} Suponha que $f$ possui pelo menos um arco $(u,v)$ com $f(u,v) > 0$. Considere dois casos:
+
+\begin{enumerate}
+    \item \textbf{Existe um caminho de $s$ a $t$:} Partindo de $s$, siga arcos com fluxo positivo. Pela conservação de fluxo, se um vértice intermediário recebe fluxo, ele também emite fluxo. Como $|f| > 0$, eventualmente alcançamos $t$, formando um caminho $P$ de $s$ a $t$. Defina $\delta = \min_{(u,v) \in P} f(u,v) > 0$. Subtraia $\delta$ de todos os arcos de $P$. O fluxo resultante $f'$ satisfaz $|f'| = |f| - \delta$, mantém a viabilidade, e possui ao menos um arco a menos com fluxo positivo.
+
+    \item \textbf{Não existe caminho de $s$ a $t$:} Partindo de qualquer arco $(u,v)$ com $f(u,v) > 0$, siga arcos positivos. Como os vértices são finitos, eventualmente revisitamos um vértice, formando um ciclo $C$. Defina $\delta = \min_{(u,v) \in C} f(u,v) > 0$ e subtraia $\delta$ de todos os arcos do ciclo. O valor $|f|$ não se altera, mas o número de arcos positivos diminui.
+\end{enumerate}
+
+Em ambos os casos, o número de arcos com fluxo positivo decresce estritamente, e a hipótese de indução se aplica a $f'$. Como este processo termina em no máximo $|A|$ iterações, a decomposição produz no máximo $|A|$ caminhos e ciclos. $\blacksquare$
+
+\subsubsection{Algoritmo de Extração de Caminhos (Path Recovery)}
+
+Na implementação prática, o algoritmo de Path Recovery percorre a rede após o cômputo do fluxo máximo para reconstruir os caminhos individuais. Em redes com capacidades unitárias (como nos problemas de caminhos disjuntos), o procedimento é particularmente elegante:
+
+\begin{enumerate}
+    \item Partindo da fonte $s$, siga qualquer arco original (índice par) que possua $f(u,v) = 1$ e ainda não tenha sido utilizado.
+    \item Marque o arco como utilizado e avance para o próximo vértice.
+    \item Repita até alcançar o sumidouro $t$, registrando o caminho.
+    \item Itere o processo $|f|$ vezes para extrair todos os caminhos.
+\end{enumerate}
+
+Esta é exatamente a técnica empregada na solução do problema \textit{Distinct Routes}, onde a função \lstinline{print_disjoint_paths} implementa a decomposição sobre a rede residual convergida.
+
+\subsection{Aplicação: Segmentação de Imagens via Corte Mínimo}
+
+Uma das aplicações mais impactantes dos algoritmos de fluxo em redes reside na área de Visão Computacional, especificamente no problema de Segmentação de Imagens (veja~\cite{ford1956maximal, cook1998combinatorial}). O objetivo é particionar uma imagem digital em duas regiões semanticamente distintas: o \textit{foreground} (objeto de interesse) e o \textit{background} (fundo), minimizando uma função de energia que penaliza simultaneamente a inconsistência com as marcações do usuário e a descontinuidade visual entre pixels adjacentes.
+
+\subsubsection{Modelagem como Rede de Fluxo}
+
+Seja $I$ uma imagem com $n = W \times H$ pixels. A construção da rede de segmentação $D = (V, A)$ procede como:
+
+\begin{enumerate}
+    \item \textbf{Vértices:} Cada pixel $p_i$ da imagem corresponde a um vértice. Adicionam-se dois terminais: a super-fonte $s$ (representando o rótulo \textit{foreground}) e o super-sumidouro $t$ (representando o \textit{background}). Total: $|V| = n + 2$.
+
+    \item \textbf{N-links (Neighborhood Links):} Para cada par de pixels adjacentes $(p, q)$ sob 4-conectividade (vizinhos horizontais e verticais), cria-se um arco bidirecional com peso proporcional à similaridade de cor:
+    \begin{equation}
+        w_{n}(p, q) = K \cdot \exp\left(-\frac{\|I_p - I_q\|^2}{2\sigma^2}\right)
+    \end{equation}
+    onde $\|I_p - I_q\|$ é a distância euclidiana no espaço RGB, $\sigma$ é um parâmetro de sensibilidade e $K$ é um fator de escala para conversão a inteiros. Pixels similares recebem peso alto (difíceis de separar); pixels com cores muito diferentes recebem peso baixo (fronteiras naturais).
+
+    \item \textbf{T-links (Terminal Links):} Para cada pixel $p_i$, criam-se dois arcos conectando-o aos terminais:
+    \begin{itemize}
+        \item $(s, p_i)$ com peso $w_s(p_i)$: afinidade com o modelo de cor do \textit{foreground}.
+        \item $(p_i, t)$ com peso $w_t(p_i)$: afinidade com o modelo de cor do \textit{background}.
+    \end{itemize}
+    Pixels marcados explicitamente pelo usuário como \textit{foreground} recebem $w_s = \infty$ e $w_t = 0$, e vice-versa para o \textit{background}.
+\end{enumerate}
+
+\begin{figure}[h]
+\centering
+\begin{tikzpicture}[>=Stealth, thick, scale=0.9,
+    pixel/.style={circle, draw, minimum size=6mm, font=\tiny},
+    term/.style={circle, draw, minimum size=9mm, font=\small}]
+    % Terminais
+    \node[term, fill=green!30] (s) at (3,4) {$s$};
+    \node[term, fill=red!30] (t) at (3,-1.5) {$t$};
+    % Grid 3x3 de pixels
+    \foreach \x in {1,2,3} {
+        \foreach \y in {0,1,2} {
+            \node[pixel, fill=gray!10] (p\x\y) at (\x*1.5, \y*1.2) {};
+        }
+    }
+    % N-links (horizontais)
+    \draw[-] (p10) -- (p20); \draw[-] (p20) -- (p30);
+    \draw[-] (p11) -- (p21); \draw[-] (p21) -- (p31);
+    \draw[-] (p12) -- (p22); \draw[-] (p22) -- (p32);
+    % N-links (verticais)
+    \draw[-] (p10) -- (p11); \draw[-] (p11) -- (p12);
+    \draw[-] (p20) -- (p21); \draw[-] (p21) -- (p22);
+    \draw[-] (p30) -- (p31); \draw[-] (p31) -- (p32);
+    % T-links (amostra)
+    \draw[->, green!60!black, dashed] (s) -- (p12);
+    \draw[->, green!60!black, dashed] (s) -- (p22);
+    \draw[->, green!60!black, dashed] (s) -- (p32);
+    \draw[->, red!60!black, dashed] (p10) -- (t);
+    \draw[->, red!60!black, dashed] (p20) -- (t);
+    \draw[->, red!60!black, dashed] (p30) -- (t);
+    % Labels
+    \node[right, font=\footnotesize] at (5,2.4) {N-links (similaridade)};
+    \node[right, font=\footnotesize, green!60!black] at (5,3.5) {T-links $\to s$ (foreground)};
+    \node[right, font=\footnotesize, red!60!black] at (5,-0.5) {T-links $\to t$ (background)};
+\end{tikzpicture}
+\caption{Modelagem de uma grade $3 \times 3$ de pixels como rede de fluxo para segmentação. Linhas sólidas representam N-links entre pixels vizinhos; setas tracejadas representam T-links para os terminais $s$ e $t$.}
+\label{fig:segmentation_graph}
+\end{figure}
+
+\subsubsection{Segmentação via Corte Mínimo}
+
+O corte mínimo $(S, T)$ na rede construída induz naturalmente a partição da imagem. Os pixels no conjunto $S$ (alcançáveis a partir de $s$ na rede residual) pertencem ao \textit{foreground}; os pixels em $T$ pertencem ao \textit{background}.
+
+A capacidade do corte mínimo corresponde à energia total da segmentação: a soma dos custos de separar pixels similares (N-links cortados) e de contradizer o modelo de cor (T-links cortados). Ao minimizar esta energia, o algoritmo encontra a fronteira ótima que melhor respeita tanto as marcações do usuário quanto as fronteiras naturais de cor da imagem.
+
+Como a rede de segmentação pode conter milhões de vértices ($n = W \times H$) e milhões de arcos ($\approx 4n$ N-links $+ 2n$ T-links), a escolha do algoritmo de fluxo é crucial. A implementação prática desenvolvida neste projeto emprega o \textit{Push-Relabel} com \textit{Gap Heuristic} pela sua complexidade $\mathcal{O}(|V|^3)$ favorável em redes densas e pela eficiência prática em grafos planares de grade.
+
 \section{Conclusões preliminares e próximos passos}
 
 Os resultados parciais obtidos até o presente momento em cumprimento às Atividades 1 a 5 do cronograma demonstram o sucesso na consolidação de uma infraestrutura computacional robusta e teoricamente fundamentada para a resolução do Problema do Fluxo Máximo. A adoção de uma arquitetura Orientada a Objetos em C++, ancorada pelos padrões \textit{Factory Method} e \textit{Prototype}, provou-se altamente eficaz para o encapsulamento da topologia das redes residuais.
 
-Sob a ótica algorítmica, o projeto materializou com êxito os métodos clássicos propostos na literatura. A implementação avançou desde o método de Edmonds-Karp, passando pela otimização em fases com o Digrafo de Níveis de Dinic, até atingir o estado da arte com a família de prefluxos através do algoritmo \textit{Push-Relabel} (Goldberg-Tarjan). A correção matemática destas implementações foi validada através da sua aplicação bem-sucedida em técnicas de modelagem geométrica, solucionando problemas complexos como o Emparelhamento Bipartido Máximo e o empacotamento de Caminhos Disjuntos (por arcos e vértices).
+Sob a ótica algorítmica, o projeto materializou com êxito os métodos clássicos propostos na literatura. A implementação avançou desde o método genérico de Ford-Fulkerson (DFS), passando pela especialização com caminhos mais curtos de Edmonds-Karp (BFS), a otimização em fases com o Digrafo de Níveis de Dinic, até atingir o estado da arte com a família de prefluxos através do algoritmo \textit{Push-Relabel} (Goldberg-Tarjan) com \textit{Gap Heuristic}. A correção matemática destas implementações foi validada através da sua aplicação bem-sucedida em técnicas de modelagem geométrica, solucionando problemas complexos como o Emparelhamento Bipartido Máximo e o empacotamento de Caminhos Disjuntos (por arcos e vértices).
+
+Além da consolidação teórica, o projeto demonstrou a aplicabilidade prática dos algoritmos de fluxo em redes através da implementação de uma ferramenta de Segmentação de Imagens via Corte Mínimo, que utiliza a modelagem de grafos de pixels com N-links e T-links para separar foreground e background em fotografias reais.
 
 Tendo consolidado a teoria e a base de código para o fluxo máximo, e em conformidade com o cronograma estabelecido (Atividade 6), as próximas etapas da Iniciação Científica (Atividades 7 a 11) concentrar-se-ão na expansão do escopo teórico e na validação empírica rigorosa, contemplando os seguintes passos:
 
@@ -420,6 +710,31 @@ Tendo consolidado a teoria e a base de código para o fluxo máximo, e em confor
     \item \textbf{Análise Comparativa de Desempenho (Atividade 10):} Execução de um \textit{benchmarking} intensivo para avaliar o tempo de execução e o consumo de memória dos algoritmos implementados. Esta análise contrastará o comportamento empírico dos métodos de fluxo máximo (Dinic vs. Push-Relabel) e avaliará a eficiência do \textit{network simplex} sob diferentes topologias de digrafos.
     \item \textbf{Elaboração do Relatório Final (Atividade 11):} Compilação de todos os dados experimentais, análises assintóticas e códigos desenvolvidos em um documento final que sintetize as contribuições do discente para a área de Otimização Combinatória.
 \end{itemize}
+
+\subsection{Perspectiva Teórica: O Problema do Fluxo de Custo Mínimo}
+
+O problema do fluxo de custo mínimo (\textit{Minimum Cost Flow}) generaliza o problema do fluxo máximo ao associar a cada arco $(u,v) \in A$ não apenas uma capacidade $c(u,v)$, mas também um custo unitário $w(u,v) \ge 0$ por unidade de fluxo transportada (veja~\cite{ahuja1993network}). O objetivo é encontrar um fluxo viável que satisfaça as demandas da rede (fornecimento nas fontes e consumo nos sumidouros) minimizando o custo total:
+\begin{equation}
+    \min \sum_{(u,v) \in A} w(u,v) \cdot f(u,v)
+\end{equation}
+sujeito às restrições de capacidade e conservação de fluxo.
+
+Este problema unifica diversos problemas clássicos: transporte, atribuição, caminho mais curto e fluxo máximo são todos casos particulares. A solução pode ser obtida por métodos especializados como o ciclo de cancelamento de custo negativo ou por abordagens mais eficientes como o \textit{Network Simplex} (veja~\cite{dantzig1951application}).
+
+\subsection{Perspectiva Algorítmica: O Método Network Simplex}
+
+O \textit{Network Simplex} é uma adaptação do método Simplex clássico de programação linear, especializada para a estrutura de redes de fluxo (veja~\cite{ahuja1993network, dantzig1951application}). A idéia central é explorar a correspondência entre soluções básicas viáveis do problema linear e árvores geradoras do digrafo subjacente.
+
+Em cada iteração, o algoritmo:
+\begin{enumerate}
+    \item Mantém uma \textbf{árvore geradora básica} $T$ do digrafo, que define uma solução viável.
+    \item Calcula os \textbf{custos reduzidos} $\bar{w}(u,v) = w(u,v) - \pi(u) + \pi(v)$ para cada arco fora da árvore, onde $\pi$ é o vetor de potenciais nodais.
+    \item Seleciona um arco com custo reduzido negativo (regra de pricing) para entrar na base.
+    \item Identifica o arco que sai da base (arco limitante no ciclo formado).
+    \item Atualiza a árvore e o fluxo de forma eficiente, explorando a estrutura de árvore para atualizações em $\mathcal{O}(|V|)$ por iteração.
+\end{enumerate}
+
+Embora o \textit{Network Simplex} não possua garantia polinomial no pior caso, sua eficiência prática o torna o método de escolha para problemas de fluxo de custo mínimo em larga escala, superando consistentemente os métodos genéricos de programação linear.
 
 Desta forma, a infraestrutura estabelecida nesta primeira fase oferece total segurança técnica para as implementações avançadas e baterias de testes que ditarão o ritmo e a conclusão da pesquisa.
 
@@ -507,6 +822,82 @@ protected:
 	{
 		edges[edge_id].flow += flow_amount;
 		edges[edge_id ^ 1ULL].flow -= flow_amount;
+	}
+};
+\end{lstlisting}
+
+\newpage
+\section{Implementação da Classe ``Ford-Fulkerson''}
+\label{ap:ford_fulkerson}
+
+\begin{lstlisting}[caption={Implementação em C++ da classe \lstinline{FordFulkerson}, método genérico de caminhos aumentantes via DFS.}, label={lst:ford_fulkerson}]
+class FordFulkerson : public FlowNetwork
+{
+public:
+	explicit FordFulkerson(const Size n) : FlowNetwork(n) {}
+
+	static std::unique_ptr<FlowNetwork> create(const Size n)
+	{
+		return std::make_unique<FordFulkerson>(n);
+	}
+
+	std::unique_ptr<FlowNetwork> make(const Size n) const override
+	{
+		return std::make_unique<FordFulkerson>(n);
+	}
+
+	std::unique_ptr<FlowNetwork> clone() const override
+	{
+		return std::make_unique<FordFulkerson>(*this);
+	}
+
+	Long compute_max_flow(const Size source, const Size sink) override
+	{
+		Long total_flow = 0;
+		std::vector<bool> visited(size, false);
+
+		while (true)
+		{
+			std::fill(visited.begin(), visited.end(), false);
+			const Long new_flow = dfs(source, sink, INF, visited);
+			if (new_flow == 0)
+				break;
+			total_flow += new_flow;
+		}
+
+		return total_flow;
+	}
+
+private:
+	Long dfs(
+	    const Size current_node, const Size sink, const Long flow_pushed,
+	    std::vector<bool> &visited
+	)
+	{
+		if (current_node == sink)
+			return flow_pushed;
+
+		visited[current_node] = true;
+
+		for (const Size edge_id : adj[current_node])
+		{
+			const Size next_node = edges[edge_id].to;
+			const Long residual_capacity = get_residual_capacity(edge_id);
+
+			if (visited[next_node] || residual_capacity <= 0)
+				continue;
+
+			const Long bottleneck = std::min(flow_pushed, residual_capacity);
+			const Long flow_transmitted = dfs(next_node, sink, bottleneck, visited);
+
+			if (flow_transmitted > 0)
+			{
+				push_flow(edge_id, flow_transmitted);
+				return flow_transmitted;
+			}
+		}
+
+		return 0;
 	}
 };
 \end{lstlisting}
