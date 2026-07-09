@@ -8,18 +8,18 @@ Aqui, a teoria se encontra com a prática. Os conceitos de grafos, fluxos de cus
 
 ## 📂 Estrutura do Diretório
 
-| Projeto | Descrição | Status |
-| :--- | :--- | :---: |
-| ✂️ **[Segmentação de Imagens (OLD)](./Segmentação%20de%20Imagens%20(OLD)/)** | Aplicação interativa em C++ que utiliza **Max-Flow / Min-Cut** para extrair o objeto principal (*foreground*) de uma imagem, separando-o do fundo (*background*). | 🟡 *Legado* |
-| 🖼️ **[Segmentação de Imagens](./Segmentação%20de%20Imagens/)** | Nova versão da aplicação de segmentação (em desenvolvimento). | 🚧 *WIP* |
+| Projeto | Descrição |
+| :--- | :--- |
+| ✂️ **[Segmentação de Imagens](./Segmentação%20de%20Imagens/)** | Aplicação em C++ que utiliza **Max-Flow / Min-Cut** para extrair o objeto principal (_foreground_) de uma imagem PPM, separando-o do fundo (_background_) a partir de poucas marcações do usuário (_seeds_). |
 
 ---
 
 ## 🎯 Por que aplicar Fluxos em Redes?
 
 A modelagem de problemas via fluxos em grafos é uma ferramenta excepcionalmente poderosa. Com ela, somos capazes de:
+
 - Converter problemas de alocação, transporte e roteamento em instâncias tratáveis.
-- Encontrar soluções ótimas globais onde abordagens gulosas (*greedy*) falhariam.
+- Encontrar soluções ótimas globais onde abordagens gulosas (_greedy_) falhariam.
 - Transformar problemas visuais e contínuos (como segmentação de imagens) em grafos discretos, utilizando o **Teorema Max-Flow Min-Cut** como uma "tesoura matemática" perfeita para demarcar bordas de contraste.
 
 > [!TIP]
