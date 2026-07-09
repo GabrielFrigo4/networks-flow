@@ -29,7 +29,7 @@ Progresso das aplicações práticas que utilizam os algoritmos de fluxo em rede
 
 | Nome                                                                                              | LaTeX | Implementação | Descrição                                                                                                  |
 | :------------------------------------------------------------------------------------------------ | :---: | :-----------: | :--------------------------------------------------------------------------------------------------------- |
-| [Segmentação de Imagens (Max Flow / Min Cut)](./Aplicações/1.%20Segmentacao_de_Imagens/README.md) |  ❌   |      ❌       | Software para separar foreground/background em fotografias utilizando modelagem de corte mínimo em grafos. |
+| [Segmentação de Imagens (Max Flow / Min Cut)](./Aplicações/Segmentação%20de%20Imagens%20(CLI)/README.md) |  ❌   |      ✅       | Software para separar foreground/background em fotografias utilizando modelagem de corte mínimo em grafos. |
 
 ---
 

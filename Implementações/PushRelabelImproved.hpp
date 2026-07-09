@@ -74,10 +74,15 @@ private:
 		height_count[size] = 1;
 		height_count[0] = size - 1;
 
-		excess[source] = INF;
 		for (const Size edge_id : adj[source])
 		{
-			push_preflow(source, edge_id, source, sink);
+			const Long cap = edges[edge_id].capacity;
+			if (cap > 0)
+			{
+				push_flow(edge_id, cap);
+				excess[edges[edge_id].to] += cap;
+				enqueue_active_node(edges[edge_id].to, source, sink);
+			}
 		}
 	}
 

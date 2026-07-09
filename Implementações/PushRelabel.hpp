@@ -60,17 +60,18 @@ private:
 		std::fill(next_edge_ptr.begin(), next_edge_ptr.end(), 0);
 
 		height[source] = size;
-		excess[source] = INF;
 
 		for (const Size edge_id : adj[source])
 		{
-			if (get_residual_capacity(edge_id) <= 0)
+			const Long cap = edges[edge_id].capacity;
+			if (cap <= 0)
 			{
 				continue;
 			}
 
-			push_preflow(source, edge_id);
+			push_flow(edge_id, cap);
 			const Size next_node = edges[edge_id].to;
+			excess[next_node] += cap;
 
 			if (next_node == source || next_node == sink || in_queue[next_node])
 			{

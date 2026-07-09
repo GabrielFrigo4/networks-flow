@@ -305,6 +305,11 @@ Durante o ciclo de resolução principal, o algoritmo inspeciona vértices ativo
 
 A eficiência global do algoritmo é intrinsecamente dependente da política de seleção: qual vértice ativo deve ser processado primeiro? A implementação canônica emprega uma estrutura de dados de fila (\textit{Queue}) para gerenciar estes vértices sob uma política \textit{First-In, First-Out} (FIFO). Demonstra-se matematicamente que a ordem de processamento FIFO amortece severamente o número de empurrões não-saturantes necessários para a convergência. Graças a esta amortização estrutural, o limite assintótico de tempo de pior caso para o algoritmo Push-Relabel padrão é cravado analiticamente em $\mathcal{O}(|V|^3)$ (veja~\cite{goldberg1988new}). A materialização em C++ deste algoritmo, herdando a arquitetura segura da interface polimórfica, encontra-se detalhada no Código~\ref{lst:push_relabel} (disponível no Apêndice~\ref{ap:push_relabel}).
 
+\subsubsection{Cuidados na Inicialização e Aritmética de Infinitos}
+Durante a inicialização do pré-fluxo, é vital saturar os arcos adjacentes à fonte sem restringi-los por uma variável artificial de "excesso" da fonte. Diferente dos nós intermediários, a fonte não obedece à conservação de fluxo e representa um gerador de recursos inesgotável. 
+
+Em implementações ingênuas, é comum atribuir à fonte um excesso infinito estático (\lstinline{excess[source] = INF}) e reaproveitar a operação de empurrar genérica. No entanto, em domínios matemáticos como Segmentação de Imagens (onde restrições rígidas são modeladas com arestas de capacidade literalmente igual a \lstinline{INF}), essa abordagem colapsa por limites aritméticos da arquitetura computacional. Como \lstinline{INF} em C++ é uma constante discreta em limite de representação inteira, empurrar \lstinline{INF} de fluxo subtrai integralmente o estoque em uma única iteração (\lstinline{INF - INF = 0}), esgotando artificialmente a fonte e causando paralisação prematura do pré-fluxo. Para evitar este problema e garantir o funcionamento seguro em qualquer domínio de rede, a inicialização correta injeta diretamente o valor integral da capacidade da aresta (\lstinline{push_flow(edge_id, cap)}) abstendo-se completamente de rastrear ou subtrair recursos do vértice de origem.
+
 \subsubsection{Otimização Empírica: A Heurística de Lacuna (\textit{Gap Heuristic})}
 
 Para suprimir este gargalo crítico, a literatura moderna incorpora uma modificação estrutural de estado profundo conhecida como Heurística de Lacuna (\textit{Gap Heuristic}). A arquitetura do sistema é expandida para manter um histograma dinâmico (\textit{array} de frequências) que registra em tempo constante o número exato de vértices presentes em cada estrato de altura da rede.
@@ -758,17 +763,18 @@ private:
 		std::fill(next_edge_ptr.begin(), next_edge_ptr.end(), 0);
 
 		height[source] = size;
-		excess[source] = INF;
 
 		for (const Size edge_id : adj[source])
 		{
-			if (get_residual_capacity(edge_id) <= 0)
+			const Long cap = edges[edge_id].capacity;
+			if (cap <= 0)
 			{
 				continue;
 			}
 
-			push_preflow(source, edge_id);
+			push_flow(edge_id, cap);
 			const Size next_node = edges[edge_id].to;
+			excess[next_node] += cap;
 
 			if (next_node == source || next_node == sink || in_queue[next_node])
 			{
@@ -927,10 +933,15 @@ private:
 		height_count[size] = 1;
 		height_count[0] = size - 1;
 
-		excess[source] = INF;
 		for (const Size edge_id : adj[source])
 		{
-			push_preflow(source, edge_id, source, sink);
+			const Long cap = edges[edge_id].capacity;
+			if (cap > 0)
+			{
+				push_flow(edge_id, cap);
+				excess[edges[edge_id].to] += cap;
+				enqueue_active_node(edges[edge_id].to, source, sink);
+			}
 		}
 	}
 

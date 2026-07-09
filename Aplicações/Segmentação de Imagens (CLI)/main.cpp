@@ -29,6 +29,7 @@
 #include <cstring>
 #include <fstream>
 #include <iostream>
+#include <queue>
 #include <sstream>
 #include <string>
 #include <vector>
@@ -120,7 +121,8 @@ Image read_ppm(const std::string &filename)
 			int r, g, b;
 			file >> r >> g >> b;
 			img.data[i] = {
-			    static_cast<unsigned char>(r), static_cast<unsigned char>(g),
+			    static_cast<unsigned char>(r),
+			    static_cast<unsigned char>(g),
 			    static_cast<unsigned char>(b)
 			};
 		}
@@ -135,8 +137,8 @@ Image read_ppm(const std::string &filename)
 		}
 	}
 
-	std::cout << "Imagem carregada: " << img.width << "x" << img.height
-	          << " (" << img.width * img.height << " pixels)" << std::endl;
+	std::cout << "Imagem carregada: " << img.width << "x" << img.height << " ("
+	          << img.width * img.height << " pixels)" << std::endl;
 
 	return img;
 }
@@ -169,8 +171,8 @@ std::vector<Seed> read_seeds(const std::string &filename)
 	std::ifstream file(filename);
 	if (!file.is_open())
 	{
-		std::cerr << "Erro: Não foi possível abrir o arquivo de seeds '"
-		          << filename << "'" << std::endl;
+		std::cerr << "Erro: Não foi possível abrir o arquivo de seeds '" << filename
+		          << "'" << std::endl;
 		std::exit(1);
 	}
 
@@ -210,9 +212,8 @@ std::vector<Seed> read_seeds(const std::string &filename)
 			bg_count++;
 	}
 
-	std::cout << "Seeds carregados: " << seeds.size() << " ("
-	          << fg_count << " foreground, " << bg_count << " background)"
-	          << std::endl;
+	std::cout << "Seeds carregados: " << seeds.size() << " (" << fg_count
+	          << " foreground, " << bg_count << " background)" << std::endl;
 
 	return seeds;
 }
@@ -242,8 +243,8 @@ SegmentationGraph build_graph(
 )
 {
 	const Size num_pixels = img.width * img.height;
-	const Size source = num_pixels;     // super-fonte
-	const Size sink = num_pixels + 1;   // super-sumidouro
+	const Size source = num_pixels;   // super-fonte
+	const Size sink = num_pixels + 1; // super-sumidouro
 	const Size total_nodes = num_pixels + 2;
 
 	auto fn = PushRelabelImproved::create(total_nodes);
@@ -280,13 +281,20 @@ SegmentationGraph build_graph(
 				const int nx = static_cast<int>(x) + dx[d];
 				const int ny = static_cast<int>(y) + dy[d];
 
-				if (nx < 0 || nx >= static_cast<int>(img.width) ||
-				    ny < 0 || ny >= static_cast<int>(img.height))
+				if (nx < 0 || nx >= static_cast<int>(img.width) || ny < 0 ||
+				    ny >= static_cast<int>(img.height))
 					continue;
 
-				const Size q = img.index(static_cast<Size>(nx), static_cast<Size>(ny));
-				const double dist = pixel_distance(img.at(x, y), img.at(static_cast<Size>(nx), static_cast<Size>(ny)));
-				const Long weight = static_cast<Long>(K * std::exp(-dist * dist / two_sigma_sq));
+				const Size q = img.index(
+				    static_cast<Size>(nx), static_cast<Size>(ny)
+				);
+				const double dist = pixel_distance(
+				    img.at(x, y),
+				    img.at(static_cast<Size>(nx), static_cast<Size>(ny))
+				);
+				const Long weight = static_cast<Long>(
+				    K * std::exp(-dist * dist / two_sigma_sq)
+				);
 
 				fn->add_edge(p, q, std::max(weight, static_cast<Long>(1)));
 			}
@@ -332,18 +340,18 @@ SegmentationGraph build_graph(
 	if (fg_count > 0)
 	{
 		fg_mean = {
-		    static_cast<unsigned char>(fg_r / fg_count),
-		    static_cast<unsigned char>(fg_g / fg_count),
-		    static_cast<unsigned char>(fg_b / fg_count)
+		    static_cast<unsigned char>(fg_r / static_cast<double>(fg_count)),
+		    static_cast<unsigned char>(fg_g / static_cast<double>(fg_count)),
+		    static_cast<unsigned char>(fg_b / static_cast<double>(fg_count))
 		};
 	}
 
 	if (bg_count > 0)
 	{
 		bg_mean = {
-		    static_cast<unsigned char>(bg_r / bg_count),
-		    static_cast<unsigned char>(bg_g / bg_count),
-		    static_cast<unsigned char>(bg_b / bg_count)
+		    static_cast<unsigned char>(bg_r / static_cast<double>(bg_count)),
+		    static_cast<unsigned char>(bg_g / static_cast<double>(bg_count)),
+		    static_cast<unsigned char>(bg_b / static_cast<double>(bg_count))
 		};
 	}
 
@@ -368,9 +376,13 @@ SegmentationGraph build_graph(
 			const double dist_fg = pixel_distance(px, fg_mean);
 			const double dist_bg = pixel_distance(px, bg_mean);
 
-			// Probabilidade proporcional à distância inversa
-			const Long w_source = static_cast<Long>(K * std::exp(-dist_bg * dist_bg / two_sigma_sq));
-			const Long w_sink = static_cast<Long>(K * std::exp(-dist_fg * dist_fg / two_sigma_sq));
+			// Probabilidade proporcional à distância inversa da respectiva cor média
+			const Long w_source = static_cast<Long>(
+			    K * std::exp(-dist_fg * dist_fg / two_sigma_sq)
+			);
+			const Long w_sink = static_cast<Long>(
+			    K * std::exp(-dist_bg * dist_bg / two_sigma_sq)
+			);
 
 			fn->add_edge(source, i, std::max(w_source, static_cast<Long>(1)));
 			fn->add_edge(i, sink, std::max(w_sink, static_cast<Long>(1)));
@@ -437,16 +449,17 @@ Image apply_mask(const Image &original, const std::vector<bool> &fg_mask)
 		}
 		else
 		{
-			// Escurecer background (manter uma silhueta leve)
-			result.data[i].r = static_cast<unsigned char>(result.data[i].r * 0.15);
-			result.data[i].g = static_cast<unsigned char>(result.data[i].g * 0.15);
-			result.data[i].b = static_cast<unsigned char>(result.data[i].b * 0.15);
+			// Fundo com cor chamativa (Verde "Chroma Key") para deixar nítido o
+			// corte
+			result.data[i].r = 0;
+			result.data[i].g = 255;
+			result.data[i].b = 0;
 			bg_pixels++;
 		}
 	}
 
-	std::cout << "Segmentação: " << fg_pixels << " pixels foreground, "
-	          << bg_pixels << " pixels background" << std::endl;
+	std::cout << "Segmentação: " << fg_pixels << " pixels foreground, " << bg_pixels
+	          << " pixels background" << std::endl;
 
 	return result;
 }
@@ -487,34 +500,57 @@ int main(int argc, char *argv[])
 	std::string output_file = "output_segmented.ppm";
 	double sigma = 30.0;
 
-	if (argc < 2)
+	if (argc == 1)
 	{
-		print_usage(argv[0]);
-		return 0;
-	}
+		std::cout << "========================================================\n"
+		          << "  Segmentação de Imagens (Modo Interativo)\n"
+		          << "========================================================\n";
 
-	for (int i = 1; i < argc; i++)
+		std::cout << "Digite o caminho da imagem de entrada (.ppm): ";
+		std::getline(std::cin, input_file);
+
+		std::cout << "Digite o caminho do arquivo de seeds (.txt): ";
+		std::getline(std::cin, seeds_file);
+
+		std::string tmp_output;
+		std::cout << "Digite o caminho da imagem de saída [padrão: "
+		             "output_segmented.ppm]: ";
+		std::getline(std::cin, tmp_output);
+		if (!tmp_output.empty())
+			output_file = tmp_output;
+
+		std::string tmp_sigma;
+		std::cout << "Digite o valor de sigma [padrão: 30.0]: ";
+		std::getline(std::cin, tmp_sigma);
+		if (!tmp_sigma.empty())
+			sigma = std::stod(tmp_sigma);
+	}
+	else
 	{
-		if (std::strcmp(argv[i], "--help") == 0 || std::strcmp(argv[i], "-h") == 0)
+		for (int i = 1; i < argc; i++)
 		{
-			print_usage(argv[0]);
-			return 0;
-		}
-		else if (std::strcmp(argv[i], "--input") == 0 && i + 1 < argc)
-		{
-			input_file = argv[++i];
-		}
-		else if (std::strcmp(argv[i], "--seeds") == 0 && i + 1 < argc)
-		{
-			seeds_file = argv[++i];
-		}
-		else if (std::strcmp(argv[i], "--output") == 0 && i + 1 < argc)
-		{
-			output_file = argv[++i];
-		}
-		else if (std::strcmp(argv[i], "--sigma") == 0 && i + 1 < argc)
-		{
-			sigma = std::atof(argv[++i]);
+			if (std::strcmp(argv[i], "--help") == 0 ||
+			    std::strcmp(argv[i], "-h") == 0)
+			{
+				print_usage(argv[0]);
+				return 0;
+			}
+			else if (std::strcmp(argv[i], "--input") == 0 && i + 1 < argc)
+			{
+				input_file = argv[++i];
+			}
+			else if (std::strcmp(argv[i], "--seeds") == 0 && i + 1 < argc)
+			{
+				seeds_file = argv[++i];
+			}
+			else if (std::strcmp(argv[i], "--output") == 0 && i + 1 < argc)
+			{
+				output_file = argv[++i];
+			}
+			else if (std::strcmp(argv[i], "--sigma") == 0 && i + 1 < argc)
+			{
+				sigma = std::atof(argv[++i]);
+			}
 		}
 	}
 
