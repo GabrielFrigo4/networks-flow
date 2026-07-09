@@ -113,15 +113,15 @@ Caso queira gerar o projeto de pesquisa (`ic.pdf`) localmente a partir do códig
 - **Gabriel Frigo** (Autor) - Pesquisador de Iniciação Científica
 - **Cristiane Maria Sato** (Orientador) - Professor(a) Doutor(a)
 
-[edmonds_karp]: ./Implementações/1.%20Edmonds-Karp/README.md
-[dinic_algorithm]: ./Implementações/2.%20Dinic's%20Algorithm/README.md
-[push_relabel]: ./Implementações/3.%20Push-Relabel/README.md
-[push_relabel_faster]: ./Implementações/4.%20Push-Relabel%20Improved/README.md
+[edmonds_karp]: ./Implementações/EdmondsKarp.hpp
+[dinic_algorithm]: ./Implementações/Dinic.hpp
+[push_relabel]: ./Implementações/PushRelabel.hpp
+[push_relabel_faster]: ./Implementações/PushRelabelImproved.hpp
 [baixar_pdf_ic]: https://github.com/GabrielFrigo4/IC_Networks_Flow/releases/latest/download/ic.pdf
 [baixar_pdf_ic_icon]: https://img.shields.io/badge/IC-Baixar-red?style=for-the-badge&logo=adobeacrobatreader
 [baixar_pdf_projeto]: https://github.com/GabrielFrigo4/IC_Networks_Flow/releases/latest/download/projeto.pdf
 [baixar_pdf_projeto_icon]: https://img.shields.io/badge/Projeto-Baixar-red?style=for-the-badge&logo=adobeacrobatreader
-[baixar_pdf_relatorio]: https://github.com/GabrielFrigo4/IC_Networks_Flow/releases/latest/download/relat%C3%B3rio.pdf
+[baixar_pdf_relatorio]: https://github.com/GabrielFrigo4/IC_Networks_Flow/releases/latest/download/relatorio.pdf
 [baixar_pdf_relatorio_icon]: https://img.shields.io/badge/Relatório-Baixar-red?style=for-the-badge&logo=adobeacrobatreader
 [download_speed]: https://cses.fi/problemset/task/1694
 [school_dance]: https://cses.fi/problemset/task/1696

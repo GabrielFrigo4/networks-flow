@@ -829,15 +829,16 @@ public:
 	Long compute_max_flow(const Size source, const Size sink) override
 	{
 		Long total_flow = 0;
-		std::vector<bool> visited(size, false);
+		std::vector<Size> visited(size, 0);
+		Size token = 1;
 
 		while (true)
 		{
-			std::fill(visited.begin(), visited.end(), false);
-			const Long new_flow = dfs(source, sink, INF, visited);
+			const Long new_flow = dfs(source, sink, INF, visited, token);
 			if (new_flow == 0)
 				break;
 			total_flow += new_flow;
+			token++;
 		}
 
 		return total_flow;
@@ -846,24 +847,26 @@ public:
 private:
 	Long dfs(
 	    const Size current_node, const Size sink, const Long flow_pushed,
-	    std::vector<bool> &visited
+	    std::vector<Size> &visited, const Size token
 	)
 	{
 		if (current_node == sink)
 			return flow_pushed;
 
-		visited[current_node] = true;
+		visited[current_node] = token;
 
 		for (const Size edge_id : adj[current_node])
 		{
 			const Size next_node = edges[edge_id].to;
 			const Long residual_capacity = get_residual_capacity(edge_id);
 
-			if (visited[next_node] || residual_capacity <= 0)
+			if (visited[next_node] == token || residual_capacity <= 0)
 				continue;
 
 			const Long bottleneck = std::min(flow_pushed, residual_capacity);
-			const Long flow_transmitted = dfs(next_node, sink, bottleneck, visited);
+			const Long flow_transmitted = dfs(
+			    next_node, sink, bottleneck, visited, token
+			);
 
 			if (flow_transmitted > 0)
 			{

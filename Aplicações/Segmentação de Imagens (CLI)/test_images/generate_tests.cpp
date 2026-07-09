@@ -7,7 +7,8 @@
 
 void generate_10x10()
 {
-	// Imagem 10x10: metade esquerda branca (foreground), metade direita preta (background)
+	// Imagem 10x10: metade esquerda branca (foreground), metade direita preta
+	// (background)
 	std::ofstream img("simple_10x10.ppm");
 	img << "P3\n10 10\n255\n";
 	for (int y = 0; y < 10; y++)
