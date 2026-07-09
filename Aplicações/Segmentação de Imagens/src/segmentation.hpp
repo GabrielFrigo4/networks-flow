@@ -166,14 +166,14 @@ inline SegmentationGraph build_graph(
 	reachable[graph.source] = true;
 
 	const auto &edges = graph.network->get_edges();
-	const auto &adj = graph.network->get_adj();
+	const auto &adjacency = graph.network->get_adjacency();
 
 	while (!q.empty())
 	{
 		const Size u = q.front();
 		q.pop();
 
-		for (const Size edge_id : adj[u])
+		for (const Size edge_id : adjacency[u])
 		{
 			const auto &edge = edges[edge_id];
 			if (edge.capacity - edge.flow <= 0 || reachable[edge.to])

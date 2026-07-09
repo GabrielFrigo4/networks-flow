@@ -104,13 +104,13 @@ make
 
 ### 2. Comandos Makefile
 
-| Comando | O que faz |
-|---|---|
-| `make` | Compila o binário `segment` |
-| `make run` | Compila e abre o **modo interativo** |
-| `make example` | Roda o caso `grid` (demo rápida, ideal para o README) |
-| `make test` | Roda **todos os casos** em `samples/` e exibe `[PASS]`/`[FAIL]` |
-| `make clean` | Remove o binário compilado |
+| Comando        | O que faz                                                       |
+| -------------- | --------------------------------------------------------------- |
+| `make`         | Compila o binário `segment`                                     |
+| `make run`     | Compila e abre o **modo interativo**                            |
+| `make example` | Roda o caso `grid` (demo rápida, ideal para o README)           |
+| `make test`    | Roda **todos os casos** em `samples/` e exibe `[PASS]`/`[FAIL]` |
+| `make clean`   | Remove o binário compilado                                      |
 
 ### 3. Modos de Execução
 

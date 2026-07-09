@@ -27,7 +27,7 @@ std::vector<bool> get_reachable_nodes(
 		const Size u = q.front();
 		q.pop();
 
-		for (const Size edge_id : fn->get_adjacent()[u])
+		for (const Size edge_id : fn->get_adjacency()[u])
 		{
 			const auto &edge = fn->get_edges()[edge_id];
 

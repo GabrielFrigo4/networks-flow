@@ -51,7 +51,7 @@ private:
 
 		visited[current_node] = token;
 
-		for (const Size edge_id : adjacent[current_node])
+		for (const Size edge_id : adjacency[current_node])
 		{
 			const Size next_node = edges[edge_id].to;
 			const Long residual_capacity = get_residual_capacity(edge_id);
