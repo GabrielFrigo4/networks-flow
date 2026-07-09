@@ -6,7 +6,12 @@
 class PushRelabelImproved : public FlowNetwork
 {
 public:
-	explicit PushRelabelImproved(const Size n) : FlowNetwork(n) {}
+	explicit PushRelabelImproved(const Size n)
+	    : FlowNetwork(n), height(n), excess(n), height_count(2 * n + 1),
+	      next_edge_ptr(n), active_buckets(2 * n + 1), highest_active(0),
+	      source_node(0), sink_node(0)
+	{
+	}
 
 	static std::unique_ptr<FlowNetwork> create(const Size n)
 	{
@@ -25,7 +30,9 @@ public:
 
 	Long compute_max_flow(const Size source, const Size sink) override
 	{
-		initialize_preflow(source, sink);
+		source_node = source;
+		sink_node = sink;
+		initialize_preflow();
 
 		while (true)
 		{
@@ -41,11 +48,9 @@ public:
 			active_buckets[highest_active].pop_back();
 
 			if (height[current_node] != highest_active)
-			{
 				continue;
-			}
 
-			discharge_node(current_node, source, sink);
+			discharge_node(current_node);
 		}
 
 		return excess[sink];
@@ -58,41 +63,41 @@ private:
 	std::vector<Size> next_edge_ptr;
 	std::vector<std::vector<Size>> active_buckets;
 	Size highest_active;
+	Size source_node, sink_node;
 
-	void initialize_preflow(const Size source, const Size sink)
+	void initialize_preflow()
 	{
-		const Size max_height_limit = size * 2 + 1;
-
-		height.assign(size, 0);
-		excess.assign(size, 0);
-		height_count.assign(max_height_limit, 0);
-		next_edge_ptr.assign(size, 0);
-		active_buckets.assign(max_height_limit, std::vector<Size>());
+		std::fill(height.begin(), height.end(), 0);
+		std::fill(excess.begin(), excess.end(), 0);
+		std::fill(height_count.begin(), height_count.end(), 0);
+		std::fill(next_edge_ptr.begin(), next_edge_ptr.end(), 0);
+		for (auto &bucket : active_buckets)
+			bucket.clear();
 		highest_active = 0;
 
-		height[source] = size;
+		height[source_node] = size;
 		height_count[size] = 1;
 		height_count[0] = size - 1;
 
-		for (const Size edge_id : adj[source])
+		for (const Size edge_id : adj[source_node])
 		{
 			const Long cap = edges[edge_id].capacity;
 			if (cap > 0)
 			{
 				push_flow(edge_id, cap);
 				excess[edges[edge_id].to] += cap;
-				enqueue_active_node(edges[edge_id].to, source, sink);
+				enqueue_active_node(edges[edge_id].to);
 			}
 		}
 	}
 
-	void discharge_node(const Size current_node, const Size source, const Size sink)
+	void discharge_node(const Size current_node)
 	{
 		while (excess[current_node] > 0)
 		{
 			if (next_edge_ptr[current_node] >= adj[current_node].size())
 			{
-				relabel_node(current_node, source, sink);
+				relabel_node(current_node);
 				next_edge_ptr[current_node] = 0;
 				continue;
 			}
@@ -103,95 +108,68 @@ private:
 
 			if (residual_capacity > 0 &&
 			    height[current_node] == height[next_node] + 1)
-			{
-				push_preflow(current_node, edge_id, source, sink);
-			}
+				push_preflow(current_node, edge_id);
 			else
-			{
 				next_edge_ptr[current_node]++;
-			}
 		}
 	}
 
-	void relabel_node(const Size current_node, const Size source, const Size sink)
+	void relabel_node(const Size current_node)
 	{
 		Size min_height = MAX;
 		for (const Size edge_id : adj[current_node])
 		{
 			if (get_residual_capacity(edge_id) <= 0)
-			{
 				continue;
-			}
-
 			min_height = std::min(min_height, height[edges[edge_id].to]);
 		}
 
 		if (min_height == MAX)
-		{
 			return;
-		}
 
 		const Size old_height = height[current_node];
 		height_count[old_height]--;
 
 		height[current_node] = min_height + 1;
 		height_count[height[current_node]]++;
-		enqueue_active_node(current_node, source, sink);
+		enqueue_active_node(current_node);
 
 		if (height_count[old_height] == 0 && old_height < size)
-		{
-			apply_gap_heuristic(old_height, source, sink);
-		}
+			apply_gap_heuristic(old_height);
 	}
 
-	void apply_gap_heuristic(
-	    const Size gap_height, const Size source, const Size sink
-	)
+	void apply_gap_heuristic(const Size gap_height)
 	{
 		for (Size i = 0; i < size; ++i)
 		{
-			if (i == source || height[i] <= gap_height || height[i] >= size)
-			{
+			if (i == source_node || height[i] <= gap_height || height[i] >= size)
 				continue;
-			}
 
 			height_count[height[i]]--;
 			height[i] = std::max(height[i], size + 1);
 			height_count[height[i]]++;
-			enqueue_active_node(i, source, sink);
+			enqueue_active_node(i);
 		}
 	}
 
-	void push_preflow(
-	    const Size current_node, const Size edge_id, const Size source,
-	    const Size sink
-	)
+	void push_preflow(const Size current_node, const Size edge_id)
 	{
 		const Size next_node = edges[edge_id].to;
 		const Long residual_capacity = get_residual_capacity(edge_id);
-
-		if (residual_capacity == 0 || height[current_node] <= height[next_node])
-		{
-			return;
-		}
-
 		const Long flow_to_push = std::min(excess[current_node], residual_capacity);
+
 		push_flow(edge_id, flow_to_push);
 		excess[current_node] -= flow_to_push;
 		excess[next_node] += flow_to_push;
 
 		if (excess[next_node] == flow_to_push)
-		{
-			enqueue_active_node(next_node, source, sink);
-		}
+			enqueue_active_node(next_node);
 	}
 
-	void enqueue_active_node(const Size node, const Size source, const Size sink)
+	void enqueue_active_node(const Size node)
 	{
-		if (node == source || node == sink || excess[node] <= 0)
-		{
+		if (node == source_node || node == sink_node || excess[node] <= 0)
 			return;
-		}
 
 		active_buckets[height[node]].push_back(node);
 		highest_active = std::max(highest_active, height[node]);

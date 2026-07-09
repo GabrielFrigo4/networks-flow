@@ -1,4 +1,4 @@
-#ifndef EDMONDS_KARP_HPP
+﻿#ifndef EDMONDS_KARP_HPP
 #define EDMONDS_KARP_HPP
 
 #include "FlowNetwork.hpp"
@@ -7,7 +7,7 @@
 class EdmondsKarp : public FlowNetwork
 {
 public:
-	explicit EdmondsKarp(const Size n) : FlowNetwork(n) {}
+	explicit EdmondsKarp(const Size n) : FlowNetwork(n), parent_edge(n, MAX) {}
 
 	static std::unique_ptr<FlowNetwork> create(const Size n)
 	{
@@ -27,20 +27,20 @@ public:
 	Long compute_max_flow(const Size source, const Size sink) override
 	{
 		Long total_flow = 0;
-		Long new_flow = 0;
-		std::vector<Size> parent_edge(size);
 
-		while ((new_flow = bfs(source, sink, parent_edge)) > 0)
+		while (const Long bottleneck = bfs(source, sink))
 		{
-			total_flow += new_flow;
-			update_path_flow(source, sink, parent_edge, new_flow);
+			total_flow += bottleneck;
+			retrace(source, sink, bottleneck);
 		}
 
 		return total_flow;
 	}
 
 private:
-	Long bfs(const Size source, const Size sink, std::vector<Size> &parent_edge)
+	std::vector<Size> parent_edge;
+
+	Long bfs(const Size source, const Size sink)
 	{
 		std::fill(parent_edge.begin(), parent_edge.end(), MAX);
 		std::queue<std::pair<Size, Long>> queue;
@@ -62,27 +62,24 @@ private:
 					continue;
 
 				parent_edge[next_node] = edge_id;
-				const Long pushed_flow = std::min(current_flow, residual_capacity);
+				const Long bottleneck = std::min(current_flow, residual_capacity);
 
 				if (next_node == sink)
-					return pushed_flow;
+					return bottleneck;
 
-				queue.push({next_node, pushed_flow});
+				queue.push({next_node, bottleneck});
 			}
 		}
 		return 0;
 	}
 
-	void update_path_flow(
-	    const Size source, const Size sink, const std::vector<Size> &parent_edge,
-	    const Long new_flow
-	)
+	void retrace(const Size source, const Size sink, const Long bottleneck)
 	{
 		Size current_node = sink;
 		while (current_node != source)
 		{
 			const Size edge_id = parent_edge[current_node];
-			push_flow(edge_id, new_flow);
+			push_flow(edge_id, bottleneck);
 			current_node = edges[edge_id].from;
 		}
 	}

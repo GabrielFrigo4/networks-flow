@@ -1,4 +1,4 @@
-#ifndef FORD_FULKERSON_HPP
+﻿#ifndef FORD_FULKERSON_HPP
 #define FORD_FULKERSON_HPP
 
 #include "FlowNetwork.hpp"
@@ -6,7 +6,7 @@
 class FordFulkerson : public FlowNetwork
 {
 public:
-	explicit FordFulkerson(const Size n) : FlowNetwork(n) {}
+	explicit FordFulkerson(const Size n) : FlowNetwork(n), visited(n, 0), token(0) {}
 
 	static std::unique_ptr<FlowNetwork> create(const Size n)
 	{
@@ -26,26 +26,25 @@ public:
 	Long compute_max_flow(const Size source, const Size sink) override
 	{
 		Long total_flow = 0;
-		std::vector<Size> visited(size, 0);
-		Size token = 1;
+		token = 0;
 
 		while (true)
 		{
-			const Long new_flow = dfs(source, sink, INF, visited, token);
-			if (new_flow == 0)
+			++token;
+			const Long bottleneck = dfs(source, sink, INF);
+			if (bottleneck == 0)
 				break;
-			total_flow += new_flow;
-			token++;
+			total_flow += bottleneck;
 		}
 
 		return total_flow;
 	}
 
 private:
-	Long dfs(
-	    const Size current_node, const Size sink, const Long flow_pushed,
-	    std::vector<Size> &visited, const Size token
-	)
+	std::vector<Size> visited;
+	Size token;
+
+	Long dfs(const Size current_node, const Size sink, const Long flow_pushed)
 	{
 		if (current_node == sink)
 			return flow_pushed;
@@ -61,9 +60,7 @@ private:
 				continue;
 
 			const Long bottleneck = std::min(flow_pushed, residual_capacity);
-			const Long flow_transmitted = dfs(
-			    next_node, sink, bottleneck, visited, token
-			);
+			const Long flow_transmitted = dfs(next_node, sink, bottleneck);
 
 			if (flow_transmitted > 0)
 			{

@@ -6,8 +6,7 @@
 
 Progresso das otimizações e refatorações de código no projeto, visando melhorar a performance dos algoritmos e organizar a estrutura das classes de implementação.
 
-- [ ] Padronizar/Revizar (e testar) as implementações dos algoritmos de fluxo máximo.
-      Por exemplo, quero escrever essas implementações das maneiras mais elegantes, mas ao mesmo tempo quero deixar elas os mais simetricas possiveis entre si, mas mantendo a eficiencia.
+- [ ] Reler Relatório Final (fazer uma auditoria completa da iniciação científica)
 
 ---
 

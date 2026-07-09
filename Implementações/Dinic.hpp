@@ -1,4 +1,4 @@
-#ifndef DINIC_HPP
+﻿#ifndef DINIC_HPP
 #define DINIC_HPP
 
 #include "FlowNetwork.hpp"
@@ -31,9 +31,7 @@ public:
 		{
 			std::fill(next_edge_ptr.begin(), next_edge_ptr.end(), 0);
 			while (const Long flow_pushed = dfs(source, sink, INF))
-			{
 				total_flow += flow_pushed;
-			}
 		}
 		return total_flow;
 	}
@@ -72,7 +70,7 @@ private:
 
 	Long dfs(const Size current_node, const Size sink, const Long flow_pushed)
 	{
-		if (flow_pushed == 0 || current_node == sink)
+		if (current_node == sink)
 			return flow_pushed;
 
 		for (Size &ptr = next_edge_ptr[current_node]; ptr < adj[current_node].size();

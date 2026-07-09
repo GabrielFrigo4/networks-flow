@@ -134,7 +134,7 @@ Ideal para scripts e bateladas, providenciando todos os detalhes diretamente:
 ./segment --input <imagem.ppm> --seeds <seeds.txt> --output <saida.ppm> [--sigma <valor>]
 ```
 
-### 3. Lista de Argumentos
+### 4. Lista de Argumentos
 
 - `--input <arquivo>`: **(Obrigatório)** Caminho do arquivo da imagem original (PPM P3 ou P6).
 - `--seeds <arquivo>`: **(Obrigatório)** Arquivo de texto contendo as sementes fornecidas pelo usuário.
