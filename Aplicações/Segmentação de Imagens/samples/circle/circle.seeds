@@ -1,4 +1,5 @@
-# Seeds para circle_20x20.ppm
+# Seeds para circle.ppm
+# Formato: x y label (F=foreground, B=background)
 # Centro como foreground
 10 10 F
 9 10 F

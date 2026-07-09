@@ -1,5 +1,6 @@
-# Seeds para simple_10x10.ppm
+# Seeds para grid.ppm
 # Formato: x y label (F=foreground, B=background)
+# Centro como foreground
 1 0 F
 1 1 F
 1 2 F
@@ -10,6 +11,7 @@
 1 7 F
 1 8 F
 1 9 F
+# Cantos como background
 8 0 B
 8 1 B
 8 2 B
