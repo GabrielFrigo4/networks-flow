@@ -20,7 +20,7 @@ public:
 		Long capacity, flow;
 	};
 
-	explicit FlowNetwork(const Size n) : size(n), adj(n) {}
+	explicit FlowNetwork(const Size n) : size(n), adjacent(n) {}
 	virtual ~FlowNetwork() = default;
 
 	virtual std::unique_ptr<FlowNetwork> make(const Size n) const = 0;
@@ -31,9 +31,9 @@ public:
 	    const Long reverse_capacity = 0
 	)
 	{
-		adj[from].push_back(edges.size());
+		adjacent[from].push_back(edges.size());
 		edges.push_back({from, to, capacity, 0});
-		adj[to].push_back(edges.size());
+		adjacent[to].push_back(edges.size());
 		edges.push_back({to, from, reverse_capacity, 0});
 	}
 
@@ -49,15 +49,15 @@ public:
 		return edges;
 	}
 
-	[[nodiscard]] const std::vector<std::vector<Size>> &get_adj() const
+	[[nodiscard]] const std::vector<std::vector<Size>> &get_adjacent() const
 	{
-		return adj;
+		return adjacent;
 	}
 
 protected:
 	Size size;
 	std::vector<Edge> edges;
-	std::vector<std::vector<Size>> adj;
+	std::vector<std::vector<Size>> adjacent;
 
 	[[nodiscard]] Long get_residual_capacity(const Size edge_id) const
 	{

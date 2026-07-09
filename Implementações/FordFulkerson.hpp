@@ -1,4 +1,4 @@
-﻿#ifndef FORD_FULKERSON_HPP
+#ifndef FORD_FULKERSON_HPP
 #define FORD_FULKERSON_HPP
 
 #include "FlowNetwork.hpp"
@@ -51,7 +51,7 @@ private:
 
 		visited[current_node] = token;
 
-		for (const Size edge_id : adj[current_node])
+		for (const Size edge_id : adjacent[current_node])
 		{
 			const Size next_node = edges[edge_id].to;
 			const Long residual_capacity = get_residual_capacity(edge_id);

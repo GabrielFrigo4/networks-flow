@@ -63,7 +63,7 @@ private:
 
 		height[source_node] = size;
 
-		for (const Size edge_id : adj[source_node])
+		for (const Size edge_id : adjacent[source_node])
 		{
 			const Long cap = edges[edge_id].capacity;
 			if (cap <= 0)
@@ -86,14 +86,14 @@ private:
 	{
 		while (excess[current_node] > 0)
 		{
-			if (next_edge_ptr[current_node] >= adj[current_node].size())
+			if (next_edge_ptr[current_node] >= adjacent[current_node].size())
 			{
 				relabel_node(current_node);
 				next_edge_ptr[current_node] = 0;
 				continue;
 			}
 
-			const Size edge_id = adj[current_node][next_edge_ptr[current_node]];
+			const Size edge_id = adjacent[current_node][next_edge_ptr[current_node]];
 			const Size next_node = edges[edge_id].to;
 			const Long residual_capacity = get_residual_capacity(edge_id);
 
@@ -119,7 +119,7 @@ private:
 	void relabel_node(const Size current_node)
 	{
 		Size min_height = MAX;
-		for (const Size edge_id : adj[current_node])
+		for (const Size edge_id : adjacent[current_node])
 		{
 			if (get_residual_capacity(edge_id) <= 0)
 				continue;

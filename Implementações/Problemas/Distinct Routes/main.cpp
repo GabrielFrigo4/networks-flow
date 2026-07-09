@@ -17,7 +17,7 @@ void print_disjoint_paths(
 )
 {
 	const auto &edges = fn->get_edges();
-	const auto &adj = fn->get_adj();
+	const auto &adjacent = fn->get_adjacent();
 	std::vector<bool> used_edge(edges.size(), false);
 
 	for (Long i = 0; i < max_flow; i++)
@@ -28,7 +28,7 @@ void print_disjoint_paths(
 
 		while (curr != num_nodes - 1)
 		{
-			for (const Size edge_id : adj[curr])
+			for (const Size edge_id : adjacent[curr])
 			{
 				if (edge_id % 2 != 0 || edges[edge_id].flow == 0 ||
 				    used_edge[edge_id])

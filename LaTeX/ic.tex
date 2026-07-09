@@ -243,7 +243,7 @@ O núcleo do sistema é regido pela classe base abstrata \lstinline{FlowNetwork}
     \item \textbf{\lstinline{Edge}:} Uma estrutura (\textit{struct}) leve que representa um arco direcionado, agregando as variáveis \lstinline{from} (origem), \lstinline{to} (destino), \lstinline{capacity} (capacidade original $c$) e \lstinline{flow} (fluxo atual $f$).
     \item \textbf{\lstinline{size}:} Variável escalar que armazena a cardinalidade do conjunto de vértices ($|V|$), utilizada para dimensionar as estruturas auxiliares dinamicamente.
     \item \textbf{\lstinline{edges}:} Um vetor linear que armazena todos os arcos da rede. A alocação contígua em memória favorece o \textit{cache} do processador, mitigando os custos de latência comuns em alocações dinâmicas de digrafos.
-    \item \textbf{\lstinline{adj}:} Uma lista de adjacências otimizada (\lstinline{std::vector<std::vector<Size>>}). Em vez de armazenar ponteiros ou cópias dos arcos, este vetor bidimensional guarda estritamente os índices numéricos que os arcos incidentes ocupam no vetor principal \lstinline{edges}, garantindo acesso em tempo constante $\mathcal{O}(1)$.
+    \item \textbf{\lstinline{adjacency}:} Uma lista de adjacências otimizada (\lstinline{std::vector<std::vector<Size>>}). Em vez de armazenar ponteiros ou cópias dos arcos, este vetor bidimensional guarda estritamente os índices numéricos que os arcos incidentes ocupam no vetor principal \lstinline{edges}, garantindo acesso em tempo constante $\mathcal{O}(1)$.
 \end{itemize}
 
 Para preservar a integridade matemática da rede residual e evitar a duplicação de código (\textit{DRY Principle - Don't Repeat Yourself}), a manipulação do fluxo foi estritamente confinada a dois métodos protegidos (\textit{protected}):
@@ -749,7 +749,7 @@ public:
 		Long capacity, flow;
 	};
 
-	explicit FlowNetwork(const Size n) : size(n), adj(n) {}
+	explicit FlowNetwork(const Size n) : size(n), adjacency(n) {}
 	virtual ~FlowNetwork() = default;
 
 	virtual std::unique_ptr<FlowNetwork> make(const Size n) const = 0;
@@ -760,9 +760,9 @@ public:
 	    const Long reverse_capacity = 0
 	)
 	{
-		adj[from].push_back(edges.size());
+		adjacency[from].push_back(edges.size());
 		edges.push_back({from, to, capacity, 0});
-		adj[to].push_back(edges.size());
+		adjacency[to].push_back(edges.size());
 		edges.push_back({to, from, reverse_capacity, 0});
 	}
 
@@ -778,15 +778,15 @@ public:
 		return edges;
 	}
 
-	[[nodiscard]] const std::vector<std::vector<Size>> &get_adj() const
+	[[nodiscard]] const std::vector<std::vector<Size>> &get_adjacency() const
 	{
-		return adj;
+		return adjacency;
 	}
 
 protected:
 	Size size;
 	std::vector<Edge> edges;
-	std::vector<std::vector<Size>> adj;
+	std::vector<std::vector<Size>> adjacency;
 
 	[[nodiscard]] Long get_residual_capacity(const Size edge_id) const
 	{
@@ -854,7 +854,7 @@ private:
 
 		visited[current_node] = token;
 
-		for (const Size edge_id : adj[current_node])
+		for (const Size edge_id : adjacency[current_node])
 		{
 			const Size next_node = edges[edge_id].to;
 			const Long residual_capacity = get_residual_capacity(edge_id);
@@ -931,7 +931,7 @@ private:
 			const auto [current_node, current_flow] = queue.front();
 			queue.pop();
 
-			for (const Size edge_id : adj[current_node])
+			for (const Size edge_id : adjacency[current_node])
 			{
 				const Size next_node = edges[edge_id].to;
 				const Long residual_capacity = get_residual_capacity(edge_id);
@@ -1018,7 +1018,7 @@ private:
 			const Size current_node = queue.front();
 			queue.pop();
 
-			for (const Size edge_id : adj[current_node])
+			for (const Size edge_id : adjacency[current_node])
 			{
 				const Size next_node = edges[edge_id].to;
 				const Long residual_capacity = get_residual_capacity(edge_id);
@@ -1038,10 +1038,10 @@ private:
 		if (current_node == sink)
 			return flow_pushed;
 
-		for (Size &ptr = next_edge_ptr[current_node]; ptr < adj[current_node].size();
+		for (Size &ptr = next_edge_ptr[current_node]; ptr < adjacency[current_node].size();
 		     ++ptr)
 		{
-			const Size edge_id = adj[current_node][ptr];
+			const Size edge_id = adjacency[current_node][ptr];
 			const Size next_node = edges[edge_id].to;
 			const Long residual_capacity = get_residual_capacity(edge_id);
 
@@ -1127,7 +1127,7 @@ private:
 
 		height[source_node] = size;
 
-		for (const Size edge_id : adj[source_node])
+		for (const Size edge_id : adjacency[source_node])
 		{
 			const Long cap = edges[edge_id].capacity;
 			if (cap <= 0)
@@ -1150,14 +1150,14 @@ private:
 	{
 		while (excess[current_node] > 0)
 		{
-			if (next_edge_ptr[current_node] >= adj[current_node].size())
+			if (next_edge_ptr[current_node] >= adjacency[current_node].size())
 			{
 				relabel_node(current_node);
 				next_edge_ptr[current_node] = 0;
 				continue;
 			}
 
-			const Size edge_id = adj[current_node][next_edge_ptr[current_node]];
+			const Size edge_id = adjacency[current_node][next_edge_ptr[current_node]];
 			const Size next_node = edges[edge_id].to;
 			const Long residual_capacity = get_residual_capacity(edge_id);
 
@@ -1183,7 +1183,7 @@ private:
 	void relabel_node(const Size current_node)
 	{
 		Size min_height = MAX;
-		for (const Size edge_id : adj[current_node])
+		for (const Size edge_id : adjacency[current_node])
 		{
 			if (get_residual_capacity(edge_id) <= 0)
 				continue;
@@ -1288,7 +1288,7 @@ private:
 		height_count[size] = 1;
 		height_count[0] = size - 1;
 
-		for (const Size edge_id : adj[source_node])
+		for (const Size edge_id : adjacency[source_node])
 		{
 			const Long cap = edges[edge_id].capacity;
 			if (cap > 0)
@@ -1304,14 +1304,14 @@ private:
 	{
 		while (excess[current_node] > 0)
 		{
-			if (next_edge_ptr[current_node] >= adj[current_node].size())
+			if (next_edge_ptr[current_node] >= adjacency[current_node].size())
 			{
 				relabel_node(current_node);
 				next_edge_ptr[current_node] = 0;
 				continue;
 			}
 
-			const Size edge_id = adj[current_node][next_edge_ptr[current_node]];
+			const Size edge_id = adjacency[current_node][next_edge_ptr[current_node]];
 			const Size next_node = edges[edge_id].to;
 			const Long residual_capacity = get_residual_capacity(edge_id);
 
@@ -1326,7 +1326,7 @@ private:
 	void relabel_node(const Size current_node)
 	{
 		Size min_height = MAX;
-		for (const Size edge_id : adj[current_node])
+		for (const Size edge_id : adjacency[current_node])
 		{
 			if (get_residual_capacity(edge_id) <= 0)
 				continue;

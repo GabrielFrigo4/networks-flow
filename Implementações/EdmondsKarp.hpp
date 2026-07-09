@@ -1,4 +1,4 @@
-﻿#ifndef EDMONDS_KARP_HPP
+#ifndef EDMONDS_KARP_HPP
 #define EDMONDS_KARP_HPP
 
 #include "FlowNetwork.hpp"
@@ -53,7 +53,7 @@ private:
 			const auto [current_node, current_flow] = queue.front();
 			queue.pop();
 
-			for (const Size edge_id : adj[current_node])
+			for (const Size edge_id : adjacent[current_node])
 			{
 				const Size next_node = edges[edge_id].to;
 				const Long residual_capacity = get_residual_capacity(edge_id);

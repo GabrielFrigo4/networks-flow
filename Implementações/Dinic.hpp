@@ -1,4 +1,4 @@
-﻿#ifndef DINIC_HPP
+#ifndef DINIC_HPP
 #define DINIC_HPP
 
 #include "FlowNetwork.hpp"
@@ -53,7 +53,7 @@ private:
 			const Size current_node = queue.front();
 			queue.pop();
 
-			for (const Size edge_id : adj[current_node])
+			for (const Size edge_id : adjacent[current_node])
 			{
 				const Size next_node = edges[edge_id].to;
 				const Long residual_capacity = get_residual_capacity(edge_id);
@@ -73,10 +73,10 @@ private:
 		if (current_node == sink)
 			return flow_pushed;
 
-		for (Size &ptr = next_edge_ptr[current_node]; ptr < adj[current_node].size();
+		for (Size &ptr = next_edge_ptr[current_node]; ptr < adjacent[current_node].size();
 		     ++ptr)
 		{
-			const Size edge_id = adj[current_node][ptr];
+			const Size edge_id = adjacent[current_node][ptr];
 			const Size next_node = edges[edge_id].to;
 			const Long residual_capacity = get_residual_capacity(edge_id);
 
