@@ -68,7 +68,8 @@ Introduzida por Goldberg e Tarjan, esta família quebra o paradigma dos caminhos
 
 Abaixo estão listados os algoritmos já implementados no escopo deste projeto:
 
-- 🐢 **[Edmonds-Karp][edmonds_karp]**
+- 🐢 **[Ford-Fulkerson][ford_fulkerson]**
+- 🚶 **[Edmonds-Karp][edmonds_karp]**
 - 🚀 **[Dinic Algorithm][dinic_algorithm]**
 - ⚙️ **[Push Relabel FIFO][push_relabel]**
 - ⚡ **[Push Relabel Improved][push_relabel_faster]**
@@ -82,6 +83,9 @@ Abaixo estão listados os problemas clássicos que foram modelados e resolvidos:
 - 🛣️ **[Caminhos Disjuntos por Arcos (_Distinct Routes_)][distinct_routes]**
 - ✂️ **[Teorema do Fluxo Máximo-Corte Mínimo (_Police Chase_)][police_chase]**
 - 🌐 **[Corte Mínimo Global (_Time Travel_)][time_travel]**
+
+> [!TIP]
+> Todos os códigos-fonte C++ com as reduções e modelagens para resolver os problemas acima estão disponíveis no diretório **[Implementações/Problemas](./Implementações/Problemas/)**.
 
 ---
 
@@ -100,6 +104,9 @@ Software desenvolvido para separar o "fundo" do "objeto principal" em fotografia
 
 ## 🛠️ Como Compilar o Código-Fonte (LaTeX)
 
+> [!NOTE]
+> Este repositório conta com integração contínua (CI) através do **GitHub Actions** (`.github/workflows/`). A cada _push_, os PDFs são compilados automaticamente na nuvem e disponibilizados nas [Releases do GitHub](https://github.com/GabrielFrigo4/IC_Networks_Flow/releases).
+
 Caso queira gerar o projeto de pesquisa (`ic.pdf`) localmente a partir do código-fonte `ic.tex`:
 
 1.  Certifique-se de ter uma distribuição LaTeX instalada (como TeX Live ou MiKTeX) com suporte aos pacotes requeridos, como `amsmath`, `tikz`, e `geometry`.
@@ -113,6 +120,7 @@ Caso queira gerar o projeto de pesquisa (`ic.pdf`) localmente a partir do códig
 - **Gabriel Frigo** (Autor) - Pesquisador de Iniciação Científica
 - **Cristiane Maria Sato** (Orientador) - Professor(a) Doutor(a)
 
+[ford_fulkerson]: ./Implementações/FordFulkerson.hpp
 [edmonds_karp]: ./Implementações/EdmondsKarp.hpp
 [dinic_algorithm]: ./Implementações/Dinic.hpp
 [push_relabel]: ./Implementações/PushRelabel.hpp
@@ -128,5 +136,5 @@ Caso queira gerar o projeto de pesquisa (`ic.pdf`) localmente a partir do códig
 [distinct_routes]: https://cses.fi/problemset/task/1711
 [police_chase]: https://cses.fi/problemset/task/1695
 [time_travel]: https://judge.beecrowd.com/en/problems/view/2082
-[segmentacao_imagens_codigo]: ./Aplicações/1.%20Segmentacao_de_Imagens/README.md
+[segmentacao_imagens_codigo]: ./Aplicações/Segmentação%20de%20Imagens/README.md
 [segmentacao_imagens_dataset]: https://vision.cs.uwaterloo.ca/data/maxflow/

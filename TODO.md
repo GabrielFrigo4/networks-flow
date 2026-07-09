@@ -29,10 +29,9 @@ Progresso dos algoritmos de fluxo máximo implementados em C++ e documentados no
 
 Progresso das aplicações práticas que utilizam os algoritmos de fluxo em redes para resolver problemas do mundo real. O código-fonte pode ser encontrado no diretório de [Aplicações](./Aplicações/).
 
-| Nome                                                                                                           | LaTeX | Implementação | Descrição                                                                                                  |
-| :------------------------------------------------------------------------------------------------------------- | :---: | :-----------: | :--------------------------------------------------------------------------------------------------------- |
-| [Segmentação de Imagens CLI (Max Flow / Min Cut)](<./Aplicações/Segmentação%20de%20Imagens%20(CLI)/README.md>) |  ✅   |      ✅       | Software para separar foreground/background em fotografias utilizando modelagem de corte mínimo em grafos. |
-| [Segmentação de Imagens GUI (Max Flow / Min Cut)](<./Aplicações/Segmentação%20de%20Imagens%20(GUI)/README.md>) |  ✅   |      ❌       | Software para separar foreground/background em fotografias utilizando modelagem de corte mínimo em grafos. |
+| Nome                                                                                             | LaTeX | Implementação | Descrição                                                                                                  |
+| :----------------------------------------------------------------------------------------------- | :---: | :-----------: | :--------------------------------------------------------------------------------------------------------- |
+| [Segmentação de Imagens (Max Flow / Min Cut)](./Aplicações/Segmentação%20de%20Imagens/README.md) |  ✅   |      ✅       | Software para separar foreground/background em fotografias utilizando modelagem de corte mínimo em grafos. |
 
 ---
 

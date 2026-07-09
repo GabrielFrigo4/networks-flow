@@ -34,7 +34,13 @@
 #include <string>
 #include <vector>
 
+#include "../../Implementações/Dinic.hpp"
+#include "../../Implementações/EdmondsKarp.hpp"
+#include "../../Implementações/FordFulkerson.hpp"
+#include "../../Implementações/PushRelabel.hpp"
 #include "../../Implementações/PushRelabelImproved.hpp"
+
+using FlowSolver = PushRelabelImproved;
 
 // ============================================================================
 // Estruturas de Dados
@@ -247,7 +253,7 @@ SegmentationGraph build_graph(
 	const Size sink = num_pixels + 1; // super-sumidouro
 	const Size total_nodes = num_pixels + 2;
 
-	auto fn = PushRelabelImproved::create(total_nodes);
+	auto fn = FlowSolver::create(total_nodes);
 
 	// Mapa de seeds para acesso rápido
 	std::vector<SeedLabel> seed_map(num_pixels, SeedLabel::NONE);
