@@ -1,4 +1,4 @@
-CXX    := g++
+CXX    := c++
 TARGET := segment
 SRC    := main.cpp
 

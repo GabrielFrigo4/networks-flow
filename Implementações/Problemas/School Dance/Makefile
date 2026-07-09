@@ -1,4 +1,4 @@
-CXX    := g++
+CXX    := c++
 EXT    := cpp
 TARGET := main
 INPUT  := input.txt
