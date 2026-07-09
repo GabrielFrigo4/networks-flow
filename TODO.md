@@ -1,12 +1,18 @@
 # 👩‍🏫 TO-DO: Cristiane Sato
 
+Progresso das tarefas, correções e direcionamentos solicitados pela orientadora (Cristiane Sato) durante as reuniões de acompanhamento da iniciação científica.
+
 ---
 
 # 🔧 TO-DO: Melhorar e Pendências
 
 Progresso das otimizações e refatorações de código no projeto, visando melhorar a performance dos algoritmos e organizar a estrutura das classes de implementação.
 
-- [ ] Reler Relatório Final (fazer uma auditoria completa da iniciação científica)
+- [ ] Testar e se precisar finalizar a Segmentação de Imagens (Max Flow / Min Cut)
+- [ ] Reler o Relatório, fazer uma auditoria completa da iniciação científica
+- [ ] Fazer o Minimum Cost Flow, ver os algoritmos de implementação
+- [ ] Fazer o Network Simplex? Não sei, não precisa
+- [ ] Por fim vazer a auditoria final do Relatório e entregar a IC
 
 ---
 

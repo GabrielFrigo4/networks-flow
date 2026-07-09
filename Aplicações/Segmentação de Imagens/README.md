@@ -163,6 +163,66 @@ O arquivo texto para `--seeds` necessita apenas de coordenadas `x y` seguidas pe
 
 ---
 
+## 👨‍🏫 Tutorial Prático: Passo a Passo
+
+Acompanhe este pequeno tutorial de ponta a ponta para segmentar a sua primeira imagem utilizando nosso solver.
+
+### Passo 1: Preparando a Imagem (PPM)
+
+Esta aplicação não utiliza bibliotecas pesadas de visão computacional, portanto ela lê apenas imagens brutas no formato **PPM (P3 ou P6)**. Se você tem um `.jpg` ou `.png`, você pode convertê-lo facilmente:
+
+- **Usando GIMP ou Krita:** Abra sua imagem, vá em `File > Export As...` e escolha a extensão `.ppm` (Formato RAW).
+- **Usando ImageMagick (v7+):** `magick minha_imagem.jpg minha_imagem.ppm`
+- **Ferramentas Online:** Qualquer conversor gratuito online de imagens resolve.
+
+### Passo 2: Mapeando as Sementes (Seeds)
+
+Você precisa informar ao algoritmo onde está o **Objeto** e onde está o **Fundo**. Isso é feito capturando as coordenadas $X, Y$ de alguns pixels estratégicos.
+
+1. Abra sua imagem `.ppm` (ou a original) em qualquer editor simples (como **Paint** no Windows, ou qualquer visualizador de imagens).
+2. Passe o mouse sobre um pedaço claro do objeto que quer extrair. Anote as coordenadas (no Paint, fica na barra de status inferior, ex: `340, 210`).
+3. Anote alguns pontos do objeto e alguns pontos variados do fundo (para dar a dica das cores).
+
+### Passo 3: Criando o Arquivo `.seeds`
+
+Crie um arquivo de texto simples (ex: `minha_imagem.seeds`) na mesma pasta da imagem. Coloque os pontos anotados no formato `X Y Rótulo` (onde o rótulo é `F` para Foreground/Objeto ou `B` para Background/Fundo):
+
+```text
+# --- Dicas do Objeto (F) ---
+340 210 F
+345 210 F
+400 300 F
+
+# --- Dicas do Fundo (B) ---
+10 10 B
+800 10 B
+500 500 B
+```
+
+> [!TIP]
+> Você **não** precisa contornar ou pintar a imagem inteira! Apenas $2$ ou $3$ pontos bem escolhidos costumam ser o suficiente para objetos com cores distintas do fundo.
+
+### Passo 4: Executando a Magia
+
+Com a imagem e as sementes prontas, execute o programa (lembre-se de compilar com `make` primeiro):
+
+```bash
+./segment --input minha_imagem.ppm --seeds minha_imagem.seeds --output resultado.ppm
+```
+
+O programa fará toda a modelagem matemática, empurrará o fluxo até saturar as arestas e cortará o grafo.
+
+### Passo 5: Avaliando e Iterando
+
+Abra a imagem `resultado.ppm`. O objeto deverá estar intacto e o fundo substituído por um **verde limão brilhante**.
+
+- **Ficou sobrando pedaços do fundo colados no objeto?** Abra seu arquivo `.seeds`, ache a coordenada exata daquele pedaço que sobrou e adicione como `B`.
+- **Comeu pedaços importantes do objeto?** Adicione aquelas coordenadas ausentes como `F` no `.seeds`.
+- **A borda ficou muito denteada ou vazou muito pro fundo devido às sombras?** Experimente alterar o `--sigma` rodando de novo:
+  `./segment ... --sigma 50.0` (suaviza as divisões e tolera mais sombras e gradientes) ou `--sigma 10.0` (deixa as divisões de cor extremamente estritas).
+
+---
+
 ## 📚 Dataset para Testes
 
 Se deseja fazer avaliações, aconselha-se utilizar o conjunto consolidado:
