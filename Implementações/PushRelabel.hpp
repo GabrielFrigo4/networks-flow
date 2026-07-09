@@ -93,7 +93,8 @@ private:
 				continue;
 			}
 
-			const Size edge_id = adjacency[current_node][next_edge_ptr[current_node]];
+			const Size edge_id = adjacency[current_node]
+			                              [next_edge_ptr[current_node]];
 			const Size next_node = edges[edge_id].to;
 			const Long residual_capacity = get_residual_capacity(edge_id);
 

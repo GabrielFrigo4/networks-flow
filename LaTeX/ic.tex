@@ -727,11 +727,8 @@ Desta forma, a infraestrutura estabelecida nesta primeira fase oferece total seg
 \label{ap:flownetwork}
 
 \begin{lstlisting}[caption={Implementação em C++ da interface base \lstinline{FlowNetwork} para a modelagem abstrata de redes de fluxo.}, label={lst:flownetwork}]
-#include <algorithm>
-#include <iostream>
 #include <limits>
 #include <memory>
-#include <queue>
 #include <vector>
 
 using Long = long long;
@@ -882,6 +879,8 @@ private:
 \label{ap:edmonds_karp}
 
 \begin{lstlisting}[caption={Implementação em C++ da classe \lstinline{EdmondsKarp}, baseada na seleção iterativa de caminhos mais curtos via Busca em Largura (BFS).}, label={lst:edmonds_karp}]
+#include <queue>
+
 class EdmondsKarp : public FlowNetwork
 {
 public:
@@ -969,6 +968,8 @@ private:
 \label{ap:dinic}
 
 \begin{lstlisting}[caption={Implementação em C++ da classe \lstinline{Dinic}, estruturada com Digrafo de Níveis e otimização de ponteiros mortos no cálculo do fluxo bloqueador.}, label={lst:dinic}]
+#include <queue>
+
 class Dinic : public FlowNetwork
 {
 public:
@@ -1068,6 +1069,8 @@ private:
 \label{ap:push_relabel}
 
 \begin{lstlisting}[caption={Implementação em C++ da classe \lstinline{PushRelabel}, baseada em pré-fluxos topológicos e política de processamento em fila (FIFO).}, label={lst:push_relabel}]
+#include <queue>
+
 class PushRelabel : public FlowNetwork
 {
 public:
@@ -1157,7 +1160,8 @@ private:
 				continue;
 			}
 
-			const Size edge_id = adjacency[current_node][next_edge_ptr[current_node]];
+			const Size edge_id = adjacency[current_node]
+			                              [next_edge_ptr[current_node]];
 			const Size next_node = edges[edge_id].to;
 			const Long residual_capacity = get_residual_capacity(edge_id);
 
@@ -1311,7 +1315,8 @@ private:
 				continue;
 			}
 
-			const Size edge_id = adjacency[current_node][next_edge_ptr[current_node]];
+			const Size edge_id = adjacency[current_node]
+			                              [next_edge_ptr[current_node]];
 			const Size next_node = edges[edge_id].to;
 			const Long residual_capacity = get_residual_capacity(edge_id);
 
