@@ -18,35 +18,41 @@ A aplicação processa imagens no formato **PPM** (sem a necessidade de bibliote
 Segmentação de Imagens/
 ├── main.cpp              # CLI e pipeline principal (4 etapas)
 ├── Makefile
+├── ppm.cpp               # Conversor de formatos PPM (P3 <-> P6)
 ├── src/
 │   ├── image.hpp         # Pixel, Image, read_ppm, write_ppm
 │   ├── seeds.hpp         # SeedLabel, Seed, read_seeds
 │   └── segmentation.hpp  # build_graph, extract_foreground_mask, apply_mask
 └── samples/
     ├── grid-all/         # Grade 10×10 branca/escura — caso mais simples (sementes abrangentes em todas as linhas das colunas)
-    │   ├── grid-all.ppm
-    │   ├── grid-all.seeds
-    │   └── output.ppm    # gerado em tempo de execução (não versionado)
-    ├── grid-one/         # Mesma grade 10×10 mas com sementes mínimas (apenas 1 pixel por região)
-    │   ├── grid-one.ppm
-    │   ├── grid-one.seeds
-    │   └── output.ppm
+    │   ├── source.ppm    # Imagem de entrada
+    │   ├── source.seeds  # Arquivo de marcações
+    │   ├── goal.ppm      # Gabarito de segmentação esperado
+    │   └── output.ppm    # Gerado em tempo de execução
+    ├── grid-one/         # Mesma grade 10×10 mas com sementes mínimas
+    │   ├── source.ppm
+    │   ├── source.seeds
+    │   └── goal.ppm
     ├── circle/           # Círculo vermelho em fundo azul — caso geométrico simples
-    │   ├── circle.ppm
-    │   ├── circle.seeds
-    │   └── output.ppm
-    ├── duck/             # Pato amarelo com bico laranja e degradê em fundo azul (forma complexa e tons variados)
-    │   ├── duck.ppm
-    │   ├── duck.seeds
-    │   └── output.ppm
-    ├── balloon/          # Balão vermelho em fundo de céu com degradê (forma geométrica e contornos curvos)
-    │   ├── balloon.ppm
-    │   ├── balloon.seeds
-    │   └── output.ppm
-    └── balloons/         # Conjunto de três balões coloridos (vermelho, azul e amarelo) sobrepostos (segmentação de múltiplos tons)
-        ├── balloons.ppm
-        ├── balloons.seeds
-        └── output.ppm
+    │   ├── source.ppm
+    │   ├── source.seeds
+    │   └── goal.ppm
+    ├── duck/             # Pato amarelo com bico laranja e degradê em fundo azul
+    │   ├── source.ppm
+    │   ├── source.seeds
+    │   └── goal.ppm
+    ├── ducks/            # Dois patos posicionados lado a lado
+    │   ├── source.ppm
+    │   ├── source.seeds
+    │   └── goal.ppm
+    ├── balloon/          # Balão vermelho em fundo de céu com degradê
+    │   ├── source.ppm
+    │   ├── source.seeds
+    │   └── goal.ppm
+    └── balloons/         # Conjunto de balões (vermelho e amarelo)
+        ├── source.ppm
+        ├── source.seeds
+        └── goal.ppm
 ```
 
 O solver de fluxo utilizado é configurável via `using FlowSolver = ...` em `src/segmentation.hpp`. Por padrão usa **Push-Relabel Improved**, mas pode ser trocado por `Dinic`, `EdmondsKarp` ou `FordFulkerson` sem alterar mais nada.
@@ -122,11 +128,12 @@ make
 
 | Comando        | O que faz                                                       |
 | -------------- | --------------------------------------------------------------- |
-| `make`         | Compila o binário `segment`                                     |
+| `make`         | Compila o binário `segment`, `seeds` e `ppm`                    |
 | `make run`     | Compila e abre o **modo interativo**                            |
+| `make seed`    | Processa todos os `source.seeds` para gerar imagens `seeds.ppm` |
 | `make example` | Roda o caso `grid-all` (demo rápida, ideal para o README)       |
-| `make test`    | Roda **todos os casos** em `samples/` e exibe `[PASS]`/`[FAIL]` |
-| `make clean`   | Remove o binário compilado                                      |
+| `make test`    | Segmenta e valida a saída com o `goal.ppm` para exibir `[PASS]` |
+| `make clean`   | Remove binários e limpa arquivos gerados                        |
 
 ### 3. Modos de Execução
 
@@ -157,6 +164,21 @@ Ideal para scripts e bateladas, providenciando todos os detalhes diretamente:
 - `--output <arquivo>`: Caminho que a imagem segmentada resultante deve adotar. Padrão: `output_segmented.ppm`.
 - `--sigma <valor>`: Regulador numérico das sensibilidades a diferenças de cor (a constante $\sigma$ citada na explicação dos N-links). Ajuste-o para melhoria em cores complexas. Padrão: `30.0`.
 - `--help` ou `-h`: Mostra informações da ajuda.
+
+### 5. Conversor PPM (Utilitário)
+
+Além da aplicação de segmentação, incluímos um pequeno utilitário chamado `ppm` capaz de converter arquivos PPM entre os formatos **ASCII (P3)** e **Binário (P6)**. Isso é especialmente útil caso possua imagens binárias, mas deseje inspecionar os pixels em formato texto, ou se possui um formato texto e queira reduzir o tamanho do arquivo transformando-o para binário.
+
+**Uso:**
+
+```bash
+./ppm <imagem_entrada.ppm> <imagem_saida.ppm> <ascii|binary>
+```
+
+**Exemplo:**
+```bash
+./ppm samples/balloon/goal.ppm samples/balloon/goal.ppm ascii
+```
 
 ---
 
@@ -254,13 +276,14 @@ make test      # roda TODOS os casos em samples/ com resultado [PASS]/[FAIL]
 
 ### ➕ Adicionando novos casos de teste
 
-Crie uma subpasta em `samples/` com um `.ppm` e um `.seeds` de **mesmo nome** que a pasta:
+Crie uma subpasta em `samples/` contendo os seguintes arquivos:
 
 ```
 samples/
 └── meu_caso/
-    ├── meu_caso.ppm
-    └── meu_caso.seeds
+    ├── source.ppm      (Sua imagem de entrada)
+    ├── source.seeds    (Seu arquivo de marcações)
+    └── goal.ppm        (A imagem da segmentação esperada que funcionará como gabarito)
 ```
 
-`make test` detecta e executa automaticamente — sem nenhuma alteração no Makefile.
+O comando `make test` itera em todas as subpastas automaticamente, executando a segmentação com base nos inputs e garantindo via `cmp` que o output seja **idêntico** ao `goal.ppm`.

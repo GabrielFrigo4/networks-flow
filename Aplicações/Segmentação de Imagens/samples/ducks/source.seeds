@@ -1,12 +1,26 @@
-# Seeds for ducks
-# Foreground
-13 12 F
-25 24 F
+# Seeds para pato amarelo (ducks.ppm)
+# Foreground: pato 1 e 2
+11 20 F
+13 11 F
+19 11 F
+12 15 F
 
-# Background
-4 4 B
-43 4 B
-4 43 B
-43 43 B
-5 22 B
-42 22 B
+43 20 F
+45 11 F
+51 11 F
+44 15 F
+
+# Background: lago (azul)
+2 2 B
+29 2 B
+2 29 B
+29 29 B
+16 3 B
+25 18 B
+
+34 2 B
+61 2 B
+34 29 B
+61 29 B
+48 3 B
+57 18 B

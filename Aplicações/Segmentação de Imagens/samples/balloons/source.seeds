@@ -1,13 +1,27 @@
-# Seeds para conjunto de baloes (balloons.ppm)
-# Foreground: Sementes nos tres baloes (vermelho, azul, amarelo)
-14 22 F
-30 24 F
-24 15 F
+# Seeds para balao vermelho e amarelo (balloons.ppm)
+# Foreground: balao (sem a corda fina, ou com ela)
+# balao vermelho (offset de balloon.ppm: +16, +16)
+32 28 F
+29 25 F
+34 32 F
+32 36 F
+33 39 F
+31 36 F
 
-# Background: ceu (azul claro)
-4 4 B
-43 4 B
-4 43 B
-43 43 B
-5 22 B
-42 22 B
+# balao amarelo
+24 10 F
+22 13 F
+27 12 F
+
+# Background: ceu (azul) e parede branca
+2 2 B
+46 2 B
+2 46 B
+46 46 B
+41 31 B
+
+# Sementes para matar o glare (brilho branco) do balao vermelho na direita
+39 26 B
+40 26 B
+41 26 B
+40 29 B
