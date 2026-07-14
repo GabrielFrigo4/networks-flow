@@ -15,8 +15,7 @@ $(SEED_EXE): seeds.cpp
 
 seed: $(SEED_EXE)
 	@for dir in samples/*/; do \
-		name=$$(basename "$$dir"); \
-		$(SEED_EXE) --txt2ppm --input "$$dir$$name.seeds" --output "$${dir}seeds.ppm" --reference "$$dir$$name.ppm" --ascii; \
+		$(SEED_EXE) --txt2ppm --input "$${dir}source.seeds" --output "$${dir}seeds.ppm" --reference "$${dir}source.ppm" --ascii; \
 	done
 
 run: $(SEG_EXE)
@@ -26,20 +25,22 @@ test: $(SEG_EXE)
 	@FAILED=0; \
 	for dir in samples/*/; do \
 		name=$$(basename "$$dir"); \
-		input="$$dir$$name.ppm"; \
-		seeds="$$dir$$name.seeds"; \
-		output="$$dir/output.ppm"; \
-		if $(SEG_EXE) --input "$$input" --seeds "$$seeds" --output "$$output" > "/dev/null" 2>&1; then \
-			printf "[PASS] $$name\n"; \
+		if $(SEG_EXE) --input "$${dir}source.ppm" --seeds "$${dir}source.seeds" --output "$${dir}output.ppm" > "/dev/null" 2>&1; then \
+			if cmp -s "$${dir}output.ppm" "$${dir}goal.ppm"; then \
+				printf "[PASS] $$name\n"; \
+			else \
+				printf "[FAIL] $$name (outputs differ)\n"; \
+				FAILED=$$((FAILED+1)); \
+			fi; \
 		else \
-			printf "[FAIL] $$name\n"; \
+			printf "[FAIL] $$name (execution failed)\n"; \
 			FAILED=$$((FAILED+1)); \
 		fi; \
 	done; \
 	exit $$FAILED
 
 example: $(SEG_EXE)
-	$(SEG_EXE) --input "samples/grid-all/grid-all.ppm" --seeds "samples/grid-all/grid-all.seeds" --output "samples/grid-all/output.ppm"
+	$(SEG_EXE) --input "samples/grid-all/source.ppm" --seeds "samples/grid-all/source.seeds" --output "samples/grid-all/output.ppm"
 
 clean clear:
 	rm -f $(SEG_EXE) $(SEED_EXE) samples/*/output.ppm samples/*/seeds.ppm
