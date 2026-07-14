@@ -2,6 +2,7 @@
 #define DINIC_HPP
 
 #include "FlowNetwork.hpp"
+#include <algorithm>
 #include <queue>
 
 class Dinic : public FlowNetwork

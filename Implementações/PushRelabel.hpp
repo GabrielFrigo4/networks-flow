@@ -2,6 +2,7 @@
 #define PUSH_RELABEL_HPP
 
 #include "FlowNetwork.hpp"
+#include <algorithm>
 #include <queue>
 
 class PushRelabel : public FlowNetwork

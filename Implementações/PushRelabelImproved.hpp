@@ -2,6 +2,7 @@
 #define PUSH_RELABEL_IMPROVED_HPP
 
 #include "FlowNetwork.hpp"
+#include <algorithm>
 
 class PushRelabelImproved : public FlowNetwork
 {

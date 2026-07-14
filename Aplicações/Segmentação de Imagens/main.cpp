@@ -9,13 +9,15 @@ static void print_usage(const char *program)
 	std::cout
 	    << "Usage:\n"
 	    << "  " << program
-	    << " --input <image.ppm> --seeds <seeds.txt> --output <out.ppm>\n\n"
+	    << " -i <image.ppm> -s <seeds.txt> -o <out.ppm> [-a | -b]\n\n"
 	    << "Options:\n"
-	    << "  --input   <file>   Input PPM image (P3 or P6)\n"
-	    << "  --seeds   <file>   Seeds file (x y F|B per line)\n"
-	    << "  --output  <file>   Output PPM image  [default: output_segmented.ppm]\n"
-	    << "  --sigma   <value>  Color sensitivity parameter  [default: 30.0]\n"
-	    << "  --help             Show this message\n";
+	    << "  -i, --input    <file>   Input PPM image (P3 or P6)\n"
+	    << "  -s, --seeds    <file>   Seeds file (x y F|B per line)\n"
+	    << "  -o, --output   <file>   Output PPM image  [default: output_segmented.ppm]\n"
+	    << "  -S, --sigma    <value>  Color sensitivity parameter  [default: 30.0]\n"
+	    << "  -a, --ascii             Force output PPM in ASCII format (P3)\n"
+	    << "  -b, --binary            Force output PPM in binary format (P6)\n"
+	    << "  -h, --help              Show this message\n";
 }
 
 int main(int argc, char *argv[])
@@ -24,6 +26,8 @@ int main(int argc, char *argv[])
 	std::string seeds_file;
 	std::string output_file = "output_segmented.ppm";
 	double sigma = 30.0;
+	bool ascii_forced = false;
+	bool binary_forced = false;
 
 	if (argc == 1)
 	{
@@ -43,6 +47,16 @@ int main(int argc, char *argv[])
 		std::getline(std::cin, tmp);
 		if (!tmp.empty())
 			sigma = std::stod(tmp);
+
+		std::cout << "Output PPM format (auto/ascii/binary) [auto]: ";
+		std::getline(std::cin, tmp);
+		if (!tmp.empty())
+		{
+			if (tmp == "ascii")
+				ascii_forced = true;
+			else if (tmp == "binary")
+				binary_forced = true;
+		}
 	}
 	else
 	{
@@ -54,14 +68,18 @@ int main(int argc, char *argv[])
 				print_usage(argv[0]);
 				return 0;
 			}
-			else if (std::strcmp(argv[i], "--input") == 0 && i + 1 < argc)
+			else if ((std::strcmp(argv[i], "--input") == 0 || std::strcmp(argv[i], "-i") == 0) && i + 1 < argc)
 				input_file = argv[++i];
-			else if (std::strcmp(argv[i], "--seeds") == 0 && i + 1 < argc)
+			else if ((std::strcmp(argv[i], "--seeds") == 0 || std::strcmp(argv[i], "-s") == 0) && i + 1 < argc)
 				seeds_file = argv[++i];
-			else if (std::strcmp(argv[i], "--output") == 0 && i + 1 < argc)
+			else if ((std::strcmp(argv[i], "--output") == 0 || std::strcmp(argv[i], "-o") == 0) && i + 1 < argc)
 				output_file = argv[++i];
-			else if (std::strcmp(argv[i], "--sigma") == 0 && i + 1 < argc)
+			else if ((std::strcmp(argv[i], "--sigma") == 0 || std::strcmp(argv[i], "-S") == 0) && i + 1 < argc)
 				sigma = std::atof(argv[++i]);
+			else if (std::strcmp(argv[i], "--ascii") == 0 || std::strcmp(argv[i], "-a") == 0)
+				ascii_forced = true;
+			else if (std::strcmp(argv[i], "--binary") == 0 || std::strcmp(argv[i], "-b") == 0)
+				binary_forced = true;
 		}
 	}
 
@@ -87,7 +105,14 @@ int main(int argc, char *argv[])
 	std::cout << "[4/4] Generating segmented image...\n";
 	const auto fg_mask = extract_foreground_mask(graph, num_pixels);
 	const Image result = apply_mask(img, fg_mask);
-	write_ppm(output_file, result);
+
+	bool output_ascii = img.is_ascii;
+	if (ascii_forced)
+		output_ascii = true;
+	else if (binary_forced)
+		output_ascii = false;
+
+	write_ppm(output_file, result, output_ascii);
 
 	std::cout << "Done -> " << output_file << "\n";
 	return 0;

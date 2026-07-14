@@ -1,5 +1,7 @@
 #pragma once
 
+#include <algorithm>
+#include <cctype>
 #include <fstream>
 #include <iostream>
 #include <sstream>
@@ -7,6 +9,7 @@
 #include <vector>
 
 #include "../../../Implementações/FlowNetwork.hpp"
+#include "image.hpp"
 
 enum class SeedLabel
 {
@@ -21,8 +24,41 @@ struct Seed
 	SeedLabel label;
 };
 
+inline std::vector<Seed> read_seeds_from_ppm(const std::string &filename)
+{
+	const Image img = read_ppm(filename);
+	std::vector<Seed> seeds;
+	for (Size y = 0; y < img.height; y++)
+	{
+		for (Size x = 0; x < img.width; x++)
+		{
+			const Pixel &px = img.at(x, y);
+			if (px.r == 255 && px.g == 0 && px.b == 0)
+			{
+				seeds.push_back({x, y, SeedLabel::FOREGROUND});
+			}
+			else if (px.r == 0 && px.g == 0 && px.b == 255)
+			{
+				seeds.push_back({x, y, SeedLabel::BACKGROUND});
+			}
+		}
+	}
+	return seeds;
+}
+
 inline std::vector<Seed> read_seeds(const std::string &filename)
 {
+	if (filename.size() >= 4)
+	{
+		std::string ext = filename.substr(filename.size() - 4);
+		for (char &c : ext)
+			c = std::tolower(c);
+		if (ext == ".ppm")
+		{
+			return read_seeds_from_ppm(filename);
+		}
+	}
+
 	std::ifstream file(filename);
 	if (!file.is_open())
 	{

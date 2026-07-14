@@ -2,6 +2,7 @@
 #define EDMONDS_KARP_HPP
 
 #include "FlowNetwork.hpp"
+#include <algorithm>
 #include <queue>
 
 class EdmondsKarp : public FlowNetwork

@@ -86,9 +86,8 @@ inline SegmentationGraph build_graph(
 		}
 	}
 
-	double fg_r = 0, fg_g = 0, fg_b = 0;
-	double bg_r = 0, bg_g = 0, bg_b = 0;
-	Size fg_count = 0, bg_count = 0;
+	std::vector<Pixel> fg_seed_pixels;
+	std::vector<Pixel> bg_seed_pixels;
 
 	for (const auto &seed : seeds)
 	{
@@ -98,29 +97,13 @@ inline SegmentationGraph build_graph(
 		const Pixel &px = img.at(seed.x, seed.y);
 		if (seed.label == SeedLabel::FOREGROUND)
 		{
-			fg_r += px.r;
-			fg_g += px.g;
-			fg_b += px.b;
-			fg_count++;
+			fg_seed_pixels.push_back(px);
 		}
 		else
 		{
-			bg_r += px.r;
-			bg_g += px.g;
-			bg_b += px.b;
-			bg_count++;
+			bg_seed_pixels.push_back(px);
 		}
 	}
-
-	const Pixel fg_mean =
-	    fg_count > 0
-	        ? Pixel{static_cast<unsigned char>(fg_r / fg_count), static_cast<unsigned char>(fg_g / fg_count), static_cast<unsigned char>(fg_b / fg_count)}
-	        : Pixel{0, 0, 0};
-
-	const Pixel bg_mean =
-	    bg_count > 0
-	        ? Pixel{static_cast<unsigned char>(bg_r / bg_count), static_cast<unsigned char>(bg_g / bg_count), static_cast<unsigned char>(bg_b / bg_count)}
-	        : Pixel{0, 0, 0};
 
 	for (Size i = 0; i < num_pixels; i++)
 	{
@@ -137,8 +120,17 @@ inline SegmentationGraph build_graph(
 		else
 		{
 			const Pixel &px = img.data[i];
-			const double dist_fg = pixel_distance(px, fg_mean);
-			const double dist_bg = pixel_distance(px, bg_mean);
+			double dist_fg = 1e9;
+			for (const auto &sp : fg_seed_pixels)
+			{
+				dist_fg = std::min(dist_fg, pixel_distance(px, sp));
+			}
+
+			double dist_bg = 1e9;
+			for (const auto &sp : bg_seed_pixels)
+			{
+				dist_bg = std::min(dist_bg, pixel_distance(px, sp));
+			}
 
 			const Long w_source = static_cast<Long>(
 			    K * std::exp(-dist_fg * dist_fg / two_sigma_sq)

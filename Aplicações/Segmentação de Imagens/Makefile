@@ -1,54 +1,45 @@
-CXX    := c++
-TARGET := segment
-SRC    := main.cpp
+CXX      = c++
+CXXFLAGS = -Wl,-z,stack-size=268435456 -std=c++23 -O2
+SEG_EXE  = ./segment
+SEED_EXE = ./seeds
 
-ifeq ($(OS),Windows_NT)
-	CXXFLAGS := -Wl,--stack=268435456 -std=c++23 -O2
-	EXE      := $(TARGET).exe
-	RM_CMD   := del /f /q $(EXE) 2>nul || rm -f $(EXE)
-	RM_OUT   := del /s /q samples\output.ppm 2>nul || rm -f samples/*/output.ppm
-	EXEC_CMD := ./$(EXE)
-else
-	CXXFLAGS := -Wl,-z,stack-size=268435456 -std=c++23 -O2
-	EXE      := ./$(TARGET)
-	RM_CMD   := rm -f $(EXE)
-	RM_OUT   := rm -f samples/*/output.ppm
-	EXEC_CMD := $(EXE)
-endif
+.PHONY: all seed run test example clean
 
-SAMPLES := $(wildcard samples/*/.)
-PASS    := \033[0;32m[PASS]\033[0m
-FAIL    := \033[0;31m[FAIL]\033[0m
+all: $(SEG_EXE) $(SEED_EXE) seed
 
-.PHONY: all run test example clean
+$(SEG_EXE): main.cpp
+	$(CXX) $(CXXFLAGS) main.cpp -o $(SEG_EXE)
 
-all: $(EXE)
+$(SEED_EXE): seeds.cpp
+	$(CXX) $(CXXFLAGS) seeds.cpp -o $(SEED_EXE)
 
-$(EXE): $(SRC)
-	$(CXX) $(CXXFLAGS) $(SRC) -o $(EXE)
+seed: $(SEED_EXE)
+	@for dir in samples/*/; do \
+		name=$$(basename "$$dir"); \
+		$(SEED_EXE) --txt2ppm --input "$$dir$$name.seeds" --output "$${dir}seeds.ppm" --reference "$$dir$$name.ppm" --ascii; \
+	done
 
-run: $(EXE)
-	$(EXEC_CMD)
+run: $(SEG_EXE)
+	$(SEG_EXE)
 
-test: $(EXE)
+test: $(SEG_EXE)
 	@FAILED=0; \
 	for dir in samples/*/; do \
-		name=$$(basename $$dir); \
-		input=$$dir$$name.ppm; \
-		seeds=$$dir$$name.seeds; \
-		output=$$dir/output.ppm; \
-		if $(EXEC_CMD) --input $$input --seeds $$seeds --output $$output > "/dev/null" 2>&1; then \
-			printf "$(PASS) $$name\n"; \
+		name=$$(basename "$$dir"); \
+		input="$$dir$$name.ppm"; \
+		seeds="$$dir$$name.seeds"; \
+		output="$$dir/output.ppm"; \
+		if $(SEG_EXE) --input "$$input" --seeds "$$seeds" --output "$$output" > "/dev/null" 2>&1; then \
+			printf "[PASS] $$name\n"; \
 		else \
-			printf "$(FAIL) $$name\n"; \
+			printf "[FAIL] $$name\n"; \
 			FAILED=$$((FAILED+1)); \
 		fi; \
 	done; \
 	exit $$FAILED
 
-example: $(EXE)
-	$(EXEC_CMD) --input samples/grid-all/grid-all.ppm --seeds samples/grid-all/grid-all.seeds --output samples/grid-all/output.ppm
+example: $(SEG_EXE)
+	$(SEG_EXE) --input "samples/grid-all/grid-all.ppm" --seeds "samples/grid-all/grid-all.seeds" --output "samples/grid-all/output.ppm"
 
-clean:
-	-$(RM_CMD)
-	-$(RM_OUT)
+clean clear:
+	rm -f $(SEG_EXE) $(SEED_EXE) samples/*/output.ppm samples/*/seeds.ppm

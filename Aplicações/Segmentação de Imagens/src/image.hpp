@@ -16,6 +16,7 @@ struct Image
 {
 	Size width, height;
 	std::vector<Pixel> data;
+	bool is_ascii = false;
 
 	[[nodiscard]] Size index(const Size x, const Size y) const
 	{
@@ -55,6 +56,7 @@ inline Image read_ppm(const std::string &filename)
 	}
 
 	Image img;
+	img.is_ascii = (magic == "P3");
 	Size max_val;
 	file >> img.width >> img.height >> max_val;
 	img.data.resize(img.width * img.height);
@@ -82,16 +84,39 @@ inline Image read_ppm(const std::string &filename)
 	return img;
 }
 
-inline void write_ppm(const std::string &filename, const Image &img)
+inline void write_ppm(const std::string &filename, const Image &img, bool ascii = false)
 {
-	std::ofstream file(filename, std::ios::binary);
-	if (!file.is_open())
+	if (ascii)
 	{
-		std::cerr << "error: cannot create '" << filename << "'\n";
-		std::exit(1);
-	}
+		std::ofstream file(filename);
+		if (!file.is_open())
+		{
+			std::cerr << "error: cannot create '" << filename << "'\n";
+			std::exit(1);
+		}
 
-	file << "P6\n" << img.width << " " << img.height << "\n255\n";
-	for (Size i = 0; i < img.width * img.height; i++)
-		file.write(reinterpret_cast<const char *>(&img.data[i]), 3);
+		file << "P3\n" << img.width << " " << img.height << "\n255\n";
+		for (Size i = 0; i < img.width * img.height; i++)
+		{
+			file << static_cast<int>(img.data[i].r) << " "
+			     << static_cast<int>(img.data[i].g) << " "
+			     << static_cast<int>(img.data[i].b) << "  ";
+			if ((i + 1) % 8 == 0)
+				file << "\n";
+		}
+		file << "\n";
+	}
+	else
+	{
+		std::ofstream file(filename, std::ios::binary);
+		if (!file.is_open())
+		{
+			std::cerr << "error: cannot create '" << filename << "'\n";
+			std::exit(1);
+		}
+
+		file << "P6\n" << img.width << " " << img.height << "\n255\n";
+		for (Size i = 0; i < img.width * img.height; i++)
+			file.write(reinterpret_cast<const char *>(&img.data[i]), 3);
+	}
 }
