@@ -23,13 +23,29 @@ Segmentação de Imagens/
 │   ├── seeds.hpp         # SeedLabel, Seed, read_seeds
 │   └── segmentation.hpp  # build_graph, extract_foreground_mask, apply_mask
 └── samples/
-    ├── grid/             # Grade 10×10 branca/escura — caso mais simples
+    ├── grid/             # Grade 10×10 branca/escura — caso mais simples (sementes abrangentes nas colunas)
     │   ├── grid.ppm
     │   ├── grid.seeds
     │   └── output.ppm    # gerado em tempo de execução (não versionado)
-    └── circle/           # Círculo vermelho em fundo azul — caso geométrico
-        ├── circle.ppm
-        ├── circle.seeds
+    ├── grid_alt/         # Mesma grade 10×10 mas com sementes mínimas (1 pixel por região)
+    │   ├── grid_alt.ppm
+    │   ├── grid_alt.seeds
+    │   └── output.ppm
+    ├── circle/           # Círculo vermelho em fundo azul — caso geométrico simples
+    │   ├── circle.ppm
+    │   ├── circle.seeds
+    │   └── output.ppm
+    ├── duck/             # Pato amarelo com bico laranja e degradê em fundo azul (forma complexa e tons variados)
+    │   ├── duck.ppm
+    │   ├── duck.seeds
+    │   └── output.ppm
+    ├── balloon/          # Balão vermelho em fundo de céu com degradê (forma geométrica e contornos curvos)
+    │   ├── balloon.ppm
+    │   ├── balloon.seeds
+    │   └── output.ppm
+    └── balloons/         # Conjunto de três balões coloridos (vermelho, azul e amarelo) sobrepostos (segmentação de múltiplos tons)
+        ├── balloons.ppm
+        ├── balloons.seeds
         └── output.ppm
 ```
 

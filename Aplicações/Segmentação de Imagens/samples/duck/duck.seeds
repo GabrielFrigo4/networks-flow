@@ -1,0 +1,14 @@
+# Seeds para pato amarelo (duck.ppm)
+# Foreground: pato (corpo, cabeca, bico)
+11 20 F
+13 11 F
+19 11 F
+12 15 F
+
+# Background: lago (azul)
+2 2 B
+29 2 B
+2 29 B
+29 29 B
+16 3 B
+25 18 B

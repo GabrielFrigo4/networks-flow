@@ -1,0 +1,12 @@
+# Seeds para balao vermelho (balloon.ppm)
+# Foreground: balao (sem a corda fina, ou com ela)
+16 12 F
+13 9 F
+18 16 F
+
+# Background: ceu (azul)
+2 2 B
+29 2 B
+2 29 B
+29 29 B
+25 15 B

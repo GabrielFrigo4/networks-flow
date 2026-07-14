@@ -1,0 +1,13 @@
+# Seeds para conjunto de baloes (balloons.ppm)
+# Foreground: Sementes nos tres baloes (vermelho, azul, amarelo)
+18 22 F
+30 24 F
+24 15 F
+
+# Background: ceu (azul claro)
+4 4 B
+43 4 B
+4 43 B
+43 43 B
+5 22 B
+42 22 B
