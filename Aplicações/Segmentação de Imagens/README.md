@@ -8,7 +8,7 @@ Este diretório contém a implementação em C++ de uma aplicação interativa p
 
 O objetivo principal desta aplicação é extrair o objeto principal de interesse (**foreground**) do fundo da imagem (**background**) de forma automática e eficiente, baseando-se em poucas marcações iniciais (conhecidas como _seeds_ ou sementes) fornecidas pelo usuário.
 
-A aplicação processa imagens no formato **PPM** (sem a necessidade de bibliotecas externas complexas como OpenCV) e produz uma nova imagem destacando o objeto de interesse com um fundo contrastante (verde estilo _Chroma Key_).
+A aplicação processa imagens de toda a **Família Netpbm (P1 ao P7)** (sem a necessidade de bibliotecas externas complexas como OpenCV) e produz uma nova imagem destacando o objeto de interesse com um fundo contrastante (verde estilo _Chroma Key_).
 
 ---
 
@@ -159,15 +159,21 @@ Ideal para scripts e bateladas, providenciando todos os detalhes diretamente:
 
 ### 4. Lista de Argumentos
 
-- `--input <arquivo>`: **(Obrigatório)** Caminho do arquivo da imagem original (PPM P3 ou P6).
+- `--input <arquivo>`: **(Obrigatório)** Caminho do arquivo da imagem original. Suporta toda a família Netpbm: **PBM, PGM, PPM e PAM (P1 ao P7)**.
 - `--seeds <arquivo>`: **(Obrigatório)** Arquivo de texto contendo as sementes fornecidas pelo usuário.
 - `--output <arquivo>`: Caminho que a imagem segmentada resultante deve adotar. Padrão: `output_segmented.ppm`.
 - `--sigma <valor>`: Regulador numérico das sensibilidades a diferenças de cor (a constante $\sigma$ citada na explicação dos N-links). Ajuste-o para melhoria em cores complexas. Padrão: `30.0`.
 - `--help` ou `-h`: Mostra informações da ajuda.
 
-### 5. Conversor PPM (Utilitário)
+### 5. Conversor Netpbm (Utilitário)
 
-Além da aplicação de segmentação, incluímos um pequeno utilitário chamado `ppm` capaz de converter arquivos PPM entre os formatos **ASCII (P3)** e **Binário (P6)**. Isso é especialmente útil caso possua imagens binárias, mas deseje inspecionar os pixels em formato texto, ou se possui um formato texto e queira reduzir o tamanho do arquivo transformando-o para binário.
+Além da aplicação de segmentação, incluímos um pequeno utilitário chamado `ppm` capaz de converter arquivos Netpbm entre os formatos **ASCII** (ex: P3) e **Binário** (ex: P6). Isso é especialmente útil caso possua imagens binárias, mas deseje inspecionar os pixels em formato texto, ou se possui um formato texto e queira reduzir o tamanho do arquivo transformando-o para binário.
+
+**Formatos Suportados por todas as ferramentas (`segment`, `seeds` e `ppm`):**
+- **PBM (P1, P4)**: Portable Bitmap (Preto e Branco)
+- **PGM (P2, P5)**: Portable Graymap (Escala de Cinza)
+- **PPM (P3, P6)**: Portable Pixmap (RGB)
+- **PAM (P7)**: Portable Arbitrary Map (Binário Flexível)
 
 **Uso:**
 
@@ -207,9 +213,9 @@ Acompanhe este pequeno tutorial de ponta a ponta para segmentar a sua primeira i
 
 ### Passo 1: Preparando a Imagem (PPM)
 
-Esta aplicação não utiliza bibliotecas pesadas de visão computacional, portanto ela lê apenas imagens brutas no formato **PPM (P3 ou P6)**. Se você tem um `.jpg` ou `.png`, você pode convertê-lo facilmente:
+Esta aplicação não utiliza bibliotecas pesadas de visão computacional, portanto ela lê apenas imagens brutas no formato **Netpbm (P1 ao P7)**, como `.ppm`, `.pgm`, `.pbm` e `.pam`. Se você tem um `.jpg` ou `.png`, você pode convertê-lo facilmente:
 
-- **Usando GIMP ou Krita:** Abra sua imagem, vá em `File > Export As...` e escolha a extensão `.ppm` (Formato RAW).
+- **Usando GIMP ou Krita:** Abra sua imagem, vá em `File > Export As...` e escolha a extensão `.ppm`, `.pgm` ou `.pbm`.
 - **Usando ImageMagick (v7+):** `magick minha_imagem.jpg minha_imagem.ppm`
 - **Ferramentas Online:** Qualquer conversor gratuito online de imagens resolve.
 

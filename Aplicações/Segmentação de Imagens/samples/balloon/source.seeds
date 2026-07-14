@@ -14,14 +14,20 @@
 25 15 B
 # Right side boundary
 20 6 B
-22 8 B
-23 10 B
-24 12 B
-23 14 B
-22 16 B
-21 18 B
-19 20 B
-20 22 B
+25 8 B
+26 10 B
+27 12 B
+26 14 B
+25 16 B
+24 18 B
+22 20 B
+21 22 B
+
+# Glare and right edge of balloon
+23 10 F
+24 12 F
+23 14 F
+22 16 F
 # Left side boundary
 11 6 B
 11 8 B

@@ -8,7 +8,8 @@ Progresso das tarefas, correções e direcionamentos solicitados pela orientador
 
 Progresso das otimizações e refatorações de código no projeto, visando melhorar a performance dos algoritmos e organizar a estrutura das classes de implementação.
 
-- [ ] Testar e se precisar finalizar a Segmentação de Imagens (Max Flow / Min Cut)
+- [x] Testar e se precisar finalizar a Segmentação de Imagens (Max Flow / Min Cut)
+- [ ] Consertar alguns casos de borda do Segmentação de Imagens (Max Flow / Min Cut)
 - [ ] Reler o Relatório, fazer uma auditoria completa da iniciação científica
 - [ ] Fazer o Minimum Cost Flow, ver os algoritmos de implementação
 - [ ] Fazer o Network Simplex? Não sei, não precisa
@@ -80,6 +81,28 @@ Progresso das técnicas de modelagem e redução documentadas no [LaTeX](./LaTeX
 
 ---
 
+# 💸 TO-DO: Minimum Cost Flow
+
+Progresso das implementações e estudos relacionados ao problema de **Fluxo de Custo Mínimo** (Minimum Cost Flow) e **Fluxo Máximo de Custo Mínimo** (Min Cost Max Flow). Os algoritmos baseados em custos estarão documentados no [LaTeX](./LaTeX/ic.tex) e implementados no diretório [Implementações](./Implementações/README.md).
+
+## 🧮 Algoritmos de Custo Mínimo
+
+| Nome                                                              | LaTeX | Implementação | Descrição                                                                                             |
+| :---------------------------------------------------------------- | :---: | :-----------: | :---------------------------------------------------------------------------------------------------- |
+| [Cycle Canceling](./Implementações/CycleCanceling.hpp)            |  ❌   |      ❌       | Baseia-se em encontrar fluxos viáveis e iterativamente cancelar ciclos de custo negativo no residual. |
+| [Successive Shortest Path](./Implementações/SuccessiveShortest.hpp)|  ❌   |      ❌       | Usa o algoritmo de Bellman-Ford / Dijkstra com potenciais para rotear fluxo pelo caminho mais barato. |
+| [Network Simplex](./Implementações/NetworkSimplex.hpp)            |  ❌   |      ❌       | Algoritmo muito eficiente na prática que mantém uma estrutura de árvore de base viável.               |
+
+## 📐 Conceitos e Mecânicas de Custo
+
+| Nome                                   | LaTeX | Implementação | Descrição                                                                                      |
+| :------------------------------------- | :---: | :-----------: | :--------------------------------------------------------------------------------------------- |
+| Custos Reduzidos (Reduced Costs)       |  ❌   |      ❌       | Técnica de usar potenciais nos nós ($\pi$) para garantir custos de arestas não-negativos.      |
+| Ciclos de Custo Negativo               |  ❌   |      ❌       | Condição de otimalidade: um fluxo é de custo mínimo se e somente se não há ciclos negativos.   |
+| Transformação Min Cost Max Flow        |  ❌   |      ❌       | Adaptação do MCF para quando desejamos empurrar o *máximo de fluxo* com o menor custo possível.|
+
+---
+
 # 📚 TO-DO: Teoria e Rigor
 
 Progresso dos teoremas e provas formais documentados no [LaTeX](./LaTeX/ic.tex). A coluna **Prova** indica se uma demonstração formal está escrita — distinta do mero enunciado do teorema. Axiomas fundamentais não possuem prova (são ponto de partida), indicado por `—`.
@@ -107,3 +130,11 @@ Progresso dos teoremas e provas formais documentados no [LaTeX](./LaTeX/ic.tex).
 | :-------------------------- | :---: | :---: | :------------------------------------------------------------------------------------------------------------------------- |
 | Teorema de König            |  ✅   |  ✅   | Prova da igualdade entre o tamanho do Emparelhamento Máximo e a Cobertura de Vértices Mínima em grafos bipartidos.         |
 | Teorema de Hall (Condition) |  ✅   |  ✅   | Critério necessário e suficiente para a existência de um emparelhamento que sature um dos conjuntos de um grafo bipartido. |
+
+## 💸 Teoremas de Fluxo de Custo Mínimo
+
+| Nome                                            | LaTeX | Prova | Descrição                                                                                                                |
+| :---------------------------------------------- | :---: | :---: | :----------------------------------------------------------------------------------------------------------------------- |
+| Condição de Otimalidade (Ciclos Negativos)      |  ❌   |  ❌   | Prova formal de que um fluxo é de custo mínimo se e somente se o seu grafo residual não possui ciclos de custo negativo. |
+| Equivalência dos Custos Reduzidos               |  ❌   |  ❌   | Prova de que a ausência de ciclos residuais negativos equivale à existência de um sistema de potenciais $\pi$ válido.    |
+| Complementaridade de Folgas (Complementary Slackness) |  ❌   |  ❌   | Teorema de dualidade linear garantindo que o fluxo ótimo ocorre quando os custos reduzidos e os fluxos estão alinhados.|

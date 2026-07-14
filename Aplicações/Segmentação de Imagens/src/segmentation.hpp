@@ -120,16 +120,45 @@ inline SegmentationGraph build_graph(
 		else
 		{
 			const Pixel &px = img.data[i];
+			
 			double dist_fg = 1e9;
-			for (const auto &sp : fg_seed_pixels)
+			if (!fg_seed_pixels.empty())
 			{
-				dist_fg = std::min(dist_fg, pixel_distance(px, sp));
+				double mean_r = 0, mean_g = 0, mean_b = 0;
+				for (const auto &sp : fg_seed_pixels)
+				{
+					mean_r += sp.r;
+					mean_g += sp.g;
+					mean_b += sp.b;
+				}
+				mean_r /= fg_seed_pixels.size();
+				mean_g /= fg_seed_pixels.size();
+				mean_b /= fg_seed_pixels.size();
+				
+				const double dr = px.r - mean_r;
+				const double dg = px.g - mean_g;
+				const double db = px.b - mean_b;
+				dist_fg = std::sqrt(dr * dr + dg * dg + db * db);
 			}
 
 			double dist_bg = 1e9;
-			for (const auto &sp : bg_seed_pixels)
+			if (!bg_seed_pixels.empty())
 			{
-				dist_bg = std::min(dist_bg, pixel_distance(px, sp));
+				double mean_r = 0, mean_g = 0, mean_b = 0;
+				for (const auto &sp : bg_seed_pixels)
+				{
+					mean_r += sp.r;
+					mean_g += sp.g;
+					mean_b += sp.b;
+				}
+				mean_r /= bg_seed_pixels.size();
+				mean_g /= bg_seed_pixels.size();
+				mean_b /= bg_seed_pixels.size();
+				
+				const double dr = px.r - mean_r;
+				const double dg = px.g - mean_g;
+				const double db = px.b - mean_b;
+				dist_bg = std::sqrt(dr * dr + dg * dg + db * db);
 			}
 
 			const Long w_source = static_cast<Long>(

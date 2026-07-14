@@ -25,17 +25,20 @@ seed: $(SEED_EXE)
 run: $(SEG_EXE)
 	$(SEG_EXE)
 
-test: $(SEG_EXE)
+test: $(SEG_EXE) $(PPM_EXE)
 	@FAILED=0; \
 	for dir in samples/*/; do \
 		name=$$(basename "$$dir"); \
 		if $(SEG_EXE) --input "$${dir}source.ppm" --seeds "$${dir}source.seeds" --output "$${dir}output.ppm" > "/dev/null" 2>&1; then \
-			if cmp -s "$${dir}output.ppm" "$${dir}goal.ppm"; then \
+			$(PPM_EXE) "$${dir}goal.ppm" "$${dir}goal.tmp.ppm" binary > "/dev/null" 2>&1; \
+			$(PPM_EXE) "$${dir}output.ppm" "$${dir}output.tmp.ppm" binary > "/dev/null" 2>&1; \
+			if cmp -s "$${dir}output.tmp.ppm" "$${dir}goal.tmp.ppm"; then \
 				printf "[PASS] $$name\n"; \
 			else \
 				printf "[FAIL] $$name (outputs differ)\n"; \
 				FAILED=$$((FAILED+1)); \
 			fi; \
+			rm -f "$${dir}output.tmp.ppm" "$${dir}goal.tmp.ppm"; \
 		else \
 			printf "[FAIL] $$name (execution failed)\n"; \
 			FAILED=$$((FAILED+1)); \
