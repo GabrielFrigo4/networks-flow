@@ -6,11 +6,13 @@ ifeq ($(OS),Windows_NT)
 	CXXFLAGS := -Wl,--stack=268435456 -std=c++23 -O2
 	EXE      := $(TARGET).exe
 	RM_CMD   := del /f /q $(EXE) 2>nul || rm -f $(EXE)
+	RM_OUT   := del /s /q samples\output.ppm 2>nul || rm -f samples/*/output.ppm
 	EXEC_CMD := ./$(EXE)
 else
 	CXXFLAGS := -Wl,-z,stack-size=268435456 -std=c++23 -O2
 	EXE      := ./$(TARGET)
 	RM_CMD   := rm -f $(EXE)
+	RM_OUT   := rm -f samples/*/output.ppm
 	EXEC_CMD := $(EXE)
 endif
 
@@ -35,7 +37,7 @@ test: $(EXE)
 		input=$$dir$$name.ppm; \
 		seeds=$$dir$$name.seeds; \
 		output=$$dir/output.ppm; \
-		if $(EXEC_CMD) --input $$input --seeds $$seeds --output $$output > /dev/null 2>&1; then \
+		if $(EXEC_CMD) --input $$input --seeds $$seeds --output $$output > "/dev/null" 2>&1; then \
 			printf "$(PASS) $$name\n"; \
 		else \
 			printf "$(FAIL) $$name\n"; \
@@ -45,7 +47,8 @@ test: $(EXE)
 	exit $$FAILED
 
 example: $(EXE)
-	$(EXEC_CMD) --input samples/grid/grid.ppm --seeds samples/grid/grid.seeds --output samples/grid/output.ppm
+	$(EXEC_CMD) --input samples/grid-all/grid-all.ppm --seeds samples/grid-all/grid-all.seeds --output samples/grid-all/output.ppm
 
 clean:
 	-$(RM_CMD)
+	-$(RM_OUT)

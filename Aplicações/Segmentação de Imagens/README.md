@@ -23,13 +23,13 @@ Segmentação de Imagens/
 │   ├── seeds.hpp         # SeedLabel, Seed, read_seeds
 │   └── segmentation.hpp  # build_graph, extract_foreground_mask, apply_mask
 └── samples/
-    ├── grid/             # Grade 10×10 branca/escura — caso mais simples (sementes abrangentes nas colunas)
-    │   ├── grid.ppm
-    │   ├── grid.seeds
+    ├── grid-all/         # Grade 10×10 branca/escura — caso mais simples (sementes abrangentes em todas as linhas das colunas)
+    │   ├── grid-all.ppm
+    │   ├── grid-all.seeds
     │   └── output.ppm    # gerado em tempo de execução (não versionado)
-    ├── grid_alt/         # Mesma grade 10×10 mas com sementes mínimas (1 pixel por região)
-    │   ├── grid_alt.ppm
-    │   ├── grid_alt.seeds
+    ├── grid-one/         # Mesma grade 10×10 mas com sementes mínimas (apenas 1 pixel por região)
+    │   ├── grid-one.ppm
+    │   ├── grid-one.seeds
     │   └── output.ppm
     ├── circle/           # Círculo vermelho em fundo azul — caso geométrico simples
     │   ├── circle.ppm
@@ -124,7 +124,7 @@ make
 | -------------- | --------------------------------------------------------------- |
 | `make`         | Compila o binário `segment`                                     |
 | `make run`     | Compila e abre o **modo interativo**                            |
-| `make example` | Roda o caso `grid` (demo rápida, ideal para o README)           |
+| `make example` | Roda o caso `grid-all` (demo rápida, ideal para o README)       |
 | `make test`    | Roda **todos os casos** em `samples/` e exibe `[PASS]`/`[FAIL]` |
 | `make clean`   | Remove o binário compilado                                      |
 
@@ -248,7 +248,7 @@ Se deseja fazer avaliações, aconselha-se utilizar o conjunto consolidado:
 Para rodar rapidamente com as amostras já incluídas no projeto:
 
 ```bash
-make example   # roda só o caso grid (saída: samples/grid/output.ppm)
+make example   # roda só o caso grid-all (saída: samples/grid-all/output.ppm)
 make test      # roda TODOS os casos em samples/ com resultado [PASS]/[FAIL]
 ```
 
