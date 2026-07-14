@@ -52,6 +52,7 @@ Thumbs.db
 *.bak
 
 # Image Segmentation outputs
+segment
 output.ppm
 **/output.ppm
 
