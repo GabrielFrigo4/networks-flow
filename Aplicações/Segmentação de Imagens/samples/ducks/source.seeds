@@ -1,0 +1,12 @@
+# Seeds for ducks
+# Foreground
+13 12 F
+25 24 F
+
+# Background
+4 4 B
+43 4 B
+4 43 B
+43 43 B
+5 22 B
+42 22 B

@@ -1,0 +1,13 @@
+# Seeds for circles
+# Foreground
+16 16 F
+32 16 F
+24 32 F
+
+# Background
+4 4 B
+43 4 B
+4 43 B
+43 43 B
+5 22 B
+42 22 B
