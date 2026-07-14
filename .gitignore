@@ -55,5 +55,6 @@ Thumbs.db
 segment
 output.ppm
 **/output.ppm
+seeds
 *seeds.ppm
 **/seeds.ppm
