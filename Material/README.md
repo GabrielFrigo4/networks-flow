@@ -22,7 +22,7 @@ Abaixo estão as notas de aula salvas neste repositório. São materiais excelen
 
 Referências acadêmicas e bases de dados utilizadas para validação e testes práticos:
 
-- 📊 **[Max-flow Problem Instances in Vision (Waterloo Dataset)](https://vision.cs.uwaterloo.ca/data/maxflow/)** 
+- 📊 **[Max-flow Problem Instances in Vision (Waterloo Dataset)](https://vision.cs.uwaterloo.ca/data/maxflow)** 
   - *Dataset clássico contendo instâncias de grafos massivos modelados a partir de problemas de visão computacional (segmentação de imagens). Utilizado para testar a robustez e escalabilidade das implementações.*
 
 ---

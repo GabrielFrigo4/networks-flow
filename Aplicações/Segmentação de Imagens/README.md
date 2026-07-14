@@ -227,7 +227,7 @@ Abra a imagem `resultado.ppm`. O objeto deverá estar intacto e o fundo substitu
 
 Se deseja fazer avaliações, aconselha-se utilizar o conjunto consolidado:
 
-- [Waterloo Image Segmentation Flow Dataset](https://vision.cs.uwaterloo.ca/data/maxflow/)
+- [Waterloo Image Segmentation Flow Dataset](https://vision.cs.uwaterloo.ca/data/maxflow)
 
 Para rodar rapidamente com as amostras já incluídas no projeto:
 

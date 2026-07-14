@@ -137,4 +137,4 @@ Caso queira gerar o projeto de pesquisa (`ic.pdf`) localmente a partir do códig
 [police_chase]: https://cses.fi/problemset/task/1695
 [time_travel]: https://judge.beecrowd.com/en/problems/view/2082
 [segmentacao_imagens_codigo]: ./Aplicações/Segmentação%20de%20Imagens/README.md
-[segmentacao_imagens_dataset]: https://vision.cs.uwaterloo.ca/data/maxflow/
+[segmentacao_imagens_dataset]: https://vision.cs.uwaterloo.ca/data/maxflow
