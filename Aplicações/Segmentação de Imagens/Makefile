@@ -30,8 +30,8 @@ test: $(SEG_EXE) $(PPM_EXE)
 	for dir in samples/*/; do \
 		name=$$(basename "$$dir"); \
 		if $(SEG_EXE) --input "$${dir}source.ppm" --seeds "$${dir}source.seeds" --output "$${dir}output.ppm" > "/dev/null" 2>&1; then \
-			$(PPM_EXE) "$${dir}goal.ppm" "$${dir}goal.tmp.ppm" binary > "/dev/null" 2>&1; \
-			$(PPM_EXE) "$${dir}output.ppm" "$${dir}output.tmp.ppm" binary > "/dev/null" 2>&1; \
+			$(PPM_EXE) --input "$${dir}goal.ppm"   --output "$${dir}goal.tmp.ppm"   --binary > "/dev/null" 2>&1; \
+			$(PPM_EXE) --input "$${dir}output.ppm" --output "$${dir}output.tmp.ppm" --binary > "/dev/null" 2>&1; \
 			if cmp -s "$${dir}output.tmp.ppm" "$${dir}goal.tmp.ppm"; then \
 				printf "[PASS] $$name\n"; \
 			else \
@@ -47,7 +47,7 @@ test: $(SEG_EXE) $(PPM_EXE)
 	exit $$FAILED
 
 example: $(SEG_EXE)
-	$(SEG_EXE) --input "samples/grid-all/source.ppm" --seeds "samples/grid-all/source.seeds" --output "samples/grid-all/output.ppm"
+	$(SEG_EXE) --input "samples/grid1/source.ppm" --seeds "samples/grid1/source.seeds" --output "samples/grid1/output.ppm"
 
 clean clear:
 	rm -f $(SEG_EXE) $(SEED_EXE) $(PPM_EXE) samples/*/output.ppm samples/*/seeds.ppm

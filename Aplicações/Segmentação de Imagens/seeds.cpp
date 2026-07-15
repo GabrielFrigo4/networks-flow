@@ -12,37 +12,35 @@ static void print_usage(const char *program)
 {
 	std::cout
 	    << "Usage:\n"
-	    << "  " << program
-	    << " -t -i <seeds.txt> -o <seeds.ppm> [-w <w> -H <h> | -r <image.ppm>] [-a | -b]\n"
+	    << "  " << program << " -t -i <seeds.txt> -o <seeds.ppm> [-r <image.ppm> | -w <w> -H <h>] [-a | -b]\n"
 	    << "  " << program << " -p -i <seeds.ppm> -o <seeds.txt>\n\n"
 	    << "Options:\n"
-	    << "  -t, --txt2ppm          Convert text seeds file to PPM image seeds\n"
-	    << "  -p, --ppm2txt          Convert PPM image seeds to text seeds file\n"
-	    << "  -i, --input   <file>   Input file path\n"
-	    << "  -o, --output  <file>   Output file path\n"
-	    << "  -w, --width   <val>    Width of the output PPM image (for -t)\n"
-	    << "  -H, --height  <val>    Height of the output PPM image (for -t)\n"
-	    << "  -r, --reference <file> Reference PPM image to copy dimensions from (for -t)\n"
-	    << "  -a, --ascii            Write output PPM in ASCII format (P3) [default]\n"
-	    << "  -b, --binary           Write output PPM in binary format (P6)\n"
-	    << "  -h, --help             Show this message\n";
+	    << "  -t, --txt2ppm            Convert text seeds to a PPM overlay image\n"
+	    << "  -p, --ppm2txt            Convert a PPM overlay image to text seeds\n"
+	    << "  -i, --input   <file>     Input file\n"
+	    << "  -o, --output  <file>     Output file\n"
+	    << "  -r, --reference <file>   Reference PPM to copy dimensions from  (for -t)\n"
+	    << "  -w, --width   <val>      Output image width   (for -t, alternative to -r)\n"
+	    << "  -H, --height  <val>      Output image height  (for -t, alternative to -r)\n"
+	    << "  -a, --ascii              Write output PPM in ASCII format (P3)  [default]\n"
+	    << "  -b, --binary             Write output PPM in binary format (P6)\n"
+	    << "  -h, --help               Show this message\n";
 }
 
 int main(int argc, char *argv[])
 {
-	bool txt2ppm = false;
-	bool ppm2txt = false;
+	bool        txt2ppm        = false;
+	bool        ppm2txt        = false;
 	std::string input_file;
 	std::string output_file;
 	std::string reference_file;
-	int width = 0;
-	int height = 0;
-	bool ascii = true;
+	int         width          = 0;
+	int         height         = 0;
+	bool        ascii          = true;
 
 	for (int i = 1; i < argc; i++)
 	{
-		if (std::strcmp(argv[i], "--help") == 0 ||
-		    std::strcmp(argv[i], "-h") == 0)
+		if (std::strcmp(argv[i], "--help") == 0 || std::strcmp(argv[i], "-h") == 0)
 		{
 			print_usage(argv[0]);
 			return 0;
@@ -83,21 +81,20 @@ int main(int argc, char *argv[])
 
 	if (txt2ppm)
 	{
-		// Convert text to PPM image seed
-		std::vector<Seed> seeds = read_seeds(input_file);
+		const std::vector<Seed> seeds = read_seeds(input_file);
 
-		Size out_width = 0;
+		Size out_width  = 0;
 		Size out_height = 0;
 
 		if (!reference_file.empty())
 		{
-			Image ref = read_ppm(reference_file);
-			out_width = ref.width;
-			out_height = ref.height;
+			const Image ref = read_ppm(reference_file);
+			out_width       = ref.width;
+			out_height      = ref.height;
 		}
 		else if (width > 0 && height > 0)
 		{
-			out_width = static_cast<Size>(width);
+			out_width  = static_cast<Size>(width);
 			out_height = static_cast<Size>(height);
 		}
 		else
@@ -107,33 +104,29 @@ int main(int argc, char *argv[])
 		}
 
 		Image seed_img;
-		seed_img.width = out_width;
+		seed_img.width  = out_width;
 		seed_img.height = out_height;
-		seed_img.data.resize(out_width * out_height, Pixel{0, 255, 0}); // fill with green
+		seed_img.data.resize(out_width * out_height, Pixel{0, 255, 0});
 
 		for (const auto &seed : seeds)
 		{
-			if (seed.x < out_width && seed.y < out_height)
-			{
-				Size idx = seed_img.index(seed.x, seed.y);
-				if (seed.label == SeedLabel::FOREGROUND)
-				{
-					seed_img.data[idx] = Pixel{255, 0, 0}; // Red
-				}
-				else if (seed.label == SeedLabel::BACKGROUND)
-				{
-					seed_img.data[idx] = Pixel{0, 0, 255}; // Blue
-				}
-			}
+			if (seed.x >= out_width || seed.y >= out_height)
+				continue;
+			const Size idx = seed_img.index(seed.x, seed.y);
+			if (seed.label == SeedLabel::FOREGROUND)
+				seed_img.data[idx] = {255, 0, 0};
+			else if (seed.label == SeedLabel::BACKGROUND)
+				seed_img.data[idx] = {0, 0, 255};
 		}
 
 		write_ppm(output_file, seed_img, ascii);
-		std::cout << "Successfully converted " << input_file << " -> " << output_file << " (PPM seeds, " << out_width << "x" << out_height << ", format: " << (ascii ? "P3 ASCII" : "P6 binary") << ")\n";
+		std::cout << "Successfully converted " << input_file << " -> " << output_file
+		          << " (PPM seeds, " << out_width << "x" << out_height
+		          << ", format: " << (ascii ? "P3 ASCII" : "P6 binary") << ")\n";
 	}
 	else
 	{
-		// Convert PPM image seed to text
-		std::vector<Seed> seeds = read_seeds_from_ppm(input_file);
+		const std::vector<Seed> seeds = read_seeds_from_ppm(input_file);
 
 		std::ofstream out(output_file);
 		if (!out.is_open())
@@ -146,11 +139,12 @@ int main(int argc, char *argv[])
 		out << "# Format: x y F|B\n";
 		for (const auto &seed : seeds)
 		{
-			char label_char = (seed.label == SeedLabel::FOREGROUND) ? 'F' : 'B';
-			out << seed.x << " " << seed.y << " " << label_char << "\n";
+			const char label = (seed.label == SeedLabel::FOREGROUND) ? 'F' : 'B';
+			out << seed.x << " " << seed.y << " " << label << "\n";
 		}
 
-		std::cout << "Successfully converted " << input_file << " -> " << output_file << " (text seeds, " << seeds.size() << " seeds found)\n";
+		std::cout << "Successfully converted " << input_file << " -> " << output_file
+		          << " (text seeds, " << seeds.size() << " seeds found)\n";
 	}
 
 	return 0;
