@@ -9,7 +9,7 @@ Progresso das tarefas, correções e direcionamentos solicitados pela orientador
 Progresso das otimizações e refatorações de código no projeto, visando melhorar a performance dos algoritmos e organizar a estrutura das classes de implementação.
 
 - [x] Testar e se precisar finalizar a Segmentação de Imagens (Max Flow / Min Cut)
-- [ ] Consertar alguns casos de borda do Segmentação de Imagens (Max Flow / Min Cut)
+- [x] Consertar alguns casos de borda do Segmentação de Imagens (Max Flow / Min Cut)
 - [ ] Reler o Relatório, fazer uma auditoria completa da iniciação científica
 - [ ] Fazer o Minimum Cost Flow, ver os algoritmos de implementação
 - [ ] Fazer o Network Simplex? Não sei, não precisa

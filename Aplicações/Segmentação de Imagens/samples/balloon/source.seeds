@@ -1,10 +1,27 @@
 # Seeds para balao vermelho (balloon.ppm)
-# Foreground: balao (sem a corda fina, ou com ela)
+# Formato: x y label (F=foreground, B=background)
+
+# Foreground: corpo principal do balao (vermelho escuro)
 16 12 F
 13 9 F
 18 16 F
 16 20 F
 17 23 F
+
+# Foreground: brilho (glare) branco-rosado no canto superior esquerdo do balao
+12 6 F
+11 7 F
+10 8 F
+
+# Foreground: borda escura (dark red) no lado direito do balao
+20 10 F
+21 11 F
+22 12 F
+
+# Foreground: corda do balao
+17 24 F
+18 26 F
+15 31 F
 
 # Background: ceu (azul) e parede branca
 2 2 B
@@ -12,8 +29,8 @@
 2 29 B
 29 29 B
 25 15 B
-# Right side boundary
-20 6 B
+
+# Background: borda direita do balao (pixels de ceu proximo ao balao)
 25 8 B
 26 10 B
 27 12 B
@@ -23,14 +40,8 @@
 22 20 B
 21 22 B
 
-# Glare and right edge of balloon
-23 10 F
-24 12 F
-23 14 F
-22 16 F
-# Left side boundary
+# Background: borda esquerda do balao (pixels de ceu proximo ao balao)
 11 6 B
-11 8 B
 8 10 B
 7 12 B
 8 14 B
@@ -38,3 +49,9 @@
 10 18 B
 13 20 B
 11 22 B
+
+# Background: pixels de ceu no canto superior direito do balao
+23 10 B
+24 12 B
+23 14 B
+22 16 B

@@ -11,7 +11,7 @@ int main(int argc, char *argv[])
 		return 1;
 	}
 
-	std::string input = argv[1];
+	std::string input  = argv[1];
 	std::string output = argv[2];
 	std::string format = argv[3];
 
@@ -29,6 +29,7 @@ int main(int argc, char *argv[])
 	Image img = read_ppm(input);
 	write_ppm(output, img, to_ascii);
 
-	std::cout << "Successfully converted '" << input << "' to " << format << " format in '" << output << "'.\n";
+	std::cout << "Successfully converted '" << input << "' to " << format
+	          << " format in '" << output << "'.\n";
 	return 0;
 }

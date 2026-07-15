@@ -214,11 +214,13 @@ inline void write_ppm(const std::string &filename, const Image &img, bool ascii 
 		{
 			file << static_cast<int>(img.data[i].r) << " "
 			     << static_cast<int>(img.data[i].g) << " "
-			     << static_cast<int>(img.data[i].b) << "  ";
+			     << static_cast<int>(img.data[i].b) << " ";
 			if ((i + 1) % 8 == 0)
 				file << "\n";
 		}
-		file << "\n";
+		// Write final newline only if the last pixel didn't already get one
+		if ((img.width * img.height) % 8 != 0)
+			file << "\n";
 	}
 	else
 	{
