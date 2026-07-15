@@ -3,6 +3,7 @@
 #include <fstream>
 #include <iostream>
 #include <string>
+#include <string_view>
 #include <vector>
 
 #include "src/image.hpp"
@@ -12,57 +13,109 @@ static void print_usage(const char *program)
 {
 	std::cout
 	    << "Usage:\n"
-	    << "  " << program << " -t -i <seeds.txt> -o <seeds.ppm> [-r <image.ppm> | -w <w> -H <h>] [-a | -b]\n"
+	    << "  " << program << " -t -i <seeds.txt> -o <seeds.ppm>\n"
+	    << "      [-r <image.ppm> | -w <w> -H <h>] [-a | -b]\n"
 	    << "  " << program << " -p -i <seeds.ppm> -o <seeds.txt>\n\n"
 	    << "Options:\n"
 	    << "  -t, --txt2ppm            Convert text seeds to a PPM overlay image\n"
 	    << "  -p, --ppm2txt            Convert a PPM overlay image to text seeds\n"
 	    << "  -i, --input   <file>     Input file\n"
 	    << "  -o, --output  <file>     Output file\n"
-	    << "  -r, --reference <file>   Reference PPM to copy dimensions from  (for -t)\n"
-	    << "  -w, --width   <val>      Output image width   (for -t, alternative to -r)\n"
-	    << "  -H, --height  <val>      Output image height  (for -t, alternative to -r)\n"
-	    << "  -a, --ascii              Write output PPM in ASCII format (P3)  [default]\n"
-	    << "  -b, --binary             Write output PPM in binary format (P6)\n"
+	    << "  -r, --reference <file>   Reference PPM to copy dimensions\n"
+	    << "                           (for -t)\n"
+	    << "  -w, --width   <val>      Output image width (for -t)\n"
+	    << "  -H, --height  <val>      Output image height (for -t)\n"
+	    << "  -a, --ascii              Write ASCII PPM (P3) [default]\n"
+	    << "  -b, --binary             Write binary PPM (P6)\n"
 	    << "  -h, --help               Show this message\n";
 }
 
 int main(int argc, char *argv[])
 {
-	bool        txt2ppm        = false;
-	bool        ppm2txt        = false;
+	bool txt2ppm = false;
+	bool ppm2txt = false;
 	std::string input_file;
 	std::string output_file;
 	std::string reference_file;
-	int         width          = 0;
-	int         height         = 0;
-	bool        ascii          = true;
+	int width = 0;
+	int height = 0;
+	bool ascii = true;
 
-	for (int i = 1; i < argc; i++)
+	for (int i = 1; i < argc; ++i)
 	{
-		if (std::strcmp(argv[i], "--help") == 0 || std::strcmp(argv[i], "-h") == 0)
+		std::string_view arg(argv[i]);
+		if (arg == "--help" || arg == "-h")
 		{
 			print_usage(argv[0]);
 			return 0;
 		}
-		else if (std::strcmp(argv[i], "--txt2ppm") == 0 || std::strcmp(argv[i], "-t") == 0)
+		else if (arg == "--txt2ppm" || arg == "-t")
+		{
 			txt2ppm = true;
-		else if (std::strcmp(argv[i], "--ppm2txt") == 0 || std::strcmp(argv[i], "-p") == 0)
+		}
+		else if (arg == "--ppm2txt" || arg == "-p")
+		{
 			ppm2txt = true;
-		else if ((std::strcmp(argv[i], "--input") == 0 || std::strcmp(argv[i], "-i") == 0) && i + 1 < argc)
+		}
+		else if (arg == "--input" || arg == "-i")
+		{
+			if (i + 1 >= argc)
+			{
+				std::cerr << "error: missing value for option " << arg << "\n";
+				return 1;
+			}
 			input_file = argv[++i];
-		else if ((std::strcmp(argv[i], "--output") == 0 || std::strcmp(argv[i], "-o") == 0) && i + 1 < argc)
+		}
+		else if (arg == "--output" || arg == "-o")
+		{
+			if (i + 1 >= argc)
+			{
+				std::cerr << "error: missing value for option " << arg << "\n";
+				return 1;
+			}
 			output_file = argv[++i];
-		else if ((std::strcmp(argv[i], "--reference") == 0 || std::strcmp(argv[i], "-r") == 0) && i + 1 < argc)
+		}
+		else if (arg == "--reference" || arg == "-r")
+		{
+			if (i + 1 >= argc)
+			{
+				std::cerr << "error: missing value for option " << arg << "\n";
+				return 1;
+			}
 			reference_file = argv[++i];
-		else if ((std::strcmp(argv[i], "--width") == 0 || std::strcmp(argv[i], "-w") == 0) && i + 1 < argc)
+		}
+		else if (arg == "--width" || arg == "-w")
+		{
+			if (i + 1 >= argc)
+			{
+				std::cerr << "error: missing value for option " << arg << "\n";
+				return 1;
+			}
 			width = std::atoi(argv[++i]);
-		else if ((std::strcmp(argv[i], "--height") == 0 || std::strcmp(argv[i], "-H") == 0) && i + 1 < argc)
+		}
+		else if (arg == "--height" || arg == "-H")
+		{
+			if (i + 1 >= argc)
+			{
+				std::cerr << "error: missing value for option " << arg << "\n";
+				return 1;
+			}
 			height = std::atoi(argv[++i]);
-		else if (std::strcmp(argv[i], "--ascii") == 0 || std::strcmp(argv[i], "-a") == 0)
+		}
+		else if (arg == "--ascii" || arg == "-a")
+		{
 			ascii = true;
-		else if (std::strcmp(argv[i], "--binary") == 0 || std::strcmp(argv[i], "-b") == 0)
+		}
+		else if (arg == "--binary" || arg == "-b")
+		{
 			ascii = false;
+		}
+		else
+		{
+			std::cerr << "error: unknown option " << arg << "\n";
+			print_usage(argv[0]);
+			return 1;
+		}
 	}
 
 	if ((!txt2ppm && !ppm2txt) || (txt2ppm && ppm2txt))
@@ -83,23 +136,24 @@ int main(int argc, char *argv[])
 	{
 		const std::vector<Seed> seeds = read_seeds(input_file);
 
-		Size out_width  = 0;
+		Size out_width = 0;
 		Size out_height = 0;
 
 		if (!reference_file.empty())
 		{
 			const Image ref = read_ppm(reference_file);
-			out_width       = ref.width;
-			out_height      = ref.height;
+			out_width = ref.width;
+			out_height = ref.height;
 		}
 		else if (width > 0 && height > 0)
 		{
-			out_width  = static_cast<Size>(width);
+			out_width = static_cast<Size>(width);
 			out_height = static_cast<Size>(height);
 		}
 		else
 		{
-			std::cerr << "error: --reference or both --width and --height are required for --txt2ppm\n";
+			std::cerr << "error: --reference or both --width and "
+			          << "--height are required for --txt2ppm\n";
 			return 1;
 		}
 
@@ -131,7 +185,8 @@ int main(int argc, char *argv[])
 		std::ofstream out(output_file);
 		if (!out.is_open())
 		{
-			std::cerr << "error: cannot create output file '" << output_file << "'\n";
+			std::cerr << "error: cannot create output file '"
+			          << output_file << "'\n";
 			return 1;
 		}
 

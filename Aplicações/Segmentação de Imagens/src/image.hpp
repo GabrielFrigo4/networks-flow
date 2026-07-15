@@ -17,14 +17,21 @@ struct Pixel
 
 struct Image
 {
-	Size                width, height;
-	std::vector<Pixel>  data;
-	bool                is_ascii = false;
+	Size width, height;
+	std::vector<Pixel> data;
+	bool is_ascii = false;
 
-	[[nodiscard]] Size index(const Size x, const Size y) const { return y * width + x; }
+	[[nodiscard]] Size index(const Size x, const Size y) const
+	{
+		return y * width + x;
+	}
 
-	[[nodiscard]] const Pixel &at(const Size x, const Size y) const { return data[index(x, y)]; }
-	[[nodiscard]] const Pixel &at(const int  x, const int  y) const
+	[[nodiscard]] const Pixel &at(const Size x, const Size y) const
+	{
+		return data[index(x, y)];
+	}
+
+	[[nodiscard]] const Pixel &at(const int x, const int y) const
 	{
 		return data[index(static_cast<Size>(x), static_cast<Size>(y))];
 	}
@@ -52,28 +59,41 @@ inline Image read_ppm(const std::string &filename)
 	std::string magic;
 	file >> magic;
 
-	if (magic.empty() || magic[0] != 'P' || magic.size() != 2 || magic[1] < '1' || magic[1] > '7')
+	if (magic.empty() || magic[0] != 'P' || magic.size() != 2 ||
+	    magic[1] < '1' || magic[1] > '7')
 	{
 		std::cerr << "error: unsupported Netpbm format '" << magic << "'\n";
 		std::exit(1);
 	}
 
-	Image  img;
+	Image img;
 	img.is_ascii = (magic == "P1" || magic == "P2" || magic == "P3");
-	Size   max_val = 255;
-	int    depth   = 3;
+	Size max_val = 255;
+	int depth = 3;
 
 	if (magic == "P7")
 	{
 		std::string token;
 		while (file >> token && token != "ENDHDR")
 		{
-			if      (token == "WIDTH")    file >> img.width;
-			else if (token == "HEIGHT")   file >> img.height;
-			else if (token == "DEPTH")    file >> depth;
-			else if (token == "MAXVAL")   file >> max_val;
-			else if (token == "TUPLTYPE") { std::string s; file >> s; }
-			else if (token == "#")        { std::string s; std::getline(file, s); }
+			if (token == "WIDTH")
+				file >> img.width;
+			else if (token == "HEIGHT")
+				file >> img.height;
+			else if (token == "DEPTH")
+				file >> depth;
+			else if (token == "MAXVAL")
+				file >> max_val;
+			else if (token == "TUPLTYPE")
+			{
+				std::string s;
+				file >> s;
+			}
+			else if (token == "#")
+			{
+				std::string s;
+				std::getline(file, s);
+			}
 		}
 		char c;
 		file.get(c);
@@ -139,7 +159,7 @@ inline Image read_ppm(const std::string &filename)
 			file.read(reinterpret_cast<char *>(row.data()), row_bytes);
 			for (Size x = 0; x < img.width; x++)
 			{
-				const int  bit = (row[x / 8] >> (7 - (x % 8))) & 1;
+				const int bit = (row[x / 8] >> (7 - (x % 8))) & 1;
 				const unsigned char c = (bit == 1) ? 0 : 255;
 				img.data[idx++] = {c, c, c};
 			}
@@ -171,7 +191,13 @@ inline Image read_ppm(const std::string &filename)
 			std::vector<unsigned char> channels(depth);
 			file.read(reinterpret_cast<char *>(channels.data()), depth);
 			if (depth >= 3)
-				img.data[i] = {scale(channels[0]), scale(channels[1]), scale(channels[2])};
+			{
+				img.data[i] = {
+				    scale(channels[0]),
+				    scale(channels[1]),
+				    scale(channels[2])
+				};
+			}
 			else
 			{
 				const unsigned char c = scale(channels[0]);
@@ -183,7 +209,9 @@ inline Image read_ppm(const std::string &filename)
 	return img;
 }
 
-inline void write_ppm(const std::string &filename, const Image &img, bool ascii = false)
+inline void write_ppm(
+    const std::string &filename, const Image &img, bool ascii = false
+)
 {
 	if (ascii)
 	{

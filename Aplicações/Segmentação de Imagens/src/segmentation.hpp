@@ -20,8 +20,8 @@ using FlowSolver = PushRelabelImproved;
 
 struct SegmentationGraph
 {
-	Size                         source;
-	Size                         sink;
+	Size source;
+	Size sink;
 	std::unique_ptr<FlowNetwork> network;
 };
 
@@ -61,32 +61,32 @@ inline SegmentationGraph build_graph(
     const Image &img, const std::vector<Seed> &seeds, const double sigma = 30.0
 )
 {
-	const Size num_pixels   = img.width * img.height;
-	const Size source       = num_pixels;
-	const Size sink         = num_pixels + 1;
+	const Size num_pixels = img.width * img.height;
+	const Size source = num_pixels;
+	const Size sink = num_pixels + 1;
 
 	auto network = FlowSolver::create(num_pixels + 2);
 
 	std::vector<SeedLabel> seed_map(num_pixels, SeedLabel::NONE);
-	std::vector<Pixel>     fg_pixels;
-	std::vector<Pixel>     bg_pixels;
+	std::vector<Pixel> fg_pixels;
+	std::vector<Pixel> bg_pixels;
 
 	for (const auto &seed : seeds)
 	{
 		if (seed.x >= img.width || seed.y >= img.height)
 			continue;
 		const Size idx = img.index(seed.x, seed.y);
-		seed_map[idx]  = seed.label;
+		seed_map[idx] = seed.label;
 		if (seed.label == SeedLabel::FOREGROUND)
 			fg_pixels.push_back(img.data[idx]);
 		else
 			bg_pixels.push_back(img.data[idx]);
 	}
 
-	const Long   K             = 1000;
-	const double two_sigma_sq  = 2.0 * sigma * sigma;
-	const int    dx[]          = {1, 0, -1, 0};
-	const int    dy[]          = {0, 1, 0, -1};
+	const Long K = 1000;
+	const double two_sigma_sq = 2.0 * sigma * sigma;
+	const int dx[] = {1, 0, -1, 0};
+	const int dy[] = {0, 1, 0, -1};
 
 	for (Size y = 0; y < img.height; y++)
 	{
@@ -103,17 +103,25 @@ inline SegmentationGraph build_graph(
 				    ny < 0 || ny >= static_cast<int>(img.height))
 					continue;
 
-				const Size   q      = img.index(static_cast<Size>(nx), static_cast<Size>(ny));
-				const double dist   = pixel_distance(img.at(x, y), img.at(nx, ny));
-				const Long   weight = static_cast<Long>(K * std::exp(-dist * dist / two_sigma_sq));
+				const Size q = img.index(
+				    static_cast<Size>(nx), static_cast<Size>(ny)
+				);
+				const double dist = pixel_distance(img.at(x, y), img.at(nx, ny));
+				const Long weight = static_cast<Long>(
+				    K * std::exp(-dist * dist / two_sigma_sq)
+				);
 
 				network->add_edge(p, q, std::max(weight, static_cast<Long>(1)));
 			}
 		}
 	}
 
-	const auto fg_mean = fg_pixels.empty() ? std::array<double, 3>{} : seed_mean(fg_pixels);
-	const auto bg_mean = bg_pixels.empty() ? std::array<double, 3>{} : seed_mean(bg_pixels);
+	const auto fg_mean = fg_pixels.empty()
+	                         ? std::array<double, 3>{}
+	                         : seed_mean(fg_pixels);
+	const auto bg_mean = bg_pixels.empty()
+	                         ? std::array<double, 3>{}
+	                         : seed_mean(bg_pixels);
 
 	for (Size i = 0; i < num_pixels; i++)
 	{
@@ -131,13 +139,21 @@ inline SegmentationGraph build_graph(
 		{
 			const Pixel &px = img.data[i];
 
-			const double d_fg    = fg_pixels.empty() ? 1e9 : dist_to_mean(px, fg_mean);
-			const double d_bg    = bg_pixels.empty() ? 1e9 : dist_to_mean(px, bg_mean);
-			const Long   w_src   = static_cast<Long>(K * std::exp(-d_fg * d_fg / two_sigma_sq));
-			const Long   w_sink  = static_cast<Long>(K * std::exp(-d_bg * d_bg / two_sigma_sq));
+			const double d_fg = fg_pixels.empty()
+			                        ? 1e9
+			                        : dist_to_mean(px, fg_mean);
+			const double d_bg = bg_pixels.empty()
+			                        ? 1e9
+			                        : dist_to_mean(px, bg_mean);
+			const Long w_src = static_cast<Long>(
+			    K * std::exp(-d_fg * d_fg / two_sigma_sq)
+			);
+			const Long w_sink = static_cast<Long>(
+			    K * std::exp(-d_bg * d_bg / two_sigma_sq)
+			);
 
-			network->add_edge(source, i, std::max(w_src,  static_cast<Long>(1)));
-			network->add_edge(i, sink,  std::max(w_sink, static_cast<Long>(1)));
+			network->add_edge(source, i, std::max(w_src, static_cast<Long>(1)));
+			network->add_edge(i, sink, std::max(w_sink, static_cast<Long>(1)));
 		}
 	}
 
@@ -148,13 +164,13 @@ inline SegmentationGraph build_graph(
     const SegmentationGraph &graph, const Size num_pixels
 )
 {
-	std::vector<bool>  reachable(num_pixels + 2, false);
-	std::queue<Size>   q;
+	std::vector<bool> reachable(num_pixels + 2, false);
+	std::queue<Size> q;
 
 	q.push(graph.source);
 	reachable[graph.source] = true;
 
-	const auto &edges     = graph.network->get_edges();
+	const auto &edges = graph.network->get_edges();
 	const auto &adjacency = graph.network->get_adjacency();
 
 	while (!q.empty())

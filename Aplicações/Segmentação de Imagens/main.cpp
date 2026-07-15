@@ -1,6 +1,7 @@
 #include <cstring>
 #include <iostream>
 #include <string>
+#include <string_view>
 
 #include "src/segmentation.hpp"
 
@@ -13,7 +14,8 @@ static void print_usage(const char *program)
 	    << "Options:\n"
 	    << "  -i, --input    <file>   Input PPM image (P3 or P6)\n"
 	    << "  -s, --seeds    <file>   Seeds file (x y F|B per line)\n"
-	    << "  -o, --output   <file>   Output PPM image  [default: output_segmented.ppm]\n"
+	    << "  -o, --output   <file>   Output PPM image\n"
+	    << "                          [default: output_segmented.ppm]\n"
 	    << "  -S, --sigma    <value>  Color sensitivity parameter  [default: 30.0]\n"
 	    << "  -a, --ascii             Force output PPM in ASCII format (P3)\n"
 	    << "  -b, --binary            Force output PPM in binary format (P6)\n"
@@ -60,26 +62,64 @@ int main(int argc, char *argv[])
 	}
 	else
 	{
-		for (int i = 1; i < argc; i++)
+		for (int i = 1; i < argc; ++i)
 		{
-			if (std::strcmp(argv[i], "--help") == 0 ||
-			    std::strcmp(argv[i], "-h") == 0)
+			std::string_view arg(argv[i]);
+			if (arg == "--help" || arg == "-h")
 			{
 				print_usage(argv[0]);
 				return 0;
 			}
-			else if ((std::strcmp(argv[i], "--input") == 0 || std::strcmp(argv[i], "-i") == 0) && i + 1 < argc)
+			else if (arg == "--input" || arg == "-i")
+			{
+				if (i + 1 >= argc)
+				{
+					std::cerr << "error: missing value for option " << arg << "\n";
+					return 1;
+				}
 				input_file = argv[++i];
-			else if ((std::strcmp(argv[i], "--seeds") == 0 || std::strcmp(argv[i], "-s") == 0) && i + 1 < argc)
+			}
+			else if (arg == "--seeds" || arg == "-s")
+			{
+				if (i + 1 >= argc)
+				{
+					std::cerr << "error: missing value for option " << arg << "\n";
+					return 1;
+				}
 				seeds_file = argv[++i];
-			else if ((std::strcmp(argv[i], "--output") == 0 || std::strcmp(argv[i], "-o") == 0) && i + 1 < argc)
+			}
+			else if (arg == "--output" || arg == "-o")
+			{
+				if (i + 1 >= argc)
+				{
+					std::cerr << "error: missing value for option " << arg << "\n";
+					return 1;
+				}
 				output_file = argv[++i];
-			else if ((std::strcmp(argv[i], "--sigma") == 0 || std::strcmp(argv[i], "-S") == 0) && i + 1 < argc)
+			}
+			else if (arg == "--sigma" || arg == "-S")
+			{
+				if (i + 1 >= argc)
+				{
+					std::cerr << "error: missing value for option " << arg << "\n";
+					return 1;
+				}
 				sigma = std::atof(argv[++i]);
-			else if (std::strcmp(argv[i], "--ascii") == 0 || std::strcmp(argv[i], "-a") == 0)
+			}
+			else if (arg == "--ascii" || arg == "-a")
+			{
 				ascii_forced = true;
-			else if (std::strcmp(argv[i], "--binary") == 0 || std::strcmp(argv[i], "-b") == 0)
+			}
+			else if (arg == "--binary" || arg == "-b")
+			{
 				binary_forced = true;
+			}
+			else
+			{
+				std::cerr << "error: unknown option " << arg << "\n";
+				print_usage(argv[0]);
+				return 1;
+			}
 		}
 	}
 

@@ -11,7 +11,8 @@ static void print_usage(const char *program)
 	    << "Options:\n"
 	    << "  -i, --input   <file>   Input Netpbm image (P1–P7)\n"
 	    << "  -o, --output  <file>   Output Netpbm image\n"
-	    << "  -a, --ascii            Force output in ASCII format (P3)  [default: match input]\n"
+	    << "  -a, --ascii            Force output in ASCII format (P3)\n"
+	    << "                         [default: match input]\n"
 	    << "  -b, --binary           Force output in binary format (P6)\n"
 	    << "  -h, --help             Show this message\n";
 }
@@ -20,24 +21,49 @@ int main(int argc, char *argv[])
 {
 	std::string input_file;
 	std::string output_file;
-	bool        ascii_forced  = false;
-	bool        binary_forced = false;
+	bool ascii_forced = false;
+	bool binary_forced = false;
 
-	for (int i = 1; i < argc; i++)
+	for (int i = 1; i < argc; ++i)
 	{
-		if (std::strcmp(argv[i], "--help") == 0 || std::strcmp(argv[i], "-h") == 0)
+		std::string_view arg(argv[i]);
+		if (arg == "--help" || arg == "-h")
 		{
 			print_usage(argv[0]);
 			return 0;
 		}
-		else if ((std::strcmp(argv[i], "--input") == 0 || std::strcmp(argv[i], "-i") == 0) && i + 1 < argc)
+		else if (arg == "--input" || arg == "-i")
+		{
+			if (i + 1 >= argc)
+			{
+				std::cerr << "error: missing value for option " << arg << "\n";
+				return 1;
+			}
 			input_file = argv[++i];
-		else if ((std::strcmp(argv[i], "--output") == 0 || std::strcmp(argv[i], "-o") == 0) && i + 1 < argc)
+		}
+		else if (arg == "--output" || arg == "-o")
+		{
+			if (i + 1 >= argc)
+			{
+				std::cerr << "error: missing value for option " << arg << "\n";
+				return 1;
+			}
 			output_file = argv[++i];
-		else if (std::strcmp(argv[i], "--ascii") == 0 || std::strcmp(argv[i], "-a") == 0)
+		}
+		else if (arg == "--ascii" || arg == "-a")
+		{
 			ascii_forced = true;
-		else if (std::strcmp(argv[i], "--binary") == 0 || std::strcmp(argv[i], "-b") == 0)
+		}
+		else if (arg == "--binary" || arg == "-b")
+		{
 			binary_forced = true;
+		}
+		else
+		{
+			std::cerr << "error: unknown option " << arg << "\n";
+			print_usage(argv[0]);
+			return 1;
+		}
 	}
 
 	if (input_file.empty() || output_file.empty())

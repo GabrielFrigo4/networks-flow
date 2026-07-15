@@ -20,13 +20,13 @@ enum class SeedLabel
 
 struct Seed
 {
-	Size      x, y;
+	Size x, y;
 	SeedLabel label;
 };
 
 inline std::vector<Seed> read_seeds_from_ppm(const std::string &filename)
 {
-	const Image       img = read_ppm(filename);
+	const Image img = read_ppm(filename);
 	std::vector<Seed> seeds;
 
 	for (Size y = 0; y < img.height; y++)
@@ -62,7 +62,7 @@ inline std::vector<Seed> read_seeds(const std::string &filename)
 	}
 
 	std::vector<Seed> seeds;
-	std::string       line;
+	std::string line;
 
 	while (std::getline(file, line))
 	{
@@ -70,8 +70,8 @@ inline std::vector<Seed> read_seeds(const std::string &filename)
 			continue;
 
 		std::istringstream iss(line);
-		Size               x, y;
-		char               label_char;
+		Size x, y;
+		char label_char;
 
 		if (!(iss >> x >> y >> label_char))
 			continue;
