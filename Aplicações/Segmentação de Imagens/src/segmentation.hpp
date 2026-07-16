@@ -1,6 +1,5 @@
 #pragma once
 
-#include <array>
 #include <cmath>
 #include <memory>
 #include <queue>
@@ -30,30 +29,6 @@ inline double pixel_distance(const Pixel &a, const Pixel &b)
 	const double dr = static_cast<double>(a.r) - static_cast<double>(b.r);
 	const double dg = static_cast<double>(a.g) - static_cast<double>(b.g);
 	const double db = static_cast<double>(a.b) - static_cast<double>(b.b);
-	return std::sqrt(dr * dr + dg * dg + db * db);
-}
-
-static std::array<double, 3> seed_mean(const std::vector<Pixel> &pixels)
-{
-	std::array<double, 3> mean{};
-	for (const auto &px : pixels)
-	{
-		mean[0] += px.r;
-		mean[1] += px.g;
-		mean[2] += px.b;
-	}
-	const double n = static_cast<double>(pixels.size());
-	mean[0] /= n;
-	mean[1] /= n;
-	mean[2] /= n;
-	return mean;
-}
-
-static double dist_to_mean(const Pixel &px, const std::array<double, 3> &mean)
-{
-	const double dr = px.r - mean[0];
-	const double dg = px.g - mean[1];
-	const double db = px.b - mean[2];
 	return std::sqrt(dr * dr + dg * dg + db * db);
 }
 
@@ -116,13 +91,6 @@ inline SegmentationGraph build_graph(
 		}
 	}
 
-	const auto fg_mean = fg_pixels.empty()
-	                         ? std::array<double, 3>{}
-	                         : seed_mean(fg_pixels);
-	const auto bg_mean = bg_pixels.empty()
-	                         ? std::array<double, 3>{}
-	                         : seed_mean(bg_pixels);
-
 	for (Size i = 0; i < num_pixels; i++)
 	{
 		if (seed_map[i] == SeedLabel::FOREGROUND)
@@ -139,12 +107,28 @@ inline SegmentationGraph build_graph(
 		{
 			const Pixel &px = img.data[i];
 
-			const double d_fg = fg_pixels.empty()
-			                        ? 1e9
-			                        : dist_to_mean(px, fg_mean);
-			const double d_bg = bg_pixels.empty()
-			                        ? 1e9
-			                        : dist_to_mean(px, bg_mean);
+			double d_fg = 1e9;
+			for (const auto &sp : fg_pixels)
+			{
+				const double dr = px.r - sp.r;
+				const double dg = px.g - sp.g;
+				const double db = px.b - sp.b;
+				const double d = std::sqrt(dr * dr + dg * dg + db * db);
+				if (d < d_fg)
+					d_fg = d;
+			}
+
+			double d_bg = 1e9;
+			for (const auto &sp : bg_pixels)
+			{
+				const double dr = px.r - sp.r;
+				const double dg = px.g - sp.g;
+				const double db = px.b - sp.b;
+				const double d = std::sqrt(dr * dr + dg * dg + db * db);
+				if (d < d_bg)
+					d_bg = d;
+			}
+
 			const Long w_src = static_cast<Long>(
 			    K * std::exp(-d_fg * d_fg / two_sigma_sq)
 			);
