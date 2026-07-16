@@ -1,4 +1,4 @@
-# Balloons seeds - realistic simplified doodle without isolated pixels (clean balloon body crosses, continuous diagonal glare doodles, continuous junction doodles, and continuous rope doodles)
+# Balloons seeds - realistic simplified doodle without isolated pixels (clean balloon body crosses, continuous diagonal glare doodles, continuous junction doodles, and short rope doodles)
 # Foreground: Yellow Balloon (top)
 24 4 F
 24 5 F
@@ -73,51 +73,26 @@
 34 28 F
 35 28 F
 
-# Foreground: Left rope (fully continuous y=31..47, no isolated base points)
-17 31 F
-20 32 F
+# Foreground: Left rope (y=33..37, 5 pixels)
 20 33 F
 20 34 F
 20 35 F
 20 36 F
 20 37 F
-20 38 F
-19 39 F
-19 40 F
-20 41 F
-21 42 F
-22 43 F
-23 44 F
-23 45 F
-23 46 F
-23 47 F
 
-# Foreground: Middle rope (fully continuous y=31..43)
-23 31 F
-23 32 F
+# Foreground: Middle rope (y=33..37, 5 pixels)
 23 33 F
 23 34 F
 23 35 F
 23 36 F
 23 37 F
-23 38 F
-23 39 F
-23 40 F
-24 41 F
-24 42 F
-24 43 F
 
-# Foreground: Right rope (fully continuous y=34..43)
-32 34 F
+# Foreground: Right rope (y=35..39, 5 pixels)
 31 35 F
 30 36 F
 29 37 F
 29 38 F
 28 39 F
-27 40 F
-26 41 F
-25 42 F
-24 43 F
 
 # Background: Coarse border surrounding the balloons at a distance
 2 2 B

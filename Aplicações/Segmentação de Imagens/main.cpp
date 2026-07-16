@@ -16,7 +16,7 @@ static void print_usage(const char *program)
 	    << "  -s, --seeds    <file>   Seeds file (x y F|B per line)\n"
 	    << "  -o, --output   <file>   Output PPM image\n"
 	    << "                          [default: output_segmented.ppm]\n"
-	    << "  -S, --sigma    <value>  Color sensitivity parameter  [default: 30.0]\n"
+	    << "  -S, --sigma    <value>  Color sensitivity parameter  [default: 50.0]\n"
 	    << "  -a, --ascii             Force output PPM in ASCII format (P3)\n"
 	    << "  -b, --binary            Force output PPM in binary format (P6)\n"
 	    << "  -h, --help              Show this message\n";
@@ -27,7 +27,7 @@ int main(int argc, char *argv[])
 	std::string input_file;
 	std::string seeds_file;
 	std::string output_file = "output_segmented.ppm";
-	double sigma = 30.0;
+	double sigma = 50.0;
 	bool ascii_forced = false;
 	bool binary_forced = false;
 
@@ -45,7 +45,7 @@ int main(int argc, char *argv[])
 		if (!tmp.empty())
 			output_file = tmp;
 
-		std::cout << "Sigma [30.0]: ";
+		std::cout << "Sigma [50.0]: ";
 		std::getline(std::cin, tmp);
 		if (!tmp.empty())
 			sigma = std::stod(tmp);

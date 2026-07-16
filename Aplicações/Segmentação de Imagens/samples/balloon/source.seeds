@@ -1,4 +1,4 @@
-# Balloon seeds - realistic simple doodle without isolated pixels (cross on balloon body, continuous diagonal glare doodle, and continuous rope doodle)
+# Balloon seeds - realistic simple doodle without isolated pixels (cbody cross, diagonal glare doodle, and short rope doodle)
 # Foreground: balloon body vertical line
 16 6 F
 16 7 F
@@ -29,16 +29,12 @@
 12 8 F
 11 7 F
 
-# Foreground: continuous rope doodle from start to end
-17 23 F
+# Foreground: short continuous rope doodle in the middle (5 pixels)
 17 24 F
 18 25 F
 18 26 F
 18 27 F
 17 28 F
-17 29 F
-16 30 F
-15 31 F
 
 # Background: Coarse border surrounding the balloon at a distance
 2 2 B

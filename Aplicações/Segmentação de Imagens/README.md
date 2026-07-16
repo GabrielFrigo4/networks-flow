@@ -89,7 +89,7 @@ Options:
   -i, --input    <file>   Imagem de entrada Netpbm (P1–P7)        [obrigatório]
   -s, --seeds    <file>   Seeds em texto (.seeds) ou imagem (.ppm) [obrigatório]
   -o, --output   <file>   Imagem segmentada de saída               [padrão: output_segmented.ppm]
-  -S, --sigma    <val>    Sensibilidade ao contraste de cor        [padrão: 30.0]
+  -S, --sigma    <val>    Sensibilidade ao contraste de cor        [padrão: 50.0]
   -a, --ascii             Força saída em ASCII (P3)
   -b, --binary            Força saída em binário (P6)
   -h, --help              Exibe esta mensagem
