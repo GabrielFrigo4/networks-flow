@@ -80,7 +80,7 @@ Onde:
 - $K = 1000$ é um fator de escala para trabalharmos com fluxo em valores inteiros de alta precisão.
 
 ### T-links (Similaridade Regional)
-Os t-links atraem os pixels para a classe correta com base no conjunto de sementes marcadas pelo usuário: $\mathcal{S}_{\text{fg}}$ (sementes de Foreground) e $\mathcal{S}_{\text{bg}}$ (sementes de Background).
+Os t-links atraem os pixels para a classe correta com base no conjunto de sementes marcadas pelo usuário: $\mathcal{S}\_{\text{fg}}$ (sementes de Foreground) e $\mathcal{S}\_{\text{bg}}$ (sementes de Background).
 
 #### Para Pixels Marcados (Sementes)
 Se o usuário marcou explicitamente o pixel no objeto ou no fundo, a decisão é absoluta. Usamos capacidade infinita ($\infty \approx \text{INF}$) para prender o pixel ao terminal correspondente:
