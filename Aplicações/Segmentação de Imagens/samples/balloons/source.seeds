@@ -1,62 +1,282 @@
-# Seeds para baloes vermelho e amarelo (balloons.ppm)
-# Formato: x y label (F=foreground, B=background)
-
-# Foreground: balao amarelo (corpo e laranja)
+# Balloons seeds - realistic simplified doodle without isolated pixels (clean balloon body crosses, continuous diagonal glare doodles, continuous junction doodles, and continuous rope doodles)
+# Foreground: Yellow Balloon (top)
+24 4 F
+24 5 F
+24 6 F
+24 7 F
+24 8 F
+24 9 F
 24 10 F
-22 13 F
-27 12 F
-
-# Foreground: brilho branco-rosado do balao amarelo (lado esquerdo)
-15 13 F
-13 16 F
-11 18 F
-
-# Foreground: brilho branco-amarelado do balao amarelo (lado superior direito)
-21 5 F
-21 8 F
+24 11 F
+24 12 F
+24 13 F
+24 14 F
+24 15 F
+20 10 F
 21 10 F
+22 10 F
+23 10 F
+25 10 F
+26 10 F
+27 10 F
 
-# Foreground: balao vermelho (bordas e centro)
-11 20 F
-13 20 F
-17 21 F
+# Foreground: Yellow Glare - continuous diagonal doodle
+23 9 F
+22 9 F
+21 8 F
+
+# Foreground: Pink Glare - continuous diagonal doodle from left
+18 11 F
+17 12 F
+16 13 F
+15 14 F
+14 15 F
+13 16 F
+
+# Foreground: Red Balloon
+14 17 F
+14 18 F
+14 19 F
+14 20 F
+14 21 F
+14 22 F
+14 23 F
+14 24 F
 11 21 F
+12 21 F
+13 21 F
+15 21 F
+16 21 F
+17 21 F
+18 21 F
+19 21 F
 
-# Foreground: juncao amarelo-vermelho (laranja escuro)
-17 19 F
-22 26 F
+# Foreground: Continuous junction doodle
 20 22 F
-
-# Foreground: borda escura (dark red) do balao vermelho
+21 23 F
+21 24 F
 21 25 F
+22 26 F
 
-# Foreground: balao azul (corpo claro e escuro)
+# Foreground: Blue Balloon
+32 24 F
+32 25 F
+32 26 F
+32 27 F
 32 28 F
-29 25 F
+32 29 F
+32 30 F
+29 28 F
+30 28 F
+31 28 F
+33 28 F
+34 28 F
+35 28 F
 
-# Foreground: corda do balao esquerdo
-24 30 F
-23 33 F
+# Foreground: Left rope (fully continuous y=31..47, no isolated base points)
+17 31 F
+20 32 F
+20 33 F
+20 34 F
 20 35 F
+20 36 F
+20 37 F
+20 38 F
+19 39 F
+19 40 F
+20 41 F
+21 42 F
+22 43 F
+23 44 F
+23 45 F
+23 46 F
+23 47 F
 
-# Foreground: corda do balao direito
+# Foreground: Middle rope (fully continuous y=31..43)
+23 31 F
+23 32 F
+23 33 F
+23 34 F
+23 35 F
+23 36 F
+23 37 F
+23 38 F
+23 39 F
+23 40 F
+24 41 F
+24 42 F
+24 43 F
+
+# Foreground: Right rope (fully continuous y=34..43)
+32 34 F
+31 35 F
 30 36 F
 29 37 F
-23 44 F
-23 46 F
+29 38 F
+28 39 F
+27 40 F
+26 41 F
+25 42 F
+24 43 F
 
-# Background: ceu (azul claro)
+# Background: Coarse border surrounding the balloons at a distance
 2 2 B
-46 2 B
-2 46 B
-46 46 B
-41 31 B
-
-# Background: pixels de ceu que foram erroneamente marcados como foreground antes
-39 26 B
-40 26 B
-41 26 B
-40 29 B
-34 32 B
-31 36 B
-33 39 B
+3 2 B
+4 2 B
+5 2 B
+6 2 B
+7 2 B
+8 2 B
+9 2 B
+10 2 B
+11 2 B
+12 2 B
+13 2 B
+14 2 B
+15 2 B
+16 2 B
+17 2 B
+18 2 B
+19 2 B
+20 2 B
+21 2 B
+22 2 B
+23 2 B
+24 2 B
+25 2 B
+26 2 B
+27 2 B
+28 2 B
+29 2 B
+30 2 B
+31 2 B
+32 2 B
+33 2 B
+34 2 B
+35 2 B
+36 2 B
+37 2 B
+38 2 B
+39 2 B
+40 2 B
+41 2 B
+42 2 B
+43 2 B
+44 2 B
+45 2 B
+2 3 B
+2 4 B
+2 5 B
+2 6 B
+2 7 B
+2 8 B
+2 9 B
+2 10 B
+2 11 B
+2 12 B
+2 13 B
+2 14 B
+2 15 B
+2 16 B
+2 17 B
+2 18 B
+2 19 B
+2 20 B
+2 21 B
+2 22 B
+2 23 B
+2 24 B
+2 25 B
+2 26 B
+2 27 B
+2 28 B
+2 29 B
+2 30 B
+2 31 B
+2 32 B
+2 33 B
+2 34 B
+2 35 B
+2 36 B
+2 37 B
+2 38 B
+2 39 B
+2 40 B
+2 41 B
+2 42 B
+2 43 B
+2 44 B
+2 45 B
+45 3 B
+45 4 B
+45 5 B
+45 6 B
+45 7 B
+45 8 B
+45 9 B
+45 10 B
+45 11 B
+45 12 B
+45 13 B
+45 14 B
+45 15 B
+45 16 B
+45 17 B
+45 18 B
+45 19 B
+45 20 B
+45 21 B
+45 22 B
+45 23 B
+45 24 B
+45 25 B
+45 26 B
+45 27 B
+45 28 B
+45 29 B
+45 30 B
+45 31 B
+45 32 B
+45 33 B
+45 34 B
+45 35 B
+45 36 B
+45 37 B
+45 38 B
+45 39 B
+45 40 B
+45 41 B
+45 42 B
+45 43 B
+45 44 B
+45 45 B
+2 45 B
+3 45 B
+4 45 B
+5 45 B
+6 45 B
+7 45 B
+8 45 B
+9 45 B
+10 45 B
+11 45 B
+12 45 B
+13 45 B
+14 45 B
+15 45 B
+30 45 B
+31 45 B
+32 45 B
+33 45 B
+34 45 B
+35 45 B
+36 45 B
+37 45 B
+38 45 B
+39 45 B
+40 45 B
+41 45 B
+42 45 B
+43 45 B
+44 45 B
+45 45 B

@@ -1,17 +1,81 @@
-# Seeds para circle.ppm
-# Formato: x y label (F=foreground, B=background)
-# Centro como foreground
-10 10 F
+# Circle seeds - realistic user doodle (center cross and coarse background circle)
+# Foreground
+8 10 F
 9 10 F
+10 10 F
 11 10 F
+12 10 F
+10 8 F
 10 9 F
 10 11 F
-# Cantos como background
-0 0 B
-19 0 B
-0 19 B
-19 19 B
-0 10 B
-19 10 B
-10 0 B
-10 19 B
+10 12 F
+
+# Background: Coarse border surrounding the object at a distance
+1 1 B
+2 1 B
+3 1 B
+4 1 B
+5 1 B
+6 1 B
+7 1 B
+8 1 B
+9 1 B
+10 1 B
+11 1 B
+12 1 B
+13 1 B
+14 1 B
+15 1 B
+16 1 B
+17 1 B
+18 1 B
+1 18 B
+2 18 B
+3 18 B
+4 18 B
+5 18 B
+6 18 B
+7 18 B
+8 18 B
+9 18 B
+10 18 B
+11 18 B
+12 18 B
+13 18 B
+14 18 B
+15 18 B
+16 18 B
+17 18 B
+18 18 B
+1 2 B
+1 3 B
+1 4 B
+1 5 B
+1 6 B
+1 7 B
+1 8 B
+1 9 B
+1 10 B
+1 11 B
+1 12 B
+1 13 B
+1 14 B
+1 15 B
+1 16 B
+1 17 B
+18 2 B
+18 3 B
+18 4 B
+18 5 B
+18 6 B
+18 7 B
+18 8 B
+18 9 B
+18 10 B
+18 11 B
+18 12 B
+18 13 B
+18 14 B
+18 15 B
+18 16 B
+18 17 B
