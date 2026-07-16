@@ -56,8 +56,10 @@ graph TD
 
     p1 <-->|w_pq| p2
 
-    style s fill:#ffcccc,stroke:#ff0000,stroke-width:2px
-    style t fill:#ccccff,stroke:#0000ff,stroke-width:2px
+    style s fill:#501b1b,stroke:#ff5555,stroke-width:2px,color:#ffffff
+    style t fill:#1b1b50,stroke:#5555ff,stroke-width:2px,color:#ffffff
+    style p1 fill:#2b2b2b,stroke:#888888,stroke-width:1px,color:#ffffff
+    style p2 fill:#2b2b2b,stroke:#888888,stroke-width:1px,color:#ffffff
 ```
 
 ---
@@ -169,9 +171,11 @@ graph TD
     s2((Source s)) -->|INF| q["Pixel q (objeto)"]
     p <==>|N-link = 950| q
     
-    style s1 fill:#ffcccc,stroke:#ff0000,stroke-width:2px
-    style s2 fill:#ffcccc,stroke:#ff0000,stroke-width:2px
-    style t1 fill:#ccccff,stroke:#0000ff,stroke-width:2px
+    style s1 fill:#501b1b,stroke:#ff5555,stroke-width:2px,color:#ffffff
+    style s2 fill:#501b1b,stroke:#ff5555,stroke-width:2px,color:#ffffff
+    style t1 fill:#1b1b50,stroke:#5555ff,stroke-width:2px,color:#ffffff
+    style p fill:#2b2b2b,stroke:#888888,stroke-width:1px,color:#ffffff
+    style q fill:#2b2b2b,stroke:#888888,stroke-width:1px,color:#ffffff
 ```
 
 Para classificar o pixel de brilho $p$ como fundo (Sink), o corte precisaria passar ao redor dele, o que exige cortar todas as arestas N-links que o conectam ao resto do balão.
