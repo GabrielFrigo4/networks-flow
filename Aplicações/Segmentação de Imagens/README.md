@@ -54,7 +54,7 @@ Pixels parecidos → link forte (difícil de cortar). Contraste grande → link 
 
 - **Seeds de foreground**: capacidade `INF` para Source, `0` para Sink (fixa o pixel no objeto).
 - **Seeds de background**: `0` para Source, `INF` para Sink (fixa no fundo).
-- **Pixels não marcados**: capacidade proporcional à similaridade gaussiana com a cor média das seeds de cada classe.
+- **Pixels não marcados**: capacidades $w_{\text{source}}$ e $w_{\text{sink}}$ calculadas usando a similaridade gaussiana com base na **distância de cor mínima (no espaço RGB)** em relação a qualquer semente da respectiva classe (heurística de vizinho mais próximo / Nearest Neighbor no espaço de cores).
 
 ### 3. Max-Flow → Min-Cut
 

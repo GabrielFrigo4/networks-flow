@@ -615,12 +615,22 @@ Seja $I$ uma imagem com $n = W \times H$ pixels. A construção da rede de segme
     \end{equation}
     onde $\|I_p - I_q\|$ é a distância euclidiana no espaço RGB, $\sigma$ é um parâmetro de sensibilidade e $K$ é um fator de escala para conversão a inteiros. Pixels similares recebem peso alto (difíceis de separar); pixels com cores muito diferentes recebem peso baixo (fronteiras naturais).
 
-    \item \textbf{T-links (Terminal Links):} Para cada pixel $p_i$, criam-se dois arcos conectando-o aos terminais:
+    \item \textbf{T-links (Terminal Links):} Para cada pixel $p$, criam-se dois arcos conectando-o aos terminais: $(s, p)$ com capacidade $w_s(p)$ e $(p, t)$ com capacidade $w_t(p)$. 
+    
+    Para os pixels explicitamente marcados como sementes pelo usuário, as capacidades são atribuídas de forma absoluta para garantir sua classificação:
     \begin{itemize}
-        \item $(s, p_i)$ com peso $w_s(p_i)$: afinidade com o modelo de cor do \textit{foreground}.
-        \item $(p_i, t)$ com peso $w_t(p_i)$: afinidade com o modelo de cor do \textit{background}.
+        \item Se $p \in \mathcal{S}_{\text{fg}}$ (semente de \textit{foreground}): $w_s(p) = \infty$ e $w_t(p) = 0$.
+        \item Se $p \in \mathcal{S}_{\text{bg}}$ (semente de \textit{background}): $w_s(p) = 0$ e $w_t(p) = \infty$.
     \end{itemize}
-    Pixels marcados explicitamente pelo usuário como \textit{foreground} recebem $w_s = \infty$ e $w_t = 0$, e vice-versa para o \textit{background}.
+    
+    Para os pixels não marcados, as capacidades são definidas usando a distância de cor mínima (heurística de vizinho mais próximo no espaço RGB) em relação a qualquer semente da respectiva classe:
+    \begin{equation}
+        w_s(p) = \max\left( K \cdot \exp\left(-\frac{\min_{s_j \in \mathcal{S}_{\text{fg}}} \|I_p - I_{s_j}\|^2}{2\sigma^2}\right), 1 \right)
+    \end{equation}
+    \begin{equation}
+        w_t(p) = \max\left( K \cdot \exp\left(-\frac{\min_{s_j \in \mathcal{S}_{\text{bg}}} \|I_p - I_{s_j}\|^2}{2\sigma^2}\right), 1 \right)
+    \end{equation}
+    onde $\|I_p - I_{s_j}\|$ representa a distância euclidiana tridimensional no espaço de cores RGB e o limite inferior $\max(\dots, 1)$ impede instabilidades numéricas.
 \end{enumerate}
 
 \begin{figure}[h]
