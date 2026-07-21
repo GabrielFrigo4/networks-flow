@@ -10,7 +10,7 @@ Progresso das otimizações e refatorações de código no projeto, visando melh
 
 - [x] Testar e se precisar finalizar a Segmentação de Imagens (Max Flow / Min Cut)
 - [x] Consertar alguns casos de borda do Segmentação de Imagens (Max Flow / Min Cut)
-- [ ] Reler o Relatório, fazer uma auditoria completa da iniciação científica
+- [x] Reler o Relatório, fazer uma auditoria completa da iniciação científica
 - [ ] Fazer o Minimum Cost Flow, ver os algoritmos de implementação
 - [ ] Fazer o Network Simplex? Não sei, não precisa
 - [ ] Por fim vazer a auditoria final do Relatório e entregar a IC
