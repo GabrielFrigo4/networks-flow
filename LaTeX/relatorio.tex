@@ -74,6 +74,7 @@
 \newtheorem{prop}{Proposição}
 
 \begin{document}
+\setlength{\emergencystretch}{3em}
 \onehalfspacing
 
 \begin{center}
@@ -357,19 +358,22 @@ Existindo $\mathcal{O}(|A|)$ arcos na malha geométrica, o limite superior de au
 \begin{figure}[h]
 \centering
 \begin{tikzpicture}[>=Stealth, thick]
-  \node[circle, draw, minimum size=8mm, fill=green!20, font=\footnotesize] (s) at (0, 0) {$s$ (0)};
-  \node[circle, draw, minimum size=8mm, font=\footnotesize] (a) at (2, 1) {$a$ (1)};
-  \node[circle, draw, minimum size=8mm, font=\footnotesize] (b) at (2, -1) {$b$ (1)};
-  \node[circle, draw, minimum size=8mm, font=\footnotesize] (c) at (4, 1) {$c$ (2)};
-  \node[circle, draw, minimum size=8mm, fill=red!20, font=\footnotesize] (t) at (6, 0) {$t$ (3)};
+  \node[circle, draw, minimum size=9mm, fill=green!20, font=\small] (s) at (0, 0) {$s$ (0)};
+  \node[circle, draw, minimum size=9mm, font=\small] (a) at (3, 1.5) {$a$ (1)};
+  \node[circle, draw, minimum size=9mm, font=\small] (b) at (2, -1.5) {$b$ (1)};
+  \node[circle, draw, minimum size=9mm, font=\small] (c) at (4, -1.5) {$c$ (2)};
+  \node[circle, draw, minimum size=9mm, fill=red!20, font=\small] (t) at (6, 0) {$t$ (2)};
 
-  \draw[->, blue, dashed] (s) -- node[above left, font=\tiny, text=black] {2/4} (a);
-  \draw[->, gray] (s) -- node[below left, font=\tiny, text=black] {1/2} (b);
-  \draw[->, blue, dashed] (a) -- node[above, font=\tiny, text=black] {2/3} (c);
-  \draw[->, gray] (b) -- node[below right, font=\tiny, text=black] {1/2} (c);
-  \draw[->, blue, dashed] (c) -- node[above right, font=\tiny, text=black] {3/5} (t);
+  \draw[->, blue, dashed, line width=1.5pt] (s) -- node[above left, font=\footnotesize, text=black] {$c=5$} (a);
+  \draw[->, blue, dashed, line width=1.5pt] (a) -- node[above right, font=\footnotesize, text=black] {$c=5$} (t);
+  
+  \draw[->, gray] (s) -- node[below left, font=\footnotesize, text=black] {$c=10$} (b);
+  \draw[->, gray] (b) -- node[below, font=\footnotesize, text=black] {$c=10$} (c);
+  \draw[->, gray] (c) -- node[below right, font=\footnotesize, text=black] {$c=10$} (t);
+  
+  \draw[->, gray, thin] (a) -- node[right, font=\tiny, text=gray] {$c=2$} (b);
 \end{tikzpicture}
-\caption{O Algoritmo de Edmonds-Karp utiliza busca em largura (BFS) na rede residual para encontrar sempre o caminho aumentante mais curto (em n\'umero de arestas), como ilustrado em azul. Os n\'iveis da BFS s\~ao indicados entre par\^enteses.}
+\caption{O Algoritmo de Edmonds-Karp utiliza busca em largura (BFS) na rede residual para encontrar sempre o caminho aumentante mais curto (em n\'umero de arestas). Na figura, embora o caminho inferior $s \to b \to c \to t$ suporte maior fluxo gargalo ($c=10$), a BFS garante a escolha imediata do caminho superior $s \to a \to t$ (azul tracejado), por ser topologicamente mais curto (comprimento 2 versus 3). Os n\'iveis descobertos pela BFS s\~ao indicados entre par\^enteses.}
 \label{fig:edmonds_karp_bfs}
 \end{figure}
 
@@ -389,17 +393,19 @@ Esta poda dramática na árvore de recursão garante uma amortização matemáti
 \centering
 \begin{tikzpicture}[>=Stealth,thick]
 
-\node[circle,draw,fill=green!20,minimum size=8mm,font=\small] (s) at (0,1.5) {$s$};
-\node[circle,draw,minimum size=8mm,font=\small] (a) at (2,3) {$a$};
-\node[circle,draw,minimum size=8mm,font=\small] (b) at (2,0) {$b$};
-\node[circle,draw,minimum size=8mm,font=\small] (c) at (4,3) {$c$};
-\node[circle,draw,minimum size=8mm,font=\small] (d) at (4,0) {$d$};
-\node[circle,draw,fill=red!20,minimum size=8mm,font=\small] (t) at (6,1.5) {$t$};
+\foreach \x in {0,2,4,6} { \draw[gray!30,dashed] (\x,-0.7) -- (\x,3.8); }
 
-\node[gray,font=\footnotesize] at (0,3.8) {n\'iv. 0};
-\node[gray,font=\footnotesize] at (2,3.8) {n\'iv. 1};
-\node[gray,font=\footnotesize] at (4,3.8) {n\'iv. 2};
-\node[gray,font=\footnotesize] at (6,3.8) {n\'iv. 3};
+\node[gray,font=\footnotesize] at (0,4.1) {n\'iv. 0};
+\node[gray,font=\footnotesize] at (2,4.1) {n\'iv. 1};
+\node[gray,font=\footnotesize] at (4,4.1) {n\'iv. 2};
+\node[gray,font=\footnotesize] at (6,4.1) {n\'iv. 3};
+
+\node[circle,draw,fill=green!20,minimum size=8mm,font=\small] (s) at (0,1.5) {$s$};
+\node[circle,draw,fill=white,minimum size=8mm,font=\small] (a) at (2,3) {$a$};
+\node[circle,draw,fill=white,minimum size=8mm,font=\small] (b) at (2,0) {$b$};
+\node[circle,draw,fill=white,minimum size=8mm,font=\small] (c) at (4,3) {$c$};
+\node[circle,draw,fill=white,minimum size=8mm,font=\small] (d) at (4,0) {$d$};
+\node[circle,draw,fill=red!20,minimum size=8mm,font=\small] (t) at (6,1.5) {$t$};
 
 \draw[->,line width=1.5pt,blue] (s) -- (a);
 \draw[->,line width=1.5pt,blue] (s) -- (b);
@@ -410,10 +416,9 @@ Esta poda dramática na árvore de recursão garante uma amortização matemáti
 \draw[->,line width=1.5pt,blue] (c) -- (t);
 \draw[->,line width=1.5pt,blue] (d) -- (t);
 
-\draw[->,gray,dashed] (a) -- node[right,font=\tiny,gray,align=left] {exclu\'ido\\(mesmo n\'iv.)} (b);
-\draw[->,gray,dashed,bend right=20] (c) to node[above,font=\tiny,gray] {exclu\'ido (retrocesso)} (a);
+\draw[->,gray,dashed,bend right=30] (a) to node[left,font=\footnotesize,gray,align=right] {exclu\'ido\\(mesmo n\'iv.)} (b);
+\draw[->,gray,dashed,bend right=20] (c) to node[above,font=\footnotesize,gray] {exclu\'ido (retrocesso)} (a);
 
-\foreach \x in {0,2,4,6} { \draw[gray!30,dashed] (\x,-0.7) -- (\x,3.5); }
 \end{tikzpicture}
 \caption{Digrafo de N\'iveis no Algoritmo de Dinic. Arcos azuis s\~ao os arcos admiss\'iveis (avan\c{c}am exatamente um n\'ivel: $d(v) = d(u)+1$), que comp\~oem o Digrafo de N\'iveis. Arcos cinza tracejados s\~ao excluídos por n\~ao avan\c{c}arem n\'ivel. O Fluxo Bloqueador \'e extra\'ido apenas sobre os arcos azuis.}
 \label{fig:level_graph}
@@ -484,39 +489,37 @@ A eficiência global do algoritmo é intrinsecamente dependente da política de 
 
 \begin{figure}[h]
 \centering
-\begin{tikzpicture}[>=Stealth,thick,
+\begin{tikzpicture}[>=Stealth,thick,node distance=2.2cm,
     main/.style={circle,draw,minimum size=10mm}]
 
-% === LEFT: Push ===
-\node[font=\footnotesize,above] at (1.5,6.2) {\textbf{Antes: Push admiss\'ivel de $u$ para $v$}};
+\node[font=\footnotesize,above] at (1.5,4.0) {\textbf{Antes do Push: arco admiss\'ivel}};
 
-\node[main,fill=yellow!30] (u) at (0,5.0) {$u$};
+\node[main,fill=yellow!30] (u) at (0,3.0) {$u$};
 \node[font=\tiny,above=2pt of u] {$h{=}3,\,e{=}5$};
 
-\node[main,fill=blue!10] (v) at (3,5.0) {$v$};
+\node[main,fill=blue!10] (v) at (3,3.0) {$v$};
 \node[font=\tiny,above=2pt of v] {$h{=}2,\,e{=}1$};
 
 \draw[->,line width=1.5pt,green!60!black] (u) -- node[above,font=\footnotesize] {$c_f=4$} (v);
 
-\node[font=\footnotesize,above] at (1.5,1.6) {\textbf{Depois do Push($u$,$v$,$\delta$=4)}};
-\node[main,fill=yellow!30] (u2) at (0,0.4) {$u$};
+\node[font=\footnotesize,above] at (1.5,1.0) {\textbf{Depois do Push($u,v$): $\delta=4$}};
+\node[main,fill=yellow!30] (u2) at (0,0.0) {$u$};
 \node[font=\tiny,above=2pt of u2] {$h{=}3,\,e{=}1$};
-\node[main,fill=blue!10] (v2) at (3,0.4) {$v$};
+\node[main,fill=blue!10] (v2) at (3,0.0) {$v$};
 \node[font=\tiny,above=2pt of v2] {$h{=}2,\,e{=}5$};
 \draw[->,gray,dashed] (u2) -- node[above,font=\footnotesize,gray] {$c_f=0$} (v2);
 
-% === RIGHT: Relabel ===
-\node[font=\footnotesize,above] at (10.0,6.2) {\textbf{Relabel: $u$ preso (sem arco admiss\'ivel)}};
-\node[main,fill=orange!30] (r1) at (8.5,5.0) {$u$};
+\node[font=\footnotesize,above] at (8.5,4.0) {\textbf{Antes do Relabel: $u$ preso}};
+\node[main,fill=orange!30] (r1) at (7.0,3.0) {$u$};
 \node[font=\tiny,above=2pt of r1] {$h{=}2,\,e{=}3$};
-\node[main,fill=gray!10] (r2) at (11.5,5.0) {$w$};
+\node[main,fill=gray!10] (r2) at (10.0,3.0) {$w$};
 \node[font=\tiny,above=2pt of r2] {$h{=}3$};
 \draw[->,gray,dashed] (r1) -- node[above,font=\tiny,align=center] {$c_f=2$\\inadmiss\'ivel} (r2);
 
-\node[font=\footnotesize,above] at (10.0,1.6) {\textbf{Ap\'os Relabel: $h(u)\leftarrow 4$}};
-\node[main,fill=orange!50] (r3) at (8.5,0.4) {$u$};
+\node[font=\footnotesize,above] at (8.5,1.0) {\textbf{Depois do Relabel($u$): $h(u)\leftarrow 4$}};
+\node[main,fill=orange!50] (r3) at (7.0,0.0) {$u$};
 \node[font=\tiny,above=2pt of r3] {$h{=}4,\,e{=}3$};
-\node[main,fill=gray!10] (r4) at (11.5,0.4) {$w$};
+\node[main,fill=gray!10] (r4) at (10.0,0.0) {$w$};
 \node[font=\tiny,above=2pt of r4] {$h{=}3$};
 \draw[->,green!60!black,line width=1.5pt] (r3) -- node[above,font=\tiny] {admiss\'ivel!} (r4);
 \end{tikzpicture}
@@ -561,8 +564,8 @@ A validade matemática desta dedução reside na invariante de altura do \textit
   \draw[->,blue!80!black] (a) -- (t);
   
   % Edges above gap trying to cross
-  \draw[->,red,line width=1.5pt] (u) -- node[left,font=\footnotesize,text=black,align=center,xshift=-1mm,yshift=2mm] {Queda de 2 n\'iveis\\(proibido)} (b);
-  \draw[->,red,line width=1.5pt] (u) -- node[right,font=\footnotesize,text=black,align=center,xshift=1mm,yshift=2mm] {$h(u) \not\le h(c) + 1$\\(proibido)} (c);
+  \draw[->,red,line width=1.5pt] (u) -- node[left,pos=0.25,font=\footnotesize,text=black,align=center,xshift=-2mm,fill=white,inner sep=2pt] {Queda de 2 n\'iveis\\(proibido)} (b);
+  \draw[->,red,line width=1.5pt] (u) -- node[right,pos=0.25,font=\footnotesize,text=black,align=center,xshift=2mm,fill=white,inner sep=2pt] {$h(u) \not\le h(c) + 1$\\(proibido)} (c);
   
 \end{tikzpicture}
 \caption{Prova visual de inalcan\c{c}abilidade na Heur\'istica de Lacuna. A invariante de altura ($h(u) \le h(v) + 1$) obriga que caminhos residuais des\c{c}am no m\'aximo 1 n\'ivel por aresta. A inexist\^encia de v\'ertices no n\'ivel $h=3$ quebra qualquer possibilidade de forma\c{c}\~ao de ``degraus'' caindo de $h=4$ para os n\'iveis inferiores, separando o grafo residual.}
@@ -611,12 +614,12 @@ A versão otimizada (Código~\ref{lst:push_relabel_improved}, Apêndice~\ref{ap:
 \textbf{Como funcionam os \textit{buckets}?} A estrutura de dados é um vetor \lstinline{active_buckets} de listas, indexado por altura: \lstinline{active_buckets[h]} contém todos os vértices ativos com altura exatamente $h$. Além disso, mantém-se uma variável \lstinline{highest_active} que registra o maior índice $h$ tal que \lstinline{active_buckets[h]} não está vazio.
 
 \begin{itemize}
-    \item \textbf{Inserção:} Quando um vértice $v$ torna-se ativo (e.g., após receber fluxo de um \textit{push}), ele é inserido em \lstinline{active_buckets[h(v)]} e \lstinline{highest_active} é atualizado se $h(v) > $ \lstinline{highest_active}. Custo: $\mathcal{O}(1)$.
+    \item \textbf{Inserção:} Quando um vértice $v$ torna-se ativo (e.g., após receber fluxo de um \textit{push}), ele é inserido em \lstinline{active_buckets[h(v)]}, e a variável \lstinline{highest_active} é atualizada se $h(v)$ for maior que seu valor atual. Custo: $\mathcal{O}(1)$.
     \item \textbf{Extração:} Retira-se um vértice de \lstinline{active_buckets[highest_active]}. Se o bucket esvaziar, decrementa-se \lstinline{highest_active}. Custo amortizado: $\mathcal{O}(1)$.
     \item \textbf{Relabel:} Quando a altura de $u$ é aumentada para $h'$, $u$ é removido de \lstinline{active_buckets[h(u)]} e reinsido em \lstinline{active_buckets[h']}. As alturas vão de $0$ até $2|V|-1$ (limite teórico), portanto o vetor tem tamanho $2|V|$.
 \end{itemize}
 
-A razão pela qual esta política melhora a complexidade de $\mathcal{O}(|V|^3)$ (FIFO) para $\mathcal{O}(|V|^2\sqrt{|A|})$ (Highest Label) é intuitiva: ao sempre processar o vértice mais ``alto'', o algoritmo tende a devolver excessos para a fonte mais rapidamente (pois vértices de altura $\ge |V|$ só podem fazer push de volta), evitando longas cadeias de pushes não-saturantes. Esta política, combinada com a Gap Heuristic, reduz a complexidade para $\mathcal{O}(|V|^2 \sqrt{|A|})$ (veja~\cite{goldberg1988new}).
+A intuição por trás da melhoria da complexidade de tempo de pior caso de $\mathcal{O}(|V|^3)$ (política FIFO) para $\mathcal{O}(|V|^2\sqrt{|A|})$ (política \textit{Highest Label}) é analítica: ao sempre processar o vértice mais ``alto'', o algoritmo tende a devolver excessos para a fonte mais rapidamente (pois vértices de altura $\ge |V|$ só podem fazer push de volta), evitando longas cadeias de pushes não-saturantes. Esta política, combinada com a Gap Heuristic, reduz a complexidade para $\mathcal{O}(|V|^2 \sqrt{|A|})$ (veja~\cite{goldberg1988new}).
 
 \textbf{Implementação eficiente da Gap Heuristic:} O \textit{array} de frequências \lstinline{height_count[h]} (com \lstinline{height_count[h]++} a cada inserção e \lstinline{height_count[h]--} a cada remoção/relabel) é atualizado em $\mathcal{O}(1)$ por operação. Após cada \textit{relabel} de $u$ de $h$ para $h'$, basta verificar se \lstinline{height_count[h] == 0}: se sim, a lacuna $h$ foi formada, e todos os vértices com $h(v) > h$ (exceto $s$) têm sua altura definida para $|V|+1$ em uma varredura linear única por \lstinline{active_buckets}. Esta varredura custa $\mathcal{O}(|V|)$ no pior caso, mas acontece no máximo $|V|$ vezes, resultando em custo amortizado $\mathcal{O}(1)$ por operação.
 
@@ -734,8 +737,8 @@ A solidez desta extração reside no fato de que, pelas propriedades de conserva
   \draw[->] (s) -- (l3);
   
   % Edges L -> R
-  \draw[->,line width=1.5pt,blue!80!black] (l1) -- node[above,font=\tiny,sloped,pos=0.25]{$M$} (r3);
-  \draw[->,line width=1.5pt,blue!80!black] (l2) -- node[above,font=\tiny,sloped,pos=0.25]{$M$} (r1);
+  \draw[->,line width=1.5pt,blue!80!black] (l1) -- node[font=\footnotesize,fill=white,inner sep=1.5pt,pos=0.3]{$M$} (r3);
+  \draw[->,line width=1.5pt,blue!80!black] (l2) -- node[font=\footnotesize,fill=white,inner sep=1.5pt,pos=0.3]{$M$} (r1);
   \draw[->] (l2) -- (r2);
   \draw[->] (l3) -- (r3);
   
@@ -1016,24 +1019,38 @@ A transformação consiste em expandir a rede $D = (V, A)$ para uma rede estendi
 
 \begin{figure}[h]
 \centering
-\begin{tikzpicture}[>=Stealth, node distance=1.8cm, thick,
-    main/.style={circle, draw, minimum size=8mm, font=\small}]
-    \node[main, fill=green!30] (ss) {$s^*$};
-    \node[main, fill=green!10, above right=0.5cm and 1.8cm of ss] (s1) {$s_1$};
-    \node[main, fill=green!10, below right=0.5cm and 1.8cm of ss] (s2) {$s_2$};
-    \node[main, right=1.5cm of s1, yshift=-0.7cm] (v) {$v$};
-    \node[main, fill=red!10, above right=0.5cm and 1.5cm of v] (t1) {$t_1$};
-    \node[main, fill=red!10, below right=0.5cm and 1.5cm of v] (t2) {$t_2$};
-    \node[main, fill=red!30, right=1.8cm of v, xshift=1.5cm] (ts) {$t^*$};
-
-    \draw[->, dashed, blue] (ss) -- node[above] {$\infty$} (s1);
-    \draw[->, dashed, blue] (ss) -- node[below] {$\infty$} (s2);
-    \draw[->] (s1) -- (v);
-    \draw[->] (s2) -- (v);
-    \draw[->] (v) -- (t1);
-    \draw[->] (v) -- (t2);
-    \draw[->, dashed, red] (t1) -- node[above] {$\infty$} (ts);
-    \draw[->, dashed, red] (t2) -- node[below] {$\infty$} (ts);
+\begin{tikzpicture}[>=Stealth, thick,
+    main/.style={circle, draw, fill=white, minimum size=8mm, font=\small}]
+    
+    \node[main, fill=green!30] (ss) at (0, 0) {$s^*$};
+    \node[main, fill=green!10] (s1) at (2, 1.5) {$s_1$};
+    \node[main, fill=green!10] (s2) at (2, -1.5) {$s_2$};
+    
+    \node[main] (v1) at (4, 1.5) {$v_1$};
+    \node[main] (v2) at (4, -1.5) {$v_2$};
+    \node[main] (v3) at (5.5, 0) {$v_3$};
+    
+    \node[main, fill=red!10] (t1) at (7, 1.5) {$t_1$};
+    \node[main, fill=red!10] (t2) at (7, -1.5) {$t_2$};
+    
+    \node[main, fill=red!30] (ts) at (9, 0) {$t^*$};
+    
+    \draw[->, dashed, blue, line width=1.2pt] (ss) -- node[above left, font=\footnotesize] {$\infty$} (s1);
+    \draw[->, dashed, blue, line width=1.2pt] (ss) -- node[below left, font=\footnotesize] {$\infty$} (s2);
+    
+    \draw[->] (s1) -- (v1);
+    \draw[->] (s1) -- (v3);
+    \draw[->] (s2) -- (v2);
+    \draw[->] (s2) -- (v3);
+    
+    \draw[->] (v1) -- (t1);
+    \draw[->] (v1) -- (v2);
+    \draw[->] (v3) -- (t1);
+    \draw[->] (v3) -- (t2);
+    \draw[->] (v2) -- (t2);
+    
+    \draw[->, dashed, red, line width=1.2pt] (t1) -- node[above right, font=\footnotesize] {$\infty$} (ts);
+    \draw[->, dashed, red, line width=1.2pt] (t2) -- node[below right, font=\footnotesize] {$\infty$} (ts);
 \end{tikzpicture}
 \caption{Redução de múltiplas fontes/sumidouros: a super-fonte $s^*$ e o super-sumidouro $t^*$ (arcos tracejados com capacidade $\infty$) unificam a rede.}
 \label{fig:multi_source_sink}
@@ -1186,9 +1203,9 @@ Seja $I$ uma imagem com $n = W \times H$ pixels. A construção da rede de segme
 \begin{tikzpicture}[>=Stealth,
     x={(-1.2cm, -0.6cm)}, 
     y={(1.2cm, -0.6cm)}, 
-    z={(0cm, 1.2cm)},
-    pixel/.style={circle, draw, minimum size=6mm, inner sep=0pt},
-    term/.style={circle, draw, minimum size=8mm, font=\large\bfseries}
+    z={(0cm, 1.5cm)},
+    pixel/.style={circle, draw, fill=white, minimum size=8mm, font=\tiny},
+    term/.style={circle, draw, minimum size=9mm, font=\small}
 ]
 
     % 1. Bottom node (t)
@@ -1211,7 +1228,7 @@ Seja $I$ uma imagem com $n = W \times H$ pixels. A construção da rede de segme
     % 4. Grid Nodes (Pixels)
     \foreach \x in {1,2,3} {
         \foreach \y in {1,2,3} {
-            \node[pixel, fill=gray!10] (p\x\y) at (\x,\y,0) {};
+            \node[pixel] (p\x\y) at (\x,\y,0) {$p_{\x\y}$};
         }
     }
     
@@ -1237,13 +1254,13 @@ Seja $I$ uma imagem com $n = W \times H$ pixels. A construção da rede de segme
 
     % Legend in 2D space
     \begin{scope}[x={(1cm,0cm)}, y={(0cm,1cm)}, z={(0cm,0cm)}]
-        \node[right, font=\footnotesize, green!60!black] at (3.5, 0.5) {T-links $s \to p$ (foreground)};
+        \node[right, font=\footnotesize, green!60!black] at (3.5, 0.5) {T-links $s \to p$};
         \draw[->, green!70!black, dashed, thick] (2.7, 0.5) -- (3.3, 0.5);
         
         \node[right, font=\footnotesize, text=black] at (3.5, -0.5) {N-links (similaridade)};
         \draw[-, thick] (2.7, -0.5) -- (3.3, -0.5);
         
-        \node[right, font=\footnotesize, red!60!black] at (3.5, -1.5) {T-links $p \to t$ (background)};
+        \node[right, font=\footnotesize, red!60!black] at (3.5, -1.5) {T-links $p \to t$};
         \draw[->, red!70!black, dashed, thick] (2.7, -1.5) -- (3.3, -1.5);
     \end{scope}
     
