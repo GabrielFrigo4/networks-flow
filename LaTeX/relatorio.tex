@@ -200,6 +200,50 @@ Esta formulação matemática é de suma importância estrutural, pois o termo a
 
 Operando sobre a topologia de $D_f$, define-se um caminho aumentante como qualquer caminho simples com origem na fonte $s$ e término no sumidouro $t$. A existência de tal caminho implica de forma direta que o fluxo global $|f|$ pode ser estritamente incrementado sem violar as restrições estruturais da rede original. O incremento máximo viável ao longo deste trajeto é delimitado pelo arco de menor capacidade residual, comumente denominado arco gargalo.
 
+A Figura~\ref{fig:residual_net} ilustra uma rede com fluxo parcial e seu correspondente digrafo residual $D_f$, evidenciando os arcos diretos (capacidade ociosa) e inversos (fluxo cancelavel).
+
+\begin{figure}[h]
+\centering
+\begin{tikzpicture}[>=Stealth, thick]
+% --- Rede original com fluxo (esquerda) ---
+\begin{scope}[xshift=0cm]
+  \node[circle,draw,fill=green!20,minimum size=8mm] (s) at (0,1.2) {$s$};
+  \node[circle,draw,minimum size=8mm] (a) at (2,2.4) {$a$};
+  \node[circle,draw,minimum size=8mm] (b) at (2,0) {$b$};
+  \node[circle,draw,fill=red!20,minimum size=8mm] (t) at (4,1.2) {$t$};
+  \draw[->] (s) -- node[above left,font=\footnotesize] {$2/3$} (a);
+  \draw[->] (s) -- node[below left,font=\footnotesize] {$1/2$} (b);
+  \draw[->] (a) -- node[right,font=\footnotesize] {$1/1$} (b);
+  \draw[->] (a) -- node[above right,font=\footnotesize] {$1/3$} (t);
+  \draw[->] (b) -- node[below right,font=\footnotesize] {$2/3$} (t);
+  \node[font=\footnotesize,below] at (2,-0.7) {\textit{(a) Rede original} $f/c$};
+\end{scope}
+% --- Seta de transicao ---
+\node at (5.2,1.2) {$\Rightarrow$};
+% --- Digrafo residual (direita) ---
+\begin{scope}[xshift=6.5cm]
+  \node[circle,draw,fill=green!20,minimum size=8mm] (s2) at (0,1.2) {$s$};
+  \node[circle,draw,minimum size=8mm] (a2) at (2,2.4) {$a$};
+  \node[circle,draw,minimum size=8mm] (b2) at (2,0) {$b$};
+  \node[circle,draw,fill=red!20,minimum size=8mm] (t2) at (4,1.2) {$t$};
+  % Arcos diretos (capacidade ociosa)
+  \draw[->,blue] (s2) -- node[above left,font=\tiny] {$1$} (a2);
+  \draw[->,blue] (s2) -- node[below left,font=\tiny] {$1$} (b2);
+  \draw[->,blue] (a2) -- node[above right,font=\tiny] {$2$} (t2);
+  \draw[->,blue] (b2) -- node[below right,font=\tiny] {$1$} (t2);
+  % Arcos inversos (fluxo cancelavel)
+  \draw[->,red,dashed,bend left=20] (a2) to node[above left,font=\tiny] {$2$} (s2);
+  \draw[->,red,dashed,bend right=20] (b2) to node[below left,font=\tiny] {$1$} (s2);
+  \draw[->,red,dashed] (b2) -- node[left,font=\tiny] {$1$} (a2);
+  \draw[->,red,dashed,bend left=20] (t2) to node[above right,font=\tiny] {$1$} (a2);
+  \draw[->,red,dashed,bend right=20] (t2) to node[below right,font=\tiny] {$2$} (b2);
+  \node[font=\footnotesize,below] at (2,-0.7) {\textit{(b) Digrafo residual} $D_f$};
+\end{scope}
+\end{tikzpicture}
+\caption{Rede com fluxo parcial (esquerda, valores $f/c$) e o digrafo residual $D_f$ resultante (direita). Arcos azuis: capacidade ociosa ($c_f > 0$). Arcos vermelhos tracejados: capacidade reversa (fluxo cancel\'{a}vel). Observe que o arco $(a,b)$ saturado desaparece como arco direto e s\'{o} aparece como reverso.}
+\label{fig:residual_net}
+\end{figure}
+
 O critério de parada para os algoritmos de aumento iterativo, bem como o certificado matemático de otimalidade, é assegurado pelo Teorema do Fluxo Máximo e Corte Mínimo (\textit{Max-Flow Min-Cut Theorem}) (veja~\cite{ford1956maximal}). O teorema introduz a noção de um corte $s-t$, definido como uma partição do conjunto de vértices $V$ em dois subconjuntos mutuamente exclusivos $S$ e $T$, tais que $s \in S$ e $t \in T$. A capacidade deste corte é computada pela soma escalar das capacidades de todos os arcos originais direcionados de $S$ para~$T$.
 
 O teorema demonstra uma dualidade perfeita em otimização: o valor do fluxo máximo em uma rede é estritamente igual à capacidade do corte mínimo. Computacionalmente, a ausência de um caminho aumentante na rede residual $D_f$ é a condição matemática necessária e suficiente para atestar que o fluxo atual atingiu o seu limite ótimo global (veja~\cite{cook1998combinatorial}).
@@ -252,9 +296,11 @@ Conclui-se que o fluxo líquido através do corte $(S, T)$ é exatamente a soma 
 
 Para que os problemas clássicos de Otimização Combinatória possam ser reduzidos a instâncias de fluxo, um último pilar matemático faz-se necessário: a garantia de que as soluções encontradas pertencerão ao domínio dos números inteiros ($\mathbb{Z}$).
 
-O Teorema da Integralidade de Ford-Fulkerson estabelece que: se a função de capacidade $c(u,v)$ assume valores inteiros para todos os arcos $(u,v) \in A$, então existe um fluxo máximo $f$ onde o valor $f(u,v)$ transitando em cada arco é estritamente inteiro (veja~\cite{ford1956maximal}).
+O Teorema da Integralidade de Ford-Fulkerson estabelece que: se a função de capacidade $c(u,v)$ assume valores inteiros para todos os arcos $(u,v) \in A$, então existe um fluxo máximo $f^*$ onde o valor $f^*(u,v)$ transitando em cada arco é estritamente inteiro (veja~\cite{ford1956maximal}).
 
-A prova assenta-se na natureza iterativa do método dos caminhos aumentantes. Iniciando com um fluxo nulo (inteiro), e sabendo que as capacidades são inteiras, o gargalo residual em qualquer iteração será sempre um valor inteiro (veja~\cite{ahuja1993network}). Consequentemente, as operações de adição e subtração durante a atualização do fluxo preservarão a integralidade da rede indefinidamente. Esta propriedade é a chave teórica que habilita o uso dos algoritmos desenvolvidos para a resolução de problemas de emparelhamento e de alocação discreta.
+A prova assenta-se na natureza iterativa do método dos caminhos aumentantes. Iniciando com um fluxo nulo (inteiro), e sabendo que as capacidades são inteiras, o gargalo residual em qualquer iteração será sempre um valor inteiro (veja~\cite{ahuja1993network}). Consequentemente, as operações de adição e subtração durante a atualização do fluxo preservarão a integralidade da rede indefinidamente.
+
+\textbf{Observação crítica:} Além da mera existência, todos os algoritmos implementados neste projeto --- Ford-Fulkerson, Edmonds-Karp, Dinic e Push-Relabel --- constroem \emph{exatamente} este fluxo inteiro ao longo de toda a execução, pois partem de um fluxo nulo inteiro e efetuam incrementos inteiros em cada passo. Não se trata de uma mera garantia de existência: é uma propriedade construtiva. Esta é a razão pela qual todas as reduções apresentadas nas seções seguintes (emparelhamento bipartido, caminhos disjuntos, etc.) tratam o fluxo obtido diretamente como uma solução inteira, sem necessidade de arredondamento ou pós-processamento.
 
 \subsection{Arquitetura Orientada a Objetos e Estruturas de Dados}
 
@@ -296,7 +342,7 @@ Para transpor esta barreira analítica e garantir limites de complexidade de tem
 
 \subsubsection{O Algoritmo de Edmonds-Karp}
 
-A superação da complexidade pseudopolinomial do método genérico de Ford-Fulkerson foi alcançada de forma independente por Edmonds e Karp (veja~\cite{edmonds1972theoretical}) e por Dinic (veja~\cite{dinic1970algorithm}). O algoritmo de Edmonds-Karp concretiza a restrição topológica mais intuitiva e elegante: a cada iteração, o percurso selecionado para o roteamento deve ser rigorosamente o caminho aumentante mais curto da fonte $s$ ao sumidouro $t$ no digrafo residual $D_f$, onde a distância entre vértices é medida em número de arcos (isto é, cada arco possui peso unitário para efeito do cômputo de distância pela BFS).
+A superação da complexidade pseudopolinomial do método genérico de Ford-Fulkerson foi alcançada de forma independente por Edmonds e Karp (veja~\cite{edmonds1972theoretical}) e por Dinic (veja~\cite{dinic1970algorithm}). O algoritmo de Edmonds-Karp concretiza a restrição topológica mais intuitiva e elegante: a cada iteração, o percurso selecionado para o roteamento deve ser rigorosamente o caminho aumentante mais curto da fonte $s$ ao sumidouro $t$ no digrafo residual $D_f$, onde a distância entre vértices é medida em número de arcos --- isto é, cada arco recebe peso~$1$ (``unitário'' = igual a uma unidade) para efeito do cálculo de distância pela BFS, ignorando as capacidades. Deste modo, o ``caminho mais curto'' é aquele com o menor número de arcos, não o de menor capacidade.
 
 A implementação desta diretriz fundamenta-se na delegação da busca a uma Busca em Largura (BFS - \textit{Breadth-First Search}). O impacto teórico desta restrição é profundo, pois assegura a propriedade da monotonicidade das distâncias: ao longo da execução do algoritmo, a distância topológica mínima (mensurada em número de arcos) da fonte $s$ a qualquer vértice $v \in V$ na rede residual nunca decresce (veja~\cite{cook1998combinatorial}).
 
@@ -320,6 +366,39 @@ Para assegurar a viabilidade temporal desta busca exaustiva, a implementação i
 
 Esta poda dramática na árvore de recursão garante uma amortização matemática rigorosa: a extração completa do fluxo bloqueador opera no limite estrito de $\mathcal{O}(|V| \cdot |A|)$ operações (veja~\cite{korte2018combinatorial}). Como a propriedade de monotonicidade garante que a distância de $s$ a $t$ aumente pelo menos uma unidade a cada novo Digrafo de Níveis construído, o sistema processa um limite superior absoluto de $|V|$ fases. Multiplicando o custo da DFS por fase pelo número máximo de fases, a complexidade assintótica global é inquestionavelmente estabelecida em $\mathcal{O}(|V|^2 \cdot |A|)$ (veja~\cite{dinic1970algorithm}). A materialização destas otimizações de estado na arquitetura C++ encontra-se no Código~\ref{lst:dinic} (disponível no Apêndice~\ref{ap:dinic}).
 
+\begin{figure}[h]
+\centering
+\begin{tikzpicture}[>=Stealth,thick]
+% Nos com niveis
+\node[circle,draw,fill=green!20,minimum size=8mm,font=\small] (s) at (0,1.5) {$s$};
+\node[circle,draw,minimum size=8mm,font=\small] (a) at (2,3) {$a$};
+\node[circle,draw,minimum size=8mm,font=\small] (b) at (2,0) {$b$};
+\node[circle,draw,minimum size=8mm,font=\small] (c) at (4,3) {$c$};
+\node[circle,draw,minimum size=8mm,font=\small] (d) at (4,0) {$d$};
+\node[circle,draw,fill=red!20,minimum size=8mm,font=\small] (t) at (6,1.5) {$t$};
+% Niveis (BFS)
+\node[gray,font=\footnotesize] at (0,3.8) {n\'iv. 0};
+\node[gray,font=\footnotesize] at (2,3.8) {n\'iv. 1};
+\node[gray,font=\footnotesize] at (4,3.8) {n\'iv. 2};
+\node[gray,font=\footnotesize] at (6,3.8) {n\'iv. 3};
+% Arcos do digrafo de niveis (avancam 1 nivel)
+\draw[->,line width=1.5pt,blue] (s) -- (a);
+\draw[->,line width=1.5pt,blue] (s) -- (b);
+\draw[->,line width=1.5pt,blue] (a) -- (c);
+\draw[->,line width=1.5pt,blue] (b) -- (d);
+\draw[->,line width=1.5pt,blue] (c) -- (t);
+\draw[->,line width=1.5pt,blue] (d) -- (t);
+% Arcos excluidos (nao avancam nivel)
+\draw[->,gray,dashed] (a) -- node[right,font=\tiny,gray] {exclu\'ido} (d);
+\draw[->,gray,dashed] (b) -- node[right,font=\tiny,gray] {exclu\'ido} (c);
+% Linhas verticais de nivel
+\foreach \x in {0,2,4,6} { \draw[gray!30,dashed] (\x,-0.7) -- (\x,3.5); }
+\end{tikzpicture}
+\caption{Digrafo de N\'iveis no Algoritmo de Dinic. Arcos azuis s\~ao os arcos admiss\'iveis (avan\c{c}am exatamente um n\'ivel: $d(v) = d(u)+1$), que comp\~oem o Digrafo de N\'iveis. Arcos cinza tracejados s\~ao excluídos por n\~ao avan\c{c}arem n\'ivel. O Fluxo Bloqueador \'e extra\'ido apenas sobre os arcos azuis.}
+\label{fig:level_graph}
+\end{figure}
+
+
 \subsection{Algoritmos de Prefluxo: Introdução}
 
 Todos os algoritmos clássicos baseados no método de Ford-Fulkerson (incluindo Edmonds-Karp e Dinic) compartilham uma invariante fundamental: a lei de conservação de fluxo é rigorosamente mantida em todos os vértices intermediários ao longo de toda a execução. Sob essa ótica, os algoritmos operam mantendo um fluxo sempre viável e esforçam-se iterativamente para alcançar a otimalidade (a inexistência de caminhos aumentantes).
@@ -331,18 +410,20 @@ Formalmente, um pré-fluxo $f$ é uma função que respeita estritamente as rest
     e(v) = \sum_{\{u \mid (u,v) \in A\}} f(u,v) - \sum_{\{w \mid (v,w) \in A\}} f(v,w) \ge 0
 \end{equation}
 
-Um vértice intermediário que possui excesso estritamente positivo ($e(v) > 0$) é classificado como um vértice ativo. A premissa central dos algoritmos de pré-fluxo consiste em movimentar localmente este excesso pela rede até que ele alcance o sumidouro $t$ ou, em caso de estrangulamento de capacidade, seja devolvido à fonte $s$ (veja~\cite{cook1998combinatorial}).
+Um vértice intermediário que possui excesso estritamente positivo ($e(v) > 0$) é classificado como um vértice ativo. A premissa central dos algoritmos de pré-fluxo consiste em movimentar localmente este excesso pela rede até que ele alcance o sumidouro $t$ ou, quando bloqueado por falta de capacidade residual em todos os arcos de saída admissíveis (ou seja, arcos que ``descem'' em altura), seja devolvido em direção à fonte $s$ (veja~\cite{cook1998combinatorial}).
+
+\textbf{Como o excesso retorna à fonte?} A lógica é a seguinte: quando um vértice ativo $u$ com $h(u) < h(s)$ não possui nenhum arco admissível para ``descer'', a operação de \textit{Relabel} eleva sua altura. Eventualmente, se $u$ não puder mais empurrar fluxo em direção ao sumidouro, sua altura pode subir até ultrapassar $|V|$. Nesse caso, a invariante de altura $h(u) \le h(v) + 1$ para arcos residuais garante que o único arco admissível disponível seja o arco reverso em direção à fonte --- devolvendo o excesso de volta. Matematicamente, a fonte possui $h(s) = |V|$, de modo que qualquer vértice com $h(u) = |V| - 1$ ou maior pode, via arcos residuais inversos (resultantes do fluxo saturado na inicialização), empurrar o excesso de volta para $s$.
 
 Para garantir que o excesso não circule infinitamente em ciclos residuais e que convirja para os terminais, introduz-se uma função de rótulos de distância, classicamente interpretada como uma função de altura (\textit{height function}) $h: V \rightarrow \mathbb{N}$. A mecânica do algoritmo é frequentemente comparada a uma malha topográfica de fluidos sujeita à gravidade: o fluxo só pode ser roteado de um vértice $u$ para um vértice $v$ se o arco possuir capacidade residual ($c_f(u,v) > 0$) e se a origem estiver topologicamente posicionada acima do destino, caracterizando um aclive descendente.
 
-Uma função de altura é considerada matematicamente válida para um pré-fluxo se satisfizer três condições peremptórias (veja~\cite{korte2018combinatorial}):
+Uma função de altura é considerada matematicamente válida para um pré-fluxo se satisfizer três condições obrigatórias (\textit{peremptórias}, no sentido de que violá-las invalida imediatamente a correção do algoritmo) (veja~\cite{korte2018combinatorial}):
 \begin{enumerate}
     \item A altura do sumidouro é nula: $h(t) = 0$.
     \item A altura da fonte é fixada na cardinalidade do digrafo para atestar o isolamento: $h(s) = |V|$.
     \item Para todo arco residual viável $(u,v) \in A_f$, a inclinação é controlada: $h(u) \le h(v) + 1$.
 \end{enumerate}
 
-A terceira condição garante que o excesso não despencará em "quedas livres" descontroladas e, principalmente, que não existe nenhum caminho direcionado viável de $s$ para $t$ na rede residual, atestando a otimalidade topológica do sistema a todo instante. O algoritmo termina quando o conjunto de vértices ativos torna-se vazio ($e(v) = 0, \forall v \in V \setminus \{s, t\}$). Neste ponto exato, o pré-fluxo converte-se em um fluxo viável e, pela ausência de caminhos da fonte ao sumidouro, o Teorema do Fluxo Máximo e Corte Mínimo certifica que este fluxo é máximo.
+A terceira condição garante que o excesso não despencará em ``quedas livres'' descontroladas e, principalmente, que não existe nenhum caminho direcionado viável de $s$ para $t$ na rede residual, atestando a otimalidade topológica do sistema a todo instante. O algoritmo termina quando o conjunto de vértices ativos torna-se vazio ($e(v) = 0, \forall v \in V \setminus \{s, t\}$). Neste ponto exato, o pré-fluxo converte-se em um fluxo viável e, pela ausência de caminhos da fonte ao sumidouro, o Teorema do Fluxo Máximo e Corte Mínimo certifica que este fluxo é máximo.
 
 \subsubsection{A Família Push-Relabel}
 
@@ -353,29 +434,110 @@ Durante o ciclo de resolução principal, o algoritmo inspeciona vértices ativo
 \begin{itemize}
     \item \textbf{Operação de Empurrar (\textit{Push}):} Esta ação é executada se, e somente se, o vértice ativo $u$ possuir um arco residual $(u,v)$ estritamente admissível. Um arco é considerado admissível quando apresenta capacidade residual não-nula ($c_f(u,v) > 0$) e um declive topológico unitário perfeito em direção ao destino ($h(u) = h(v) + 1$). A quantidade de fluxo transferida é algebricamente delimitada por $\delta = \min(e(u), c_f(u,v))$. Caso o empurrão transfira exatamente $c_f(u,v)$, o arco é plenamente saturado e removido temporariamente de $D_f$; caso contrário, trata-se de um empurrão não-saturante, cujo efeito primário e imediato é zerar o excesso do vértice $u$ (veja~\cite{cook1998combinatorial}).
 
-    \item \textbf{Operação de Rerrotular (\textit{Relabel}):} Quando um vértice ativo $u$ encontra-se topologicamente "preso" — isto é, possui excesso de recursos, mas nenhuma de suas conexões com capacidade residual aponta para um vizinho em um nível estritamente inferior —, a operação de \textit{Push} torna-se inviável. Para romper este impasse estrutural, o algoritmo atualiza a altura do vértice para $h(u) = 1 + \min \{h(v) \mid c_f(u,v) > 0\}$. Esta elevação pontual garante a recriação de um declive geométrico válido, permitindo que o excesso retome sua movimentação iterativa (veja~\cite{korte2018combinatorial}).
+    \item \textbf{Operação de Rerrotular (\textit{Relabel}):} Quando um vértice ativo $u$ encontra-se topologicamente ``preso'' — isto é, possui excesso de recursos, mas nenhuma de suas conexões com capacidade residual aponta para um vizinho em um nível estritamente inferior —, a operação de \textit{Push} torna-se inviável. Para romper este impasse estrutural, o algoritmo atualiza a altura do vértice para $h(u) = 1 + \min \{h(v) \mid c_f(u,v) > 0\}$. Esta elevação pontual garante a recriação de um declive geométrico válido, permitindo que o excesso retome sua movimentação iterativa (veja~\cite{cook1998combinatorial}).
 \end{itemize}
 
 A eficiência global do algoritmo é intrinsecamente dependente da política de seleção: qual vértice ativo deve ser processado primeiro? A implementação canônica emprega uma estrutura de dados de fila (\textit{Queue}) para gerenciar estes vértices sob uma política \textit{First-In, First-Out} (FIFO). Demonstra-se matematicamente que a ordem de processamento FIFO amortece severamente o número de empurrões não-saturantes necessários para a convergência. Graças a esta amortização estrutural, o limite assintótico de tempo de pior caso para o algoritmo Push-Relabel padrão é cravado analiticamente em $\mathcal{O}(|V|^3)$ (veja~\cite{goldberg1988new}). A materialização em C++ deste algoritmo, herdando a arquitetura segura da interface polimórfica, encontra-se detalhada no Código~\ref{lst:push_relabel} (disponível no Apêndice~\ref{ap:push_relabel}).
 
+\begin{figure}[h]
+\centering
+\begin{tikzpicture}[>=Stealth,thick,node distance=2.2cm]
+\node[font=\footnotesize,above] at (2.5,4.8) {\textbf{Antes: Push admiss\'ivel de $u$ para $v$}};
+% No u com excesso
+\node[circle,draw,fill=yellow!30,minimum size=10mm] (u) at (0,3) {$u$};
+\node[font=\tiny,above right] at (0.3,3.3) {$h=3,\,e=5$};
+% No v
+\node[circle,draw,fill=blue!10,minimum size=10mm] (v) at (3,3) {$v$};
+\node[font=\tiny,above right] at (3.3,3.3) {$h=2,\,e=1$};
+% Arco admissivel
+\draw[->,line width=1.5pt,green!60!black] (u) -- node[above,font=\footnotesize] {$c_f=4$} (v);
+% Depois
+\node[font=\footnotesize,above] at (2.5,1.8) {\textbf{Depois do Push($u$,$v$,$\delta$=4)}};
+\node[circle,draw,fill=yellow!30,minimum size=10mm] (u2) at (0,0.8) {$u$};
+\node[font=\tiny,above right] at (0.3,1.1) {$h=3,\,e=1$};
+\node[circle,draw,fill=blue!10,minimum size=10mm] (v2) at (3,0.8) {$v$};
+\node[font=\tiny,above right] at (3.3,1.1) {$h=2,\,e=5$};
+\draw[->,gray,dashed] (u2) -- node[above,font=\footnotesize,gray] {$c_f=0$} (v2);
+% Relabel
+\node[font=\footnotesize,above] at (7.5,4.8) {\textbf{Relabel: $u$ preso (sem arco admiss\'ivel)}};
+\node[circle,draw,fill=orange!30,minimum size=10mm] (r1) at (6,3) {$u$};
+\node[font=\tiny,above right] at (6.3,3.3) {$h=2,\,e=3$};
+\node[circle,draw,fill=gray!10,minimum size=10mm] (r2) at (9,3) {$w$};
+\node[font=\tiny,above right] at (9.3,3.3) {$h=3$};
+\draw[->,gray,dashed] (r1) -- node[above,font=\tiny] {$c_f=2$, mas $h(u)\not= h(w)+1$} (r2);
+\node[font=\footnotesize,above] at (7.5,1.8) {\textbf{Ap\'os Relabel: $h(u)\leftarrow 1+\min\{h(w)\}=4$}};
+\node[circle,draw,fill=orange!50,minimum size=10mm] (r3) at (6,0.8) {$u$};
+\node[font=\tiny,above right] at (6.3,1.1) {$h=4,\,e=3$};
+\node[circle,draw,fill=gray!10,minimum size=10mm] (r4) at (9,0.8) {$w$};
+\node[font=\tiny,above right] at (9.3,1.1) {$h=3$};
+\draw[->,green!60!black,line width=1.5pt] (r3) -- node[above,font=\tiny] {admiss\'ivel!} (r4);
+\end{tikzpicture}
+\caption{Operações elementares do Push-Relabel. Esquerda: Push admiss\'ivel de $u$ para $v$ (arco com $c_f > 0$ e $h(u)=h(v)+1$), transferindo $\delta = \min(e(u),c_f)$ de fluxo. Direita: Relabel de $u$ quando n\~ao h\'a arco admiss\'ivel --- a altura \'e ajustada para criar um novo declive.}
+\label{fig:push_relabel_ops}
+\end{figure}
+
+
 \subsubsection{Cuidados na Inicialização e Aritmética de Infinitos}
-Durante a inicialização do pré-fluxo, é vital saturar os arcos adjacentes à fonte sem restringi-los por uma variável artificial de "excesso" da fonte. Diferente dos nós intermediários, a fonte não obedece à conservação de fluxo e representa um gerador de recursos inesgotável. 
+Durante a inicialização do pré-fluxo, é vital saturar os arcos adjacentes à fonte sem restringi-los por uma variável artificial de ``excesso'' da fonte. Diferente dos nós intermediários, a fonte não obedece à conservação de fluxo e representa um gerador de recursos inesgotável. 
 
 Em implementações ingênuas, é comum atribuir à fonte um excesso infinito estático (\lstinline{excess[source] = INF}) e reaproveitar a operação de empurrar genérica. No entanto, em domínios matemáticos como Segmentação de Imagens (onde restrições rígidas são modeladas com arcos de capacidade literalmente igual a \lstinline{INF}), essa abordagem colapsa por limites aritméticos da arquitetura computacional. Como \lstinline{INF} em C++ é uma constante discreta em limite de representação inteira, empurrar \lstinline{INF} de fluxo subtrai integralmente o estoque em uma única iteração (\lstinline{INF - INF = 0}), esgotando artificialmente a fonte e causando paralisação prematura do pré-fluxo. Para evitar este problema e garantir o funcionamento seguro em qualquer domínio de rede, a inicialização correta injeta diretamente o valor integral da capacidade do arco (\lstinline{push_flow(edge_id, cap)}) abstendo-se completamente de rastrear ou subtrair recursos do vértice de origem.
 
 \subsubsection{Otimização Empírica: A Heurística de Lacuna (\textit{Gap Heuristic})}
 
-Para suprimir este gargalo crítico, a literatura moderna incorpora uma modificação estrutural de estado profundo conhecida como Heurística de Lacuna (\textit{Gap Heuristic}). A arquitetura do sistema é expandida para manter um histograma dinâmico (\textit{array} de frequências) que registra em tempo constante o número exato de vértices presentes em cada estrato de altura da rede.
+O gargalo crítico a ser suprimido é o elevado número de operações de \textit{Relabel} redundantes: sem nenhuma heurística, um vértice ativo pode ser rerrotulado $\mathcal{O}(|V|)$ vezes, e com $|V|$ vértices, isto pode gerar $\mathcal{O}(|V|^2)$ relabels por saturação de arco. A literatura moderna incorpora uma modificação estrutural conhecida como Heurística de Lacuna (\textit{Gap Heuristic}) para atenuar este custo. A arquitetura do sistema é expandida para manter um histograma dinâmico (\textit{array} de frequências) que registra em tempo constante o número exato de vértices presentes em cada estrato de altura da rede.
 
 A fundamentação desta heurística baseia-se na observação de descontinuidades no histograma de alturas. Se, após uma operação de \textit{relabel}, um determinado nível topológico $k$ (onde $0 < k < |V|$) esvaziar-se completamente, forma-se uma lacuna (\textit{gap}). A existência desta lacuna implica que o sumidouro $t$ tornou-se inalcançável para todo vértice com altura estritamente superior a $k$.
 
 A heurística intervém na rede ao detectar a lacuna, elevando a altura de todos os vértices acima de $k$ para o patamar de isolamento ($|V| + 1$) (veja~\cite{korte2018combinatorial}). Esta operação reduz o número de operações de \textit{relabel} redundantes, otimizando a convergência do algoritmo em grafos densos (veja~\cite{goldberg1988new}).
 
+\begin{figure}[h]
+\centering
+\begin{tikzpicture}[>=Stealth,thick]
+% --- Antes: gap no nivel 3 ---
+\begin{scope}[xshift=0cm]
+\node[font=\footnotesize,above] at (2,5.7) {\textbf{(a) Lacuna detectada no n\'ivel $k=3$}};
+\foreach \h/\label/\fill in {
+  0/h=0/green!20, 1/h=1/yellow!20, 2/h=2/yellow!20,
+  4/h=4/red!20, 5/h=5/red!20} {
+  \node[circle,draw,fill=\fill,minimum size=8mm,font=\tiny] at (1.5,\h) {\label};
+}
+\node[font=\footnotesize,red!60!black] at (1.5,3) {\textbf{lacuna!}};
+\draw[<->,red,dashed] (0.2,3.5) -- node[left,font=\tiny] {n\'iv. 3 vazio} (0.2,2.5);
+\end{scope}
+% Seta
+\node at (4,2.5) {$\Rightarrow$};
+% --- Depois: vertices acima do gap vao para |V|+1 ---
+\begin{scope}[xshift=5cm]
+\node[font=\footnotesize,above] at (2,5.7) {\textbf{(b) V\'ertices $h>k$ sobem para $|V|+1$}};
+\foreach \h/\label/\fill in {
+  0/h=0/green!20, 1/h=1/yellow!20, 2/h=2/yellow!20} {
+  \node[circle,draw,fill=\fill,minimum size=8mm,font=\tiny] at (1.5,\h) {\label};
+}
+\node[circle,draw,fill=orange!40,minimum size=9mm,font=\tiny] at (1.5,5) {$|V|+1$};
+\draw[->,orange!80!black,line width=1.5pt] (1.5,3.5) -- node[right,font=\tiny,orange!80!black] {todos sobem} (1.5,4.6);
+\end{scope}
+\end{tikzpicture}
+\caption{Gap Heuristic: (a) ap\'os um relabel, o n\'ivel $k=3$ esvazia-se (lacuna formada). (b) Todos os v\'ertices com $h > k$ t\^em suas alturas definidas para $|V|+1$, isolando-os da rede e evitando relabels redundantes.}
+\label{fig:gap_heuristic}
+\end{figure}
+
 \subsubsection{Política de Seleção: FIFO vs. Highest Label}
 
 A implementação base do Push-Relabel (Código~\ref{lst:push_relabel}, Apêndice~\ref{ap:push_relabel}) utiliza uma política de seleção FIFO (\textit{First In, First Out}), processando os vértices ativos na ordem em que se tornaram ativos. Esta variante possui complexidade $\mathcal{O}(|V|^3)$.
 
-A versão otimizada (Código~\ref{lst:push_relabel_improved}, Apêndice~\ref{ap:push_relabel_improved}) implementa a política \textit{Highest Label}: em cada iteração, o vértice ativo com a \textbf{maior altura} é selecionado para processamento. A estrutura de dados empregada é um vetor de \textit{buckets} indexados por altura (\lstinline{active_buckets}), com um ponteiro \lstinline{highest_active} que rastreia o nível mais alto ocupado. Esta política de seleção, combinada com a Heurística de Lacuna, reduz a complexidade para $\mathcal{O}(|V|^2 \sqrt{|A|})$ (veja~\cite{goldberg1988new}).
+A versão otimizada (Código~\ref{lst:push_relabel_improved}, Apêndice~\ref{ap:push_relabel_improved}) implementa a política \textit{Highest Label}: em cada iteração, o vértice ativo com a \textbf{maior altura} é selecionado para processamento.
+
+\textbf{Como funcionam os \textit{buckets}?} A estrutura de dados é um vetor \lstinline{active_buckets} de listas, indexado por altura: \lstinline{active_buckets[h]} contém todos os vértices ativos com altura exatamente $h$. Além disso, mantém-se uma variável \lstinline{highest_active} que registra o maior índice $h$ tal que \lstinline{active_buckets[h]} não está vazio.
+
+\begin{itemize}
+    \item \textbf{Inserção:} Quando um vértice $v$ torna-se ativo (e.g., após receber fluxo de um \textit{push}), ele é inserido em \lstinline{active_buckets[h(v)]} e \lstinline{highest_active} é atualizado se $h(v) > $ \lstinline{highest_active}. Custo: $\mathcal{O}(1)$.
+    \item \textbf{Extração:} Retira-se um vértice de \lstinline{active_buckets[highest_active]}. Se o bucket esvaziar, decrementa-se \lstinline{highest_active}. Custo amortizado: $\mathcal{O}(1)$.
+    \item \textbf{Relabel:} Quando a altura de $u$ é aumentada para $h'$, $u$ é removido de \lstinline{active_buckets[h(u)]} e reinsido em \lstinline{active_buckets[h']}. As alturas vão de $0$ até $2|V|-1$ (limite teórico), portanto o vetor tem tamanho $2|V|$.
+\end{itemize}
+
+A razão pela qual esta política melhora a complexidade de $\mathcal{O}(|V|^3)$ (FIFO) para $\mathcal{O}(|V|^2\sqrt{|A|})$ (Highest Label) é intuitiva: ao sempre processar o vértice mais ``alto'', o algoritmo tende a devolver excessos para a fonte mais rapidamente (pois vértices de altura $\ge |V|$ só podem fazer push de volta), evitando longas cadeias de pushes não-saturantes. Esta política, combinada com a Gap Heuristic, reduz a complexidade para $\mathcal{O}(|V|^2 \sqrt{|A|})$ (veja~\cite{goldberg1988new}).
+
+\textbf{Implementação eficiente da Gap Heuristic:} O \textit{array} de frequências \lstinline{height_count[h]} (com \lstinline{height_count[h]++} a cada inserção e \lstinline{height_count[h]--} a cada remoção/relabel) é atualizado em $\mathcal{O}(1)$ por operação. Após cada \textit{relabel} de $u$ de $h$ para $h'$, basta verificar se \lstinline{height_count[h] == 0}: se sim, a lacuna $h$ foi formada, e todos os vértices com $h(v) > h$ (exceto $s$) têm sua altura definida para $|V|+1$ em uma varredura linear única por \lstinline{active_buckets}. Esta varredura custa $\mathcal{O}(|V|)$ no pior caso, mas acontece no máximo $|V|$ vezes, resultando em custo amortizado $\mathcal{O}(1)$ por operação.
 
 \begin{table}[h]
 \centering
@@ -403,7 +565,7 @@ Um digrafo $D = (V, A)$ é classificado como bipartido se o seu conjunto de vér
 
 O Problema do Emparelhamento Bipartido de Cardinalidade Máxima (\textit{Maximum Bipartite Matching}) busca encontrar o maior subconjunto de arcos $M \subseteq A$ tal que nenhum vértice do digrafo incida em mais de um arco de $M$. Em termos práticos, representa a maximização de pares exclusivos entre os conjuntos $L$ e $R$.
 
-Embora existam algoritmos específicos para este fim, o problema pode ser elegantemente reduzido ao cômputo de um fluxo máximo (veja~\cite{ahuja1993network}). A redução algorítmica procede através da construção de uma rede de fluxo direcionada $D' = (V', A')$ baseada no digrafo original $D$:
+Embora existam algoritmos específicos para este fim, o problema pode ser elegantemente reduzido ao \textbf{cômputo} (do latim \textit{computare}: calcular, determinar) de um fluxo máximo (veja~\cite{ahuja1993network}). A redução algorítmica procede através da construção de uma rede de fluxo direcionada $D' = (V', A')$ baseada no digrafo original $D$:
 \begin{enumerate}
     \item Adicionam-se dois vértices artificiais ao sistema: uma super-fonte $s$ e um super-sumidouro $t$.
     \item Para cada vértice $u \in L$, cria-se um arco direcionado $(s, u)$ com capacidade exatamente igual a 1.
@@ -414,6 +576,42 @@ Embora existam algoritmos específicos para este fim, o problema pode ser elegan
 A prova de correção desta modelagem repousa sobre o Teorema da Integralidade (veja~\cite{korte2018combinatorial}). Como todas as capacidades do subdigrafo injetor ($s \rightarrow L$) e extrator ($R \rightarrow t$) são inteiras (estritamente 1), os algoritmos de fluxo garantem matematicamente o retorno de um vetor de fluxo viável inteiramente composto por zeros e uns.
 
 Consequentemente, a restrição de capacidade unitária nos arcos conectados à super-fonte e ao super-sumidouro força a lei de conservação a atuar como um restritor de exclusividade: se $1$ unidade de fluxo transita por um vértice $u \in L$, ela só pode ser roteada por um único arco em direção a $R$. O valor numérico do fluxo máximo computado pela rede $D'$ equivale perfeitamente à cardinalidade $|M|$ do emparelhamento máximo, e os arcos ativos ($f(u,v) = 1$) que cruzam de $L$ para $R$ constituem os pares da solução exata.
+
+\begin{figure}[h]
+\centering
+\begin{tikzpicture}[>=Stealth,thick]
+% Grafo bipartido original
+\begin{scope}[xshift=0cm]
+  \node[font=\footnotesize,above] at (1.5,3.8) {\textbf{(a) Grafo bipartido}};
+  \foreach \i/\y in {1/3, 2/1.5, 3/0} {
+    \node[circle,draw,fill=blue!15,minimum size=8mm,font=\small] (l\i) at (0,\y) {$l_\i$};
+    \node[circle,draw,fill=orange!15,minimum size=8mm,font=\small] (r\i) at (3,\y) {$r_\i$};
+  }
+  \draw[-] (l1) -- (r1); \draw[-] (l1) -- (r2);
+  \draw[-] (l2) -- (r2); \draw[-] (l2) -- (r3);
+  \draw[-] (l3) -- (r1); \draw[-] (l3) -- (r3);
+\end{scope}
+\node at (5,1.5) {$\Rightarrow$};
+% Rede de fluxo
+\begin{scope}[xshift=6.5cm]
+  \node[font=\footnotesize,above] at (2.5,3.8) {\textbf{(b) Rede de fluxo $D'$}};
+  \node[circle,draw,fill=green!30,minimum size=8mm,font=\small] (s) at (0,1.5) {$s$};
+  \node[circle,draw,fill=red!30,minimum size=8mm,font=\small] (t) at (5,1.5) {$t$};
+  \foreach \i/\y in {1/3, 2/1.5, 3/0} {
+    \node[circle,draw,fill=blue!15,minimum size=7mm,font=\tiny] (fl\i) at (1.8,\y) {$l_\i$};
+    \node[circle,draw,fill=orange!15,minimum size=7mm,font=\tiny] (fr\i) at (3.2,\y) {$r_\i$};
+    \draw[->] (s) -- node[above,font=\tiny] {$1$} (fl\i);
+    \draw[->] (fr\i) -- node[above,font=\tiny] {$1$} (t);
+  }
+  \draw[->,line width=1.5pt,blue] (fl1) -- (fr1); \draw[->] (fl1) -- (fr2);
+  \draw[->] (fl2) -- (fr2); \draw[->,line width=1.5pt,blue] (fl2) -- (fr3);
+  \draw[->] (fl3) -- (fr1); \draw[->,line width=1.5pt,blue] (fl3) -- (fr3);
+\end{scope}
+\end{tikzpicture}
+\caption{Redução do Emparelhamento Bipartido a Fluxo Máximo. (a) Grafo bipartido original com $L = \{l_1,l_2,l_3\}$ e $R = \{r_1,r_2,r_3\}$. (b) Rede de fluxo $D'$: arcos de $s$ para $L$ e de $R$ para $t$ com capacidade~1; arcos de $L$ para $R$ herdados do grafo original. Arcos azuis grossos indicam o emparelhamento m\'aximo obtido pelo fluxo m\'aximo $|f^*|=3$.}
+\label{fig:bipartite_flow}
+\end{figure}
+
 
 \subsubsection{O Teorema de König e a Cobertura de Vértices Mínima}
 
@@ -429,11 +627,46 @@ A extração computacional dos vértices que compõem a cobertura mínima exige 
     \item A Cobertura de Vértices Mínima $C$ é então construída selecionando-se os vértices da partição esquerda original que não foram alcançados pela busca ($L \setminus S$) unidos aos vértices da partição direita que foram alcançados ($R \cap S$). Formalmente: $C = (L \cap T) \cup (R \cap S)$.
 \end{enumerate}
 
-A solidez desta extração reside no fato de que, pelas propriedades de conservação do corte mínimo em capacidades unitárias, não pode existir nenhum arco residual viável cruzando de $S$ para $T$. Consequentemente, a seleção $(L \cap T) \cup (R \cap S)$ garante de forma inequívoca que todos os arcos originais do digrafo bipartido estão "cobertos" por, no mínimo, um destes vértices selecionados, consolidando a prova empírica do Teorema de König.
+A solidez desta extração reside no fato de que, pelas propriedades de conservação do corte mínimo em capacidades unitárias, não pode existir nenhum arco residual viável cruzando de $S$ para $T$. Consequentemente, a seleção $(L \cap T) \cup (R \cap S)$ garante de forma inequívoca que todos os arcos originais do digrafo bipartido estão ``cobertos'' por, no mínimo, um destes vértices selecionados, consolidando a prova empírica do Teorema de König.
+
+\begin{figure}[h]
+\centering
+\begin{tikzpicture}[>=Stealth,thick]
+  \node[font=\footnotesize,above] at (2.5,4.2) {Corte m\'inimo e Cobertura de V\'ertices (K\'onig)};
+  \node[circle,draw,fill=green!30,minimum size=8mm,font=\small] (s) at (0,2) {$s$};
+  \node[circle,draw,fill=red!30,minimum size=8mm,font=\small] (t) at (5,2) {$t$};
+  % L vertices
+  \node[circle,draw,fill=blue!15,minimum size=8mm,font=\small] (l1) at (1.7,3.5) {$l_1$};
+  \node[circle,draw,fill=blue!40,minimum size=8mm,font=\small,double] (l2) at (1.7,2) {$l_2$};
+  \node[circle,draw,fill=blue!15,minimum size=8mm,font=\small] (l3) at (1.7,0.5) {$l_3$};
+  % R vertices
+  \node[circle,draw,fill=orange!15,minimum size=8mm,font=\small] (r1) at (3.3,3.5) {$r_1$};
+  \node[circle,draw,fill=orange!15,minimum size=8mm,font=\small] (r2) at (3.3,2) {$r_2$};
+  \node[circle,draw,fill=orange!40,minimum size=8mm,font=\small,double] (r3) at (3.3,0.5) {$r_3$};
+  % Source arcs
+  \draw[->] (s) -- (l1); \draw[->,red,line width=1.5pt] (s) -- node[above,font=\tiny,red]{corte} (l2); \draw[->] (s) -- (l3);
+  % t arcs
+  \draw[->] (r1) -- (t); \draw[->] (r2) -- (t); \draw[->,red,line width=1.5pt] (r3) -- node[above,font=\tiny,red]{corte} (t);
+  % Matching arcs
+  \draw[->,line width=1.5pt,blue] (l1) -- (r1);
+  \draw[->,line width=1.5pt,blue] (l2) -- (r2);
+  \draw[->,line width=1.5pt,blue] (l3) -- (r3);
+  % Region labels
+  \draw[dashed,gray,rounded corners] (-0.6,0) rectangle (2.5,4) node[above left,font=\tiny]{$S$};
+  \draw[dashed,gray,rounded corners] (2.8,0) rectangle (5.6,4) node[above right,font=\tiny]{$T$};
+  % Cover label
+  \node[font=\tiny,blue!80!black,below] at (1.7,1.5) {$l_2 \in L \cap T$};
+  \node[font=\tiny,orange!80!black,below] at (3.3,0) {$r_3 \in R \cap S$};
+  \node[font=\footnotesize,below] at (2.5,-0.6) {Cobertura $C = \{l_2, r_3\}$, $|C| = |M| = 2$ (K\'onig)};
+\end{tikzpicture}
+\caption{Teorema de K\'onig: a BFS no digrafo residual $D_f$ ap\'os o fluxo m\'aximo particiona os v\'ertices em $S$ (alcan\'c\'aveis) e $T$ (inalcan\'c\'aveis). Os arcos cortados (vermelho) definem o corte m\'inimo. A cobertura m\'inima \'e $C = (L\cap T) \cup (R \cap S)$ (v\'ertices com borda dupla).}
+\label{fig:konig_cut}
+\end{figure}
+
 
 \subsubsection{Conjunto Independente Máximo}
 
-O Problema do Conjunto Independente Máximo (\textit{Maximum Independent Set} - MIS) visa identificar o maior subconjunto de vértices $I \subseteq V$ no qual nenhuma dupla de vértices seja adjacente entre si. Em outras palavras, nenhum arco do digrafo pode possuir ambas as extremidades contidas no conjunto $I$.
+O Problema do Conjunto Independente Máximo (\textit{Maximum Independent Set} - MIS) visa identificar o maior subconjunto de vértices $I \subseteq V$ no qual nenhuma dupla de vértices seja adjacente entre si. Assim como nos casos anteriores, o problema é tratado aqui sobre um \textbf{digrafo bipartido}, contexto em que a dualidade com a Cobertura de Vértices Mínima --- resultado do Teorema de König --- permite resolvê-lo em tempo polinomial via fluxo máximo. Em outras palavras, nenhum arco do digrafo pode possuir ambas as extremidades contidas no conjunto $I$.
 
 Assim como a Cobertura de Vértices, este problema é NP-Difícil para digrafos gerais, mas admite uma solução polinomial elegante e direta em digrafos bipartidos graças à dualidade complementar. A relação matemática entre a Cobertura de Vértices Mínima ($C$) e o Conjunto Independente Máximo ($I$) é inversamente proporcional e estritamente complementar: se um conjunto de vértices $C$ cobre todos os arcos de um digrafo, a remoção de $C$ elimina todas as conexões possíveis entre os vértices restantes (veja~\cite{cook1998combinatorial}).
 
@@ -446,9 +679,40 @@ Desta forma, a extração computacional do Conjunto Independente Máximo dispens
 
 A cardinalidade do Conjunto Independente Máximo é dada algebricamente por $|I| = |V| - |C|$. Esta sequência de reduções demonstra a aplicabilidade do modelo de fluxo em redes: a partir de uma única construção baseada em super-fonte e super-sumidouro, o sistema soluciona simultaneamente o Emparelhamento Máximo, a Cobertura de Vértices Mínima e o Conjunto Independente Máximo.
 
+\subsubsection{Cobertura de Arcos Mínima e as Quatro Dualidades}
+
+Até este ponto, estudamos três dos quatro objetos combinatórios fundamentais em grafos bipartidos. O quarto é a \textbf{Cobertura de Arcos Mínima} (\textit{Minimum Edge Cover} - MEC): o menor subconjunto de arcos $F \subseteq A$ tal que todo vértice do digrafo seja incidente a pelo menos um arco de $F$ (ou seja, $F$ ``cobre'' todos os vértices). Ao contrário dos problemas de cobertura de vértices, este problema admite solução eficiente também em grafos gerais, não apenas bipartidos.
+
+A conexão entre Cobertura de Arcos e Emparelhamento Máximo é estabelecida pelo \textbf{Teorema de Gallai} (veja~\cite{bondy2008graph}): em qualquer grafo simples $G$ sem vértices isolados, valem as identidades:
+\begin{equation}
+    |M^*| + |C_V^*| = |V| \quad \text{(Teorema de Gallai para vértices)}
+\end{equation}
+\begin{equation}
+    |M^*| + |F^*| = |V| \quad \text{(Teorema de Gallai para arcos)}
+\end{equation}
+onde $|M^*|$ é o tamanho do emparelhamento máximo, $|C_V^*|$ o da cobertura de vértices mínima e $|F^*|$ o da cobertura de arcos mínima. Em particular, a cobertura de arcos mínima pode ser obtida a partir do emparelhamento máximo: inicia-se com $F = M^*$ e, para cada vértice não coberto por $M^*$, adiciona-se um arco qualquer incidente a ele.
+
+Esses quatro objetos são ``faces da mesma moeda'', variando apenas o que cobre (vértice ou arco) e o que se emparelha (vértice ou arco), nas dimensões de minimizar/maximizar:
+
+\begin{table}[h]
+\centering
+\begin{tabular}{l c c}
+\hline
+\textbf{Objetivo} & \textbf{Cobre vértices} & \textbf{Cobre arcos} \\
+\hline
+\textbf{Maximizar} & Conjunto Independente Máximo ($I$) & Emparelhamento Máximo ($M$) \\
+\textbf{Minimizar} & Cobertura de Vértices Mínima ($C_V$) & Cobertura de Arcos Mínima ($F$) \\
+\hline
+\end{tabular}
+\caption{As quatro dualidades combinatórias em grafos bipartidos. Cada célula é complementar à da mesma linha ou coluna, e todas são interligadas pelos Teoremas de König e Gallai.}
+\label{tab:dualidades}
+\end{table}
+
+As relações $|M^*| = |C_V^*|$ (König) e $|I^*| + |C_V^*| = |V|$ e $|M^*| + |F^*| = |V|$ (Gallai) mostram que conhecer qualquer um destes valores determina os demais. Neste projeto, os três primeiros ($M$, $C_V$, $I$) são resolvidos via fluxo máximo; a cobertura de arcos mínima é obtida a partir de $M^*$ por pós-processamento em $\mathcal{O}(|V|)$, sem necessidade de novo cálculo de fluxo.
+
 \subsection{Conectividade e Roteamento}
 
-A análise de conectividade de um digrafo é um pilar fundamental no design de redes de telecomunicações, logística e tolerância a falhas. A premissa central é determinar a resiliência estrutural de um sistema: quantas rotas independentes existem para transmitir informações ou recursos de um ponto de origem $s$ a um destino $t$ de forma que, se um componente falhar, as demais rotas permaneçam intactas? O cômputo do fluxo máximo fornece o ferramental matemático exato para responder a esta indagação sob duas perspectivas restritivas.
+A análise de conectividade de um digrafo é um pilar fundamental no design de redes de telecomunicações, logística e tolerância a falhas. A premissa central é determinar a resiliência estrutural de um sistema: quantas rotas independentes existem para transmitir informações ou recursos de um ponto de origem $s$ a um destino $t$ de forma que, se um componente falhar, as demais rotas permaneçam intactas? O cálculo (cômputo) do fluxo máximo fornece o ferramental matemático exato para responder a esta indagação sob duas perspectivas restritivas.
 
 \subsubsection{Caminhos Disjuntos por Arcos e por Vértices}
 
@@ -458,15 +722,45 @@ A redução deste problema computacional para o modelo de fluxo em redes é dire
 
 Uma restrição topológica consideravelmente mais severa é imposta pelo Problema dos Caminhos Disjuntos por Vértices (\textit{Vertex-Disjoint Paths}). Neste cenário, os caminhos não podem compartilhar sequer um vértice intermediário (cruzamento), garantindo isolamento total. Como os algoritmos canônicos de fluxo operam controlando as capacidades dos arcos e não dos vértices, a modelagem exige uma transformação geométrica avançada conhecida como Divisão de Vértices (\textit{Vertex Splitting}) (veja~\cite{ahuja1993network}).
 
-A técnica de \textit{Vertex Splitting} altera a topologia do digrafo original $D$ para gerar uma nova rede de fluxo estendida $A'$ através da seguinte heurística de mapeamento:
+A técnica de \textit{Vertex Splitting} altera a topologia do digrafo original $D$ para gerar uma nova rede de fluxo estendida $D'$ através do seguinte mapeamento:
 \begin{enumerate}
     \item Cada vértice original $v \in V \setminus \{s, t\}$ é bipartido em dois vértices artificiais distintos: um vértice de entrada ($v_{in}$) e um vértice de saída ($v_{out}$).
     \item Um arco direcionado interno é criado conectando as duas metades, $(v_{in}, v_{out})$, e recebe uma capacidade estritamente unitária: $c(v_{in}, v_{out}) = 1$.
-    \item Todos os arcos que originalmente apontavam para $v$ no digrafo $D$ são redirecionados para apontar exclusivamente para $v_{in}$.
-    \item Todos os arcos que originalmente divergiam de $v$ no digrafo $D$ passam a emergir exclusivamente a partir de $v_{out}$ (com capacidade 1 ou infinita, dependendo da formulação).
+    \item Todos os arcos que originalmente \textbf{convergiam} para $v$ em $D$ (i.e., que apontavam para $v$, ``divergindo'' de algum vértice vizinho) são redirecionados para apontar exclusivamente para $v_{in}$.
+    \item Todos os arcos que originalmente \textbf{divergiam} de $v$ em $D$ (i.e., saíam de $v$ e ``emergiam'' em direção a vizinhos) passam a sair exclusivamente de $v_{out}$ (com capacidade 1 ou infinita, dependendo da formulação). Os termos ``convergir'' e ``divergir'' referem-se, respectivamente, ao sentido de chegada e saída de fluxo em relação a um vértice.
 \end{enumerate}
 
-Esta transformação impõe uma restrição de capacidade nos vértices: ao forçar todo o fluxo que transita pelo nó original $v$ a atravessar um arco interno $(v_{in}, v_{out})$ de capacidade $1$, a rede garante que não mais do que $1$ unidade de fluxo possa cruzar aquele vértice. Ao submeter esta nova topologia estendida $D'$ aos algoritmos implementados, o fluxo máximo computado determina o número máximo de rotas disjuntas por vértices (veja~\cite{korte2018combinatorial}).
+Esta transformação impõe uma restrição de capacidade nos vértices: ao forçar todo o fluxo que transita pelo nó original $v$ a atravessar um arco interno $(v_{in}, v_{out})$ de capacidade $1$, a rede garante que não mais do que $1$ unidade de fluxo possa cruzar aquele vértice. Ao submeter esta nova topologia estendida $D'$ (onde $V' = V \cup \{v_{in}, v_{out} : v \in V \setminus \{s,t\}\}$) aos algoritmos implementados, o fluxo máximo computado determina o número máximo de rotas disjuntas por vértices (veja~\cite{korte2018combinatorial}).
+
+\begin{figure}[h]
+\centering
+\begin{tikzpicture}[>=Stealth,thick]
+% Digrafo original
+\begin{scope}[xshift=0cm]
+  \node[font=\footnotesize,above] at (1.5,2.8) {\textbf{(a) Original $D$}};
+  \node[circle,draw,fill=green!20,minimum size=8mm,font=\small] (s) at (0,1.5) {$s$};
+  \node[circle,draw,minimum size=8mm,font=\small] (v) at (1.5,1.5) {$v$};
+  \node[circle,draw,fill=red!20,minimum size=8mm,font=\small] (t) at (3,1.5) {$t$};
+  \draw[->] (s) -- (v); \draw[->] (v) -- (t);
+\end{scope}
+\node at (4.5,1.5) {$\Rightarrow$};
+% Digrafo apos vertex splitting
+\begin{scope}[xshift=5.5cm]
+  \node[font=\footnotesize,above] at (2.2,2.8) {\textbf{(b) Vertex Splitting: $D'$}};
+  \node[circle,draw,fill=green!20,minimum size=8mm,font=\small] (s2) at (0,1.5) {$s$};
+  \node[circle,draw,fill=blue!10,minimum size=8mm,font=\tiny] (vin) at (2,1.5) {$v_{in}$};
+  \node[circle,draw,fill=blue!20,minimum size=8mm,font=\tiny] (vout) at (3.5,1.5) {$v_{out}$};
+  \node[circle,draw,fill=red!20,minimum size=8mm,font=\small] (t2) at (5.5,1.5) {$t$};
+  \draw[->] (s2) -- node[above,font=\tiny]{$\infty$} (vin);
+  \draw[->,red,line width=1.5pt] (vin) -- node[above,font=\tiny,red]{$c=1$} (vout);
+  \draw[->] (vout) -- node[above,font=\tiny]{$\infty$} (t2);
+  \node[font=\tiny,below] at (2.75,0.9) {arco interno (gargalo)};
+\end{scope}
+\end{tikzpicture}
+\caption{Vertex Splitting: cada v\'ertice intermedi\'ario $v$ \'e dividido em $v_{in}$ e $v_{out}$, conectados por um arco interno de capacidade~1 (vermelho). Isso limita o fluxo passando por $v$ a no m\'aximo 1 unidade, modelando caminhos disjuntos por v\'ertices.}
+\label{fig:vertex_splitting}
+\end{figure}
+
 
 \subsubsection{O Teorema de Menger e a Dualidade da Conectividade}
 
@@ -490,7 +784,7 @@ Seja $D = (V, A)$ um digrafo e sejam $s, t \in V$ dois vértices distintos e nã
 
 Pelo Teorema da Integralidade, como todas as capacidades são inteiras, existe um fluxo máximo inteiro $f$, onde cada arco transporta $f(u,v) \in \{0, 1\}$. Um arco com $f(u,v) = 1$ pertence a exatamente um caminho de $s$ a $t$. Como nenhum arco pode transportar mais que $1$ unidade, dois caminhos distintos não podem compartilhar um mesmo arco. Portanto, o valor do fluxo máximo $|f|$ é exatamente o número de caminhos disjuntos por arcos.
 
-Pelo Teorema Max-Flow Min-Cut, $|f| = \text{cap}(S,T)$ para algum corte mínimo $(S,T)$. Como $c(u,v) = 1$, a capacidade do corte é precisamente o número de arcos que cruzam de $S$ para $T$, ou seja, o número mínimo de arcos cuja remoção desconecta $s$ de $t$. Conclui-se:
+Pelo Teorema do Fluxo Máximo e Corte Mínimo, $|f| = \text{cap}(S,T)$ para algum corte mínimo $(S,T)$, onde $\text{cap}(S,T) = \sum_{(u,v) \in A,\, u \in S,\, v \in T} c(u,v)$ é a soma das capacidades de todos os arcos que cruzam do lado $S$ para o lado $T$ do corte. Como $c(u,v) = 1$, a capacidade do corte é precisamente o número de arcos que cruzam de $S$ para $T$, ou seja, o número mínimo de arcos cuja remoção desconecta $s$ de $t$. Conclui-se:
 $$\max\{\text{caminhos disjuntos por arcos de } s \text{ a } t\} = \min\{\text{arcos cuja remoção desconecta } s \text{ de } t\}.$$
 
 \subsubsection{Prova do Teorema de Menger (Versão por Vértices)}
@@ -608,9 +902,11 @@ Na implementação desta biblioteca, esta modelagem é realizada nativamente pel
 
 É importante distinguir dois cenários: em problemas de corte mínimo em grafos não-direcionados (como o problema \textit{Police Chase}), esta modelagem bidirecional é obrigatória; já em problemas de fluxo puro em digrafos, apenas o arco reverso com capacidade $0$ é necessário (comportamento padrão do \lstinline{add_edge}).
 
+\textbf{Observação --- \lstinline{add_edge(a,b,cap)} seguido de \lstinline{add_edge(b,a,cap)}:} Chamar \lstinline{add_edge} duas vezes para o mesmo par de vértices em sentidos opostos é seguro e correto. Cada chamada cria um par independente de arcos (direto + reverso de capacidade 0), indexados por XOR. Portanto, \lstinline{add_edge(a,b,cap)} cria os arcos de índices $2k$ e $2k+1$, e \lstinline{add_edge(b,a,cap)} cria os arcos $2k+2$ e $2k+3$, todos com seus reversos corretamente emparelhados. Esta modelagem é equivalente a \lstinline{add_edge(a,b,cap,cap)} e representa uma aresta bidirecional (grafo não-direcionado). Contudo, se a intenção for modelar um arco \emph{apenas} de $a$ para $b$ em um digrafo, \lstinline{add_edge} deve ser chamado apenas uma vez, pois duas chamadas criam arcos paralelos entre $a$ e $b$ --- o que é matematicamente válido (arcos paralelos simplesmente acumulam capacidade), mas raramente é a modelagem desejada.
+
 \subsection{Decomposição de Fluxo}
 
-Após o cômputo do fluxo máximo, a solução obtida é representada como um vetor de fluxos individuais sobre os arcos da rede. Contudo, muitas aplicações práticas exigem uma descrição mais estruturada da solução: quais são os caminhos individuais de $s$ a $t$ que compõem o fluxo total, e quanto fluxo transita em cada um?
+Após o cômputo (cálculo, determinação) do fluxo máximo, a solução obtida é representada como um vetor de fluxos individuais sobre os arcos da rede. Contudo, muitas aplicações práticas exigem uma descrição mais estruturada da solução: quais são os caminhos individuais de $s$ a $t$ que compõem o fluxo total, e quanto fluxo transita em cada um?
 
 O Teorema da Decomposição de Fluxo fornece a fundamentação matemática para esta extração (veja~\cite{ahuja1993network, schrijver2003combinatorial}).
 
