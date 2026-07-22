@@ -181,11 +181,11 @@ Esta formulação matemática é de suma importância estrutural, pois o termo a
 
 Operando sobre a topologia de $D_f$, define-se um caminho aumentante como qualquer caminho simples com origem na fonte $s$ e término no sumidouro $t$. A existência de tal caminho implica de forma direta que o fluxo global $|f|$ pode ser estritamente incrementado sem violar as restrições estruturais da rede original. O incremento máximo viável ao longo deste trajeto é delimitado pelo arco de menor capacidade residual, comumente denominado arco gargalo.
 
-O critério de parada para os algoritmos de aumento iterativo, bem como o certificado matemático de otimalidade, é assegurado pelo Teorema do Fluxo Máximo-Corte Mínimo (\textit{Max-Flow Min-Cut Theorem}) (veja~\cite{ford1956maximal}). O teorema introduz a noção de um corte $s-t$, definido como uma partição do conjunto de vértices $V$ em dois subconjuntos mutuamente exclusivos $S$ e $T$, tais que $s \in S$ e $t \in T$. A capacidade deste corte é computada pela soma escalar das capacidades de todos os arcos originais direcionados de $S$ para~$T$.
+O critério de parada para os algoritmos de aumento iterativo, bem como o certificado matemático de otimalidade, é assegurado pelo Teorema do Fluxo Máximo e Corte Mínimo (\textit{Max-Flow Min-Cut Theorem}) (veja~\cite{ford1956maximal}). O teorema introduz a noção de um corte $s-t$, definido como uma partição do conjunto de vértices $V$ em dois subconjuntos mutuamente exclusivos $S$ e $T$, tais que $s \in S$ e $t \in T$. A capacidade deste corte é computada pela soma escalar das capacidades de todos os arcos originais direcionados de $S$ para~$T$.
 
 O teorema demonstra uma dualidade perfeita em otimização: o valor do fluxo máximo em uma rede é estritamente igual à capacidade do corte mínimo. Computacionalmente, a ausência de um caminho aumentante na rede residual $D_f$ é a condição matemática necessária e suficiente para atestar que o fluxo atual atingiu o seu limite ótimo global (veja~\cite{cook1998combinatorial}).
 
-\subsubsection{Prova do Teorema do Fluxo Máximo-Corte Mínimo}
+\subsubsection{Prova do Teorema do Fluxo Máximo e Corte Mínimo}
 
 A demonstração deste teorema é construtiva e apoia-se diretamente na topologia do digrafo residual (veja~\cite{ford1956maximal, cook1998combinatorial}). Seja $f$ um fluxo em $D$. O valor do fluxo $|f|$ é sempre menor ou igual à capacidade de qualquer corte $s-t$ na rede, uma vez que o tráfego de recursos é fisicamente limitado pelas conexões que particionam a fonte do sumidouro. Portanto, se encontrarmos um fluxo $|f|$ cujo valor seja exata e algebricamente igual à capacidade de algum corte específico, teremos provado simultaneamente que $f$ é máximo e que o corte em questão é o mínimo.
 
@@ -269,7 +269,7 @@ A resolução computacional do problema de fluxo máximo fundamenta-se historica
 
 O método estipula que, enquanto houver um caminho aumentante em $D_f$, o fluxo global da rede deve ser incrementado pelo valor da capacidade gargalo deste caminho (a menor capacidade residual encontrada no trajeto). Contudo, a definição matemática original estabelece apenas o critério de viabilidade topológica do percurso, não impondo nenhuma diretriz algorítmica ou heurística de seleção de qual caminho processar em digrafos onde múltiplos trajetos aumentantes coexistem (veja~\cite{ahuja1993network}).
 
-Esta abstração geométrica, embora elegante para a prova do Teorema do Fluxo Máximo-Corte Mínimo, apresenta uma vulnerabilidade computacional severa. Em instâncias teóricas onde as capacidades dos arcos assumem valores irracionais, demonstra-se matematicamente que uma escolha arbitrária ou patológica de caminhos pode levar o método a realizar infinitas iterações. Em casos extremos, a sequência de aumentos não apenas falha em terminar, como o valor do fluxo pode convergir assintoticamente para um limite estritamente inferior ao fluxo máximo real da rede (veja~\cite{cook1998combinatorial}).
+Esta abstração geométrica, embora elegante para a prova do Teorema do Fluxo Máximo e Corte Mínimo, apresenta uma vulnerabilidade computacional severa. Em instâncias teóricas onde as capacidades dos arcos assumem valores irracionais, demonstra-se matematicamente que uma escolha arbitrária ou patológica de caminhos pode levar o método a realizar infinitas iterações. Em casos extremos, a sequência de aumentos não apenas falha em terminar, como o valor do fluxo pode convergir assintoticamente para um limite estritamente inferior ao fluxo máximo real da rede (veja~\cite{cook1998combinatorial}).
 
 Mesmo no domínio prático das redes com capacidades inteiras, uma má escolha iterativa pode forçar o método a operar em tempo $\mathcal{O}(|A| \cdot |f^*|)$, onde $|f^*|$ é o valor escalar do fluxo máximo. Esta dependência direta do valor numérico restringe a abordagem a um tempo de execução pseudopolinomial, cujo desempenho degrada exponencialmente em função da magnitude das capacidades originais da rede.
 
@@ -323,7 +323,7 @@ Uma função de altura é considerada matematicamente válida para um pré-fluxo
     \item Para todo arco residual viável $(u,v) \in A_f$, a inclinação é controlada: $h(u) \le h(v) + 1$.
 \end{enumerate}
 
-A terceira condição garante que o excesso não despencará em "quedas livres" descontroladas e, principalmente, que não existe nenhum caminho direcionado viável de $s$ para $t$ na rede residual, atestando a otimalidade topológica do sistema a todo instante. O algoritmo termina quando o conjunto de vértices ativos torna-se vazio ($e(v) = 0, \forall v \in V \setminus \{s, t\}$). Neste ponto exato, o pré-fluxo converte-se em um fluxo viável e, pela ausência de caminhos da fonte ao sumidouro, o Teorema do Fluxo Máximo-Corte Mínimo certifica que este fluxo é máximo.
+A terceira condição garante que o excesso não despencará em "quedas livres" descontroladas e, principalmente, que não existe nenhum caminho direcionado viável de $s$ para $t$ na rede residual, atestando a otimalidade topológica do sistema a todo instante. O algoritmo termina quando o conjunto de vértices ativos torna-se vazio ($e(v) = 0, \forall v \in V \setminus \{s, t\}$). Neste ponto exato, o pré-fluxo converte-se em um fluxo viável e, pela ausência de caminhos da fonte ao sumidouro, o Teorema do Fluxo Máximo e Corte Mínimo certifica que este fluxo é máximo.
 
 \subsubsection{A Família Push-Relabel}
 
@@ -400,7 +400,7 @@ Consequentemente, a restrição de capacidade unitária nos arcos conectados à 
 
 O Problema da Cobertura de Vértices Mínima (\textit{Minimum Vertex Cover} - MVC) consiste em determinar o menor subconjunto de vértices $C \subseteq V$ tal que todo arco do digrafo incida em pelo menos um vértice pertencente a $C$. Em digrafos arbitrários, este problema é classificado como NP-Difícil. Contudo, quando a topologia do digrafo é estritamente bipartida, o problema pode ser resolvido em tempo polinomial através da sua profunda relação dual com o emparelhamento máximo.
 
-Esta relação de dualidade é formalizada pelo Teorema de König (veja~\cite{korte2018combinatorial}), que estabelece que, em qualquer digrafo bipartido, a cardinalidade do emparelhamento máximo é matematicamente idêntica à cardinalidade da cobertura de vértices mínima ($|M| = |C|$). Sob a ótica da teoria de redes, o Teorema de König nada mais é do que uma manifestação estrutural do Teorema do Fluxo Máximo-Corte Mínimo de Ford-Fulkerson aplicado à modelagem com super-fonte e super-sumidouro (veja~\cite{ahuja1993network}).
+Esta relação de dualidade é formalizada pelo Teorema de König (veja~\cite{korte2018combinatorial}), que estabelece que, em qualquer digrafo bipartido, a cardinalidade do emparelhamento máximo é matematicamente idêntica à cardinalidade da cobertura de vértices mínima ($|M| = |C|$). Sob a ótica da teoria de redes, o Teorema de König nada mais é do que uma manifestação estrutural do Teorema do Fluxo Máximo e Corte Mínimo de Ford-Fulkerson aplicado à modelagem com super-fonte e super-sumidouro (veja~\cite{ahuja1993network}).
 
 A extração computacional dos vértices que compõem a cobertura mínima exige uma análise minuciosa da rede residual $D_f$ gerada logo após a convergência do fluxo máximo. A biblioteca desenvolvida neste projeto recupera o conjunto $C$ através do seguinte procedimento algorítmico baseado em cortes mínimos:
 
@@ -457,7 +457,7 @@ O Teorema de Menger apresenta duas formulações complementares que espelham per
 
 De forma análoga, na sua versão por vértices, o teorema afirma que o número máximo de caminhos internamente disjuntos por vértices entre $s$ e $t$ é rigorosamente idêntico ao número mínimo de vértices intermediários cuja remoção fragmenta a rede e isola o sumidouro da fonte (o Corte Mínimo de Vértices).
 
-Sob a perspectiva da engenharia de algoritmos desenvolvida neste projeto, o Teorema de Menger é, fundamentalmente, um corolário estrutural do Teorema do Fluxo Máximo-Corte Mínimo de Ford-Fulkerson aplicado a redes de capacidade unitária (veja~\cite{ahuja1993network}). A prova de que estas dualidades são faces da mesma moeda matemática é confirmada pelo método de extração do corte: para identificar quais arcos ou vértices específicos devem ser removidos para causar a falha da rede, a biblioteca reutiliza a mesma rotina de Busca em Largura (BFS) no digrafo residual $D_f$ empregada no Teorema de König.
+Sob a perspectiva da engenharia de algoritmos desenvolvida neste projeto, o Teorema de Menger é, fundamentalmente, um corolário estrutural do Teorema do Fluxo Máximo e Corte Mínimo de Ford-Fulkerson aplicado a redes de capacidade unitária (veja~\cite{ahuja1993network}). A prova de que estas dualidades são faces da mesma moeda matemática é confirmada pelo método de extração do corte: para identificar quais arcos ou vértices específicos devem ser removidos para causar a falha da rede, a biblioteca reutiliza a mesma rotina de Busca em Largura (BFS) no digrafo residual $D_f$ empregada no Teorema de König.
 
 No caso do \textit{Vertex Splitting}, a BFS varre o digrafo residual particionando os vértices expandidos. Os arcos artificiais internos $(v_{in}, v_{out})$ que conectam o conjunto alcançável $S$ ao conjunto inalcançável $T$ no corte mínimo apontam inequivocamente para os vértices originais $v \in V$ que compõem o gargalo estrutural da topologia (veja~\cite{korte2018combinatorial}).
 
@@ -465,7 +465,7 @@ Estes resultados confirmam a versatilidade do modelo de fluxo em redes. Através
 
 \subsubsection{Prova do Teorema de Menger (Versão por Arcos)}
 
-A prova da versão por arcos decorre diretamente do Teorema do Fluxo Máximo-Corte Mínimo aplicado a redes com capacidades unitárias (veja~\cite{ahuja1993network, cook1998combinatorial}).
+A prova da versão por arcos decorre diretamente do Teorema do Fluxo Máximo e Corte Mínimo aplicado a redes com capacidades unitárias (veja~\cite{ahuja1993network, cook1998combinatorial}).
 
 Seja $D = (V, A)$ um digrafo e sejam $s, t \in V$ dois vértices distintos e não-adjacentes. Construa uma rede de fluxo atribuindo capacidade $c(u,v) = 1$ a cada arco $(u,v) \in A$.
 
