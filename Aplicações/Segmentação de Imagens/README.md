@@ -27,7 +27,7 @@ Segmentação de Imagens/
     └── balloons/         # Balões vermelho, amarelo e azul
 ```
 
-O solver de fluxo é configurável via `using FlowSolver = ...` em `src/segmentation.hpp`. Por padrão usa **PushRelabelImproved**, mas pode ser trocado por `Dinic`, `EdmondsKarp` ou `FordFulkerson` sem alterar mais nada.
+O solver de fluxo é configurável via `using FlowSolver = ...` em `src/segmentation.hpp`. Por padrão usa **PushRelabelImproved** (política _Highest Label_ com _Gap Heuristic_, apresentando complexidade assintótica de $\mathcal{O}(|V|^2 \sqrt{|A|})$), mas pode ser trocado por `Dinic`, `EdmondsKarp` ou `FordFulkerson` sem alterar mais nada.
 
 ---
 
@@ -39,30 +39,36 @@ A segmentação é modelada como um problema de **Corte Mínimo** num grafo de f
 
 Cada pixel vira um vértice. Dois terminais virtuais são adicionados:
 
-- **Source** — representa o foreground (objeto).
-- **Sink** — representa o background (fundo).
+- **Source ($s$)** — representa o foreground (objeto).
+- **Sink ($t$)** — representa o background (fundo).
 
 ### 2. Arestas e Pesos
 
-**N-links** conectam pixels vizinhos (4-conectividade). O peso entre pixels $p$ e $q$ decai com a distância de cor:
+**N-links (Neighborhood Links)** conectam pixels vizinhos (4-conectividade). O peso entre pixels $p$ e $q$ decai exponencialmente com a distância de cor:
 
 $$W(p,q) = K \cdot \exp\!\left(-\frac{\lVert I_p - I_q \rVert^2}{2\sigma^2}\right)$$
 
-Pixels parecidos → link forte (difícil de cortar). Contraste grande → link fraco (corte barato). O parâmetro $\sigma$ controla a sensibilidade: valor baixo torna o corte mais agressivo, valor alto tolera mais variação de cor.
+Pixels parecidos → link forte (difícil de cortar). Contraste grande → link fraco (corte barato). O parâmetro $\sigma$ controla a sensibilidade. A implementação impõe limite inferior $\max(W, 1)$ para garantir conexões ativas e evitar peso nulo.
 
-**T-links** conectam cada pixel aos terminais:
+**T-links (Terminal Links)** conectam **todos os pixels** da imagem a ambos os terminais ($s$ e $t$):
 
-- **Seeds de foreground**: capacidade `INF` para Source, `0` para Sink (fixa o pixel no objeto).
-- **Seeds de background**: `0` para Source, `INF` para Sink (fixa no fundo).
-- **Pixels não marcados**: capacidades $w_{\text{source}}$ e $w_{\text{sink}}$ calculadas usando a similaridade gaussiana com base na **distância de cor mínima (no espaço RGB)** em relação a qualquer semente da respectiva classe (heurística de vizinho mais próximo / Nearest Neighbor no espaço de cores).
+- **Seeds de foreground**: capacidade `INF` para Source $s$, `0` para Sink $t$ (fixa obrigatoriamente o pixel no objeto).
+- **Seeds de background**: `0` para Source $s$, `INF` para Sink $t$ (fixa obrigatoriamente o pixel no fundo).
+- **Pixels não marcados**: todos possuem obrigatoriamente ambos os T-links com capacidades $w_{\text{source}} = \max(K \cdot \exp(-d_{\text{fg}}^2 / 2\sigma^2), 1)$ e $w_{\text{sink}} = \max(K \cdot \exp(-d_{\text{bg}}^2 / 2\sigma^2), 1)$, calculadas com base na **distância de cor mínima (no espaço RGB)** em relação às sementes mais próximas de cada classe.
 
-### 3. Max-Flow → Min-Cut
+### 3. Geometria do Corte Mínimo (Min-Cut)
 
-O solver empurra fluxo de Source para Sink até saturar as arestas mais fracas — os contornos de contraste do objeto. O teorema Max-Flow Min-Cut garante que o conjunto de arestas saturadas é exatamente o menor corte da rede.
+O algoritmo empurra fluxo de $s$ para $t$ até encontrar a capacidade máxima, o que pelo Teorema Max-Flow Min-Cut identifica o corte de menor peso $(S, T)$ que separa $s$ de $t$. Na grade de imagem, este corte interrompe exatamente:
+
+1. **T-links $(s, p)$**: quando o pixel $p$ é classificado como **Background** ($p \in T$). Custo pago: $w_s(p)$.
+2. **T-links $(p, t)$**: quando o pixel $p$ é classificado como **Foreground** ($p \in S$). Custo pago: $w_t(p)$.
+3. **N-links $(p, q)$**: quando $p$ e $q$ são vizinhos mas ficam em lados opostos da segmentação. Custo pago: $W(p, q)$.
+
+Como o algoritmo minimiza a soma desses custos, ele prefere cortar N-links onde a transição de cor é abrupta ($W(p,q)$ pequeno) e T-links onde a cor do pixel discorda da classe atribuída. Sementes com capacidade `INF` jamais têm seus T-links cortados.
 
 ### 4. Extração da Máscara
 
-Uma BFS no grafo residual a partir de Source classifica cada pixel: alcançável → foreground, inalcançável → background. Pixels de fundo são substituídos por verde-limão (`R=0, G=255, B=0`), estilo Chroma Key.
+Uma BFS no grafo residual a partir de Source classifica cada pixel: alcançável ($S$) → foreground, inalcançável ($T$) → background. Pixels de fundo são substituídos por verde-limão (`R=0, G=255, B=0`), estilo Chroma Key.
 
 ---
 
