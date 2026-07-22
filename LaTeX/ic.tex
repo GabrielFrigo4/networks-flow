@@ -286,7 +286,7 @@ A prova assenta-se na natureza iterativa do método dos caminhos aumentantes. In
 
 \subsection{Arquitetura Orientada a Objetos e Estruturas de Dados}
 
-A transição dos modelos matemáticos abstratos para implementações computacionais de alto desempenho exige decisões arquiteturais rigorosas. Para garantir a manutenibilidade, a extensibilidade e a correção empírica dos experimentos, a biblioteca desenvolvida neste projeto foi fundamentada no paradigma da Orientação a Objetos através da linguagem C++ moderno.
+A transição dos modelos matemáticos abstratos para implementações computacionais de alto desempenho exige decisões arquiteturais rigorosas. Para garantir a manutenibilidade, a extensibilidade e a correção empírica dos experimentos, a infraestrutura base de código (\textit{Core Framework}) desenvolvida neste projeto --- cujo código-fonte C++ completo é apresentado nos Apêndices deste relatório (Apêndices~\ref{ap:flownetwork} a~\ref{ap:push_relabel_improved}) --- foi fundamentada no paradigma da Orientação a Objetos através da linguagem C++ moderno.
 
 Antes mesmo da definição estrutural, a implementação estabelece apelidos de tipo (\textit{Type Aliases}), como \lstinline{Long} e \lstinline{Size}, para garantir a semântica e a portabilidade do código entre diferentes arquiteturas. Outro cuidado fundamental em nível de \textit{hardware} foi a definição das constantes de limite (\lstinline{INF} e \lstinline{MAX}). Ao invés de utilizar o valor absoluto máximo suportado pelos tipos numéricos, aplicou-se um deslocamento de bits para a direita (\lstinline{>> 8}). Esta técnica atua como uma margem de segurança matemática, prevenindo que somas subsequentes de fluxos e capacidades resultem em comportamentos indefinidos de estouro de memória (\textit{Integer Overflow}).
 
@@ -294,7 +294,7 @@ O núcleo do sistema é regido pela classe base abstrata \lstinline{FlowNetwork}
 
 \begin{itemize}
     \item \textbf{\lstinline{Edge}:} Uma estrutura (\textit{struct}) leve que representa um arco direcionado, agregando as variáveis \lstinline{from} (origem), \lstinline{to} (destino), \lstinline{capacity} (capacidade original $c$) e \lstinline{flow} (fluxo atual $f$).
-    \item \textbf{\lstinline{size}:} Variável escalar que armazena a cardinalidade do conjunto de vértices ($|V|$), utilizada para dimensionar as estruturas auxiliares dinamicamente.
+    \item \textbf{\lstinline{size}:} Variável escalar que aloca a cardinalidade do conjunto de vértices ($|V|$), utilizada para dimensionar as estruturas auxiliares dinamicamente.
     \item \textbf{\lstinline{edges}:} Um vetor linear que armazena todos os arcos da rede. A alocação contígua em memória favorece o \textit{cache} do processador, mitigando os custos de latência comuns em alocações dinâmicas de digrafos.
     \item \textbf{\lstinline{adjacency}:} Uma lista de adjacências otimizada (\lstinline{std::vector<std::vector<Size>>}). Em vez de armazenar ponteiros ou cópias dos arcos, este vetor bidimensional guarda estritamente os índices numéricos que os arcos incidentes ocupam no vetor principal \lstinline{edges}, garantindo acesso em tempo constante $\mathcal{O}(1)$.
 \end{itemize}
@@ -320,7 +320,7 @@ Esta abstração geométrica, embora elegante para a prova do Teorema do Fluxo M
 
 Mesmo no domínio prático das redes com capacidades inteiras, uma má escolha iterativa pode forçar o método a operar em tempo $\mathcal{O}(|A| \cdot |f^*|)$, onde $|f^*|$ é o valor escalar do fluxo máximo. Esta dependência direta do valor numérico restringe a abordagem a um tempo de execução pseudopolinomial, cujo desempenho degrada exponencialmente em função da magnitude das capacidades originais da rede.
 
-Para transpor esta barreira analítica e garantir limites de complexidade de tempo estritamente polinomiais — independentes do valor numérico das capacidades ou do fluxo máximo —, a literatura em Otimização Combinatória evoluiu aplicando restrições rigorosas sobre as políticas de exploração da rede residual. As duas abordagens de caminhos aumentantes mais bem-sucedidas e clássicas implementadas nesta biblioteca, o Algoritmo de Edmonds-Karp e o Algoritmo de Dinic, nascem fundamentalmente da necessidade de disciplinar a seleção iterativa destes percursos. A implementação em C++ do método genérico de Ford-Fulkerson, utilizando busca em profundidade (DFS), encontra-se detalhada no Código~\ref{lst:ford_fulkerson} (disponível no Apêndice~\ref{ap:ford_fulkerson}).
+Para transpor esta barreira analítica e garantir limites de complexidade de tempo estritamente polinomiais — independentes do valor numérico das capacidades ou do fluxo máximo —, a literatura em Otimização Combinatória evoluiu aplicando restrições rigorosas sobre as políticas de exploração da rede residual. As duas abordagens de caminhos aumentantes mais bem-sucedidas e clássicas implementadas na infraestrutura base (\textit{Core Framework}), o Algoritmo de Edmonds-Karp e o Algoritmo de Dinic, nascem fundamentalmente da necessidade de disciplinar a seleção iterativa destes percursos. A materialização em C++ do método genérico de Ford-Fulkerson no \textit{Core Framework}, utilizando busca em profundidade (DFS), encontra-se detalhada no Código~\ref{lst:ford_fulkerson} (disponível no Apêndice~\ref{ap:ford_fulkerson}).
 
 \subsubsection{O Algoritmo de Edmonds-Karp}
 
@@ -344,7 +344,7 @@ A evolução central desta arquitetura baseia-se na separação rigorosa entre a
 
 Uma vez validado e construído este subdigrafo acíclico, o algoritmo abandona a estratégia de incremento singular e emprega uma Busca em Profundidade (DFS - \textit{Depth-First Search}) para determinar o chamado Fluxo Bloqueador (\textit{Blocking Flow}). A DFS explora a topologia de forma ávida, saturando simultânea e exaustivamente múltiplos caminhos admissíveis presentes no Digrafo de Níveis, até que o sumidouro $t$ se torne inalcançável sob as restrições de nível vigentes (veja~\cite{cook1998combinatorial}).
 
-Para assegurar a viabilidade temporal desta busca exaustiva, a implementação integra uma estrutura imperativa de otimização de estado denominada ponteiros mortos (\textit{Dead-end Pointers}). Mantendo um vetor na memória que registra a exata posição do último arco explorado a partir de cada vértice, o algoritmo inviabiliza que caminhos sem saída (\textit{dead-ends}) ou conexões com capacidade esgotada sejam revisitados durante a mesma fase.
+Para assegurar a viabilidade temporal desta busca exaustiva, a implementação do Algoritmo de Dinic no \textit{Core Framework} (Código~\ref{lst:dinic}, Apêndice~\ref{ap:dinic}) integra uma estrutura imperativa de otimização de estado denominada ponteiros mortos (\textit{Dead-end Pointers}). Mantendo um vetor na memória que registra a exata posição do último arco explorado a partir de cada vértice, o algoritmo inviabiliza que caminhos sem saída (\textit{dead-ends}) ou conexões com capacidade esgotada sejam revisitados durante a mesma fase.
 
 Esta poda dramática na árvore de recursão garante uma amortização matemática rigorosa: a extração completa do fluxo bloqueador opera no limite estrito de $\mathcal{O}(|V| \cdot |A|)$ operações (veja~\cite{korte2018combinatorial}). Como a propriedade de monotonicidade garante que a distância de $s$ a $t$ aumente pelo menos uma unidade a cada novo Digrafo de Níveis construído, o sistema processa um limite superior absoluto de $|V|$ fases. Multiplicando o custo da DFS por fase pelo número máximo de fases, a complexidade assintótica global é inquestionavelmente estabelecida em $\mathcal{O}(|V|^2 \cdot |A|)$ (veja~\cite{dinic1970algorithm}). A materialização destas otimizações de estado na arquitetura C++ encontra-se no Código~\ref{lst:dinic} (disponível no Apêndice~\ref{ap:dinic}).
 
@@ -419,7 +419,7 @@ Durante o ciclo de resolução principal, o algoritmo inspeciona vértices ativo
     \item \textbf{Operação de Rerrotular (\textit{Relabel}):} Quando um vértice ativo $u$ encontra-se topologicamente ``preso'' — isto é, possui excesso de recursos, mas nenhuma de suas conexões com capacidade residual aponta para um vizinho em um nível estritamente inferior —, a operação de \textit{Push} torna-se inviável. Para romper este impasse estrutural, o algoritmo atualiza a altura do vértice para $h(u) = 1 + \min \{h(v) \mid c_f(u,v) > 0\}$. Esta elevação pontual garante a recriação de um declive geométrico válido, permitindo que o excesso retome sua movimentação iterativa (veja~\cite{cook1998combinatorial}).
 \end{itemize}
 
-A eficiência global do algoritmo é intrinsecamente dependente da política de seleção: qual vértice ativo deve ser processado primeiro? A implementação canônica emprega uma estrutura de dados de fila (\textit{Queue}) para gerenciar estes vértices sob uma política \textit{First-In, First-Out} (FIFO). Demonstra-se matematicamente que a ordem de processamento FIFO amortece severamente o número de empurrões não-saturantes necessários para a convergência. Graças a esta amortização estrutural, o limite assintótico de tempo de pior caso para o algoritmo Push-Relabel padrão é cravado analiticamente em $\mathcal{O}(|V|^3)$ (veja~\cite{goldberg1988new}). A materialização em C++ deste algoritmo, herdando a arquitetura segura da interface polimórfica, encontra-se detalhada no Código~\ref{lst:push_relabel} (disponível no Apêndice~\ref{ap:push_relabel}).
+A eficiência global do algoritmo é intrinsecamente dependente da política de seleção: qual vértice ativo deve ser processado primeiro? A implementação canônica emprega uma estrutura de dados de fila (\textit{Queue}) para gerenciar estes vértices sob uma política \textit{First-In, First-Out} (FIFO). Demonstra-se matematicamente que a ordem de processamento FIFO amortece severamente o número de empurrões não-saturantes necessários para a convergência. Graças a esta amortização estrutural, o limite assintótico de tempo de pior caso para o algoritmo Push-Relabel padrão é cravado analiticamente em $\mathcal{O}(|V|^3)$ (veja~\cite{goldberg1988new}). A materialização em C++ deste algoritmo no \textit{Core Framework} encontra-se detalhada no Código~\ref{lst:push_relabel} (disponível no Apêndice~\ref{ap:push_relabel}).
 
 \begin{figure}[h]
 \centering
@@ -547,7 +547,7 @@ Um digrafo $D = (V, A)$ é classificado como bipartido se o seu conjunto de vér
 
 O Problema do Emparelhamento Bipartido de Cardinalidade Máxima (\textit{Maximum Bipartite Matching}) busca encontrar o maior subconjunto de arcos $M \subseteq A$ tal que nenhum vértice do digrafo incida em mais de um arco de $M$. Em termos práticos, representa a maximização de pares exclusivos entre os conjuntos $L$ e $R$.
 
-Embora existam algoritmos específicos para este fim, o problema pode ser elegantemente reduzido ao \textbf{cômputo} (do latim \textit{computare}: calcular, determinar) de um fluxo máximo (veja~\cite{ahuja1993network}). A redução algorítmica procede através da construção de uma rede de fluxo direcionada $D' = (V', A')$ baseada no digrafo original $D$:
+Embora existam algoritmos específicos para este fim, o problema pode ser elegantemente reduzido ao cômputo de um fluxo máximo (veja~\cite{ahuja1993network}). A redução algorítmica procede através da construção de uma rede de fluxo direcionada $D' = (V', A')$ baseada no digrafo original $D$:
 \begin{enumerate}
     \item Adicionam-se dois vértices artificiais ao sistema: uma super-fonte $s$ e um super-sumidouro $t$.
     \item Para cada vértice $u \in L$, cria-se um arco direcionado $(s, u)$ com capacidade exatamente igual a 1.
@@ -601,7 +601,7 @@ O Problema da Cobertura de Vértices Mínima (\textit{Minimum Vertex Cover} - MV
 
 Esta relação de dualidade é formalizada pelo Teorema de König (veja~\cite{korte2018combinatorial}), que estabelece que, em qualquer digrafo bipartido, a cardinalidade do emparelhamento máximo é matematicamente idêntica à cardinalidade da cobertura de vértices mínima ($|M| = |C|$). Sob a ótica da teoria de redes, o Teorema de König nada mais é do que uma manifestação estrutural do Teorema do Fluxo Máximo e Corte Mínimo de Ford-Fulkerson aplicado à modelagem com super-fonte e super-sumidouro (veja~\cite{ahuja1993network}).
 
-A extração computacional dos vértices que compõem a cobertura mínima exige uma análise minuciosa da rede residual $D_f$ gerada logo após a convergência do fluxo máximo. A biblioteca desenvolvida neste projeto recupera o conjunto $C$ através do seguinte procedimento algorítmico baseado em cortes mínimos:
+A extração computacional dos vértices que compõem a cobertura mínima exige uma análise minuciosa da rede residual $D_f$ gerada logo após a convergência do fluxo máximo. O resolvedor do problema \textit{Minimum Vertex Cover} (na camada de aplicação em \lstinline{Implementações/Problemas/}) recupera o conjunto $C$ através do seguinte procedimento algorítmico baseado em cortes mínimos:
 
 \begin{enumerate}
     \item Após computar o emparelhamento máximo, executa-se uma Busca em Largura (BFS) ou Busca em Profundidade (DFS) partindo da super-fonte $s$ no digrafo residual $D_f$, transitando exclusivamente por arcos que possuam capacidade residual estritamente positiva ($c_f(u,v) > 0$).
@@ -694,7 +694,7 @@ As relações $|M^*| = |C_V^*|$ (König) e $|I^*| + |C_V^*| = |V|$ e $|M^*| + |F
 
 \subsection{Conectividade e Roteamento}
 
-A análise de conectividade de um digrafo é um pilar fundamental no design de redes de telecomunicações, logística e tolerância a falhas. A premissa central é determinar a resiliência estrutural de um sistema: quantas rotas independentes existem para transmitir informações ou recursos de um ponto de origem $s$ a um destino $t$ de forma que, se um componente falhar, as demais rotas permaneçam intactas? O cálculo (cômputo) do fluxo máximo fornece o ferramental matemático exato para responder a esta indagação sob duas perspectivas restritivas.
+A análise de conectividade de um digrafo é um pilar fundamental no design de redes de telecomunicações, logística e tolerância a falhas. A premissa central é determinar a resiliência estrutural de um sistema: quantas rotas independentes existem para transmitir informações ou recursos de um ponto de origem $s$ a um destino $t$ de forma que, se um componente falhar, as demais rotas permaneçam intactas? O cálculo do fluxo máximo fornece o ferramental matemático exato para responder a esta indagação sob duas perspectivas restritivas.
 
 \subsubsection{Caminhos Disjuntos por Arcos e por Vértices}
 
@@ -748,15 +748,7 @@ Esta transformação impõe uma restrição de capacidade nos vértices: ao for�
 
 A determinação empírica do número de caminhos disjuntos resolve o aspecto do roteamento, mas a análise de vulnerabilidade da rede exige a identificação precisa dos pontos críticos de falha. A teoria que unifica a maximização de rotas independentes com a minimização de desconexões foi formulada por Karl Menger em 1927, estabelecendo um dos pilares mais elegantes da Otimização Combinatória.
 
-O Teorema de Menger apresenta duas formulações complementares que espelham perfeitamente os cenários de arcos e vértices (veja~\cite{cook1998combinatorial}). Na sua versão por arcos, o teorema postula que, em qualquer digrafo direcionado, o número máximo de caminhos disjuntos por arcos entre dois vértices $s$ e $t$ é exatamente igual ao número mínimo de arcos que precisam ser removidas para desconectar todos os caminhos direcionados de $s$ para $t$ (o Corte Mínimo de Arcos).
-
-De forma análoga, na sua versão por vértices, o teorema afirma que o número máximo de caminhos internamente disjuntos por vértices entre $s$ e $t$ é rigorosamente idêntico ao número mínimo de vértices intermediários cuja remoção fragmenta a rede e isola o sumidouro da fonte (o Corte Mínimo de Vértices).
-
-Sob a perspectiva da engenharia de algoritmos desenvolvida neste projeto, o Teorema de Menger é, fundamentalmente, um corolário estrutural do Teorema do Fluxo Máximo e Corte Mínimo de Ford-Fulkerson aplicado a redes de capacidade unitária (veja~\cite{ahuja1993network}). A prova de que estas dualidades são faces da mesma moeda matemática é confirmada pelo método de extração do corte: para identificar quais arcos ou vértices específicos devem ser removidos para causar a falha da rede, a biblioteca reutiliza a mesma rotina de Busca em Largura (BFS) no digrafo residual $D_f$ empregada no Teorema de König.
-
-No caso do \textit{Vertex Splitting}, a BFS varre o digrafo residual particionando os vértices expandidos. Os arcos artificiais internos $(v_{in}, v_{out})$ que conectam o conjunto alcançável $S$ ao conjunto inalcançável $T$ no corte mínimo apontam inequivocamente para os vértices originais $v \in V$ que compõem o gargalo estrutural da topologia (veja~\cite{korte2018combinatorial}).
-
-Estes resultados confirmam a versatilidade do modelo de fluxo em redes. Através de abstrações adequadas e da implementação orientada a objetos, o núcleo algorítmico demonstra a capacidade de resolver problemas que variam desde a alocação de recursos em grafos bipartidos até a análise de conectividade topológica.
+O Teorema de Menger apresenta duas formulações complementares que espelham perfeitamente os cenários de arcos e vértices (veja~\cite{cook1998combinatorial}). Sob a perspectiva da engenharia de algoritmos desenvolvida neste projeto, o Teorema de Menger é, fundamentalmente, um corolário estrutural do Teorema do Fluxo Máximo e Corte Mínimo de Ford-Fulkerson aplicado a redes de capacidade unitária (veja~\cite{ahuja1993network}). A prova de que estas dualidades são faces da mesma moeda matemática é confirmada pelo método de extração do corte: para identificar quais arcos ou vértices específicos devem ser removidos para causar a falha da rede (como efetuado no resolvedor do problema \textit{Police Chase}), a camada de aplicação executa uma rotina de Busca em Largura (BFS) no digrafo residual $D_f$ sobre a estrutura retornada pelo \textit{Core Framework}.
 
 \subsubsection{Prova do Teorema de Menger (Versão por Arcos)}
 
@@ -784,7 +776,7 @@ $$\max\{\text{caminhos disjuntos por vértices de } s \text{ a } t\} = \min\{\te
 
 O Teorema de Hall (ou Teorema do Casamento) estabelece uma condição necessária e suficiente para a existência de um emparelhamento que sature completamente um dos lados de um grafo bipartido (veja~\cite{bondy2008graph, diestel2017graph}).
 
-Seja $G = (L \cup R, E)$ um grafo bipartido. Um emparelhamento $M$ é dito $L$-saturante se cada vértice de $L$ é coberto por alguma aresta de $M$ (i.e., $|M| = |L|$). Para qualquer subconjunto $S \subseteq L$, denotemos por $N(S) = \{v \in R : \exists\, u \in S, \, (u,v) \in E\}$ a vizinhança de $S$ em $R$.
+Seja $G = (L \cup R, E)$ um grafo bipartido. Um emparelhamento $M$ é dito $L$-saturante se cada vértice de $L$ é coberto por alguma aresta de $M$ (e.g., $|M| = |L|$). Para qualquer subconjunto $S \subseteq L$, denotemos por $N(S) = \{v \in R : \exists\, u \in S, \, (u,v) \in E\}$ a vizinhança de $S$ em $R$.
 
 \textbf{Teorema (Hall, 1935).} \textit{Existe um emparelhamento $L$-saturante em $G$ se, e somente se, a condição de Hall é satisfeita:}
 \begin{equation}
@@ -888,7 +880,7 @@ Na implementação desta biblioteca, esta modelagem é realizada nativamente pel
 
 \subsection{Decomposição de Fluxo}
 
-Após o cômputo (cálculo, determinação) do fluxo máximo, a solução obtida é representada como um vetor de fluxos individuais sobre os arcos da rede. Contudo, muitas aplicações práticas exigem uma descrição mais estruturada da solução: quais são os caminhos individuais de $s$ a $t$ que compõem o fluxo total, e quanto fluxo transita em cada um?
+Após o cômputo do fluxo máximo, a solução obtida é representada como um vetor de fluxos individuais sobre os arcos da rede. Contudo, muitas aplicações práticas exigem uma descrição mais estruturada da solução: quais são os caminhos individuais de $s$ a $t$ que compõem o fluxo total, e quanto fluxo transita em cada um?
 
 O Teorema da Decomposição de Fluxo fornece a fundamentação matemática para esta extração (veja~\cite{ahuja1993network, schrijver2003combinatorial}).
 
@@ -913,7 +905,7 @@ Em ambos os casos, o número de arcos com fluxo positivo decresce estritamente, 
 
 \subsubsection{Algoritmo de Extração de Caminhos (Path Recovery)}
 
-Na implementação prática, o algoritmo de Path Recovery percorre a rede após o cômputo do fluxo máximo para reconstruir os caminhos individuais. Em redes com capacidades unitárias (como nos problemas de caminhos disjuntos), o procedimento é particularmente elegante:
+Na camada de aplicação (especificamente no resolvedor do problema de caminhos disjuntos \textit{Distinct Routes} em \lstinline{Implementações/Problemas/}), o algoritmo de Path Recovery percorre a rede após o cômputo do fluxo máximo para reconstruir os caminhos individuais. Em redes com capacidades unitárias (como nos problemas de caminhos disjuntos), o procedimento é particularmente elegante:
 
 \begin{enumerate}
     \item Partindo da fonte $s$, siga qualquer arco original (índice par) que possua $f(u,v) = 1$ e ainda não tenha sido utilizado.
@@ -1072,14 +1064,17 @@ Em particular, o corte mínimo \textbf{nunca} cortará um N-link entre dois pixe
 \label{fig:segmentation_cut}
 \end{figure}
 
-Como a rede de segmentação pode conter milhões de vértices ($n = W \times H$) e milhões de arcos ($\approx 4n$ N-links $+ 2n$ T-links), a escolha do algoritmo de fluxo é crucial. A implementação prática desenvolvida neste projeto emprega o \textit{Push-Relabel (Highest Label)} com \textit{Gap Heuristic} pela sua complexidade $\mathcal{O}(|V|^2 \sqrt{|A|})$ (conforme Tabela~\ref{tab:complexidades}), que supera o Push-Relabel FIFO ($\mathcal{O}(|V|^3)$) em redes densas, e pela sua eficiência prática reconhecida em grafos planares de grade (veja~\cite{goldberg1988new}).
-
+Como a rede de segmentação pode conter milhões de vértices ($n = W \times H$) e milhões de arcos ($\approx 4n$ N-links $+ 2n$ T-links), a escolha do algoritmo de fluxo é crucial. A ferramenta de **Segmentação de Imagens** (localizada no diretório \lstinline{Aplicações/Segmentação de Imagens/}) emprega a classe \lstinline{PushRelabelImproved} do \textit{Core Framework} (política \textit{Highest Label} com \textit{Gap Heuristic}) pela sua complexidade $\mathcal{O}(|V|^2 \sqrt{|A|})$ (conforme Tabela~\ref{tab:complexidades}), que supera o Push-Relabel FIFO ($\mathcal{O}(|V|^3)$) em redes densas, e pela sua eficiência prática reconhecida em grafos planares de grade (veja~\cite{goldberg1988new}).
 
 \section{Conclusões e Trabalhos Futuros}
 
-Os resultados obtidos ao longo desta Iniciação Científica demonstram o cumprimento bem-sucedido dos objetivos centrais do projeto. Foram estudados em profundidade e implementados com rigor os algoritmos clássicos de fluxo máximo --- Ford-Fulkerson (DFS), Edmonds-Karp (BFS), Dinic (Fluxo Bloqueador com Digrafo de Níveis) e Push-Relabel (Goldberg-Tarjan) com a Heurística de Lacuna (\textit{Gap Heuristic}) --- culminando em uma biblioteca modular e extensível em C++.
+Os resultados obtidos ao longo desta Iniciação Científica demonstram o cumprimento bem-sucedido dos objetivos centrais do projeto. Foram estudados em profundidade e implementados com rigor os algoritmos clássicos de fluxo máximo e a infraestrutura de suporte foi organizada em duas camadas distintas:
 
-A adoção de uma arquitetura Orientada a Objetos, ancorada pelos padrões \textit{Factory Method} e \textit{Prototype}, provou-se altamente eficaz para o encapsulamento da topologia das redes residuais e para a reutilização de código entre os diferentes algoritmos. A correção matemática das implementações foi validada tanto por provas formais de complexidade e otimalidade quanto pela aplicação bem-sucedida em técnicas de modelagem e redução, solucionando problemas como o Emparelhamento Bipartido Máximo, a Cobertura de Vértices Mínima, o Conjunto Independente Máximo e o empacotamento de Caminhos Disjuntos (por arcos e por vértices). Além disso, a aplicabilidade prática dos algoritmos foi demonstrada através da implementação de uma ferramenta de Segmentação de Imagens via Corte Mínimo.
+\begin{enumerate}
+    \item \textbf{Núcleo Algorítmico (\textit{Core Framework}):} Composto pela interface \lstinline{FlowNetwork} e pelos motores de fluxo concretos (\lstinline{FordFulkerson}, \lstinline{EdmondsKarp}, \lstinline{Dinic}, \lstinline{PushRelabel} e \lstinline{PushRelabelImproved}), cujos códigos-fonte integrais encontram-se documentados nos Apêndices~\ref{ap:flownetwork} a~\ref{ap:push_relabel_improved}. Esta camada é estritamente responsável pela manutenção da topologia da rede, pela gestão das capacidades residuais e pelo cômputo escalar do valor do fluxo máximo $|f^*|$. O núcleo não possui conhecimento prévio sobre o domínio dos problemas (e.g., ele ignora se a rede representa pixels, casamentos ou caminhos).
+    
+    \item \textbf{Camada de Aplicação e Reduções (\textit{Client Application Layer}):} Composta pelos módulos de redução e problemas específicos (como os resolvedores dos problemas \textit{Maximum Bipartite Matching}, \textit{Distinct Routes}, \textit{Police Chase} localizados em \lstinline{Implementações/Problemas/} e a ferramenta de \textit{Segmentação de Imagens} em \lstinline{Aplicações/Segmentação de Imagens/}). Esta camada atua como cliente do núcleo: ela constrói o digrafo estendido $D'$, invoca o \lstinline{compute_max_flow()} do \textit{Core Framework} e, em seguida, realiza o pós-processamento necessário --- inspecionando a rede residual final via \lstinline{get_edges()} e \lstinline{get_adjacency()} para executar rotinas externas, como travessias BFS para identificação do corte mínimo $(S, T)$ ou decomposição em caminhos simples.
+\end{enumerate}
 
 Para a conclusão integral do projeto, resta finalizar o estudo e a implementação dos algoritmos de Fluxo de Custo Mínimo (\textit{Minimum Cost Flow}), com foco no método \textit{Network Simplex}.
 
