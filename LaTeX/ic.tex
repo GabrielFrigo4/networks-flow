@@ -470,7 +470,6 @@ A eficiência global do algoritmo é intrinsecamente dependente da política de 
 \begin{tikzpicture}[>=Stealth,thick,node distance=2.2cm,
     main/.style={circle,draw,minimum size=10mm}]
 
-% === LEFT: Push ===
 \node[font=\footnotesize,above] at (1.5,4.8) {\textbf{Antes: Push admiss\'ivel de $u$ para $v$}};
 
 \node[main,fill=yellow!30] (u) at (0,3) {$u$};
@@ -488,7 +487,6 @@ A eficiência global do algoritmo é intrinsecamente dependente da política de 
 \node[font=\tiny,above=2pt of v2] {$h{=}2,\,e{=}5$};
 \draw[->,gray,dashed] (u2) -- node[above,font=\footnotesize,gray] {$c_f=0$} (v2);
 
-% === RIGHT: Relabel ===
 \node[font=\footnotesize,above] at (7.5,4.8) {\textbf{Relabel: $u$ preso (sem arco admiss\'ivel)}};
 \node[main,fill=orange!30] (r1) at (6,3) {$u$};
 \node[font=\tiny,above=2pt of r1] {$h{=}2,\,e{=}3$};
@@ -713,7 +711,6 @@ A cardinalidade do Conjunto Independente Máximo é dada algebricamente por $|I|
 \begin{figure}[h]
 \centering
 \begin{tikzpicture}[>=Stealth, thick]
-  % Subfigure (a)
   \begin{scope}[shift={(0,0)}]
     \node[font=\footnotesize,above] at (2.5,4.2) {(a) Cobertura de V\'ertices $C$};
     
@@ -733,7 +730,6 @@ A cardinalidade do Conjunto Independente Máximo é dada algebricamente por $|I|
     \node[font=\footnotesize,below] at (2.5,-0.2) {$C = \{l_2, r_3\}$};
   \end{scope}
   
-  % Subfigure (b)
   \begin{scope}[shift={(6,0)}]
     \node[font=\footnotesize,above] at (2.5,4.2) {(b) Conjunto Independente $I = V \setminus C$};
     
@@ -996,7 +992,6 @@ Na implementação desta biblioteca, esta modelagem é realizada nativamente pel
 \begin{figure}[h]
 \centering
 \begin{tikzpicture}[>=Stealth, thick]
-  % Subfigure (a)
   \begin{scope}[shift={(0,0)}]
     \node[font=\footnotesize,above] at (1.5,1.5) {(a) Aresta N\~ao-direcionada};
     \node[circle, draw, minimum size=8mm, fill=yellow!20] (u) at (0, 0) {$u$};
@@ -1004,7 +999,6 @@ Na implementação desta biblioteca, esta modelagem é realizada nativamente pel
     \draw[-] (u) -- node[above, font=\footnotesize] {$c$} (v);
   \end{scope}
   
-  % Subfigure (b)
   \begin{scope}[shift={(6,0)}]
     \node[font=\footnotesize,above] at (1.5,1.5) {(b) Arcos Direcionados};
     \node[circle, draw, minimum size=8mm, fill=yellow!20] (u2) at (0, 0) {$u$};
@@ -1045,7 +1039,6 @@ Em ambos os casos, o número de arcos com fluxo positivo decresce estritamente, 
 \begin{figure}[h]
 \centering
 \begin{tikzpicture}[>=Stealth, thick]
-  % Network
   \begin{scope}[shift={(0,0)}]
     \node[circle, draw, minimum size=8mm, fill=green!20, font=\footnotesize] (s) at (0, 1) {$s$};
     \node[circle, draw, minimum size=8mm, font=\footnotesize] (a) at (2, 2) {$a$};
@@ -1059,7 +1052,6 @@ Em ambos os casos, o número de arcos com fluxo positivo decresce estritamente, 
     \draw[->] (b) -- node[below right, font=\tiny] {3} (t);
   \end{scope}
 
-  % Decomposition
   \begin{scope}[shift={(6,0.5)}]
     \node[right, font=\small, align=left] at (0, 1.5) {\textbf{Caminhos Decompostos}:};
     \node[right, font=\footnotesize, align=left] at (0, 0.8) {1) $s \rightarrow a \rightarrow t$ (fluxo 2)};
@@ -1207,11 +1199,9 @@ O custo total do corte é exatamente a soma dos termos de dados e de regulariza�
 \draw[-,blue!70,line width=2pt] (p3) -- node[below,font=\tiny,blue!70]{$w_{n}$ alto} (p4);
 \draw[-,orange,line width=2pt] (p4) -- node[left,font=\tiny,orange]{$w_{n}$ baixo} (p1);
 
-% Corte 1: p2 -> p3
 \draw[red!80,very thick,line width=2.5pt] (4.5,1.8) -- (5.5,1.2) node[below right,font=\footnotesize,red!80]{corte!};
 \draw[red!80,very thick,line width=2.5pt] (4.5,1.2) -- (5.5,1.8);
 
-% Corte 2: p4 -> p1
 \draw[red!80,very thick,line width=2.5pt] (1.5,1.8) -- (2.5,1.2) node[below left,font=\footnotesize,red!80]{corte!};
 \draw[red!80,very thick,line width=2.5pt] (1.5,1.2) -- (2.5,1.8);
 
