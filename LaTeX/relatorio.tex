@@ -205,7 +205,7 @@ A Figura~\ref{fig:residual_net} ilustra uma rede com fluxo parcial e seu corresp
 \begin{figure}[h]
 \centering
 \begin{tikzpicture}[>=Stealth, thick]
-% --- Rede original com fluxo (esquerda) ---
+
 \begin{scope}[xshift=0cm]
   \node[circle,draw,fill=green!20,minimum size=8mm] (s) at (0,1.2) {$s$};
   \node[circle,draw,minimum size=8mm] (a) at (2,2.4) {$a$};
@@ -218,20 +218,20 @@ A Figura~\ref{fig:residual_net} ilustra uma rede com fluxo parcial e seu corresp
   \draw[->] (b) -- node[below right,font=\footnotesize] {$2/3$} (t);
   \node[font=\footnotesize,below] at (2,-0.7) {\textit{(a) Rede original} $f/c$};
 \end{scope}
-% --- Seta de transicao ---
+
 \node at (5.2,1.2) {$\Rightarrow$};
-% --- Digrafo residual (direita) ---
+
 \begin{scope}[xshift=6.5cm]
   \node[circle,draw,fill=green!20,minimum size=8mm] (s2) at (0,1.2) {$s$};
   \node[circle,draw,minimum size=8mm] (a2) at (2,2.4) {$a$};
   \node[circle,draw,minimum size=8mm] (b2) at (2,0) {$b$};
   \node[circle,draw,fill=red!20,minimum size=8mm] (t2) at (4,1.2) {$t$};
-  % Arcos diretos (capacidade ociosa)
+  
   \draw[->,blue] (s2) -- node[above left,font=\tiny] {$1$} (a2);
   \draw[->,blue] (s2) -- node[below left,font=\tiny] {$1$} (b2);
   \draw[->,blue] (a2) -- node[above right,font=\tiny] {$2$} (t2);
   \draw[->,blue] (b2) -- node[below right,font=\tiny] {$1$} (t2);
-  % Arcos inversos (fluxo cancelavel)
+  
   \draw[->,red,dashed,bend left=20] (a2) to node[above left,font=\tiny] {$2$} (s2);
   \draw[->,red,dashed,bend right=20] (b2) to node[below left,font=\tiny] {$1$} (s2);
   \draw[->,red,dashed] (b2) -- node[left,font=\tiny] {$1$} (a2);
@@ -260,19 +260,19 @@ Como não há caminho aumentante, o sumidouro $t$ é inalcançável a partir de 
 \centering
 \begin{tikzpicture}[>=Stealth, node distance=2cm, thick,
     main/.style={circle, draw, minimum size=8mm, font=\small}]
-    % Conjunto S
+    
     \node[main, fill=green!20] (s) {$s$};
     \node[main, fill=green!10, right=2cm of s] (a) {$a$};
     \node[main, fill=green!10, above=1cm of a] (b) {$b$};
-    % Conjunto T
+    
     \node[main, fill=red!10, right=2cm of a] (c) {$c$};
     \node[main, fill=red!20, right=2cm of c] (t) {$t$};
     \node[main, fill=red!10, above=1cm of c] (d) {$d$};
 
-    % Arcos saturados (cruzando o corte)
+    
     \draw[->, line width=1.5pt, red] (a) -- node[below] {\footnotesize$f=c$} (c);
     \draw[->, line width=1.5pt, red] (b) -- node[above] {\footnotesize$f=c$} (d);
-    % Arcos internos
+    
     \draw[->] (s) -- (a);
     \draw[->] (s) -- (b);
     \draw[->] (c) -- (t);
@@ -280,7 +280,7 @@ Como não há caminho aumentante, o sumidouro $t$ é inalcançável a partir de 
     \draw[->] (b) -- (a);
     \draw[->] (d) -- (c);
 
-    % Regions
+    
     \draw[dashed, blue, rounded corners, thick] (-0.8,-1.2) rectangle (3.2,2.5) node[above left] {$S$};
     \draw[dashed, orange, rounded corners, thick] (3.5,-1.2) rectangle (7.8,2.5) node[above left] {$T$};
 \end{tikzpicture}
@@ -369,35 +369,34 @@ Esta poda dramática na árvore de recursão garante uma amortização matemáti
 \begin{figure}[h]
 \centering
 \begin{tikzpicture}[>=Stealth,thick]
-% Nos com niveis
+
 \node[circle,draw,fill=green!20,minimum size=8mm,font=\small] (s) at (0,1.5) {$s$};
 \node[circle,draw,minimum size=8mm,font=\small] (a) at (2,3) {$a$};
 \node[circle,draw,minimum size=8mm,font=\small] (b) at (2,0) {$b$};
 \node[circle,draw,minimum size=8mm,font=\small] (c) at (4,3) {$c$};
 \node[circle,draw,minimum size=8mm,font=\small] (d) at (4,0) {$d$};
 \node[circle,draw,fill=red!20,minimum size=8mm,font=\small] (t) at (6,1.5) {$t$};
-% Niveis (BFS)
+
 \node[gray,font=\footnotesize] at (0,3.8) {n\'iv. 0};
 \node[gray,font=\footnotesize] at (2,3.8) {n\'iv. 1};
 \node[gray,font=\footnotesize] at (4,3.8) {n\'iv. 2};
 \node[gray,font=\footnotesize] at (6,3.8) {n\'iv. 3};
-% Arcos do digrafo de niveis (avancam 1 nivel)
+
 \draw[->,line width=1.5pt,blue] (s) -- (a);
 \draw[->,line width=1.5pt,blue] (s) -- (b);
 \draw[->,line width=1.5pt,blue] (a) -- (c);
 \draw[->,line width=1.5pt,blue] (b) -- (d);
 \draw[->,line width=1.5pt,blue] (c) -- (t);
 \draw[->,line width=1.5pt,blue] (d) -- (t);
-% Arcos excluidos (nao avancam nivel)
+
 \draw[->,gray,dashed] (a) -- node[right,font=\tiny,gray] {exclu\'ido} (d);
 \draw[->,gray,dashed] (b) -- node[right,font=\tiny,gray] {exclu\'ido} (c);
-% Linhas verticais de nivel
+
 \foreach \x in {0,2,4,6} { \draw[gray!30,dashed] (\x,-0.7) -- (\x,3.5); }
 \end{tikzpicture}
 \caption{Digrafo de N\'iveis no Algoritmo de Dinic. Arcos azuis s\~ao os arcos admiss\'iveis (avan\c{c}am exatamente um n\'ivel: $d(v) = d(u)+1$), que comp\~oem o Digrafo de N\'iveis. Arcos cinza tracejados s\~ao excluídos por n\~ao avan\c{c}arem n\'ivel. O Fluxo Bloqueador \'e extra\'ido apenas sobre os arcos azuis.}
 \label{fig:level_graph}
 \end{figure}
-
 
 \subsection{Algoritmos de Prefluxo: Introdução}
 
@@ -443,22 +442,22 @@ A eficiência global do algoritmo é intrinsecamente dependente da política de 
 \centering
 \begin{tikzpicture}[>=Stealth,thick,node distance=2.2cm]
 \node[font=\footnotesize,above] at (2.5,4.8) {\textbf{Antes: Push admiss\'ivel de $u$ para $v$}};
-% No u com excesso
+
 \node[circle,draw,fill=yellow!30,minimum size=10mm] (u) at (0,3) {$u$};
 \node[font=\tiny,above right] at (0.3,3.3) {$h=3,\,e=5$};
-% No v
+
 \node[circle,draw,fill=blue!10,minimum size=10mm] (v) at (3,3) {$v$};
 \node[font=\tiny,above right] at (3.3,3.3) {$h=2,\,e=1$};
-% Arco admissivel
+
 \draw[->,line width=1.5pt,green!60!black] (u) -- node[above,font=\footnotesize] {$c_f=4$} (v);
-% Depois
+
 \node[font=\footnotesize,above] at (2.5,1.8) {\textbf{Depois do Push($u$,$v$,$\delta$=4)}};
 \node[circle,draw,fill=yellow!30,minimum size=10mm] (u2) at (0,0.8) {$u$};
 \node[font=\tiny,above right] at (0.3,1.1) {$h=3,\,e=1$};
 \node[circle,draw,fill=blue!10,minimum size=10mm] (v2) at (3,0.8) {$v$};
 \node[font=\tiny,above right] at (3.3,1.1) {$h=2,\,e=5$};
 \draw[->,gray,dashed] (u2) -- node[above,font=\footnotesize,gray] {$c_f=0$} (v2);
-% Relabel
+
 \node[font=\footnotesize,above] at (7.5,4.8) {\textbf{Relabel: $u$ preso (sem arco admiss\'ivel)}};
 \node[circle,draw,fill=orange!30,minimum size=10mm] (r1) at (6,3) {$u$};
 \node[font=\tiny,above right] at (6.3,3.3) {$h=2,\,e=3$};
@@ -476,7 +475,6 @@ A eficiência global do algoritmo é intrinsecamente dependente da política de 
 \label{fig:push_relabel_ops}
 \end{figure}
 
-
 \subsubsection{Cuidados na Inicialização e Aritmética de Infinitos}
 Durante a inicialização do pré-fluxo, é vital saturar os arcos adjacentes à fonte sem restringi-los por uma variável artificial de ``excesso'' da fonte. Diferente dos nós intermediários, a fonte não obedece à conservação de fluxo e representa um gerador de recursos inesgotável. 
 
@@ -493,7 +491,7 @@ A heurística intervém na rede ao detectar a lacuna, elevando a altura de todos
 \begin{figure}[h]
 \centering
 \begin{tikzpicture}[>=Stealth,thick]
-% --- Antes: gap no nivel 3 ---
+
 \begin{scope}[xshift=0cm]
 \node[font=\footnotesize,above] at (2,5.7) {\textbf{(a) Lacuna detectada no n\'ivel $k=3$}};
 \foreach \h/\label/\fill in {
@@ -504,9 +502,9 @@ A heurística intervém na rede ao detectar a lacuna, elevando a altura de todos
 \node[font=\footnotesize,red!60!black] at (1.5,3) {\textbf{lacuna!}};
 \draw[<->,red,dashed] (0.2,3.5) -- node[left,font=\tiny] {n\'iv. 3 vazio} (0.2,2.5);
 \end{scope}
-% Seta
+
 \node at (4,2.5) {$\Rightarrow$};
-% --- Depois: vertices acima do gap vao para |V|+1 ---
+
 \begin{scope}[xshift=5cm]
 \node[font=\footnotesize,above] at (2,5.7) {\textbf{(b) V\'ertices $h>k$ sobem para $|V|+1$}};
 \foreach \h/\label/\fill in {
@@ -580,7 +578,7 @@ Consequentemente, a restrição de capacidade unitária nos arcos conectados à 
 \begin{figure}[h]
 \centering
 \begin{tikzpicture}[>=Stealth,thick]
-% Grafo bipartido original
+
 \begin{scope}[xshift=0cm]
   \node[font=\footnotesize,above] at (1.5,3.8) {\textbf{(a) Grafo bipartido}};
   \foreach \i/\y in {1/3, 2/1.5, 3/0} {
@@ -592,7 +590,7 @@ Consequentemente, a restrição de capacidade unitária nos arcos conectados à 
   \draw[-] (l3) -- (r1); \draw[-] (l3) -- (r3);
 \end{scope}
 \node at (5,1.5) {$\Rightarrow$};
-% Rede de fluxo
+
 \begin{scope}[xshift=6.5cm]
   \node[font=\footnotesize,above] at (2.5,3.8) {\textbf{(b) Rede de fluxo $D'$}};
   \node[circle,draw,fill=green!30,minimum size=8mm,font=\small] (s) at (0,1.5) {$s$};
@@ -611,7 +609,6 @@ Consequentemente, a restrição de capacidade unitária nos arcos conectados à 
 \caption{Redução do Emparelhamento Bipartido a Fluxo Máximo. (a) Grafo bipartido original com $L = \{l_1,l_2,l_3\}$ e $R = \{r_1,r_2,r_3\}$. (b) Rede de fluxo $D'$: arcos de $s$ para $L$ e de $R$ para $t$ com capacidade~1; arcos de $L$ para $R$ herdados do grafo original. Arcos azuis grossos indicam o emparelhamento m\'aximo obtido pelo fluxo m\'aximo $|f^*|=3$.}
 \label{fig:bipartite_flow}
 \end{figure}
-
 
 \subsubsection{O Teorema de König e a Cobertura de Vértices Mínima}
 
@@ -635,26 +632,26 @@ A solidez desta extração reside no fato de que, pelas propriedades de conserva
   \node[font=\footnotesize,above] at (2.5,4.2) {Corte m\'inimo e Cobertura de V\'ertices (K\'onig)};
   \node[circle,draw,fill=green!30,minimum size=8mm,font=\small] (s) at (0,2) {$s$};
   \node[circle,draw,fill=red!30,minimum size=8mm,font=\small] (t) at (5,2) {$t$};
-  % L vertices
+  
   \node[circle,draw,fill=blue!15,minimum size=8mm,font=\small] (l1) at (1.7,3.5) {$l_1$};
   \node[circle,draw,fill=blue!40,minimum size=8mm,font=\small,double] (l2) at (1.7,2) {$l_2$};
   \node[circle,draw,fill=blue!15,minimum size=8mm,font=\small] (l3) at (1.7,0.5) {$l_3$};
-  % R vertices
+  
   \node[circle,draw,fill=orange!15,minimum size=8mm,font=\small] (r1) at (3.3,3.5) {$r_1$};
   \node[circle,draw,fill=orange!15,minimum size=8mm,font=\small] (r2) at (3.3,2) {$r_2$};
   \node[circle,draw,fill=orange!40,minimum size=8mm,font=\small,double] (r3) at (3.3,0.5) {$r_3$};
-  % Source arcs
+  
   \draw[->] (s) -- (l1); \draw[->,red,line width=1.5pt] (s) -- node[above,font=\tiny,red]{corte} (l2); \draw[->] (s) -- (l3);
-  % t arcs
+  
   \draw[->] (r1) -- (t); \draw[->] (r2) -- (t); \draw[->,red,line width=1.5pt] (r3) -- node[above,font=\tiny,red]{corte} (t);
-  % Matching arcs
+  
   \draw[->,line width=1.5pt,blue] (l1) -- (r1);
   \draw[->,line width=1.5pt,blue] (l2) -- (r2);
   \draw[->,line width=1.5pt,blue] (l3) -- (r3);
-  % Region labels
+  
   \draw[dashed,gray,rounded corners] (-0.6,0) rectangle (2.5,4) node[above left,font=\tiny]{$S$};
   \draw[dashed,gray,rounded corners] (2.8,0) rectangle (5.6,4) node[above right,font=\tiny]{$T$};
-  % Cover label
+  
   \node[font=\tiny,blue!80!black,below] at (1.7,1.5) {$l_2 \in L \cap T$};
   \node[font=\tiny,orange!80!black,below] at (3.3,0) {$r_3 \in R \cap S$};
   \node[font=\footnotesize,below] at (2.5,-0.6) {Cobertura $C = \{l_2, r_3\}$, $|C| = |M| = 2$ (K\'onig)};
@@ -662,7 +659,6 @@ A solidez desta extração reside no fato de que, pelas propriedades de conserva
 \caption{Teorema de K\'onig: a BFS no digrafo residual $D_f$ ap\'os o fluxo m\'aximo particiona os v\'ertices em $S$ (alcan\'c\'aveis) e $T$ (inalcan\'c\'aveis). Os arcos cortados (vermelho) definem o corte m\'inimo. A cobertura m\'inima \'e $C = (L\cap T) \cup (R \cap S)$ (v\'ertices com borda dupla).}
 \label{fig:konig_cut}
 \end{figure}
-
 
 \subsubsection{Conjunto Independente Máximo}
 
@@ -735,7 +731,7 @@ Esta transformação impõe uma restrição de capacidade nos vértices: ao for�
 \begin{figure}[h]
 \centering
 \begin{tikzpicture}[>=Stealth,thick]
-% Digrafo original
+
 \begin{scope}[xshift=0cm]
   \node[font=\footnotesize,above] at (1.5,2.8) {\textbf{(a) Original $D$}};
   \node[circle,draw,fill=green!20,minimum size=8mm,font=\small] (s) at (0,1.5) {$s$};
@@ -744,7 +740,7 @@ Esta transformação impõe uma restrição de capacidade nos vértices: ao for�
   \draw[->] (s) -- (v); \draw[->] (v) -- (t);
 \end{scope}
 \node at (4.5,1.5) {$\Rightarrow$};
-% Digrafo apos vertex splitting
+
 \begin{scope}[xshift=5.5cm]
   \node[font=\footnotesize,above] at (2.2,2.8) {\textbf{(b) Vertex Splitting: $D'$}};
   \node[circle,draw,fill=green!20,minimum size=8mm,font=\small] (s2) at (0,1.5) {$s$};
@@ -760,7 +756,6 @@ Esta transformação impõe uma restrição de capacidade nos vértices: ao for�
 \caption{Vertex Splitting: cada v\'ertice intermedi\'ario $v$ \'e dividido em $v_{in}$ e $v_{out}$, conectados por um arco interno de capacidade~1 (vermelho). Isso limita o fluxo passando por $v$ a no m\'aximo 1 unidade, modelando caminhos disjuntos por v\'ertices.}
 \label{fig:vertex_splitting}
 \end{figure}
-
 
 \subsubsection{O Teorema de Menger e a Dualidade da Conectividade}
 
@@ -813,23 +808,23 @@ contradizendo a condição de Hall. Portanto, $|M| = |L|$. $\blacksquare$
 \begin{tikzpicture}[>=Stealth, thick,
     lnode/.style={circle, draw, fill=blue!15, minimum size=7mm, font=\small},
     rnode/.style={circle, draw, fill=orange!15, minimum size=7mm, font=\small}]
-    % Left nodes
+    
     \node[lnode] (l1) at (0,3) {$l_1$};
     \node[lnode] (l2) at (0,1.5) {$l_2$};
     \node[lnode] (l3) at (0,0) {$l_3$};
-    % Right nodes
+    
     \node[rnode] (r1) at (3,3) {$r_1$};
     \node[rnode] (r2) at (3,1.5) {$r_2$};
     \node[rnode] (r3) at (3,0) {$r_3$};
-    % Matching edges (bold)
+    
     \draw[-, line width=2pt, blue] (l1) -- (r1);
     \draw[-, line width=2pt, blue] (l2) -- (r2);
     \draw[-, line width=2pt, blue] (l3) -- (r3);
-    % Non-matching edges
+    
     \draw[-, gray] (l1) -- (r2);
     \draw[-, gray] (l2) -- (r3);
     \draw[-, gray] (l3) -- (r1);
-    % Labels
+    
     \node[above] at (0,3.5) {$L$};
     \node[above] at (3,3.5) {$R$};
 \end{tikzpicture}
@@ -974,37 +969,37 @@ Seja $I$ uma imagem com $n = W \times H$ pixels. A construção da rede de segme
 \begin{tikzpicture}[>=Stealth, thick, scale=0.9,
     pixel/.style={circle, draw, minimum size=6mm, font=\tiny},
     term/.style={circle, draw, minimum size=9mm, font=\small}]
-    % Terminais
+    
     \node[term, fill=green!30] (s) at (2.25,5.5) {$s$};
     \node[term, fill=red!30] (t) at (2.25,-1.8) {$t$};
-    % Grid 3x3 de pixels (linha 0 = bottom, linha 2 = top)
-    % p{col}{row}: col in {1,2,3}, row in {0,1,2}
+    
+    
     \foreach \x in {1,2,3} {
         \foreach \y in {0,1,2} {
             \node[pixel, fill=gray!10] (p\x\y) at (\x*1.5, \y*1.5) {};
         }
     }
-    % N-links horizontais
+    
     \draw[-] (p10) -- (p20); \draw[-] (p20) -- (p30);
     \draw[-] (p11) -- (p21); \draw[-] (p21) -- (p31);
     \draw[-] (p12) -- (p22); \draw[-] (p22) -- (p32);
-    % N-links verticais
+    
     \draw[-] (p10) -- (p11); \draw[-] (p11) -- (p12);
     \draw[-] (p20) -- (p21); \draw[-] (p21) -- (p22);
     \draw[-] (p30) -- (p31); \draw[-] (p31) -- (p32);
-    % T-links de s para TODOS os pixels (verde, cima)
+    
     \foreach \x in {1,2,3} {
         \foreach \y in {0,1,2} {
             \draw[->, green!60!black, dashed, thin] (s) -- (p\x\y);
         }
     }
-    % T-links de TODOS os pixels para t (vermelho, baixo)
+    
     \foreach \x in {1,2,3} {
         \foreach \y in {0,1,2} {
             \draw[->, red!60!black, dashed, thin] (p\x\y) -- (t);
         }
     }
-    % Legenda
+    
     \node[right, font=\footnotesize] at (5.5, 3.75) {N-links (similaridade)};
     \node[right, font=\footnotesize, green!60!black] at (5.5, 4.8) {T-links $s \to p$ (foreground)};
     \node[right, font=\footnotesize, red!60!black] at (5.5, 2.7) {T-links $p \to t$ (background)};
@@ -1012,7 +1007,6 @@ Seja $I$ uma imagem com $n = W \times H$ pixels. A construção da rede de segme
 \caption{Modelagem de uma grade $3 \times 3$ de pixels como rede de fluxo para segmentação. Linhas sólidas representam N-links bidirecionais entre pixels vizinhos. Setas tracejadas verdes representam T-links de $s$ para cada pixel (capacidade $w_s(p)$); setas tracejadas vermelhas representam T-links de cada pixel para $t$ (capacidade $w_t(p)$). \textbf{Todos os 9 pixels possuem ambos os T-links}, mesmo que com capacidade muito pequena (mas nunca zero, pois $\max(\cdot, 1)$ garante isso).}
 \label{fig:segmentation_graph}
 \end{figure}
-
 
 \subsubsection{Segmentação via Corte Mínimo}
 
@@ -1032,8 +1026,7 @@ Em particular, o corte mínimo \textbf{nunca} cortará um N-link entre dois pixe
 \begin{figure}[h]
 \centering
 \begin{tikzpicture}[>=Stealth, thick, scale=0.9]
-% --- Grafo com 5 pixels em linha ---
-% s (foreground seed), p1 (fg seed), p2, p3, p4, t (bg seed)
+
 \node[circle,draw,fill=green!40,minimum size=10mm,font=\small] (s) at (0,1.5) {$s$};
 \node[circle,draw,fill=green!20,minimum size=9mm,font=\tiny] (p1) at (2,3) {$p_1$};
 \node[circle,draw,fill=green!10,minimum size=9mm,font=\tiny] (p2) at (4,3) {$p_2$};
@@ -1041,40 +1034,32 @@ Em particular, o corte mínimo \textbf{nunca} cortará um N-link entre dois pixe
 \node[circle,draw,fill=red!20,minimum size=9mm,font=\tiny] (p4) at (2,0) {$p_4$};
 \node[circle,draw,fill=red!40,minimum size=10mm,font=\small] (t) at (6,1.5) {$t$};
 
-% Labels cores dos pixels
 \node[font=\tiny,green!70!black,above] at (2,3.5) {cor: verde};
 \node[font=\tiny,green!50!black,above] at (4,3.5) {cor: verde-claro};
 \node[font=\tiny,red!60!black,below] at (4,-0.5) {cor: vermelho};
 \node[font=\tiny,red!80!black,below] at (2,-0.5) {cor: vermelho};
 
-% T-links de s (capacidade variada)
 \draw[->,green!60!black,dashed] (s) -- node[above left,font=\tiny]{$\infty$} (p1);
 \draw[->,green!60!black,dashed] (s) -- node[above,font=\tiny]{$w_s(p_2)$\,alto} (p2);
 \draw[->,green!60!black,dashed] (s) -- node[below,font=\tiny]{$w_s(p_3)$\,baixo} (p3);
 \draw[->,green!60!black,dashed] (s) -- node[below left,font=\tiny]{$w_s(p_4)$\,baixo} (p4);
 
-% T-links para t (capacidade variada)
 \draw[->,red!60!black,dashed] (p1) -- node[above right,font=\tiny]{$w_t(p_1)$\,baixo} (t);
 \draw[->,red!60!black,dashed] (p2) -- node[right,font=\tiny]{$w_t(p_2)$\,baixo} (t);
 \draw[->,red!60!black,dashed] (p3) -- node[below right,font=\tiny]{$\infty$} (t);
 \draw[->,red!60!black,dashed] (p4) -- node[below right,font=\tiny]{$\infty$} (t);
 
-% N-links entre pixels vizinhos
-% p1-p2: mesma cor (verde) => peso alto
 \draw[-,blue!70,line width=2pt] (p1) -- node[above,font=\tiny,blue!70]{$w_{n}$ alto} (p2);
-% p2-p3: cores muito diferentes (verde vs vermelho) => peso BAIXO = fronteira natural
+
 \draw[-,orange,line width=2pt] (p2) -- node[right,font=\tiny,orange]{$w_{n}$ baixo} (p3);
-% p3-p4: mesma cor (vermelho) => peso alto
+
 \draw[-,blue!70,line width=2pt] (p3) -- node[below,font=\tiny,blue!70]{$w_{n}$ alto} (p4);
-% p4-p1: cores diferentes => baixo
+
 \draw[-,orange,line width=2pt] (p4) -- node[left,font=\tiny,orange]{$w_{n}$ baixo} (p1);
 
-% Corte minimo: cortar p4->t (INF), nao. Cortar s->p4 (baixo) e s->p3 (baixo) e N-link p2-p3 e p4-p1
-% Representar o corte com X vermelho
 \draw[red!80,very thick,line width=2.5pt] (3.3,2.2) -- (4.7,0.8) node[below right,font=\footnotesize,red!80]{corte!};
 \draw[red!80,very thick,line width=2.5pt] (3.3,0.8) -- (4.7,2.2);
 
-% S/T region labels
 \draw[dashed,gray,rounded corners] (-0.8,-0.8) rectangle (3.5,4.0) node[above left,font=\footnotesize]{$S$ (fg)};
 \draw[dashed,gray,rounded corners] (3.6,-0.8) rectangle (6.8,4.0) node[above right,font=\footnotesize]{$T$ (bg)};
 \end{tikzpicture}
@@ -1123,7 +1108,6 @@ Embora o \textit{Network Simplex} não possua garantia polinomial no pior caso, 
 
 \newpage
 
-%\bibliographystyle{plain}{abntex2-al}
 \bibliographystyle{plain}
 \bibliography{cit}
 
