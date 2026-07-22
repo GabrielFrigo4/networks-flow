@@ -965,37 +965,44 @@ Seja $I$ uma imagem com $n = W \times H$ pixels. A construção da rede de segme
     pixel/.style={circle, draw, minimum size=6mm, font=\tiny},
     term/.style={circle, draw, minimum size=9mm, font=\small}]
     % Terminais
-    \node[term, fill=green!30] (s) at (3,4) {$s$};
-    \node[term, fill=red!30] (t) at (3,-1.5) {$t$};
-    % Grid 3x3 de pixels
+    \node[term, fill=green!30] (s) at (2.25,5.5) {$s$};
+    \node[term, fill=red!30] (t) at (2.25,-1.8) {$t$};
+    % Grid 3x3 de pixels (linha 0 = bottom, linha 2 = top)
+    % p{col}{row}: col in {1,2,3}, row in {0,1,2}
     \foreach \x in {1,2,3} {
         \foreach \y in {0,1,2} {
-            \node[pixel, fill=gray!10] (p\x\y) at (\x*1.5, \y*1.2) {};
+            \node[pixel, fill=gray!10] (p\x\y) at (\x*1.5, \y*1.5) {};
         }
     }
-    % N-links (horizontais)
+    % N-links horizontais
     \draw[-] (p10) -- (p20); \draw[-] (p20) -- (p30);
     \draw[-] (p11) -- (p21); \draw[-] (p21) -- (p31);
     \draw[-] (p12) -- (p22); \draw[-] (p22) -- (p32);
-    % N-links (verticais)
+    % N-links verticais
     \draw[-] (p10) -- (p11); \draw[-] (p11) -- (p12);
     \draw[-] (p20) -- (p21); \draw[-] (p21) -- (p22);
     \draw[-] (p30) -- (p31); \draw[-] (p31) -- (p32);
-    % T-links (amostra)
-    \draw[->, green!60!black, dashed] (s) -- (p12);
-    \draw[->, green!60!black, dashed] (s) -- (p22);
-    \draw[->, green!60!black, dashed] (s) -- (p32);
-    \draw[->, red!60!black, dashed] (p10) -- (t);
-    \draw[->, red!60!black, dashed] (p20) -- (t);
-    \draw[->, red!60!black, dashed] (p30) -- (t);
-    % Labels
-    \node[right, font=\footnotesize] at (5,2.4) {N-links (similaridade)};
-    \node[right, font=\footnotesize, green!60!black] at (5,3.5) {T-links $\to s$ (foreground)};
-    \node[right, font=\footnotesize, red!60!black] at (5,-0.5) {T-links $\to t$ (background)};
+    % T-links de s para TODOS os pixels (verde, cima)
+    \foreach \x in {1,2,3} {
+        \foreach \y in {0,1,2} {
+            \draw[->, green!60!black, dashed, thin] (s) -- (p\x\y);
+        }
+    }
+    % T-links de TODOS os pixels para t (vermelho, baixo)
+    \foreach \x in {1,2,3} {
+        \foreach \y in {0,1,2} {
+            \draw[->, red!60!black, dashed, thin] (p\x\y) -- (t);
+        }
+    }
+    % Legenda
+    \node[right, font=\footnotesize] at (5.5, 3.75) {N-links (similaridade)};
+    \node[right, font=\footnotesize, green!60!black] at (5.5, 4.8) {T-links $s \to p$ (foreground)};
+    \node[right, font=\footnotesize, red!60!black] at (5.5, 2.7) {T-links $p \to t$ (background)};
 \end{tikzpicture}
-\caption{Modelagem de uma grade $3 \times 3$ de pixels como rede de fluxo para segmentação. Linhas sólidas representam N-links entre pixels vizinhos; setas tracejadas representam T-links para os terminais $s$ e $t$.}
+\caption{Modelagem de uma grade $3 \times 3$ de pixels como rede de fluxo para segmentação. Linhas sólidas representam N-links bidirecionais entre pixels vizinhos. Setas tracejadas verdes representam T-links de $s$ para cada pixel (capacidade $w_s(p)$); setas tracejadas vermelhas representam T-links de cada pixel para $t$ (capacidade $w_t(p)$). \textbf{Todos os 9 pixels possuem ambos os T-links}, mesmo que com capacidade muito pequena (mas nunca zero, pois $\max(\cdot, 1)$ garante isso).}
 \label{fig:segmentation_graph}
 \end{figure}
+
 
 \subsubsection{Segmentação via Corte Mínimo}
 
@@ -1003,7 +1010,70 @@ O corte mínimo $(S, T)$ na rede construída induz naturalmente a partição da 
 
 A capacidade do corte mínimo corresponde à energia total da segmentação: a soma dos custos de separar pixels similares (N-links cortados) e de contradizer o modelo de cor (T-links cortados). Ao minimizar esta energia, o algoritmo encontra a fronteira ótima que melhor respeita tanto as marcações do usuário quanto as fronteiras naturais de cor da imagem.
 
-Como a rede de segmentação pode conter milhões de vértices ($n = W \times H$) e milhões de arcos ($\approx 4n$ N-links $+ 2n$ T-links), a escolha do algoritmo de fluxo é crucial. A implementação prática desenvolvida neste projeto emprega o \textit{Push-Relabel} com \textit{Gap Heuristic} pela sua complexidade $\mathcal{O}(|V|^3)$ favorável em redes densas e pela eficiência prática em grafos planares de grade.
+\textbf{Geometria do corte --- quais arcos são cortados e por quê?} Em redes de segmentação existem apenas dois tipos de arcos que um corte mínimo pode cortar. A intuição é a seguinte:
+\begin{itemize}
+    \item \textbf{T-link cortado $(s, p)$}: significa que o pixel $p$ foi \textbf{classificado como background} ($p \in T$). O custo deste corte é $w_s(p)$ --- alto se $p$ parece muito com foreground, baixo caso contrário. Em particular, se $p$ é uma semente de foreground, $w_s(p) = \infty$, tornando este corte impossível: sementes de foreground \textbf{nunca} são classificadas como background.
+    \item \textbf{T-link cortado $(p, t)$}: significa que o pixel $p$ foi \textbf{classificado como foreground} ($p \in S$). O custo é $w_t(p)$ --- alto se $p$ parece muito com background. Sementes de background nunca são classificadas como foreground pelo mesmo argumento.
+    \item \textbf{N-link cortado $(p, q)$}: significa que $p$ e $q$ pertencem a lados opostos da segmentação (um no foreground, outro no background). O custo é $w_n(p,q)$ --- alto se $p$ e $q$ são similares em cor (cortar aqui é caro), baixo se são muito diferentes (fronteira natural). O corte mínimo favorece cortar N-links onde a transição de cor é abrupta.
+\end{itemize}
+
+Em particular, o corte mínimo \textbf{nunca} cortará um N-link entre dois pixels ambos marcados de foreground e ambos com $w_s = \infty$, pois isso criaria um custo infinito. A fronteira final aparece nas arestas de cor mais discontínua da imagem.
+
+\begin{figure}[h]
+\centering
+\begin{tikzpicture}[>=Stealth, thick, scale=0.9]
+% --- Grafo com 5 pixels em linha ---
+% s (foreground seed), p1 (fg seed), p2, p3, p4, t (bg seed)
+\node[circle,draw,fill=green!40,minimum size=10mm,font=\small] (s) at (0,1.5) {$s$};
+\node[circle,draw,fill=green!20,minimum size=9mm,font=\tiny] (p1) at (2,3) {$p_1$};
+\node[circle,draw,fill=green!10,minimum size=9mm,font=\tiny] (p2) at (4,3) {$p_2$};
+\node[circle,draw,fill=red!10,minimum size=9mm,font=\tiny] (p3) at (4,0) {$p_3$};
+\node[circle,draw,fill=red!20,minimum size=9mm,font=\tiny] (p4) at (2,0) {$p_4$};
+\node[circle,draw,fill=red!40,minimum size=10mm,font=\small] (t) at (6,1.5) {$t$};
+
+% Labels cores dos pixels
+\node[font=\tiny,green!70!black,above] at (2,3.5) {cor: verde};
+\node[font=\tiny,green!50!black,above] at (4,3.5) {cor: verde-claro};
+\node[font=\tiny,red!60!black,below] at (4,-0.5) {cor: vermelho};
+\node[font=\tiny,red!80!black,below] at (2,-0.5) {cor: vermelho};
+
+% T-links de s (capacidade variada)
+\draw[->,green!60!black,dashed] (s) -- node[above left,font=\tiny]{$\infty$} (p1);
+\draw[->,green!60!black,dashed] (s) -- node[above,font=\tiny]{$w_s(p_2)$\,alto} (p2);
+\draw[->,green!60!black,dashed] (s) -- node[below,font=\tiny]{$w_s(p_3)$\,baixo} (p3);
+\draw[->,green!60!black,dashed] (s) -- node[below left,font=\tiny]{$w_s(p_4)$\,baixo} (p4);
+
+% T-links para t (capacidade variada)
+\draw[->,red!60!black,dashed] (p1) -- node[above right,font=\tiny]{$w_t(p_1)$\,baixo} (t);
+\draw[->,red!60!black,dashed] (p2) -- node[right,font=\tiny]{$w_t(p_2)$\,baixo} (t);
+\draw[->,red!60!black,dashed] (p3) -- node[below right,font=\tiny]{$\infty$} (t);
+\draw[->,red!60!black,dashed] (p4) -- node[below right,font=\tiny]{$\infty$} (t);
+
+% N-links entre pixels vizinhos
+% p1-p2: mesma cor (verde) => peso alto
+\draw[-,blue!70,line width=2pt] (p1) -- node[above,font=\tiny,blue!70]{$w_{n}$ alto} (p2);
+% p2-p3: cores muito diferentes (verde vs vermelho) => peso BAIXO = fronteira natural
+\draw[-,orange,line width=2pt] (p2) -- node[right,font=\tiny,orange]{$w_{n}$ baixo} (p3);
+% p3-p4: mesma cor (vermelho) => peso alto
+\draw[-,blue!70,line width=2pt] (p3) -- node[below,font=\tiny,blue!70]{$w_{n}$ alto} (p4);
+% p4-p1: cores diferentes => baixo
+\draw[-,orange,line width=2pt] (p4) -- node[left,font=\tiny,orange]{$w_{n}$ baixo} (p1);
+
+% Corte minimo: cortar p4->t (INF), nao. Cortar s->p4 (baixo) e s->p3 (baixo) e N-link p2-p3 e p4-p1
+% Representar o corte com X vermelho
+\draw[red!80,very thick,line width=2.5pt] (3.3,2.2) -- (4.7,0.8) node[below right,font=\footnotesize,red!80]{corte!};
+\draw[red!80,very thick,line width=2.5pt] (3.3,0.8) -- (4.7,2.2);
+
+% S/T region labels
+\draw[dashed,gray,rounded corners] (-0.8,-0.8) rectangle (3.5,4.0) node[above left,font=\footnotesize]{$S$ (fg)};
+\draw[dashed,gray,rounded corners] (3.6,-0.8) rectangle (6.8,4.0) node[above right,font=\footnotesize]{$T$ (bg)};
+\end{tikzpicture}
+\caption{Geometria do corte mínimo na segmentação. $p_1, p_2$ (cor verde) são classificados como foreground ($S$); $p_3, p_4$ (cor vermelha) como background ($T$). O corte (X vermelho) ocorre no N-link $(p_2, p_3)$ e no N-link $(p_4, p_1)$, pois esses arcos têm $w_n$ baixo (pixels de cores distintas). T-links saturados com $\infty$ (sementes) nunca são cortados. T-links de $p_3, p_4$ para $t$ não são cortados pois $p_3, p_4 \in T$.}
+\label{fig:segmentation_cut}
+\end{figure}
+
+Como a rede de segmentação pode conter milhões de vértices ($n = W \times H$) e milhões de arcos ($\approx 4n$ N-links $+ 2n$ T-links), a escolha do algoritmo de fluxo é crucial. A implementação prática desenvolvida neste projeto emprega o \textit{Push-Relabel (Highest Label)} com \textit{Gap Heuristic} pela sua complexidade $\mathcal{O}(|V|^2 \sqrt{|A|})$ (conforme Tabela~\ref{tab:complexidades}), que supera o Push-Relabel FIFO ($\mathcal{O}(|V|^3)$) em redes densas, e pela sua eficiência prática reconhecida em grafos planares de grade (veja~\cite{goldberg1988new}).
+
 
 \section{Conclusões e Trabalhos Futuros}
 
