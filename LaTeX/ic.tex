@@ -76,14 +76,17 @@
 \begin{document}
 \onehalfspacing
 
-
 \begin{center}
-{\Large\bfseries Estudo e Implementação de Algoritmos de Fluxo em Redes}\\[0.3cm]
-{\large Gabriel Frigo --- Orientadora: Cristiane Maria Sato}\\
-{\normalsize Universidade Federal do ABC --- PIBIC/CNPq --- 2025/2026}
+    \textbf{Universidade Federal do ABC}\\[0.3cm]
+    \textbf{Pró-reitoria de Pesquisa}\\[0.5cm]
+    {\Large\bfseries Problemas de Fluxos em Redes:\\Teoria, Algoritmos e Implementações}\\[0.5cm]
+    {\large Gabriel Frigo}\\[0.2cm]
+    {\normalsize Orientadora: Cristiane Maria Sato}\\[0.2cm]
+    {\normalsize PIBIC/CNPq --- 2025/2026}
 \end{center}
 \vspace{0.5cm}
 
+\newpage
 \renewcommand{\contentsname}{Sumário}
 \tableofcontents
 \newpage
@@ -336,6 +339,25 @@ Conclui-se analiticamente que, entre duas saturações consecutivas de uma mesma
 
 Existindo $\mathcal{O}(|A|)$ arcos na malha geométrica, o limite superior de aumentos globais é estritamente circunscrito a $\mathcal{O}(|V| \cdot |A|)$. Multiplicando este fator de repetição pelo custo computacional intrínseco de $\mathcal{O}(|A|)$ operações de uma busca BFS, o tempo de execução de pior caso é cravado rigorosamente em $\mathcal{O}(|V| \cdot |A|^2)$ (veja~\cite{korte2018combinatorial}). A materialização desta heurística, utilizando a herança e o encapsulamento orientado a objetos da interface principal, encontra-se estruturada no Código~\ref{lst:edmonds_karp} (disponível no Apêndice~\ref{ap:edmonds_karp}).
 
+\begin{figure}[h]
+\centering
+\begin{tikzpicture}[>=Stealth, thick]
+  \node[circle, draw, minimum size=8mm, fill=green!20, font=\footnotesize] (s) at (0, 0) {$s$ (0)};
+  \node[circle, draw, minimum size=8mm, font=\footnotesize] (a) at (2, 1) {$a$ (1)};
+  \node[circle, draw, minimum size=8mm, font=\footnotesize] (b) at (2, -1) {$b$ (1)};
+  \node[circle, draw, minimum size=8mm, font=\footnotesize] (c) at (4, 1) {$c$ (2)};
+  \node[circle, draw, minimum size=8mm, fill=red!20, font=\footnotesize] (t) at (6, 0) {$t$ (3)};
+
+  \draw[->, blue, dashed] (s) -- node[above left, font=\tiny, text=black] {2/4} (a);
+  \draw[->, gray] (s) -- node[below left, font=\tiny, text=black] {1/2} (b);
+  \draw[->, blue, dashed] (a) -- node[above, font=\tiny, text=black] {0/3} (c);
+  \draw[->, gray] (b) -- node[below right, font=\tiny, text=black] {1/2} (c);
+  \draw[->, blue, dashed] (c) -- node[above right, font=\tiny, text=black] {0/5} (t);
+\end{tikzpicture}
+\caption{O Algoritmo de Edmonds-Karp utiliza busca em largura (BFS) na rede residual para encontrar sempre o caminho aumentante mais curto (em n\'umero de arestas), como ilustrado em azul. Os n\'iveis da BFS s\~ao indicados entre par\^enteses.}
+\label{fig:edmonds_karp_bfs}
+\end{figure}
+
 \subsubsection{O Algoritmo de Dinic}
 
 Embora o algoritmo de Edmonds-Karp apresente um comportamento fortemente polinomial, o limite assintótico de $\mathcal{O}(|V| \cdot |A|^2)$ pode se mostrar proibitivo em instâncias massivas ou em digrafos de alta densidade estrutural. O algoritmo formulado por Yefim Dinitz (veja~\cite{dinic1970algorithm}) contorna esta barreira analítica ao introduzir o processamento em fases e a estruturação de uma abstração topológica denominada Digrafo de Níveis (\textit{Level Graph}).
@@ -406,6 +428,29 @@ Uma função de altura é considerada matematicamente válida para um pré-fluxo
 
 A terceira condição garante que o excesso não despencará em ``quedas livres'' descontroladas e, principalmente, que não existe nenhum caminho direcionado viável de $s$ para $t$ na rede residual, atestando a otimalidade topológica do sistema a todo instante. O algoritmo termina quando o conjunto de vértices ativos torna-se vazio ($e(v) = 0, \forall v \in V \setminus \{s, t\}$). Neste ponto exato, o pré-fluxo converte-se em um fluxo viável e, pela ausência de caminhos da fonte ao sumidouro, o Teorema do Fluxo Máximo e Corte Mínimo certifica que este fluxo é máximo.
 
+\begin{figure}[h]
+\centering
+\begin{tikzpicture}[>=Stealth, thick]
+  \node[circle, draw, minimum size=8mm, fill=green!20] (s) at (0, 0) {$s$};
+  \node[circle, draw, minimum size=8mm, fill=yellow!30] (a) at (2, 1) {$a$};
+  \node[circle, draw, minimum size=8mm] (b) at (2, -1) {$b$};
+  \node[circle, draw, minimum size=8mm, fill=yellow!30] (c) at (4, 0) {$c$};
+  \node[circle, draw, minimum size=8mm, fill=red!20] (t) at (6, 0) {$t$};
+
+  \node[above, font=\tiny] at (a.north) {$e(a) = 3$};
+  \node[below, font=\tiny] at (b.south) {$e(b) = 0$};
+  \node[above, font=\tiny] at (c.north) {$e(c) = 1$};
+
+  \draw[->] (s) -- node[above left, font=\tiny] {5} (a);
+  \draw[->] (s) -- node[below left, font=\tiny] {2} (b);
+  \draw[->] (a) -- node[above right, font=\tiny] {2} (c);
+  \draw[->] (b) -- node[below right, font=\tiny] {2} (c);
+  \draw[->] (c) -- node[above, font=\tiny] {3} (t);
+\end{tikzpicture}
+\caption{Exemplo de um pr\'e-fluxo em que a conserva\c{c}\~ao de fluxo \'e relaxada. V\'ertices intermedi\'arios como $a$ e $c$ podem possuir excesso positivo ($e(u) > 0$), tornando-os ativos (destacados em amarelo).}
+\label{fig:preflow_example}
+\end{figure}
+
 \subsubsection{A Família Push-Relabel}
 
 A mecânica operacional da família de algoritmos \textit{Push-Relabel}, concebida originalmente por Goldberg e Tarjan (veja~\cite{goldberg1988new}), assenta-se sobre a manipulação iterativa de vértices ativos visando o esgotamento topológico de seus excessos. A inicialização do sistema satura artificialmente todos os arcos originais adjacentes à fonte $s$, injetando um pré-fluxo maciço na rede. Simultaneamente, a altura da fonte é fixada em $h(s) = |V|$ e a dos demais vértices é inicializada em $h(v) = 0$, estabelecendo um desnível rigoroso que força o fluido a buscar o sumidouro (veja~\cite{ahuja1993network}).
@@ -422,35 +467,39 @@ A eficiência global do algoritmo é intrinsecamente dependente da política de 
 
 \begin{figure}[h]
 \centering
-\begin{tikzpicture}[>=Stealth,thick,node distance=2.2cm]
-\node[font=\footnotesize,above] at (2.5,4.8) {\textbf{Antes: Push admiss\'ivel de $u$ para $v$}};
+\begin{tikzpicture}[>=Stealth,thick,node distance=2.2cm,
+    main/.style={circle,draw,minimum size=10mm}]
 
-\node[circle,draw,fill=yellow!30,minimum size=10mm] (u) at (0,3) {$u$};
-\node[font=\tiny,above right] at (0.3,3.3) {$h=3,\,e=5$};
+% === LEFT: Push ===
+\node[font=\footnotesize,above] at (1.5,4.8) {\textbf{Antes: Push admiss\'ivel de $u$ para $v$}};
 
-\node[circle,draw,fill=blue!10,minimum size=10mm] (v) at (3,3) {$v$};
-\node[font=\tiny,above right] at (3.3,3.3) {$h=2,\,e=1$};
+\node[main,fill=yellow!30] (u) at (0,3) {$u$};
+\node[font=\tiny,above=2pt of u] {$h{=}3,\,e{=}5$};
+
+\node[main,fill=blue!10] (v) at (3,3) {$v$};
+\node[font=\tiny,above=2pt of v] {$h{=}2,\,e{=}1$};
 
 \draw[->,line width=1.5pt,green!60!black] (u) -- node[above,font=\footnotesize] {$c_f=4$} (v);
 
-\node[font=\footnotesize,above] at (2.5,1.8) {\textbf{Depois do Push($u$,$v$,$\delta$=4)}};
-\node[circle,draw,fill=yellow!30,minimum size=10mm] (u2) at (0,0.8) {$u$};
-\node[font=\tiny,above right] at (0.3,1.1) {$h=3,\,e=1$};
-\node[circle,draw,fill=blue!10,minimum size=10mm] (v2) at (3,0.8) {$v$};
-\node[font=\tiny,above right] at (3.3,1.1) {$h=2,\,e=5$};
+\node[font=\footnotesize,above] at (1.5,1.8) {\textbf{Depois do Push($u$,$v$,$\delta$=4)}};
+\node[main,fill=yellow!30] (u2) at (0,0.8) {$u$};
+\node[font=\tiny,above=2pt of u2] {$h{=}3,\,e{=}1$};
+\node[main,fill=blue!10] (v2) at (3,0.8) {$v$};
+\node[font=\tiny,above=2pt of v2] {$h{=}2,\,e{=}5$};
 \draw[->,gray,dashed] (u2) -- node[above,font=\footnotesize,gray] {$c_f=0$} (v2);
 
+% === RIGHT: Relabel ===
 \node[font=\footnotesize,above] at (7.5,4.8) {\textbf{Relabel: $u$ preso (sem arco admiss\'ivel)}};
-\node[circle,draw,fill=orange!30,minimum size=10mm] (r1) at (6,3) {$u$};
-\node[font=\tiny,above right] at (6.3,3.3) {$h=2,\,e=3$};
-\node[circle,draw,fill=gray!10,minimum size=10mm] (r2) at (9,3) {$w$};
-\node[font=\tiny,above right] at (9.3,3.3) {$h=3$};
-\draw[->,gray,dashed] (r1) -- node[above,font=\tiny] {$c_f=2$, mas $h(u)\not= h(w)+1$} (r2);
-\node[font=\footnotesize,above] at (7.5,1.8) {\textbf{Ap\'os Relabel: $h(u)\leftarrow 1+\min\{h(w)\}=4$}};
-\node[circle,draw,fill=orange!50,minimum size=10mm] (r3) at (6,0.8) {$u$};
-\node[font=\tiny,above right] at (6.3,1.1) {$h=4,\,e=3$};
-\node[circle,draw,fill=gray!10,minimum size=10mm] (r4) at (9,0.8) {$w$};
-\node[font=\tiny,above right] at (9.3,1.1) {$h=3$};
+\node[main,fill=orange!30] (r1) at (6,3) {$u$};
+\node[font=\tiny,above=2pt of r1] {$h{=}2,\,e{=}3$};
+\node[main,fill=gray!10] (r2) at (9,3) {$w$};
+\node[font=\tiny,above=2pt of r2] {$h{=}3$};
+\draw[->,gray,dashed] (r1) -- node[above,font=\tiny,align=center] {$c_f=2$\\$h(u){\neq}h(w){+}1$} (r2);
+\node[font=\footnotesize,above] at (7.5,1.8) {\textbf{Ap\'os Relabel: $h(u)\leftarrow 4$}};
+\node[main,fill=orange!50] (r3) at (6,0.8) {$u$};
+\node[font=\tiny,above=2pt of r3] {$h{=}4,\,e{=}3$};
+\node[main,fill=gray!10] (r4) at (9,0.8) {$w$};
+\node[font=\tiny,above=2pt of r4] {$h{=}3$};
 \draw[->,green!60!black,line width=1.5pt] (r3) -- node[above,font=\tiny] {admiss\'ivel!} (r4);
 \end{tikzpicture}
 \caption{Operações elementares do Push-Relabel. Esquerda: Push admiss\'ivel de $u$ para $v$ (arco com $c_f > 0$ e $h(u)=h(v)+1$), transferindo $\delta = \min(e(u),c_f)$ de fluxo. Direita: Relabel de $u$ quando n\~ao h\'a arco admiss\'ivel --- a altura \'e ajustada para criar um novo declive.}
@@ -493,8 +542,8 @@ A heurística intervém na rede ao detectar a lacuna, elevando a altura de todos
   0/h=0/green!20, 1/h=1/yellow!20, 2/h=2/yellow!20} {
   \node[circle,draw,fill=\fill,minimum size=8mm,font=\tiny] at (1.5,\h) {\label};
 }
-\node[circle,draw,fill=orange!40,minimum size=9mm,font=\tiny] at (1.5,5) {$|V|+1$};
-\draw[->,orange!80!black,line width=1.5pt] (1.5,3.5) -- node[right,font=\tiny,orange!80!black] {todos sobem} (1.5,4.6);
+\node[circle,draw,fill=orange!40,minimum size=9mm,font=\tiny] (top) at (1.5,5) {$|V|{+}1$};
+\draw[->,orange!80!black,line width=1.5pt] (1.5,2.8) -- node[right,font=\tiny,orange!80!black] {todos sobem} (top);
 \end{scope}
 \end{tikzpicture}
 \caption{Gap Heuristic: (a) ap\'os um relabel, o n\'ivel $k=3$ esvazia-se (lacuna formada). (b) Todos os v\'ertices com $h > k$ t\^em suas alturas definidas para $|V|+1$, isolando-os da rede e evitando relabels redundantes.}
@@ -584,7 +633,7 @@ Consequentemente, a restrição de capacidade unitária nos arcos conectados à 
     \draw[->] (fr\i) -- node[above,font=\tiny] {$1$} (t);
   }
   \draw[->,line width=1.5pt,blue] (fl1) -- (fr1); \draw[->] (fl1) -- (fr2);
-  \draw[->] (fl2) -- (fr2); \draw[->,line width=1.5pt,blue] (fl2) -- (fr3);
+  \draw[->,line width=1.5pt,blue] (fl2) -- (fr2); \draw[->] (fl2) -- (fr3);
   \draw[->] (fl3) -- (fr1); \draw[->,line width=1.5pt,blue] (fl3) -- (fr3);
 \end{scope}
 \end{tikzpicture}
@@ -611,32 +660,36 @@ A solidez desta extração reside no fato de que, pelas propriedades de conserva
 \begin{figure}[h]
 \centering
 \begin{tikzpicture}[>=Stealth,thick]
-  \node[font=\footnotesize,above] at (2.5,4.2) {Corte m\'inimo e Cobertura de V\'ertices (K\'onig)};
+  \node[font=\footnotesize,above] at (2.5,4.6) {Corte m\'inimo e Cobertura de V\'ertices (K\'onig)};
   \node[circle,draw,fill=green!30,minimum size=8mm,font=\small] (s) at (0,2) {$s$};
-  \node[circle,draw,fill=red!30,minimum size=8mm,font=\small] (t) at (5,2) {$t$};
+  \node[circle,draw,fill=red!30,minimum size=8mm,font=\small] (t) at (6,2) {$t$};
   
-  \node[circle,draw,fill=blue!15,minimum size=8mm,font=\small] (l1) at (1.7,3.5) {$l_1$};
-  \node[circle,draw,fill=blue!40,minimum size=8mm,font=\small,double] (l2) at (1.7,2) {$l_2$};
-  \node[circle,draw,fill=blue!15,minimum size=8mm,font=\small] (l3) at (1.7,0.5) {$l_3$};
+  \node[circle,draw,fill=blue!15,minimum size=8mm,font=\small] (l1) at (2,3.5) {$l_1$};
+  \node[circle,draw,fill=blue!40,minimum size=8mm,font=\small,double] (l2) at (2,2) {$l_2$};
+  \node[circle,draw,fill=blue!15,minimum size=8mm,font=\small] (l3) at (2,0.5) {$l_3$};
   
-  \node[circle,draw,fill=orange!15,minimum size=8mm,font=\small] (r1) at (3.3,3.5) {$r_1$};
-  \node[circle,draw,fill=orange!15,minimum size=8mm,font=\small] (r2) at (3.3,2) {$r_2$};
-  \node[circle,draw,fill=orange!40,minimum size=8mm,font=\small,double] (r3) at (3.3,0.5) {$r_3$};
+  \node[circle,draw,fill=orange!15,minimum size=8mm,font=\small] (r1) at (4,3.5) {$r_1$};
+  \node[circle,draw,fill=orange!15,minimum size=8mm,font=\small] (r2) at (4,2) {$r_2$};
+  \node[circle,draw,fill=orange!40,minimum size=8mm,font=\small,double] (r3) at (4,0.5) {$r_3$};
   
-  \draw[->] (s) -- (l1); \draw[->,red,line width=1.5pt] (s) -- node[above,font=\tiny,red]{corte} (l2); \draw[->] (s) -- (l3);
+  \draw[->] (s) -- (l1); \draw[->,red,line width=1.5pt] (s) -- node[below,font=\tiny,red]{corte} (l2); \draw[->] (s) -- (l3);
   
-  \draw[->] (r1) -- (t); \draw[->] (r2) -- (t); \draw[->,red,line width=1.5pt] (r3) -- node[above,font=\tiny,red]{corte} (t);
+  \draw[->] (r1) -- (t); \draw[->] (r2) -- (t); \draw[->,red,line width=1.5pt] (r3) -- node[below,font=\tiny,red]{corte} (t);
   
   \draw[->,line width=1.5pt,blue] (l1) -- (r1);
   \draw[->,line width=1.5pt,blue] (l2) -- (r2);
   \draw[->,line width=1.5pt,blue] (l3) -- (r3);
   
-  \draw[dashed,gray,rounded corners] (-0.6,0) rectangle (2.5,4) node[above left,font=\tiny]{$S$};
-  \draw[dashed,gray,rounded corners] (2.8,0) rectangle (5.6,4) node[above right,font=\tiny]{$T$};
+  \draw[dashed,blue!40,rounded corners] (-0.7,-0.3) rectangle (1.3,4.2) node[above left,font=\tiny]{$S$};
+  \draw[dashed,blue!40,rounded corners] (1.5,-0.3) rectangle (3.2,4.2);
+  \node[font=\tiny,above] at (2.35,4.2) {$L$};
+  \draw[dashed,orange!60,rounded corners] (3.5,-0.3) rectangle (5.0,4.2);
+  \node[font=\tiny,above] at (4.25,4.2) {$R$};
+  \draw[dashed,red!40,rounded corners] (5.2,-0.3) rectangle (6.7,4.2) node[above right,font=\tiny]{$T$};
   
-  \node[font=\tiny,blue!80!black,below] at (1.7,1.5) {$l_2 \in L \cap T$};
-  \node[font=\tiny,orange!80!black,below] at (3.3,0) {$r_3 \in R \cap S$};
-  \node[font=\footnotesize,below] at (2.5,-0.6) {Cobertura $C = \{l_2, r_3\}$, $|C| = |M| = 2$ (K\'onig)};
+  \node[font=\tiny,blue!80!black] at (2,-0.7) {$l_2 \in L \cap T$: na cobertura};
+  \node[font=\tiny,orange!80!black] at (4,-0.7) {$r_3 \in R \cap S$: na cobertura};
+  \node[font=\footnotesize,below] at (3,-1.2) {Cobertura $C = \{l_2, r_3\}$, $|C| = |M| = 2$ (K\'onig)};
 \end{tikzpicture}
 \caption{Teorema de K\'onig: a BFS no digrafo residual $D_f$ ap\'os o fluxo m\'aximo particiona os v\'ertices em $S$ (alcan\'c\'aveis) e $T$ (inalcan\'c\'aveis). Os arcos cortados (vermelho) definem o corte m\'inimo. A cobertura m\'inima \'e $C = (L\cap T) \cup (R \cap S)$ (v\'ertices com borda dupla).}
 \label{fig:konig_cut}
@@ -656,6 +709,53 @@ Desta forma, a extração computacional do Conjunto Independente Máximo dispens
 \end{equation}
 
 A cardinalidade do Conjunto Independente Máximo é dada algebricamente por $|I| = |V| - |C|$. Esta sequência de reduções demonstra a aplicabilidade do modelo de fluxo em redes: a partir de uma única construção baseada em super-fonte e super-sumidouro, o sistema soluciona simultaneamente o Emparelhamento Máximo, a Cobertura de Vértices Mínima e o Conjunto Independente Máximo.
+
+\begin{figure}[h]
+\centering
+\begin{tikzpicture}[>=Stealth, thick]
+  % Subfigure (a)
+  \begin{scope}[shift={(0,0)}]
+    \node[font=\footnotesize,above] at (2.5,4.2) {(a) Cobertura de V\'ertices $C$};
+    
+    \node[circle,draw,fill=blue!15,minimum size=8mm,font=\small] (l1) at (1.7,3.5) {$l_1$};
+    \node[circle,draw,fill=blue!15,minimum size=8mm,font=\small] (l3) at (1.7,0.5) {$l_3$};
+    \node[circle,draw,fill=orange!15,minimum size=8mm,font=\small] (r1) at (3.3,3.5) {$r_1$};
+    \node[circle,draw,fill=orange!15,minimum size=8mm,font=\small] (r2) at (3.3,2) {$r_2$};
+    
+    \node[circle,draw,fill=blue!40,minimum size=8mm,font=\small,double] (l2) at (1.7,2) {$l_2$};
+    \node[circle,draw,fill=orange!40,minimum size=8mm,font=\small,double] (r3) at (3.3,0.5) {$r_3$};
+    
+    \draw[-] (l1) -- (r3);
+    \draw[-] (l2) -- (r2);
+    \draw[-] (l3) -- (r3);
+    \draw[-] (l2) -- (r1);
+    
+    \node[font=\footnotesize,below] at (2.5,-0.2) {$C = \{l_2, r_3\}$};
+  \end{scope}
+  
+  % Subfigure (b)
+  \begin{scope}[shift={(6,0)}]
+    \node[font=\footnotesize,above] at (2.5,4.2) {(b) Conjunto Independente $I = V \setminus C$};
+    
+    \node[circle,draw,fill=blue!40,minimum size=8mm,font=\small,double] (l1) at (1.7,3.5) {$l_1$};
+    \node[circle,draw,fill=blue!40,minimum size=8mm,font=\small,double] (l3) at (1.7,0.5) {$l_3$};
+    \node[circle,draw,fill=orange!40,minimum size=8mm,font=\small,double] (r1) at (3.3,3.5) {$r_1$};
+    \node[circle,draw,fill=orange!40,minimum size=8mm,font=\small,double] (r2) at (3.3,2) {$r_2$};
+    
+    \node[circle,draw,fill=blue!15,minimum size=8mm,font=\small] (l2) at (1.7,2) {$l_2$};
+    \node[circle,draw,fill=orange!15,minimum size=8mm,font=\small] (r3) at (3.3,0.5) {$r_3$};
+    
+    \draw[-] (l1) -- (r3);
+    \draw[-] (l2) -- (r2);
+    \draw[-] (l3) -- (r3);
+    \draw[-] (l2) -- (r1);
+    
+    \node[font=\footnotesize,below] at (2.5,-0.2) {$I = \{l_1, l_3, r_1, r_2\}$};
+  \end{scope}
+\end{tikzpicture}
+\caption{Rela\c{c}\~ao de complementaridade entre a Cobertura de V\'ertices e o Conjunto Independente M\'aximo. Os n\'os em evid\^encia (borda dupla) formam os respectivos conjuntos, demonstrando visualmente que $I = V \setminus C$ e que n\~ao h\'a arcos entre n\'os de $I$.}
+\label{fig:independent_set}
+\end{figure}
 
 \subsubsection{Cobertura de Arcos Mínima e as Quatro Dualidades}
 
@@ -687,6 +787,26 @@ Esses quatro objetos são ``faces da mesma moeda'', variando apenas o que cobre 
 \end{table}
 
 As relações $|M^*| = |C_V^*|$ (König) e $|I^*| + |C_V^*| = |V|$ e $|M^*| + |F^*| = |V|$ (Gallai) mostram que conhecer qualquer um destes valores determina os demais. Neste projeto, os três primeiros ($M$, $C_V$, $I$) são resolvidos via fluxo máximo; a cobertura de arcos mínima é obtida a partir de $M^*$ por pós-processamento em $\mathcal{O}(|V|)$, sem necessidade de novo cálculo de fluxo.
+
+\begin{figure}[h]
+\centering
+\begin{tikzpicture}[>=Stealth, thick, node distance=4cm]
+  \node[rectangle, draw, rounded corners, fill=blue!10, text width=3.5cm, align=center, minimum height=1.5cm] (mis) at (0, 3) {\textbf{Conjunto Independente} \\ MIS \\ (Maximizar, V\'ertices)};
+  
+  \node[rectangle, draw, rounded corners, fill=orange!10, text width=3.5cm, align=center, minimum height=1.5cm] (match) at (6, 3) {\textbf{Emparelhamento} \\ Matching \\ (Maximizar, Arcos)};
+  
+  \node[rectangle, draw, rounded corners, fill=blue!10, text width=3.5cm, align=center, minimum height=1.5cm] (mvc) at (0, 0) {\textbf{Cobertura de V\'ertices} \\ MVC \\ (Minimizar, V\'ertices)};
+  
+  \node[rectangle, draw, rounded corners, fill=orange!10, text width=3.5cm, align=center, minimum height=1.5cm] (mec) at (6, 0) {\textbf{Cobertura de Arcos} \\ MEC \\ (Minimizar, Arcos)};
+
+  \draw[<->] (mis) -- node[left, font=\footnotesize] {Complemento} node[right, font=\footnotesize] {$|I| = |V| - |C|$} (mvc);
+  \draw[<->] (match) -- node[above, font=\footnotesize] {K\'onig} node[below, font=\footnotesize] {$|M| = |C_V|$} (mvc);
+  \draw[<->] (match) -- node[right, font=\footnotesize] {Gallai} node[left, font=\footnotesize] {$|M| + |F| = |V|$} (mec);
+  \draw[<->, dashed] (mis) -- node[above right, font=\footnotesize] {Gallai} (mec);
+\end{tikzpicture}
+\caption{As quatro dualidades fundamentais em grafos bipartidos. Setas indicam as rela\c{c}\~oes e teoremas que conectam os problemas de maximiza\c{c}\~ao e minimiza\c{c}\~ao sobre v\'ertices e arcos.}
+\label{fig:four_dualities}
+\end{figure}
 
 \subsection{Conectividade e Roteamento}
 
@@ -873,6 +993,30 @@ Na implementação desta biblioteca, esta modelagem é realizada nativamente pel
 
 \textbf{Observação --- \lstinline{add_edge(a,b,cap)} seguido de \lstinline{add_edge(b,a,cap)}:} Chamar \lstinline{add_edge} duas vezes para o mesmo par de vértices em sentidos opostos é seguro e correto. Cada chamada cria um par independente de arcos (direto + reverso de capacidade 0), indexados por XOR. Portanto, \lstinline{add_edge(a,b,cap)} cria os arcos de índices $2k$ e $2k+1$, e \lstinline{add_edge(b,a,cap)} cria os arcos $2k+2$ e $2k+3$, todos com seus reversos corretamente emparelhados. Esta modelagem é equivalente a \lstinline{add_edge(a,b,cap,cap)} e representa uma aresta bidirecional (grafo não-direcionado). Contudo, se a intenção for modelar um arco \emph{apenas} de $a$ para $b$ em um digrafo, \lstinline{add_edge} deve ser chamado apenas uma vez, pois duas chamadas criam arcos paralelos entre $a$ e $b$ --- o que é matematicamente válido (arcos paralelos simplesmente acumulam capacidade), mas raramente é a modelagem desejada.
 
+\begin{figure}[h]
+\centering
+\begin{tikzpicture}[>=Stealth, thick]
+  % Subfigure (a)
+  \begin{scope}[shift={(0,0)}]
+    \node[font=\footnotesize,above] at (1.5,1.5) {(a) Aresta N\~ao-direcionada};
+    \node[circle, draw, minimum size=8mm, fill=yellow!20] (u) at (0, 0) {$u$};
+    \node[circle, draw, minimum size=8mm, fill=yellow!20] (v) at (3, 0) {$v$};
+    \draw[-] (u) -- node[above, font=\footnotesize] {$c$} (v);
+  \end{scope}
+  
+  % Subfigure (b)
+  \begin{scope}[shift={(6,0)}]
+    \node[font=\footnotesize,above] at (1.5,1.5) {(b) Arcos Direcionados};
+    \node[circle, draw, minimum size=8mm, fill=yellow!20] (u2) at (0, 0) {$u$};
+    \node[circle, draw, minimum size=8mm, fill=yellow!20] (v2) at (3, 0) {$v$};
+    \draw[->, transform canvas={yshift=1.5mm}] (u2) -- node[above, font=\footnotesize] {$c$} (v2);
+    \draw[<-, transform canvas={yshift=-1.5mm}] (u2) -- node[below, font=\footnotesize] {$c$} (v2);
+  \end{scope}
+\end{tikzpicture}
+\caption{Modelagem de uma aresta bidirecional em grafos n\~ao-direcionados atrav\'es da cria\c{c}\~ao de dois arcos direcionados opostos, ambos com a mesma capacidade $c$.}
+\label{fig:bidirectional}
+\end{figure}
+
 \subsection{Decomposição de Fluxo}
 
 Após o cômputo do fluxo máximo, a solução obtida é representada como um vetor de fluxos individuais sobre os arcos da rede. Contudo, muitas aplicações práticas exigem uma descrição mais estruturada da solução: quais são os caminhos individuais de $s$ a $t$ que compõem o fluxo total, e quanto fluxo transita em cada um?
@@ -897,6 +1041,35 @@ Procedemos por indução no número de arcos com fluxo positivo (veja~\cite{ahuj
 \end{enumerate}
 
 Em ambos os casos, o número de arcos com fluxo positivo decresce estritamente, e a hipótese de indução se aplica a $f'$. Como este processo termina em no máximo $|A|$ iterações, a decomposição produz no máximo $|A|$ caminhos e ciclos. $\blacksquare$
+
+\begin{figure}[h]
+\centering
+\begin{tikzpicture}[>=Stealth, thick]
+  % Network
+  \begin{scope}[shift={(0,0)}]
+    \node[circle, draw, minimum size=8mm, fill=green!20, font=\footnotesize] (s) at (0, 1) {$s$};
+    \node[circle, draw, minimum size=8mm, font=\footnotesize] (a) at (2, 2) {$a$};
+    \node[circle, draw, minimum size=8mm, font=\footnotesize] (b) at (2, 0) {$b$};
+    \node[circle, draw, minimum size=8mm, fill=red!20, font=\footnotesize] (t) at (4, 1) {$t$};
+
+    \draw[->] (s) -- node[above left, font=\tiny] {3} (a);
+    \draw[->] (s) -- node[below left, font=\tiny] {2} (b);
+    \draw[->] (a) -- node[right, font=\tiny] {1} (b);
+    \draw[->] (a) -- node[above right, font=\tiny] {2} (t);
+    \draw[->] (b) -- node[below right, font=\tiny] {3} (t);
+  \end{scope}
+
+  % Decomposition
+  \begin{scope}[shift={(6,0.5)}]
+    \node[right, font=\small, align=left] at (0, 1.5) {\textbf{Caminhos Decompostos}:};
+    \node[right, font=\footnotesize, align=left] at (0, 0.8) {1) $s \rightarrow a \rightarrow t$ (fluxo 2)};
+    \node[right, font=\footnotesize, align=left] at (0, 0.2) {2) $s \rightarrow b \rightarrow t$ (fluxo 2)};
+    \node[right, font=\footnotesize, align=left] at (0, -0.4) {3) $s \rightarrow a \rightarrow b \rightarrow t$ (fluxo 1)};
+  \end{scope}
+\end{tikzpicture}
+\caption{Exemplo de decomposi\c{c}\~ao de fluxo. O fluxo total de 5 unidades na rede \'e decomposto em tr\^es caminhos distintos de $s$ a $t$.}
+\label{fig:flow_decomposition}
+\end{figure}
 
 \subsubsection{Algoritmo de Extração de Caminhos (Path Recovery)}
 
@@ -992,33 +1165,31 @@ Seja $I$ uma imagem com $n = W \times H$ pixels. A construção da rede de segme
 
 \subsubsection{Segmentação via Corte Mínimo}
 
-O corte mínimo $(S, T)$ na rede construída induz naturalmente a partição da imagem. Os pixels no conjunto $S$ (alcançáveis a partir de $s$ na rede residual) pertencem ao \textit{foreground}; os pixels em $T$ pertencem ao \textit{background}.
+O corte mínimo $(S, T)$ na rede construída induz naturalmente a partição da imagem, minimizando a energia da segmentação. Os pixels no conjunto $S$ (alcançáveis a partir de $s$ na rede residual) pertencem ao \textit{foreground}; os pixels em $T$ pertencem ao \textit{background}.
 
-A capacidade do corte mínimo corresponde à energia total da segmentação: a soma dos custos de separar pixels similares (N-links cortados) e de contradizer o modelo de cor (T-links cortados). Ao minimizar esta energia, o algoritmo encontra a fronteira ótima que melhor respeita tanto as marcações do usuário quanto as fronteiras naturais de cor da imagem.
-
-\textbf{Geometria do corte --- quais arcos são cortados e por quê?} Em redes de segmentação existem apenas dois tipos de arcos que um corte mínimo pode cortar. A intuição é a seguinte:
+A geometria desse corte divide os arcos saturados em \textbf{duas categorias} principais:
 \begin{itemize}
-    \item \textbf{T-link cortado $(s, p)$}: significa que o pixel $p$ foi \textbf{classificado como background} ($p \in T$). O custo deste corte é $w_s(p)$ --- alto se $p$ parece muito com foreground, baixo caso contrário. Em particular, se $p$ é uma semente de foreground, $w_s(p) = \infty$, tornando este corte impossível: sementes de foreground \textbf{nunca} são classificadas como background.
-    \item \textbf{T-link cortado $(p, t)$}: significa que o pixel $p$ foi \textbf{classificado como foreground} ($p \in S$). O custo é $w_t(p)$ --- alto se $p$ parece muito com background. Sementes de background nunca são classificadas como foreground pelo mesmo argumento.
-    \item \textbf{N-link cortado $(p, q)$}: significa que $p$ e $q$ pertencem a lados opostos da segmentação (um no foreground, outro no background). O custo é $w_n(p,q)$ --- alto se $p$ e $q$ são similares em cor (cortar aqui é caro), baixo se são muito diferentes (fronteira natural). O corte mínimo favorece cortar N-links onde a transição de cor é abrupta.
+    \item T-links de $s$ para $p$: cortados quando o pixel $p$ é atribuído ao background, pagando a penalidade $R_p(\text{"bg"})$.
+    \item T-links de $p$ para $t$: cortados quando o pixel $p$ é atribuído ao foreground, pagando a penalidade $R_p(\text{"fg"})$.
+    \item N-links entre $p$ e $q$: cortados quando $p$ e $q$ são atribuídos a partições distintas, pagando a penalidade $B(p, q)$.
 \end{itemize}
 
-Em particular, o corte mínimo \textbf{nunca} cortará um N-link entre dois pixels ambos marcados de foreground e ambos com $w_s = \infty$, pois isso criaria um custo infinito. A fronteira final aparece nas arestas de cor mais discontínua da imagem.
+O custo total do corte é exatamente a soma dos termos de dados e de regularização da energia.
 
 \begin{figure}[h]
 \centering
-\begin{tikzpicture}[>=Stealth, thick, scale=0.9]
+\begin{tikzpicture}[>=Stealth, thick, scale=1.1]
 
-\node[circle,draw,fill=green!40,minimum size=10mm,font=\small] (s) at (0,1.5) {$s$};
+\node[circle,draw,fill=green!40,minimum size=10mm,font=\small] (s) at (-1,1.5) {$s$};
 \node[circle,draw,fill=green!20,minimum size=9mm,font=\tiny] (p1) at (2,3) {$p_1$};
-\node[circle,draw,fill=green!10,minimum size=9mm,font=\tiny] (p2) at (4,3) {$p_2$};
-\node[circle,draw,fill=red!10,minimum size=9mm,font=\tiny] (p3) at (4,0) {$p_3$};
+\node[circle,draw,fill=green!10,minimum size=9mm,font=\tiny] (p2) at (5,3) {$p_2$};
+\node[circle,draw,fill=red!10,minimum size=9mm,font=\tiny] (p3) at (5,0) {$p_3$};
 \node[circle,draw,fill=red!20,minimum size=9mm,font=\tiny] (p4) at (2,0) {$p_4$};
-\node[circle,draw,fill=red!40,minimum size=10mm,font=\small] (t) at (6,1.5) {$t$};
+\node[circle,draw,fill=red!40,minimum size=10mm,font=\small] (t) at (8,1.5) {$t$};
 
-\node[font=\tiny,green!70!black,above] at (2,3.5) {cor: verde};
-\node[font=\tiny,green!50!black,above] at (4,3.5) {cor: verde-claro};
-\node[font=\tiny,red!60!black,below] at (4,-0.5) {cor: vermelho};
+\node[font=\tiny,green!60!black,above] at (2,3.5) {cor: verde};
+\node[font=\tiny,green!60!black,above] at (5,3.5) {cor: verde};
+\node[font=\tiny,red!60!black,below] at (5,-0.5) {cor: vermelho};
 \node[font=\tiny,red!80!black,below] at (2,-0.5) {cor: vermelho};
 
 \draw[->,green!60!black,dashed] (s) -- node[above left,font=\tiny]{$\infty$} (p1);
@@ -1032,18 +1203,20 @@ Em particular, o corte mínimo \textbf{nunca} cortará um N-link entre dois pixe
 \draw[->,red!60!black,dashed] (p4) -- node[below right,font=\tiny]{$\infty$} (t);
 
 \draw[-,blue!70,line width=2pt] (p1) -- node[above,font=\tiny,blue!70]{$w_{n}$ alto} (p2);
-
 \draw[-,orange,line width=2pt] (p2) -- node[right,font=\tiny,orange]{$w_{n}$ baixo} (p3);
-
 \draw[-,blue!70,line width=2pt] (p3) -- node[below,font=\tiny,blue!70]{$w_{n}$ alto} (p4);
-
 \draw[-,orange,line width=2pt] (p4) -- node[left,font=\tiny,orange]{$w_{n}$ baixo} (p1);
 
-\draw[red!80,very thick,line width=2.5pt] (3.3,2.2) -- (4.7,0.8) node[below right,font=\footnotesize,red!80]{corte!};
-\draw[red!80,very thick,line width=2.5pt] (3.3,0.8) -- (4.7,2.2);
+% Corte 1: p2 -> p3
+\draw[red!80,very thick,line width=2.5pt] (4.5,1.8) -- (5.5,1.2) node[below right,font=\footnotesize,red!80]{corte!};
+\draw[red!80,very thick,line width=2.5pt] (4.5,1.2) -- (5.5,1.8);
 
-\draw[dashed,gray,rounded corners] (-0.8,-0.8) rectangle (3.5,4.0) node[above left,font=\footnotesize]{$S$ (fg)};
-\draw[dashed,gray,rounded corners] (3.6,-0.8) rectangle (6.8,4.0) node[above right,font=\footnotesize]{$T$ (bg)};
+% Corte 2: p4 -> p1
+\draw[red!80,very thick,line width=2.5pt] (1.5,1.8) -- (2.5,1.2) node[below left,font=\footnotesize,red!80]{corte!};
+\draw[red!80,very thick,line width=2.5pt] (1.5,1.2) -- (2.5,1.8);
+
+\draw[dashed,gray,rounded corners] (-1.3,-1.0) rectangle (3.5,4.2) node[above left,font=\footnotesize]{$S$ (fg)};
+\draw[dashed,gray,rounded corners] (3.6,-1.0) rectangle (8.5,4.2) node[above right,font=\footnotesize]{$T$ (bg)};
 \end{tikzpicture}
 \caption{Geometria do corte mínimo na segmentação. $p_1, p_2$ (cor verde) são classificados como foreground ($S$); $p_3, p_4$ (cor vermelha) como background ($T$). O corte (X vermelho) ocorre no N-link $(p_2, p_3)$ e no N-link $(p_4, p_1)$, pois esses arcos têm $w_n$ baixo (pixels de cores distintas). T-links saturados com $\infty$ (sementes) nunca são cortados. T-links de $p_3, p_4$ para $t$ não são cortados pois $p_3, p_4 \in T$.}
 \label{fig:segmentation_cut}
