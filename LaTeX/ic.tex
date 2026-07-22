@@ -294,7 +294,7 @@ O núcleo do sistema é regido pela classe base abstrata \lstinline{FlowNetwork}
 
 \begin{itemize}
     \item \textbf{\lstinline{Edge}:} Uma estrutura (\textit{struct}) leve que representa um arco direcionado, agregando as variáveis \lstinline{from} (origem), \lstinline{to} (destino), \lstinline{capacity} (capacidade original $c$) e \lstinline{flow} (fluxo atual $f$).
-    \item \textbf{\lstinline{size}:} Variável escalar que aloca a cardinalidade do conjunto de vértices ($|V|$), utilizada para dimensionar as estruturas auxiliares dinamicamente.
+    \item \textbf{\lstinline{size}:} Variável escalar que armazena a cardinalidade do conjunto de vértices ($|V|$), utilizada para dimensionar as estruturas auxiliares dinamicamente.
     \item \textbf{\lstinline{edges}:} Um vetor linear que armazena todos os arcos da rede. A alocação contígua em memória favorece o \textit{cache} do processador, mitigando os custos de latência comuns em alocações dinâmicas de digrafos.
     \item \textbf{\lstinline{adjacency}:} Uma lista de adjacências otimizada (\lstinline{std::vector<std::vector<Size>>}). Em vez de armazenar ponteiros ou cópias dos arcos, este vetor bidimensional guarda estritamente os índices numéricos que os arcos incidentes ocupam no vetor principal \lstinline{edges}, garantindo acesso em tempo constante $\mathcal{O}(1)$.
 \end{itemize}
