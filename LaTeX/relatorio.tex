@@ -616,7 +616,7 @@ O Problema da Cobertura de Vértices Mínima (\textit{Minimum Vertex Cover} - MV
 
 Esta relação de dualidade é formalizada pelo Teorema de König (veja~\cite{korte2018combinatorial}), que estabelece que, em qualquer digrafo bipartido, a cardinalidade do emparelhamento máximo é matematicamente idêntica à cardinalidade da cobertura de vértices mínima ($|M| = |C|$). Sob a ótica da teoria de redes, o Teorema de König nada mais é do que uma manifestação estrutural do Teorema do Fluxo Máximo e Corte Mínimo de Ford-Fulkerson aplicado à modelagem com super-fonte e super-sumidouro (veja~\cite{ahuja1993network}).
 
-A extração computacional dos vértices que compõem a cobertura mínima exige uma análise minuciosa da rede residual $D_f$ gerada logo após a convergência do fluxo máximo. O resolvedor do problema \textit{Minimum Vertex Cover} (na camada de aplicação em \lstinline{Implementações/Problemas/}) recupera o conjunto $C$ através do seguinte procedimento algorítmico baseado em cortes mínimos:
+A extração computacional dos vértices que compõem a cobertura mínima exige uma análise minuciosa da rede residual $D_f$ gerada logo após a convergência do fluxo máximo. O resolvedor do problema \textit{Minimum Vertex Cover} (na camada de aplicação em \texttt{Implementações/Problemas/}) recupera o conjunto $C$ através do seguinte procedimento algorítmico baseado em cortes mínimos:
 
 \begin{enumerate}
     \item Após computar o emparelhamento máximo, executa-se uma Busca em Largura (BFS) ou Busca em Profundidade (DFS) partindo da super-fonte $s$ no digrafo residual $D_f$, transitando exclusivamente por arcos que possuam capacidade residual estritamente positiva ($c_f(u,v) > 0$).
@@ -918,7 +918,7 @@ Em ambos os casos, o número de arcos com fluxo positivo decresce estritamente, 
 
 \subsubsection{Algoritmo de Extração de Caminhos (Path Recovery)}
 
-Na camada de aplicação (especificamente no resolvedor do problema de caminhos disjuntos \textit{Distinct Routes} em \lstinline{Implementações/Problemas/}), o algoritmo de Path Recovery percorre a rede após o cômputo do fluxo máximo para reconstruir os caminhos individuais. Em redes com capacidades unitárias (como nos problemas de caminhos disjuntos), o procedimento é particularmente elegante:
+Na camada de aplicação (especificamente no resolvedor do problema de caminhos disjuntos \textit{Distinct Routes} em \texttt{Implementações/Problemas/}), o algoritmo de Path Recovery percorre a rede após o cômputo do fluxo máximo para reconstruir os caminhos individuais. Em redes com capacidades unitárias (como nos problemas de caminhos disjuntos), o procedimento é particularmente elegante:
 
 \begin{enumerate}
     \item Partindo da fonte $s$, siga qualquer arco original (índice par) que possua $f(u,v) = 1$ e ainda não tenha sido utilizado.
@@ -1067,7 +1067,7 @@ Em particular, o corte mínimo \textbf{nunca} cortará um N-link entre dois pixe
 \label{fig:segmentation_cut}
 \end{figure}
 
-Como a rede de segmentação pode conter milhões de vértices ($n = W \times H$) e milhões de arcos ($\approx 4n$ N-links $+ 2n$ T-links), a escolha do algoritmo de fluxo é crucial. A ferramenta de **Segmentação de Imagens** (localizada no diretório \lstinline{Aplicações/Segmentação de Imagens/}) emprega a classe \lstinline{PushRelabelImproved} do \textit{Core Framework} (política \textit{Highest Label} com \textit{Gap Heuristic}) pela sua complexidade $\mathcal{O}(|V|^2 \sqrt{|A|})$ (conforme Tabela~\ref{tab:complexidades}), que supera o Push-Relabel FIFO ($\mathcal{O}(|V|^3)$) em redes densas, e pela sua eficiência prática reconhecida em grafos planares de grade (veja~\cite{goldberg1988new}).
+Como a rede de segmentação pode conter milhões de vértices ($n = W \times H$) e milhões de arcos ($\approx 4n$ N-links $+ 2n$ T-links), a escolha do algoritmo de fluxo é crucial. A ferramenta de **Segmentação de Imagens** (localizada no diretório \texttt{Aplicações/Segmentação de Imagens/}) emprega a classe \lstinline{PushRelabelImproved} do \textit{Core Framework} (política \textit{Highest Label} com \textit{Gap Heuristic}) pela sua complexidade $\mathcal{O}(|V|^2 \sqrt{|A|})$ (conforme Tabela~\ref{tab:complexidades}), que supera o Push-Relabel FIFO ($\mathcal{O}(|V|^3)$) em redes densas, e pela sua eficiência prática reconhecida em grafos planares de grade (veja~\cite{goldberg1988new}).
 
 \section{Conclusões e Trabalhos Futuros}
 
@@ -1076,7 +1076,7 @@ Os resultados obtidos ao longo desta Iniciação Científica demonstram o cumpri
 \begin{enumerate}
     \item \textbf{Núcleo Algorítmico (\textit{Core Framework}):} Composto pela interface \lstinline{FlowNetwork} e pelos motores de fluxo concretos (\lstinline{FordFulkerson}, \lstinline{EdmondsKarp}, \lstinline{Dinic}, \lstinline{PushRelabel} e \lstinline{PushRelabelImproved}), cujos códigos-fonte integrais encontram-se documentados nos Apêndices~\ref{ap:flownetwork} a~\ref{ap:push_relabel_improved}. Esta camada é estritamente responsável pela manutenção da topologia da rede, pela gestão das capacidades residuais e pelo cômputo escalar do valor do fluxo máximo $|f^*|$. O núcleo não possui conhecimento prévio sobre o domínio dos problemas (e.g., ele ignora se a rede representa pixels, casamentos ou caminhos).
     
-    \item \textbf{Camada de Aplicação e Reduções (\textit{Client Application Layer}):} Composta pelos módulos de redução e problemas específicos (como os resolvedores dos problemas \textit{Maximum Bipartite Matching}, \textit{Distinct Routes}, \textit{Police Chase} localizados em \lstinline{Implementações/Problemas/} e a ferramenta de \textit{Segmentação de Imagens} em \lstinline{Aplicações/Segmentação de Imagens/}). Esta camada atua como cliente do núcleo: ela constrói o digrafo estendido $D'$, invoca o \lstinline{compute_max_flow()} do \textit{Core Framework} e, em seguida, realiza o pós-processamento necessário --- inspecionando a rede residual final via \lstinline{get_edges()} e \lstinline{get_adjacency()} para executar rotinas externas, como travessias BFS para identificação do corte mínimo $(S, T)$ ou decomposição em caminhos simples.
+    \item \textbf{Camada de Aplicação e Reduções (\textit{Client Application Layer}):} Composta pelos módulos de redução e problemas específicos (como os resolvedores dos problemas \textit{Maximum Bipartite Matching}, \textit{Distinct Routes}, \textit{Police Chase} localizados em \texttt{Implementações/Problemas/} e a ferramenta de \textit{Segmentação de Imagens} em \texttt{Aplicações/Segmentação de Imagens/}). Esta camada atua como cliente do núcleo: ela constrói o digrafo estendido $D'$, invoca o \lstinline{compute_max_flow()} do \textit{Core Framework} e, em seguida, realiza o pós-processamento necessário --- inspecionando a rede residual final via \lstinline{get_edges()} e \lstinline{get_adjacency()} para executar rotinas externas, como travessias BFS para identificação do corte mínimo $(S, T)$ ou decomposição em caminhos simples.
 \end{enumerate}
 
 Para a conclusão integral do projeto, resta finalizar o estudo e a implementação dos algoritmos de Fluxo de Custo Mínimo (\textit{Minimum Cost Flow}), com foco no método \textit{Network Simplex}.
