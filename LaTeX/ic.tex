@@ -163,10 +163,10 @@ A Figura~\ref{fig:rede_fluxo_basica} ilustra uma rede de fluxo elementar com qua
 \centering
 \begin{tikzpicture}[>=Stealth, node distance=2.5cm, thick,
     main/.style={circle, draw, minimum size=9mm, font=\small}]
-    \node[main, fill=green!20] (s) {$s$};
-    \node[main, above right=1.2cm and 2.5cm of s] (u) {$u$};
-    \node[main, below right=1.2cm and 2.5cm of s] (v) {$v$};
-    \node[main, fill=red!20, right=2.5cm of u, yshift=-1.2cm] (t) {$t$};
+    \node[main, fill=green!20] (s) at (0, 0) {$s$};
+    \node[main] (u) at (2.6, 1.5) {$u$};
+    \node[main] (v) at (2.6, -1.5) {$v$};
+    \node[main, fill=red!20] (t) at (5.2, 0) {$t$};
 
     \draw[->] (s) -- node[above left] {$10$} (u);
     \draw[->] (s) -- node[below left] {$8$} (v);
@@ -234,16 +234,16 @@ A Figura~\ref{fig:residual_net} ilustra uma rede com fluxo parcial e seu corresp
   \node[circle,draw,minimum size=8mm] (b2) at (2,0) {$b$};
   \node[circle,draw,fill=red!20,minimum size=8mm] (t2) at (4,1.2) {$t$};
   
-  \draw[->,blue] (s2) -- node[above left,font=\tiny] {$1$} (a2);
-  \draw[->,blue] (s2) -- node[below left,font=\tiny] {$1$} (b2);
-  \draw[->,blue] (a2) -- node[above right,font=\tiny] {$2$} (t2);
-  \draw[->,blue] (b2) -- node[below right,font=\tiny] {$1$} (t2);
+  \draw[->,blue] (s2) -- node[above left,font=\footnotesize] {$1$} (a2);
+  \draw[->,blue] (s2) -- node[below left,font=\footnotesize] {$1$} (b2);
+  \draw[->,blue] (a2) -- node[above right,font=\footnotesize] {$2$} (t2);
+  \draw[->,blue] (b2) -- node[below right,font=\footnotesize] {$1$} (t2);
   
-  \draw[->,red,dashed,bend left=20] (a2) to node[above left,font=\tiny] {$2$} (s2);
-  \draw[->,red,dashed,bend right=20] (b2) to node[below left,font=\tiny] {$1$} (s2);
-  \draw[->,red,dashed] (b2) -- node[left,font=\tiny] {$1$} (a2);
-  \draw[->,red,dashed,bend left=20] (t2) to node[above right,font=\tiny] {$1$} (a2);
-  \draw[->,red,dashed,bend right=20] (t2) to node[below right,font=\tiny] {$2$} (b2);
+  \draw[->,red,dashed,bend left=20] (a2) to node[above left,font=\footnotesize] {$2$} (s2);
+  \draw[->,red,dashed,bend right=20] (b2) to node[below left,font=\footnotesize] {$1$} (s2);
+  \draw[->,red,dashed] (b2) -- node[left,font=\footnotesize] {$1$} (a2);
+  \draw[->,red,dashed,bend left=20] (t2) to node[above right,font=\footnotesize] {$1$} (a2);
+  \draw[->,red,dashed,bend right=20] (t2) to node[below right,font=\footnotesize] {$2$} (b2);
   \node[font=\footnotesize,below] at (2,-0.7) {\textit{(b) Digrafo residual} $D_f$};
 \end{scope}
 \end{tikzpicture}
@@ -377,7 +377,7 @@ Existindo $\mathcal{O}(|A|)$ arcos na malha geométrica, o limite superior de au
   \draw[->, gray] (b) -- node[below, font=\footnotesize, text=black] {$c=10$} (c);
   \draw[->, gray] (c) -- node[below right, font=\footnotesize, text=black] {$c=10$} (t);
   
-  \draw[->, gray, thin] (a) -- node[right, font=\tiny, text=gray] {$c=2$} (b);
+  \draw[->, gray, thin] (a) -- node[right, font=\footnotesize, text=gray] {$c=2$} (b);
 \end{tikzpicture}
 \caption{O Algoritmo de Edmonds-Karp utiliza busca em largura (BFS) na rede residual para encontrar sempre o caminho aumentante mais curto (em n\'umero de arestas). Na figura, embora o caminho inferior $s \to b \to c \to t$ suporte maior fluxo gargalo ($c=10$), a BFS garante a escolha imediata do caminho superior $s \to a \to t$ (azul tracejado), por ser topologicamente mais curto (comprimento 2 versus 3). Os n\'iveis descobertos pela BFS s\~ao indicados entre par\^enteses.}
 \label{fig:edmonds_karp_bfs}
@@ -465,17 +465,17 @@ A terceira condição garante que o excesso não despencará em ``quedas livres'
   \node[circle, draw, minimum size=8mm, fill=yellow!30] (c) at (4, 0) {$c$};
   \node[circle, draw, minimum size=8mm, fill=red!20] (t) at (6, 0) {$t$};
 
-  \node[above, font=\tiny] at (a.north) {$e(a) = 3$};
-  \node[below, font=\tiny] at (b.south) {$e(b) = 0$};
-  \node[above, font=\tiny] at (c.north) {$e(c) = 1$};
-
-  \draw[->] (s) -- node[above left, font=\tiny] {5} (a);
-  \draw[->] (s) -- node[below left, font=\tiny] {2} (b);
-  \draw[->] (a) -- node[above right, font=\tiny] {2} (c);
-  \draw[->] (b) -- node[below right, font=\tiny] {2} (c);
-  \draw[->] (c) -- node[above, font=\tiny] {3} (t);
+  \node[above, font=\footnotesize] at (a.north) {$e(a) = 3$};
+  \node[below, font=\footnotesize] at (b.south) {$e(b) = 0$};
+  \node[above, font=\footnotesize] at (c.north) {$e(c) = 1$};
+  
+  \draw[->] (s) -- node[above left, font=\footnotesize] {5} (a);
+  \draw[->] (s) -- node[below left, font=\footnotesize] {2} (b);
+  \draw[->] (a) -- node[above right, font=\footnotesize] {2} (c);
+  \draw[->] (b) -- node[below right, font=\footnotesize] {2} (c);
+  \draw[->] (c) -- node[above, font=\footnotesize] {3} (t);
 \end{tikzpicture}
-\caption{Exemplo de um pr\'e-fluxo em que a conserva\c{c}\~ao de fluxo \'e relaxada. V\'ertices intermedi\'arios como $a$ e $c$ podem possuir excesso positivo ($e(u) > 0$), tornando-os ativos (destacados em amarelo).}
+\caption{Exemplo de um pré-fluxo em que a conservação de fluxo é relaxada. Vértices intermediários como $a$ e $c$ podem possuir excesso positivo ($e(u) > 0$), tornando-os ativos (destacados em amarelo).}
 \label{fig:preflow_example}
 \end{figure}
 
@@ -498,36 +498,37 @@ A eficiência global do algoritmo é intrinsecamente dependente da política de 
 \begin{tikzpicture}[>=Stealth,thick,node distance=2.2cm,
     main/.style={circle,draw,minimum size=10mm}]
 
-\node[font=\footnotesize,above] at (1.5,4.0) {\textbf{Antes do Push: arco admiss\'ivel}};
+\node[font=\footnotesize,above] at (1.5,4.0) {\textbf{Antes do Push: arco admissível}};
 
 \node[main,fill=yellow!30] (u) at (0,3.0) {$u$};
-\node[font=\tiny,above=2pt of u] {$h{=}3,\,e{=}5$};
+\node[font=\footnotesize,above=2pt of u] {$h{=}3,\,e{=}5$};
 
-\node[main,fill=blue!10] (v) at (3,3.0) {$v$};
-\node[font=\tiny,above=2pt of v] {$h{=}2,\,e{=}1$};
+\node[main,fill=blue!10] (v) at (3.0,3.0) {$v$};
+\node[font=\footnotesize,above=2pt of v] {$h{=}2,\,e{=}1$};
 
 \draw[->,line width=1.5pt,green!60!black] (u) -- node[above,font=\footnotesize] {$c_f=4$} (v);
 
-\node[font=\footnotesize,above] at (1.5,1.0) {\textbf{Depois do Push($u,v$): $\delta=4$}};
-\node[main,fill=yellow!30] (u2) at (0,0.0) {$u$};
-\node[font=\tiny,above=2pt of u2] {$h{=}3,\,e{=}1$};
-\node[main,fill=blue!10] (v2) at (3,0.0) {$v$};
-\node[font=\tiny,above=2pt of v2] {$h{=}2,\,e{=}5$};
+\node[font=\footnotesize,above] at (1.5,1.0) {\textbf{Depois do Push($u$,$v$,$\delta$=4)}};
+\node[main,fill=yellow!30] (u2) at (0.0,0.0) {$u$};
+\node[font=\footnotesize,above=2pt of u2] {$h{=}3,\,e{=}1$};
+\node[main,fill=blue!10] (v2) at (3.0,0.0) {$v$};
+\node[font=\footnotesize,above=2pt of v2] {$h{=}2,\,e{=}5$};
 \draw[->,gray,dashed] (u2) -- node[above,font=\footnotesize,gray] {$c_f=0$} (v2);
 
+% === RIGHT: Relabel ===
 \node[font=\footnotesize,above] at (8.5,4.0) {\textbf{Antes do Relabel: $u$ preso}};
 \node[main,fill=orange!30] (r1) at (7.0,3.0) {$u$};
-\node[font=\tiny,above=2pt of r1] {$h{=}2,\,e{=}3$};
+\node[font=\footnotesize,above=2pt of r1] {$h{=}2,\,e{=}3$};
 \node[main,fill=gray!10] (r2) at (10.0,3.0) {$w$};
-\node[font=\tiny,above=2pt of r2] {$h{=}3$};
-\draw[->,gray,dashed] (r1) -- node[above,font=\tiny,align=center] {$c_f=2$\\inadmiss\'ivel} (r2);
+\node[font=\footnotesize,above=2pt of r2] {$h{=}3$};
+\draw[->,gray,dashed] (r1) -- node[above,font=\footnotesize,align=center] {$c_f=2$\\inadmiss\'ivel} (r2);
 
 \node[font=\footnotesize,above] at (8.5,1.0) {\textbf{Depois do Relabel($u$): $h(u)\leftarrow 4$}};
 \node[main,fill=orange!50] (r3) at (7.0,0.0) {$u$};
-\node[font=\tiny,above=2pt of r3] {$h{=}4,\,e{=}3$};
+\node[font=\footnotesize,above=2pt of r3] {$h{=}4,\,e{=}3$};
 \node[main,fill=gray!10] (r4) at (10.0,0.0) {$w$};
-\node[font=\tiny,above=2pt of r4] {$h{=}3$};
-\draw[->,green!60!black,line width=1.5pt] (r3) -- node[above,font=\tiny] {admiss\'ivel!} (r4);
+\node[font=\footnotesize,above=2pt of r4] {$h{=}3$};
+\draw[->,green!60!black,line width=1.5pt] (r3) -- node[above,font=\footnotesize] {admiss\'ivel!} (r4);
 \end{tikzpicture}
 \caption{Operações elementares do Push-Relabel. Esquerda: Push admiss\'ivel de $u$ para $v$ (arco com $c_f > 0$ e $h(u)=h(v)+1$), transferindo $\delta = \min(e(u),c_f)$ de fluxo. Direita: Relabel de $u$ quando n\~ao h\'a arco admiss\'ivel --- a altura \'e ajustada para criar um novo declive.}
 \label{fig:push_relabel_ops}
@@ -585,10 +586,10 @@ A heurística intervém na rede ao detectar a lacuna, elevando a altura de todos
 \foreach \h/\label/\fill in {
   0/h=0/green!20, 1/h=1/yellow!20, 2/h=2/yellow!20,
   4/h=4/red!20, 5/h=5/red!20} {
-  \node[circle,draw,fill=\fill,minimum size=8mm,font=\tiny] at (1.5,\h) {\label};
+  \node[circle,draw,fill=\fill,minimum size=8mm,font=\footnotesize] at (1.5,\h) {\label};
 }
 \node[font=\footnotesize,red!60!black] at (1.5,3) {\textbf{lacuna!}};
-\draw[<->,red,dashed] (0.2,3.5) -- node[left,font=\tiny] {n\'iv. 3 vazio} (0.2,2.5);
+\draw[<->,red,dashed] (0.2,3.5) -- node[left,font=\footnotesize] {n\'iv. 3 vazio} (0.2,2.5);
 \end{scope}
 
 \node at (5.0,2.5) {\Huge $\Rightarrow$};
@@ -597,10 +598,10 @@ A heurística intervém na rede ao detectar a lacuna, elevando a altura de todos
 \node[font=\footnotesize,above] at (1.5,5.7) {\textbf{(b) V\'ertices $h>k$ sobem para $|V|+1$}};
 \foreach \h/\label/\fill in {
   0/h=0/green!20, 1/h=1/yellow!20, 2/h=2/yellow!20} {
-  \node[circle,draw,fill=\fill,minimum size=8mm,font=\tiny] at (1.5,\h) {\label};
+  \node[circle,draw,fill=\fill,minimum size=8mm,font=\footnotesize] at (1.5,\h) {\label};
 }
-\node[circle,draw,fill=orange!40,minimum size=9mm,font=\tiny] (top) at (1.5,5) {$|V|{+}1$};
-\draw[->,orange!80!black,line width=1.5pt] (1.5,2.8) -- node[right,font=\tiny,orange!80!black] {todos sobem} (top);
+\node[circle,draw,fill=orange!40,minimum size=9mm,font=\footnotesize] (top) at (1.5,5) {$|V|{+}1$};
+\draw[->,orange!80!black,line width=1.5pt] (1.5,2.8) -- node[right,font=\footnotesize,orange!80!black] {todos sobem} (top);
 \end{scope}
 \end{tikzpicture}
 \caption{Gap Heuristic: (a) ap\'os um relabel, o n\'ivel $k=3$ esvazia-se (lacuna formada). (b) Todos os v\'ertices com $h > k$ t\^em suas alturas definidas para $|V|+1$, isolando-os da rede e evitando relabels redundantes.}
@@ -684,10 +685,10 @@ Consequentemente, a restrição de capacidade unitária nos arcos conectados à 
   \node[circle,draw,fill=green!30,minimum size=8mm,font=\small] (s) at (0,1.5) {$s$};
   \node[circle,draw,fill=red!30,minimum size=8mm,font=\small] (t) at (5,1.5) {$t$};
   \foreach \i/\y in {1/3, 2/1.5, 3/0} {
-    \node[circle,draw,fill=blue!15,minimum size=7mm,font=\tiny] (fl\i) at (1.8,\y) {$l_\i$};
-    \node[circle,draw,fill=orange!15,minimum size=7mm,font=\tiny] (fr\i) at (3.2,\y) {$r_\i$};
-    \draw[->] (s) -- node[above,font=\tiny] {$1$} (fl\i);
-    \draw[->] (fr\i) -- node[above,font=\tiny] {$1$} (t);
+    \node[circle,draw,fill=blue!15,minimum size=7mm,font=\footnotesize] (fl\i) at (1.8,\y) {$l_\i$};
+    \node[circle,draw,fill=orange!15,minimum size=7mm,font=\footnotesize] (fr\i) at (3.2,\y) {$r_\i$};
+    \draw[->] (s) -- node[above,font=\footnotesize] {$1$} (fl\i);
+    \draw[->] (fr\i) -- node[above,font=\footnotesize] {$1$} (t);
   }
   \draw[->,line width=1.5pt,blue] (fl1) -- (fr1); \draw[->] (fl1) -- (fr2);
   \draw[->,line width=1.5pt,blue] (fl2) -- (fr2); \draw[->] (fl2) -- (fr3);
@@ -732,7 +733,7 @@ A solidez desta extração reside no fato de que, pelas propriedades de conserva
   \node[circle,draw,fill=green!20,minimum size=8mm,font=\small,double,double distance=1.5pt] (r3) at (4,0.5) {$r_3$};
   
   \draw[->] (s) -- (l1); 
-  \draw[->,red,line width=1.5pt] (s) -- node[above,font=\tiny,red,sloped]{corte} (l2); 
+  \draw[->,red,line width=1.5pt] (s) -- node[above,font=\footnotesize,red,sloped]{corte} (l2); 
   \draw[->] (s) -- (l3);
   
   \draw[->,line width=1.5pt,blue!80!black] (l1) -- (r3);
@@ -742,7 +743,7 @@ A solidez desta extração reside no fato de que, pelas propriedades de conserva
   
   \draw[->] (r1) -- (t); 
   \draw[->] (r2) -- (t); 
-  \draw[->,red,line width=1.5pt] (r3) -- node[above,font=\tiny,red,sloped]{corte} (t);
+  \draw[->,red,line width=1.5pt] (r3) -- node[above,font=\footnotesize,red,sloped]{corte} (t);
   
   \node[draw,circle,fill=green!20,minimum size=4mm] (legS) at (0, -1.0) {};
   \node[right,font=\footnotesize] at (legS.east) {$\in S$ (Alcançável no grafo residual)};
@@ -1128,11 +1129,11 @@ Em ambos os casos, o número de arcos com fluxo positivo decresce estritamente, 
     \node[circle, draw, minimum size=8mm, font=\footnotesize] (b) at (2, 0) {$b$};
     \node[circle, draw, minimum size=8mm, fill=red!20, font=\footnotesize] (t) at (4, 1) {$t$};
 
-    \draw[->] (s) -- node[above left, font=\tiny] {3} (a);
-    \draw[->] (s) -- node[below left, font=\tiny] {2} (b);
-    \draw[->] (a) -- node[right, font=\tiny] {1} (b);
-    \draw[->] (a) -- node[above right, font=\tiny] {2} (t);
-    \draw[->] (b) -- node[below right, font=\tiny] {3} (t);
+    \draw[->] (s) -- node[above left, font=\footnotesize] {3} (a);
+    \draw[->] (s) -- node[below left, font=\footnotesize] {2} (b);
+    \draw[->] (a) -- node[right, font=\footnotesize] {1} (b);
+    \draw[->] (a) -- node[above right, font=\footnotesize] {2} (t);
+    \draw[->] (b) -- node[below right, font=\footnotesize] {3} (t);
   \end{scope}
 
   \begin{scope}[shift={(6,0.5)}]
@@ -1200,7 +1201,7 @@ Seja $I$ uma imagem com $n = W \times H$ pixels. A construção da rede de segme
     x={(-1.2cm, -0.6cm)}, 
     y={(1.2cm, -0.6cm)}, 
     z={(0cm, 1.5cm)},
-    pixel/.style={circle, draw, fill=white, minimum size=8mm, font=\tiny},
+    pixel/.style={circle, draw, fill=white, minimum size=8mm, font=\footnotesize},
     term/.style={circle, draw, minimum size=9mm, font=\small}
 ]
 
@@ -1287,6 +1288,12 @@ O custo total do corte é exatamente a soma dos termos de dados e de regulariza�
   \node[circle,draw,fill=orange!20,minimum size=9mm,font=\small] (p4) at (0, 0) {$p_4$};
   \node[circle,draw,fill=orange!40,minimum size=9mm,font=\small] (p3) at (4, 0) {$p_3$};
   
+  \draw[-,blue!70,line width=1.5pt] (p1) -- node[above,font=\footnotesize,text=black]{$w_n$\,alto} (p2);
+  \draw[-,blue!70,line width=1.5pt] (p4) -- node[below,font=\footnotesize,text=black]{$w_n$\,alto} (p3);
+  
+  \draw[-,orange,line width=1.5pt] (p1) -- node[fill=white,inner sep=2pt,font=\footnotesize,text=black,pos=0.25]{$w_n$\,baixo} (p4);
+  \draw[-,orange,line width=1.5pt] (p2) -- node[fill=white,inner sep=2pt,font=\footnotesize,text=black,pos=0.25]{$w_n$\,baixo} (p3);
+
   \draw[->,green!60!black,dashed] (s) -- node[above left,font=\footnotesize,fill=white,inner sep=2pt]{$w_s=\infty$} (p1);
   \draw[->,green!60!black,dashed] (s) -- node[above right,font=\footnotesize,fill=white,inner sep=2pt]{$w_s$\,alto} (p2);
   
@@ -1298,12 +1305,6 @@ O custo total do corte é exatamente a soma dos termos de dados e de regulariza�
   
   \draw[->,red!60!black,dashed] (p4) -- node[below left,font=\footnotesize,fill=white,inner sep=2pt]{$w_t=\infty$} (t);
   \draw[->,red!60!black,dashed] (p3) -- node[below right,font=\footnotesize,fill=white,inner sep=2pt]{$w_t$\,alto} (t);
-  
-  \draw[-,blue!70,line width=1.5pt] (p1) -- node[above,font=\footnotesize,text=black]{$w_n$\,alto} (p2);
-  \draw[-,blue!70,line width=1.5pt] (p4) -- node[below,font=\footnotesize,text=black]{$w_n$\,alto} (p3);
-  
-  \draw[-,orange,line width=1.5pt] (p1) -- node[fill=white,inner sep=2pt,font=\footnotesize,text=black,pos=0.25]{$w_n$\,baixo} (p4);
-  \draw[-,orange,line width=1.5pt] (p2) -- node[fill=white,inner sep=2pt,font=\footnotesize,text=black,pos=0.25]{$w_n$\,baixo} (p3);
   
   \draw[red, thick, dashed] (-4.5, 1.5) -- (8.5, 1.5) node[right, font=\footnotesize, text=red, fill=white, inner sep=2pt, yshift=3mm] {Corte M\'inimo};
   
