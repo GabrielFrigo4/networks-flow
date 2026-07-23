@@ -1264,7 +1264,7 @@ O corte mínimo $(S, T)$ na rede construída induz naturalmente a partição da 
 A geometria desse corte divide os arcos cortados em \textbf{duas categorias} principais de penalidades (Regionais e de Fronteira):
 \begin{itemize}
     \item Penalidade Regional (T-links): incorrida ao contrariar a preferência natural de um pixel por uma das partições. Secciona-se o arco $s \to p$ (pagando a capacidade $w_s(p)$) caso o pixel $p$ seja alocado ao \textit{background} ($T$); simetricamente, secciona-se $p \to t$ (pagando $w_t(p)$) se for alocado ao \textit{foreground} ($S$).
-    \item Penalidade de Fronteira (N-links): arcos cortados quando pixels vizinhos $p$ e $q$ são atribuídos a partições distintas ($p \in S$ e $q \in T$), pagando a capacidade de similaridade $w_n(p, q)$.
+    \item Penalidade de Fronteira (N-links): incorrida ao introduzir uma descontinuidade espacial entre regiões vizinhas. Secciona-se o arco $p - q$ (pagando a capacidade de similaridade $w_n(p, q)$) sempre que pixels adjacentes $p$ e $q$ forem atribuídos a partições distintas ($p \in S$ e $q \in T$), punindo o surgimento de fronteiras entre regiões visualmente homogêneas da imagem.
 \end{itemize}
 
 O custo total do corte é exatamente a soma dos termos de dados e de regularização da energia.
