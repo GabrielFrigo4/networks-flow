@@ -395,6 +395,11 @@ Esta poda dramática na árvore de recursão garante uma amortização matemáti
 
 \foreach \x in {0,2.5,5.0,7.5} { \draw[gray!30,dashed] (\x,-0.7) -- (\x,3.8); }
 
+\node[gray,font=\footnotesize] at (0,4.1) {n\'iv. 0};
+\node[gray,font=\footnotesize] at (2.5,4.1) {n\'iv. 1};
+\node[gray,font=\footnotesize] at (5.0,4.1) {n\'iv. 2};
+\node[gray,font=\footnotesize] at (7.5,4.1) {n\'iv. 3};
+
 \node[circle,draw,fill=green!20,minimum size=8mm,font=\small] (s) at (0,1.5) {$s$};
 \node[circle,draw,fill=white,minimum size=8mm,font=\small] (a) at (2.5,3) {$a$};
 \node[circle,draw,fill=white,minimum size=8mm,font=\small] (b) at (2.5,0) {$b$};
@@ -411,8 +416,8 @@ Esta poda dramática na árvore de recursão garante uma amortização matemáti
 \draw[->,line width=1.5pt,blue] (c) -- (t);
 \draw[->,line width=1.5pt,blue] (d) -- (t);
 
-\draw[->,gray,dashed,bend right=30] (a) to node[left,font=\footnotesize,gray,align=right] {exclu\'ido\\(mesmo n\'iv.)} (b);
-\draw[->,gray,dashed,bend right=20] (c) to node[above,font=\footnotesize,gray] {exclu\'ido (retrocesso)} (a);
+\draw[->,gray,dashed,bend right=30] (a) to (b);
+\draw[->,gray,dashed,bend right=20] (c) to (a);
 
 \end{tikzpicture}
 \caption{Digrafo de N\'iveis no Algoritmo de Dinic (organizado em colunas, onde cada coluna da esquerda para a direita representa um n\'ivel crescente). Arcos azuis s\~ao os arcos admiss\'iveis (avan\c{c}am exatamente um n\'ivel: $d(v) = d(u)+1$), que comp\~oem o Digrafo de N\'iveis. Arcos cinza tracejados s\~ao excluídos por n\~ao avan\c{c}arem n\'ivel. O Fluxo Bloqueador \'e extra\'ido apenas sobre os arcos azuis.}
@@ -507,14 +512,14 @@ A eficiência global do algoritmo é intrinsecamente dependente da política de 
 \node[font=\footnotesize,above] at (8.5,4.0) {\textbf{Antes do Relabel: $u$ preso}};
 \node[main,fill=orange!30] (r1) at (7.0,3.0) {$u$};
 \node[font=\tiny,above=2pt of r1] {$h{=}2,\,e{=}3$};
-\node[main,fill=gray!10] (r2) at (10.0,3.0) {};
+\node[main,fill=gray!10] (r2) at (10.0,3.0) {$w$};
 \node[font=\tiny,above=2pt of r2] {$h{=}3$};
 \draw[->,gray,dashed] (r1) -- node[above,font=\tiny,align=center] {$c_f=2$\\inadmiss\'ivel} (r2);
 
 \node[font=\footnotesize,above] at (8.5,1.0) {\textbf{Depois do Relabel($u$): $h(u)\leftarrow 4$}};
 \node[main,fill=orange!50] (r3) at (7.0,0.0) {$u$};
 \node[font=\tiny,above=2pt of r3] {$h{=}4,\,e{=}3$};
-\node[main,fill=gray!10] (r4) at (10.0,0.0) {};
+\node[main,fill=gray!10] (r4) at (10.0,0.0) {$w$};
 \node[font=\tiny,above=2pt of r4] {$h{=}3$};
 \draw[->,green!60!black,line width=1.5pt] (r3) -- node[above,font=\tiny] {admiss\'ivel!} (r4);
 \end{tikzpicture}
