@@ -17,6 +17,7 @@
 \usepackage{verbatim}
 \usepackage{url}
 \usepackage{longtable}
+\usepackage[section]{placeins}
 \usepackage{geometry}
 \geometry{
     a4paper,
@@ -717,13 +718,13 @@ A solidez desta extração reside no fato de que, pelas propriedades de conserva
   \node[circle,draw,fill=green!20,minimum size=8mm,font=\small] (s) at (0,2) {$s$};
   \node[circle,draw,fill=red!20,minimum size=8mm,font=\small] (t) at (6,2) {$t$};
   
-  \node[circle,draw,fill=green!20,minimum size=8mm,font=\small] (l1) at (2,3.5) {};
-  \node[circle,draw,fill=red!20,minimum size=8mm,font=\small,double,double distance=1.5pt] (l2) at (2,2) {};
-  \node[circle,draw,fill=green!20,minimum size=8mm,font=\small] (l3) at (2,0.5) {};
+  \node[circle,draw,fill=green!20,minimum size=8mm,font=\small] (l1) at (2,3.5) {$l_1$};
+  \node[circle,draw,fill=red!20,minimum size=8mm,font=\small,double,double distance=1.5pt] (l2) at (2,2) {$l_2$};
+  \node[circle,draw,fill=green!20,minimum size=8mm,font=\small] (l3) at (2,0.5) {$l_3$};
   
-  \node[circle,draw,fill=red!20,minimum size=8mm,font=\small] (r1) at (4,3.5) {};
-  \node[circle,draw,fill=red!20,minimum size=8mm,font=\small] (r2) at (4,2) {};
-  \node[circle,draw,fill=green!20,minimum size=8mm,font=\small,double,double distance=1.5pt] (r3) at (4,0.5) {};
+  \node[circle,draw,fill=red!20,minimum size=8mm,font=\small] (r1) at (4,3.5) {$r_1$};
+  \node[circle,draw,fill=red!20,minimum size=8mm,font=\small] (r2) at (4,2) {$r_2$};
+  \node[circle,draw,fill=green!20,minimum size=8mm,font=\small,double,double distance=1.5pt] (r3) at (4,0.5) {$r_3$};
   
   \draw[->] (s) -- (l1); 
   \draw[->,red,line width=1.5pt] (s) -- node[above,font=\tiny,red,sloped]{corte} (l2); 
@@ -1265,12 +1266,12 @@ O custo total do corte é exatamente a soma dos termos de dados e de regulariza�
 
 \begin{figure}[h]
 \centering
-\begin{tikzpicture}[>=Stealth, thick, scale=1.1, transform shape]
+\begin{tikzpicture}[>=Stealth, thick, scale=1.2, transform shape]
 
-  \fill[green!10, rounded corners=15pt] (-4, 1.7) rectangle (8, 6.8);
+  \fill[green!10, rounded corners=15pt] (-4.5, 1.7) rectangle (8.5, 6.8);
   \node[green!60!black, font=\footnotesize] at (-2.5, 6.3) {$S$ (Foreground)};
   
-  \fill[red!10, rounded corners=15pt] (-4, -3.8) rectangle (8, 1.3);
+  \fill[red!10, rounded corners=15pt] (-4.5, -3.8) rectangle (8.5, 1.3);
   \node[red!60!black, font=\footnotesize] at (-2.5, -3.3) {$T$ (Background)};
   
   \node[circle,draw,fill=green!20,minimum size=8mm,font=\small] (s) at (2, 6) {$s$};
@@ -1284,14 +1285,14 @@ O custo total do corte é exatamente a soma dos termos de dados e de regulariza�
   \draw[->,green!60!black,dashed] (s) -- node[above left,font=\footnotesize,fill=white,inner sep=2pt]{$w_s=\infty$} (p1);
   \draw[->,green!60!black,dashed] (s) -- node[above right,font=\footnotesize,fill=white,inner sep=2pt]{$w_s$\,alto} (p2);
   
-  \draw[->,green!60!black,dashed] (s) to[out=180, in=135] node[left,font=\footnotesize,fill=white,inner sep=2pt,pos=0.85]{$w_s$\,baixo} (p4);
-  \draw[->,green!60!black,dashed] (s) to[out=0, in=45] node[right,font=\footnotesize,fill=white,inner sep=2pt,pos=0.85]{$w_s$\,baixo} (p3);
+  \draw[->,green!60!black,dashed] (s) to[out=180, in=135] node[left,font=\footnotesize,fill=white,inner sep=2pt,pos=0.92]{$w_s$\,baixo} (p4);
+  \draw[->,green!60!black,dashed] (s) to[out=0, in=45] node[right,font=\footnotesize,fill=white,inner sep=2pt,pos=0.92]{$w_s$\,baixo} (p3);
   
-  \draw[->,red!60!black,dashed] (p1) to[out=225, in=180] node[left,font=\footnotesize,fill=white,inner sep=2pt,pos=0.15]{$w_t$\,baixo} (t);
-  \draw[->,red!60!black,dashed] (p2) to[out=315, in=0] node[right,font=\footnotesize,fill=white,inner sep=2pt,pos=0.15]{$w_t$\,baixo} (t);
+  \draw[->,red!60!black,dashed] (p1) to[out=225, in=180] node[left,font=\footnotesize,fill=white,inner sep=2pt,pos=0.08]{$w_t$\,baixo} (t);
+  \draw[->,red!60!black,dashed] (p2) to[out=315, in=0] node[right,font=\footnotesize,fill=white,inner sep=2pt,pos=0.08]{$w_t$\,baixo} (t);
   
   \draw[->,red!60!black,dashed] (p4) -- node[below left,font=\footnotesize,fill=white,inner sep=2pt]{$w_t=\infty$} (t);
-  \draw[->,red!60!black,dashed] (p3) -- node[below right,font=\footnotesize,fill=white,inner sep=2pt]{$w_t=\infty$} (t);
+  \draw[->,red!60!black,dashed] (p3) -- node[below right,font=\footnotesize,fill=white,inner sep=2pt]{$w_t$\,alto} (t);
   
   \draw[-,blue!70,line width=1.5pt] (p1) -- node[above,font=\footnotesize,text=black]{$w_n$\,alto} (p2);
   \draw[-,blue!70,line width=1.5pt] (p4) -- node[below,font=\footnotesize,text=black]{$w_n$\,alto} (p3);
