@@ -543,7 +543,6 @@ A validade matemática desta dedução reside na invariante de altura do \textit
 \begin{figure}[h]
 \centering
 \begin{tikzpicture}[>=Stealth,thick]
-  % Draw levels
   \draw[gray!30,dashed] (-2, 0) -- (6, 0) node[right,black,font=\footnotesize] {$h=0$ (sumidouro $t$)};
   \foreach \y/\h in {1.5/1, 3.0/2, 6.0/4} {
     \draw[gray!30,dashed] (-2, \y) -- (6, \y) node[right,black,font=\footnotesize] {$h=\h$};
@@ -558,12 +557,10 @@ A validade matemática desta dedução reside na invariante de altura do \textit
   
   \node[circle,draw,fill=red!20,minimum size=8mm,font=\footnotesize] (u) at (2, 6.0) {$u$};
   
-  % Edges below gap
   \draw[->,blue!80!black] (b) -- (a);
   \draw[->,blue!80!black] (c) -- (a);
   \draw[->,blue!80!black] (a) -- (t);
   
-  % Edges above gap trying to cross
   \draw[->,red,line width=1.5pt] (u) -- node[left,pos=0.25,font=\footnotesize,text=black,align=center,xshift=-2mm,fill=white,inner sep=2pt] {Queda de 2 n\'iveis\\(proibido)} (b);
   \draw[->,red,line width=1.5pt] (u) -- node[right,pos=0.25,font=\footnotesize,text=black,align=center,xshift=2mm,fill=white,inner sep=2pt] {$h(u) \not\le h(c) + 1$\\(proibido)} (c);
   
@@ -715,7 +712,6 @@ A solidez desta extração reside no fato de que, pelas propriedades de conserva
 \begin{figure}[h]
 \centering
 \begin{tikzpicture}[>=Stealth,thick]
-  % Column labels
   \node[font=\large] at (2,4.5) {$\mathbf{L}$};
   \node[font=\large] at (4,4.5) {$\mathbf{R}$};
   
@@ -731,23 +727,19 @@ A solidez desta extração reside no fato de que, pelas propriedades de conserva
   \node[circle,draw,fill=red!20,minimum size=8mm,font=\small] (r2) at (4,2) {$r_2$};
   \node[circle,draw,fill=green!20,minimum size=8mm,font=\small,double,double distance=1.5pt] (r3) at (4,0.5) {$r_3$};
   
-  % Edges s -> L
   \draw[->] (s) -- (l1); 
   \draw[->,red,line width=1.5pt] (s) -- node[above,font=\tiny,red,sloped]{corte} (l2); 
   \draw[->] (s) -- (l3);
   
-  % Edges L -> R
   \draw[->,line width=1.5pt,blue!80!black] (l1) -- node[font=\footnotesize,fill=white,inner sep=1.5pt,pos=0.3]{$M$} (r3);
   \draw[->,line width=1.5pt,blue!80!black] (l2) -- node[font=\footnotesize,fill=white,inner sep=1.5pt,pos=0.3]{$M$} (r1);
   \draw[->] (l2) -- (r2);
   \draw[->] (l3) -- (r3);
   
-  % Edges R -> t
   \draw[->] (r1) -- (t); 
   \draw[->] (r2) -- (t); 
   \draw[->,red,line width=1.5pt] (r3) -- node[above,font=\tiny,red,sloped]{corte} (t);
   
-  % Legend
   \node[draw,circle,fill=green!20,minimum size=4mm] (legS) at (0, -1.0) {};
   \node[right,font=\footnotesize] at (legS.east) {$\in S$ (Alcançável no grafo residual)};
   
@@ -1208,31 +1200,26 @@ Seja $I$ uma imagem com $n = W \times H$ pixels. A construção da rede de segme
     term/.style={circle, draw, minimum size=9mm, font=\small}
 ]
 
-    % 1. Bottom node (t)
     \node[term, fill=red!30] (t) at (2,2,-3.5) {$t$};
     
-    % 2. Coordinates for grid
     \foreach \x in {1,2,3} {
         \foreach \y in {1,2,3} {
             \coordinate (cp\x\y) at (\x,\y,0);
         }
     }
     
-    % 3. Edges to t (drawn from center of grid, will be covered by grid nodes)
     \foreach \x in {1,2,3} {
         \foreach \y in {1,2,3} {
             \draw[->, red!70!black, dashed, thin, draw opacity=0.4] (cp\x\y) -- (t);
         }
     }
     
-    % 4. Grid Nodes (Pixels)
     \foreach \x in {1,2,3} {
         \foreach \y in {1,2,3} {
             \node[pixel] (p\x\y) at (\x,\y,0) {$p_{\x\y}$};
         }
     }
     
-    % 5. N-links (Thick, connecting pixels)
     \begin{scope}[thick, draw opacity=0.8]
       \draw[-] (p11) -- (p21); \draw[-] (p21) -- (p31);
       \draw[-] (p12) -- (p22); \draw[-] (p22) -- (p32);
@@ -1242,17 +1229,14 @@ Seja $I$ uma imagem com $n = W \times H$ pixels. A construção da rede de segme
       \draw[-] (p31) -- (p32); \draw[-] (p32) -- (p33);
     \end{scope}
     
-    % 6. Top node (s)
     \node[term, fill=green!30] (s) at (2,2,3.5) {$s$};
     
-    % 7. Edges from s (drawn on top of nodes)
     \foreach \x in {1,2,3} {
         \foreach \y in {1,2,3} {
             \draw[->, green!70!black, dashed, thin, draw opacity=0.4] (s) -- (p\x\y);
         }
     }
 
-    % Legend in 2D space
     \begin{scope}[x={(1cm,0cm)}, y={(0cm,1cm)}, z={(0cm,0cm)}]
         \node[right, font=\footnotesize, green!60!black] at (3.5, 0.5) {T-links $s \to p$};
         \draw[->, green!70!black, dashed, thick] (2.7, 0.5) -- (3.3, 0.5);
@@ -1286,7 +1270,6 @@ O custo total do corte é exatamente a soma dos termos de dados e de regulariza�
 \centering
 \begin{tikzpicture}[>=Stealth, thick]
 
-  % Partitions (Backgrounds)
   \fill[green!10, rounded corners=15pt] (-4, 1.7) rectangle (8, 6.8);
   \node[green!60!black, font=\footnotesize\bfseries] at (-2.5, 6.3) {$S$ (Foreground)};
   
@@ -1302,30 +1285,24 @@ O custo total do corte é exatamente a soma dos termos de dados e de regulariza�
   \node[circle,draw,fill=white,minimum size=8mm,font=\small] (p4) at (-1, 0) {$p_4$};
   \node[circle,draw,fill=white,minimum size=8mm,font=\small] (p3) at (5, 0) {$p_3$};
   
-  % T-links from s
   \draw[->,green!60!black,dashed] (s) -- node[above left,font=\footnotesize,fill=white,inner sep=2pt]{$w_s=\infty$} (p1);
   \draw[->,green!60!black,dashed] (s) -- node[above right,font=\footnotesize,fill=white,inner sep=2pt]{$w_s$\,alto} (p2);
   
-  % Bended T-links from s
   \draw[->,green!60!black,dashed] (s) to[out=180, in=135] node[left,font=\footnotesize,fill=white,inner sep=2pt,pos=0.8]{$w_s$\,baixo} (p4);
   \draw[->,green!60!black,dashed] (s) to[out=0, in=45] node[right,font=\footnotesize,fill=white,inner sep=2pt,pos=0.8]{$w_s$\,baixo} (p3);
   
-  % Bended T-links to t
   \draw[->,red!60!black,dashed] (p1) to[out=225, in=180] node[left,font=\footnotesize,fill=white,inner sep=2pt,pos=0.2]{$w_t$\,baixo} (t);
   \draw[->,red!60!black,dashed] (p2) to[out=315, in=0] node[right,font=\footnotesize,fill=white,inner sep=2pt,pos=0.2]{$w_t$\,baixo} (t);
   
-  % Straight T-links to t
   \draw[->,red!60!black,dashed] (p4) -- node[below left,font=\footnotesize,fill=white,inner sep=2pt]{$w_t=\infty$} (t);
   \draw[->,red!60!black,dashed] (p3) -- node[below right,font=\footnotesize,fill=white,inner sep=2pt]{$w_t=\infty$} (t);
   
-  % N-links
   \draw[-,blue!70,line width=1.5pt] (p1) -- node[above,font=\footnotesize,text=black]{$w_n$\,alto} (p2);
   \draw[-,blue!70,line width=1.5pt] (p4) -- node[below,font=\footnotesize,text=black]{$w_n$\,alto} (p3);
   
   \draw[-,orange,line width=1.5pt] (p1) -- node[fill=white,inner sep=2pt,font=\footnotesize,text=black,pos=0.25]{$w_n$\,baixo} (p4);
   \draw[-,orange,line width=1.5pt] (p2) -- node[fill=white,inner sep=2pt,font=\footnotesize,text=black,pos=0.25]{$w_n$\,baixo} (p3);
   
-  % Cut Line
   \draw[red, thick, dashed] (-4.5, 1.5) -- (8.5, 1.5) node[right, font=\footnotesize\bfseries, text=red, fill=white, inner sep=2pt] {Corte M\'inimo};
   
 \end{tikzpicture}
