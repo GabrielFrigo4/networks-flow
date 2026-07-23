@@ -1287,46 +1287,46 @@ O custo total do corte Ã© exatamente a soma dos termos de dados e de regularizaÃ
 \begin{tikzpicture}[>=Stealth, thick]
 
   % Partitions (Backgrounds)
-  \fill[green!10, rounded corners=15pt] (-3, 1.7) rectangle (7, 5.8);
-  \node[green!60!black, font=\large\bfseries] at (-1.5, 5.3) {$S$ (Foreground)};
+  \fill[green!10, rounded corners=15pt] (-4, 1.7) rectangle (8, 6.8);
+  \node[green!60!black, font=\footnotesize\bfseries] at (-2.5, 6.3) {$S$ (Foreground)};
   
-  \fill[red!10, rounded corners=15pt] (-3, -2.8) rectangle (7, 1.3);
-  \node[red!60!black, font=\large\bfseries] at (-1.5, -2.3) {$T$ (Background)};
+  \fill[red!10, rounded corners=15pt] (-4, -3.8) rectangle (8, 1.3);
+  \node[red!60!black, font=\footnotesize\bfseries] at (-2.5, -3.3) {$T$ (Background)};
   
   % Nodes
-  \node[circle,draw,fill=green!40,minimum size=9mm,font=\small] (s) at (2, 5) {$s$};
-  \node[circle,draw,fill=red!40,minimum size=9mm,font=\small] (t) at (2, -2) {$t$};
+  \node[circle,draw,fill=green!20,minimum size=8mm,font=\small] (s) at (2, 6) {$s$};
+  \node[circle,draw,fill=red!20,minimum size=8mm,font=\small] (t) at (2, -3) {$t$};
   
-  \node[circle,draw,fill=green!20,minimum size=9mm,font=\small] (p1) at (0, 3) {$p_1$};
-  \node[circle,draw,fill=green!20,minimum size=9mm,font=\small] (p2) at (4, 3) {$p_2$};
-  \node[circle,draw,fill=red!20,minimum size=9mm,font=\small] (p4) at (0, 0) {$p_4$};
-  \node[circle,draw,fill=red!20,minimum size=9mm,font=\small] (p3) at (4, 0) {$p_3$};
+  \node[circle,draw,fill=white,minimum size=8mm,font=\small] (p1) at (-1, 3) {$p_1$};
+  \node[circle,draw,fill=white,minimum size=8mm,font=\small] (p2) at (5, 3) {$p_2$};
+  \node[circle,draw,fill=white,minimum size=8mm,font=\small] (p4) at (-1, 0) {$p_4$};
+  \node[circle,draw,fill=white,minimum size=8mm,font=\small] (p3) at (5, 0) {$p_3$};
   
   % T-links from s
-  \draw[->,green!60!black,dashed] (s) -- node[above left,font=\footnotesize]{$w_s=\infty$} (p1);
-  \draw[->,green!60!black,dashed] (s) -- node[above right,font=\footnotesize]{$w_s$\,alto} (p2);
+  \draw[->,green!60!black,dashed] (s) -- node[above left,font=\footnotesize,fill=white,inner sep=2pt]{$w_s=\infty$} (p1);
+  \draw[->,green!60!black,dashed] (s) -- node[above right,font=\footnotesize,fill=white,inner sep=2pt]{$w_s$\,alto} (p2);
   
   % Bended T-links from s
-  \draw[->,green!60!black,dashed] (s) to[out=180, in=135] node[left,font=\footnotesize,pos=0.75]{$w_s$\,baixo} (p4);
-  \draw[->,green!60!black,dashed] (s) to[out=0, in=45] node[right,font=\footnotesize,pos=0.75]{$w_s$\,baixo} (p3);
+  \draw[->,green!60!black,dashed] (s) to[out=180, in=135] node[left,font=\footnotesize,fill=white,inner sep=2pt,pos=0.8]{$w_s$\,baixo} (p4);
+  \draw[->,green!60!black,dashed] (s) to[out=0, in=45] node[right,font=\footnotesize,fill=white,inner sep=2pt,pos=0.8]{$w_s$\,baixo} (p3);
   
   % Bended T-links to t
-  \draw[->,red!60!black,dashed] (p1) to[out=225, in=180] node[left,font=\footnotesize,pos=0.25]{$w_t$\,baixo} (t);
-  \draw[->,red!60!black,dashed] (p2) to[out=315, in=0] node[right,font=\footnotesize,pos=0.25]{$w_t$\,baixo} (t);
+  \draw[->,red!60!black,dashed] (p1) to[out=225, in=180] node[left,font=\footnotesize,fill=white,inner sep=2pt,pos=0.2]{$w_t$\,baixo} (t);
+  \draw[->,red!60!black,dashed] (p2) to[out=315, in=0] node[right,font=\footnotesize,fill=white,inner sep=2pt,pos=0.2]{$w_t$\,baixo} (t);
   
   % Straight T-links to t
-  \draw[->,red!60!black,dashed] (p4) -- node[below left,font=\footnotesize]{$w_t=\infty$} (t);
-  \draw[->,red!60!black,dashed] (p3) -- node[below right,font=\footnotesize]{$w_t=\infty$} (t);
+  \draw[->,red!60!black,dashed] (p4) -- node[below left,font=\footnotesize,fill=white,inner sep=2pt]{$w_t=\infty$} (t);
+  \draw[->,red!60!black,dashed] (p3) -- node[below right,font=\footnotesize,fill=white,inner sep=2pt]{$w_t=\infty$} (t);
   
   % N-links
-  \draw[-,blue!70,line width=2pt] (p1) -- node[above,font=\footnotesize,text=black]{$w_n$\,alto} (p2);
-  \draw[-,blue!70,line width=2pt] (p4) -- node[below,font=\footnotesize,text=black]{$w_n$\,alto} (p3);
+  \draw[-,blue!70,line width=1.5pt] (p1) -- node[above,font=\footnotesize,text=black]{$w_n$\,alto} (p2);
+  \draw[-,blue!70,line width=1.5pt] (p4) -- node[below,font=\footnotesize,text=black]{$w_n$\,alto} (p3);
   
-  \draw[-,orange,line width=2pt] (p1) -- node[fill=white,inner sep=2pt,font=\footnotesize,text=black,pos=0.2]{$w_n$\,baixo} (p4);
-  \draw[-,orange,line width=2pt] (p2) -- node[fill=white,inner sep=2pt,font=\footnotesize,text=black,pos=0.2]{$w_n$\,baixo} (p3);
+  \draw[-,orange,line width=1.5pt] (p1) -- node[fill=white,inner sep=2pt,font=\footnotesize,text=black,pos=0.25]{$w_n$\,baixo} (p4);
+  \draw[-,orange,line width=1.5pt] (p2) -- node[fill=white,inner sep=2pt,font=\footnotesize,text=black,pos=0.25]{$w_n$\,baixo} (p3);
   
   % Cut Line
-  \draw[red, ultra thick, dashed] (-3.5, 1.5) -- (7.5, 1.5) node[right, font=\large\bfseries, text=red] {CORTE M\'INIMO};
+  \draw[red, thick, dashed] (-4.5, 1.5) -- (8.5, 1.5) node[right, font=\footnotesize\bfseries, text=red, fill=white, inner sep=2pt] {Corte M\'inimo};
   
 \end{tikzpicture}
 \caption{Geometria do corte m\'inimo na segmenta\c{c}\~ao. Os pixels da camada superior ($p_1, p_2$) s\~ao classificados como Foreground ($S$) e os da inferior ($p_3, p_4$) como Background ($T$). O corte m\'inimo (linha vermelha tracejada) atua como uma guilhotina separando o conjunto $S$ do conjunto $T$. Visualmente, percebe-se que ele rompe com precis\~ao as arestas mais fracas: os N-links verticais ($w_n$ baixo, pixels de cores distintas), e os T-links cruzados fracos ($s \to T$ e $S \to t$). Em contrapartida, os T-links com capacidade $\infty$ (sementes) protegem seus pixels contra cortes indevidos.}
