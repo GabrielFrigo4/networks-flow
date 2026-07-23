@@ -373,11 +373,11 @@ Existindo $\mathcal{O}(|A|)$ arcos na malha geomÃ©trica, o limite superior de au
   \draw[->, blue, dashed, line width=1.5pt] (s) -- node[above left, font=\footnotesize, text=black] {$c=5$} (a);
   \draw[->, blue, dashed, line width=1.5pt] (a) -- node[above right, font=\footnotesize, text=black] {$c=5$} (t);
   
-  \draw[->, gray] (s) -- node[below left, font=\footnotesize, text=black] {$c=10$} (b);
-  \draw[->, gray] (b) -- node[below, font=\footnotesize, text=black] {$c=10$} (c);
-  \draw[->, gray] (c) -- node[below right, font=\footnotesize, text=black] {$c=10$} (t);
+  \draw[->, black] (s) -- node[below left, font=\footnotesize, text=black] {$c=10$} (b);
+  \draw[->, black] (b) -- node[below, font=\footnotesize, text=black] {$c=10$} (c);
+  \draw[->, black] (c) -- node[below right, font=\footnotesize, text=black] {$c=10$} (t);
   
-  \draw[->, gray, thin] (a) -- node[right, font=\footnotesize, text=gray] {$c=2$} (b);
+  \draw[->, black] (a) -- node[right, font=\footnotesize, text=black] {$c=2$} (b);
 \end{tikzpicture}
 \caption{O Algoritmo de Edmonds-Karp utiliza busca em largura (BFS) na rede residual para encontrar sempre o caminho aumentante mais curto (em n\'umero de arestas). Na figura, embora o caminho inferior $s \to b \to c \to t$ suporte maior fluxo gargalo ($c=10$), a BFS garante a escolha imediata do caminho superior $s \to a \to t$ (azul tracejado), por ser topologicamente mais curto (comprimento 2 versus 3). Os n\'iveis descobertos pela BFS s\~ao indicados entre par\^enteses.}
 \label{fig:edmonds_karp_bfs}
@@ -1273,7 +1273,6 @@ O custo total do corte Ã© exatamente a soma dos termos de dados e de regularizaÃ
 \begin{figure}[h]
 \centering
 \begin{tikzpicture}[>=Stealth, thick, transform shape]
-
   \fill[green!10, rounded corners=15pt] (-4.5, 1.7) rectangle (8.5, 6.8);
   \node[green!60!black, font=\footnotesize] at (-2.5, 6.3) {$S$ (Foreground)};
   
@@ -1287,12 +1286,6 @@ O custo total do corte Ã© exatamente a soma dos termos de dados e de regularizaÃ
   \node[circle,draw,fill=blue!30,minimum size=9mm,font=\small] (p2) at (4, 3) {$p_2$};
   \node[circle,draw,fill=orange!20,minimum size=9mm,font=\small] (p4) at (0, 0) {$p_4$};
   \node[circle,draw,fill=orange!40,minimum size=9mm,font=\small] (p3) at (4, 0) {$p_3$};
-  
-  \draw[-,blue!70,line width=1.5pt] (p1) -- node[above,font=\footnotesize,text=black]{$w_n$\,alto} (p2);
-  \draw[-,blue!70,line width=1.5pt] (p4) -- node[below,font=\footnotesize,text=black]{$w_n$\,alto} (p3);
-  
-  \draw[-,orange,line width=1.5pt] (p1) -- node[fill=white,inner sep=2pt,font=\footnotesize,text=black,pos=0.25]{$w_n$\,baixo} (p4);
-  \draw[-,orange,line width=1.5pt] (p2) -- node[fill=white,inner sep=2pt,font=\footnotesize,text=black,pos=0.25]{$w_n$\,baixo} (p3);
 
   \draw[->,green!60!black,dashed] (s) -- node[above left,font=\footnotesize,fill=white,inner sep=2pt]{$w_s=\infty$} (p1);
   \draw[->,green!60!black,dashed] (s) -- node[above right,font=\footnotesize,fill=white,inner sep=2pt]{$w_s$\,alto} (p2);
@@ -1307,7 +1300,12 @@ O custo total do corte Ã© exatamente a soma dos termos de dados e de regularizaÃ
   \draw[->,red!60!black,dashed] (p3) -- node[below right,font=\footnotesize,fill=white,inner sep=2pt]{$w_t$\,alto} (t);
   
   \draw[red, thick, dashed] (-4.5, 1.5) -- (8.5, 1.5) node[right, font=\footnotesize, text=red, fill=white, inner sep=2pt, yshift=3mm] {Corte M\'inimo};
+
+  \draw[-,blue!70,line width=1.5pt] (p1) -- node[above,font=\footnotesize,text=black]{$w_n$\,alto} (p2);
+  \draw[-,blue!70,line width=1.5pt] (p4) -- node[below,font=\footnotesize,text=black]{$w_n$\,alto} (p3);
   
+  \draw[-,orange,line width=1.5pt] (p1) -- node[fill=white,inner sep=2pt,font=\footnotesize,text=black,pos=0.25]{$w_n$\,baixo} (p4);
+  \draw[-,orange,line width=1.5pt] (p2) -- node[fill=white,inner sep=2pt,font=\footnotesize,text=black,pos=0.25]{$w_n$\,baixo} (p3);
 \end{tikzpicture}
 \caption{Geometria do corte m\'inimo na segmenta\c{c}\~ao. Os pixels da camada superior ($p_1, p_2$) s\~ao classificados como Foreground ($S$) e os da inferior ($p_3, p_4$) como Background ($T$). O corte m\'inimo (linha vermelha tracejada) atua como uma guilhotina separando o conjunto $S$ do conjunto $T$. Visualmente, percebe-se que ele rompe com precis\~ao as arestas mais fracas: os N-links verticais ($w_n$ baixo, pixels de cores distintas), e os T-links cruzados fracos ($s \to T$ e $S \to t$). Em contrapartida, os T-links com capacidade $\infty$ (sementes) protegem seus pixels contra cortes indevidos.}
 \label{fig:segmentation_cut}
