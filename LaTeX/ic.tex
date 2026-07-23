@@ -554,7 +554,6 @@ A validade matemática desta dedução reside na invariante de altura do \textit
   }
   \draw[red!40,dashed,line width=1.5pt] (-2, 4.5) -- (6, 4.5) node[right,red!80!black,font=\footnotesize] {$h=3$ (\textbf{LACUNA})};
 
-  % Nodes
   \node[circle,draw,fill=green!20,minimum size=8mm,font=\footnotesize] (t) at (2, 0) {$t$};
   \node[circle,draw,fill=yellow!20,minimum size=8mm,font=\footnotesize] (a) at (2, 1.5) {$a$};
   \node[circle,draw,fill=yellow!20,minimum size=8mm,font=\footnotesize] (b) at (0.5, 3.0) {$b$};
@@ -720,7 +719,6 @@ A solidez desta extração reside no fato de que, pelas propriedades de conserva
   \node[font=\large] at (2,4.5) {$\mathbf{L}$};
   \node[font=\large] at (4,4.5) {$\mathbf{R}$};
   
-  % Nodes
   \node[circle,draw,fill=green!20,minimum size=8mm,font=\small] (s) at (0,2) {$s$};
   \node[circle,draw,fill=red!20,minimum size=8mm,font=\small] (t) at (6,2) {$t$};
   
@@ -1263,11 +1261,10 @@ Seja $I$ uma imagem com $n = W \times H$ pixels. A construção da rede de segme
 
 O corte mínimo $(S, T)$ na rede construída induz naturalmente a partição da imagem, minimizando a energia da segmentação. Os pixels no conjunto $S$ (alcançáveis a partir de $s$ na rede residual) pertencem ao \textit{foreground}; os pixels em $T$ pertencem ao \textit{background}.
 
-A geometria desse corte divide os arcos saturados em \textbf{duas categorias} principais:
+A geometria desse corte divide os arcos cortados em \textbf{duas categorias} principais de penalidades (Regionais e de Fronteira):
 \begin{itemize}
-    \item T-links de $s$ para $p$: cortados quando o pixel $p$ é atribuído ao background, pagando a capacidade $w_s(p)$ como penalidade regional.
-    \item T-links de $p$ para $t$: cortados quando o pixel $p$ é atribuído ao foreground, pagando a capacidade $w_t(p)$ como penalidade regional.
-    \item N-links entre $p$ e $q$: cortados quando $p$ e $q$ são atribuídos a partições distintas, pagando a capacidade $w_n(p, q)$ como penalidade de fronteira.
+    \item Penalidade Regional (T-links): incorrida ao contrariar a preferência natural de um pixel por uma das partições. Secciona-se o arco $s \to p$ (pagando a capacidade $w_s(p)$) caso o pixel $p$ seja alocado ao \textit{background} ($T$); simetricamente, secciona-se $p \to t$ (pagando $w_t(p)$) se for alocado ao \textit{foreground} ($S$).
+    \item Penalidade de Fronteira (N-links): arcos cortados quando pixels vizinhos $p$ e $q$ são atribuídos a partições distintas ($p \in S$ e $q \in T$), pagando a capacidade de similaridade $w_n(p, q)$.
 \end{itemize}
 
 O custo total do corte é exatamente a soma dos termos de dados e de regularização da energia.
@@ -1282,7 +1279,6 @@ O custo total do corte é exatamente a soma dos termos de dados e de regulariza�
   \fill[red!10, rounded corners=15pt] (-4, -3.8) rectangle (8, 1.3);
   \node[red!60!black, font=\footnotesize\bfseries] at (-2.5, -3.3) {$T$ (Background)};
   
-  % Nodes
   \node[circle,draw,fill=green!20,minimum size=8mm,font=\small] (s) at (2, 6) {$s$};
   \node[circle,draw,fill=red!20,minimum size=8mm,font=\small] (t) at (2, -3) {$t$};
   
