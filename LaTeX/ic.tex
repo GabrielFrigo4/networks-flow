@@ -1287,25 +1287,25 @@ O custo total do corte Ã© exatamente a soma dos termos de dados e de regularizaÃ
   \node[circle,draw,fill=orange!20,minimum size=9mm,font=\small] (p4) at (0, 0) {$p_4$};
   \node[circle,draw,fill=orange!40,minimum size=9mm,font=\small] (p3) at (4, 0) {$p_3$};
 
-  \draw[->,green!60!black,dashed] (s) -- node[above left,font=\footnotesize,fill=white,inner sep=2pt]{$w_s=\infty$} (p1);
-  \draw[->,green!60!black,dashed] (s) -- node[above right,font=\footnotesize,fill=white,inner sep=2pt]{$w_s$\,alto} (p2);
-  
-  \draw[->,green!60!black,dashed] (s) to[out=180, in=135] node[left,font=\footnotesize,fill=white,inner sep=2pt,pos=0.92]{$w_s$\,baixo} (p4);
-  \draw[->,green!60!black,dashed] (s) to[out=0, in=45] node[right,font=\footnotesize,fill=white,inner sep=2pt,pos=0.92]{$w_s$\,baixo} (p3);
-  
-  \draw[->,red!60!black,dashed] (p1) to[out=225, in=180] node[left,font=\footnotesize,fill=white,inner sep=2pt,pos=0.08]{$w_t$\,baixo} (t);
-  \draw[->,red!60!black,dashed] (p2) to[out=315, in=0] node[right,font=\footnotesize,fill=white,inner sep=2pt,pos=0.08]{$w_t$\,baixo} (t);
-  
-  \draw[->,red!60!black,dashed] (p4) -- node[below left,font=\footnotesize,fill=white,inner sep=2pt]{$w_t=\infty$} (t);
-  \draw[->,red!60!black,dashed] (p3) -- node[below right,font=\footnotesize,fill=white,inner sep=2pt]{$w_t$\,alto} (t);
-  
-  \draw[red, thick, dashed] (-4.5, 1.5) -- (8.5, 1.5) node[right, font=\footnotesize, text=red, fill=white, inner sep=2pt, yshift=3mm] {Corte M\'inimo};
-
   \draw[-,blue!70,line width=1.5pt] (p1) -- node[above,font=\footnotesize,text=black]{$w_n$\,alto} (p2);
   \draw[-,blue!70,line width=1.5pt] (p4) -- node[below,font=\footnotesize,text=black]{$w_n$\,alto} (p3);
   
   \draw[-,orange,line width=1.5pt] (p1) -- node[fill=white,inner sep=2pt,font=\footnotesize,text=black,pos=0.25]{$w_n$\,baixo} (p4);
   \draw[-,orange,line width=1.5pt] (p2) -- node[fill=white,inner sep=2pt,font=\footnotesize,text=black,pos=0.25]{$w_n$\,baixo} (p3);
+
+  \draw[->,green!60!black,dashed] (s) -- node[above left,font=\footnotesize,fill=white,inner sep=2pt]{$w_s=\infty$} (p1);
+  \draw[->,green!60!black,dashed] (s) -- node[above right,font=\footnotesize,fill=white,inner sep=2pt]{$w_s$\,alto} (p2);
+  
+  \draw[->,green!60!black,dashed] (s) to[out=180, in=135] node[left,font=\footnotesize,fill=white,inner sep=2pt,pos=0.5]{$w_s$\,baixo} (p4);
+  \draw[->,green!60!black,dashed] (s) to[out=0, in=45] node[right,font=\footnotesize,fill=white,inner sep=2pt,pos=0.5]{$w_s$\,baixo} (p3);
+  
+  \draw[->,red!60!black,dashed] (p4) -- node[below left,font=\footnotesize,fill=white,inner sep=2pt]{$w_t=\infty$} (t);
+  \draw[->,red!60!black,dashed] (p3) -- node[below right,font=\footnotesize,fill=white,inner sep=2pt]{$w_t$\,alto} (t);
+
+  \draw[->,red!60!black,dashed] (p1) to[out=225, in=180] node[left,font=\footnotesize,fill=white,inner sep=2pt,pos=0.5]{$w_t$\,baixo} (t);
+  \draw[->,red!60!black,dashed] (p2) to[out=315, in=0] node[right,font=\footnotesize,fill=white,inner sep=2pt,pos=0.5]{$w_t$\,baixo} (t);
+
+  \draw[red, thick, dashed] (-4.5, 1.5) -- (8.5, 1.5) node[right, font=\footnotesize, text=red, fill=white, inner sep=2pt, yshift=3mm] {Corte M\'inimo};
 \end{tikzpicture}
 \caption{Geometria do corte m\'inimo na segmenta\c{c}\~ao. Os pixels da camada superior ($p_1, p_2$) s\~ao classificados como Foreground ($S$) e os da inferior ($p_3, p_4$) como Background ($T$). O corte m\'inimo (linha vermelha tracejada) atua como uma guilhotina separando o conjunto $S$ do conjunto $T$. Visualmente, percebe-se que ele rompe com precis\~ao as arestas mais fracas: os N-links verticais ($w_n$ baixo, pixels de cores distintas), e os T-links cruzados fracos ($s \to T$ e $S \to t$). Em contrapartida, os T-links com capacidade $\infty$ (sementes) protegem seus pixels contra cortes indevidos.}
 \label{fig:segmentation_cut}
