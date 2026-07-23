@@ -1,0 +1,110 @@
+\documentclass[12pt,a4paper]{article}
+
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{bm}
+\usepackage{enumitem}
+\usepackage{mathtools}
+\usepackage{lipsum}
+\usepackage[brazil]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[pdftex]{graphicx}
+\usepackage{color}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta, calc, positioning, decorations.markings}
+\usepackage{verbatim}
+\usepackage{url}
+\usepackage{longtable}
+\usepackage{geometry}
+\geometry{
+    a4paper,
+    margin=2cm
+}
+
+\usepackage{listings}
+\usepackage{xcolor}
+
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.9,0.9,0.9}
+
+\lstset{
+    % Formatação
+    language=C++,
+    basicstyle=\ttfamily\small,
+    tabsize=4,
+    keepspaces=true,
+    columns=fullflexible,
+    lineskip=-2pt,
+    % Cores
+    backgroundcolor=\color{backcolour},
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{blue}\bfseries,
+    stringstyle=\color{codepurple},
+    % Numeração
+    numbers=left,
+    numberstyle=\tiny\color{codegray},
+    numbersep=6pt,
+    % Quebras
+    breaklines=true,
+    breakatwhitespace=false,
+    % Invisíveis
+    showspaces=false,
+    showstringspaces=false,
+    showtabs=false,
+    % Layout
+    frame=single,
+    rulecolor=\color{black},
+    captionpos=b
+}
+
+\usepackage{helvet}
+\renewcommand{\familydefault}{\sfdefault}
+
+\usepackage{hyperref}
+%\usepackage[alf]{abntex2cite}
+%\providecommand{\abntnextkey}{}
+
+\usepackage{titlesec}
+\usepackage{setspace}
+
+\newtheorem{prop}{Proposição}
+
+\begin{document}
+\setlength{\emergencystretch}{3em}
+\onehalfspacing
+
+\begin{titlepage}
+    \begin{center}
+        \textbf{\large UNIVERSIDADE FEDERAL DO ABC}\\[0.2cm]
+        \textbf{\large PRÓ-REITORIA DE PESQUISA}
+        
+        \vspace{4cm}
+        
+        {\LARGE \bfseries Problemas de Fluxos em Redes:\\ Teoria, Algoritmos e Implementações}
+        
+        \vspace{3cm}
+        
+        {\large \textbf{Autor:} Gabriel Frigo} \\[0.15cm]
+        {\normalsize \href{mailto:gabriel.frigo@aluno.ufabc.edu.br}{gabriel.frigo@aluno.ufabc.edu.br}} \\[0.1cm]
+        {\normalsize GitHub: \href{https://github.com/GabrielFrigo4}{GabrielFrigo4}}
+        
+        \vspace{1.5cm}
+        
+        {\large \textbf{Orientadora:} Prof\textsuperscript{a}. Dr\textsuperscript{a}. Cristiane Maria Sato}
+        
+        \vspace{2cm}
+        
+        {\normalsize \textbf{Programa:} Iniciação Científica (PIBIC/CNPq) --- 2025/2026}
+        
+        \vfill
+        
+        \textbf{Santo André, SP}\\[0.2cm]
+        \textbf{\today}
+    \end{center}
+\end{titlepage}
+
+\newpage

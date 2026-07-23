@@ -225,7 +225,7 @@ A Figura~\ref{fig:residual_net} ilustra uma rede com fluxo parcial e seu corresp
   \node[font=\footnotesize,below] at (2,-0.7) {\textit{(a) Rede original} $f/c$};
 \end{scope}
 
-\node at (5.2,1.2) {$\Rightarrow$};
+\node at (5.2,1.2) {\Huge $\Rightarrow$};
 
 \begin{scope}[xshift=6.5cm]
   \node[circle,draw,fill=green!20,minimum size=8mm] (s2) at (0,1.2) {$s$};
@@ -364,10 +364,10 @@ Existindo $\mathcal{O}(|A|)$ arcos na malha geométrica, o limite superior de au
 \centering
 \begin{tikzpicture}[>=Stealth, thick]
   \node[circle, draw, minimum size=9mm, fill=green!20, font=\small] (s) at (0, 0) {$s$ (0)};
-  \node[circle, draw, minimum size=9mm, font=\small] (a) at (3, 1.5) {$a$ (1)};
+  \node[circle, draw, minimum size=9mm, font=\small] (a) at (3.5, 1.5) {$a$ (1)};
   \node[circle, draw, minimum size=9mm, font=\small] (b) at (2, -1.5) {$b$ (1)};
-  \node[circle, draw, minimum size=9mm, font=\small] (c) at (4, -1.5) {$c$ (2)};
-  \node[circle, draw, minimum size=9mm, fill=red!20, font=\small] (t) at (6, 0) {$t$ (2)};
+  \node[circle, draw, minimum size=9mm, font=\small] (c) at (5, -1.5) {$c$ (2)};
+  \node[circle, draw, minimum size=9mm, fill=red!20, font=\small] (t) at (7, 0) {$t$ (2)};
 
   \draw[->, blue, dashed, line width=1.5pt] (s) -- node[above left, font=\footnotesize, text=black] {$c=5$} (a);
   \draw[->, blue, dashed, line width=1.5pt] (a) -- node[above right, font=\footnotesize, text=black] {$c=5$} (t);
@@ -398,19 +398,14 @@ Esta poda dramática na árvore de recursão garante uma amortização matemáti
 \centering
 \begin{tikzpicture}[>=Stealth,thick]
 
-\foreach \x in {0,2,4,6} { \draw[gray!30,dashed] (\x,-0.7) -- (\x,3.8); }
-
-\node[gray,font=\footnotesize] at (0,4.1) {n\'iv. 0};
-\node[gray,font=\footnotesize] at (2,4.1) {n\'iv. 1};
-\node[gray,font=\footnotesize] at (4,4.1) {n\'iv. 2};
-\node[gray,font=\footnotesize] at (6,4.1) {n\'iv. 3};
+\foreach \x in {0,2.5,5.0,7.5} { \draw[gray!30,dashed] (\x,-0.7) -- (\x,3.8); }
 
 \node[circle,draw,fill=green!20,minimum size=8mm,font=\small] (s) at (0,1.5) {$s$};
-\node[circle,draw,fill=white,minimum size=8mm,font=\small] (a) at (2,3) {$a$};
-\node[circle,draw,fill=white,minimum size=8mm,font=\small] (b) at (2,0) {$b$};
-\node[circle,draw,fill=white,minimum size=8mm,font=\small] (c) at (4,3) {$c$};
-\node[circle,draw,fill=white,minimum size=8mm,font=\small] (d) at (4,0) {$d$};
-\node[circle,draw,fill=red!20,minimum size=8mm,font=\small] (t) at (6,1.5) {$t$};
+\node[circle,draw,fill=white,minimum size=8mm,font=\small] (a) at (2.5,3) {$a$};
+\node[circle,draw,fill=white,minimum size=8mm,font=\small] (b) at (2.5,0) {$b$};
+\node[circle,draw,fill=white,minimum size=8mm,font=\small] (c) at (5.0,3) {$c$};
+\node[circle,draw,fill=white,minimum size=8mm,font=\small] (d) at (5.0,0) {$d$};
+\node[circle,draw,fill=red!20,minimum size=8mm,font=\small] (t) at (7.5,1.5) {$t$};
 
 \draw[->,line width=1.5pt,blue] (s) -- (a);
 \draw[->,line width=1.5pt,blue] (s) -- (b);
@@ -425,7 +420,7 @@ Esta poda dramática na árvore de recursão garante uma amortização matemáti
 \draw[->,gray,dashed,bend right=20] (c) to node[above,font=\footnotesize,gray] {exclu\'ido (retrocesso)} (a);
 
 \end{tikzpicture}
-\caption{Digrafo de N\'iveis no Algoritmo de Dinic. Arcos azuis s\~ao os arcos admiss\'iveis (avan\c{c}am exatamente um n\'ivel: $d(v) = d(u)+1$), que comp\~oem o Digrafo de N\'iveis. Arcos cinza tracejados s\~ao excluídos por n\~ao avan\c{c}arem n\'ivel. O Fluxo Bloqueador \'e extra\'ido apenas sobre os arcos azuis.}
+\caption{Digrafo de N\'iveis no Algoritmo de Dinic (organizado em colunas, onde cada coluna da esquerda para a direita representa um n\'ivel crescente). Arcos azuis s\~ao os arcos admiss\'iveis (avan\c{c}am exatamente um n\'ivel: $d(v) = d(u)+1$), que comp\~oem o Digrafo de N\'iveis. Arcos cinza tracejados s\~ao excluídos por n\~ao avan\c{c}arem n\'ivel. O Fluxo Bloqueador \'e extra\'ido apenas sobre os arcos azuis.}
 \label{fig:level_graph}
 \end{figure}
 
@@ -517,14 +512,14 @@ A eficiência global do algoritmo é intrinsecamente dependente da política de 
 \node[font=\footnotesize,above] at (8.5,4.0) {\textbf{Antes do Relabel: $u$ preso}};
 \node[main,fill=orange!30] (r1) at (7.0,3.0) {$u$};
 \node[font=\tiny,above=2pt of r1] {$h{=}2,\,e{=}3$};
-\node[main,fill=gray!10] (r2) at (10.0,3.0) {$w$};
+\node[main,fill=gray!10] (r2) at (10.0,3.0) {};
 \node[font=\tiny,above=2pt of r2] {$h{=}3$};
 \draw[->,gray,dashed] (r1) -- node[above,font=\tiny,align=center] {$c_f=2$\\inadmiss\'ivel} (r2);
 
 \node[font=\footnotesize,above] at (8.5,1.0) {\textbf{Depois do Relabel($u$): $h(u)\leftarrow 4$}};
 \node[main,fill=orange!50] (r3) at (7.0,0.0) {$u$};
 \node[font=\tiny,above=2pt of r3] {$h{=}4,\,e{=}3$};
-\node[main,fill=gray!10] (r4) at (10.0,0.0) {$w$};
+\node[main,fill=gray!10] (r4) at (10.0,0.0) {};
 \node[font=\tiny,above=2pt of r4] {$h{=}3$};
 \draw[->,green!60!black,line width=1.5pt] (r3) -- node[above,font=\tiny] {admiss\'ivel!} (r4);
 \end{tikzpicture}
@@ -590,7 +585,7 @@ A heurística intervém na rede ao detectar a lacuna, elevando a altura de todos
 \draw[<->,red,dashed] (0.2,3.5) -- node[left,font=\tiny] {n\'iv. 3 vazio} (0.2,2.5);
 \end{scope}
 
-\node at (5.0,2.5) {\Large $\Rightarrow$};
+\node at (5.0,2.5) {\Huge $\Rightarrow$};
 
 \begin{scope}[xshift=7cm]
 \node[font=\footnotesize,above] at (1.5,5.7) {\textbf{(b) V\'ertices $h>k$ sobem para $|V|+1$}};
@@ -676,7 +671,7 @@ Consequentemente, a restrição de capacidade unitária nos arcos conectados à 
   \draw[-] (l2) -- (r2); \draw[-] (l2) -- (r3);
   \draw[-] (l3) -- (r1); \draw[-] (l3) -- (r3);
 \end{scope}
-\node at (5,1.5) {$\Rightarrow$};
+\node at (5,1.5) {\Huge $\Rightarrow$};
 
 \begin{scope}[xshift=6.5cm]
   \node[font=\footnotesize,above] at (2.5,3.8) {\textbf{(b) Rede de fluxo $D'$}};
@@ -722,20 +717,20 @@ A solidez desta extração reside no fato de que, pelas propriedades de conserva
   \node[circle,draw,fill=green!20,minimum size=8mm,font=\small] (s) at (0,2) {$s$};
   \node[circle,draw,fill=red!20,minimum size=8mm,font=\small] (t) at (6,2) {$t$};
   
-  \node[circle,draw,fill=green!20,minimum size=8mm,font=\small] (l1) at (2,3.5) {$l_1$};
-  \node[circle,draw,fill=red!20,minimum size=8mm,font=\small,double,double distance=1.5pt] (l2) at (2,2) {$l_2$};
-  \node[circle,draw,fill=green!20,minimum size=8mm,font=\small] (l3) at (2,0.5) {$l_3$};
+  \node[circle,draw,fill=green!20,minimum size=8mm,font=\small] (l1) at (2,3.5) {};
+  \node[circle,draw,fill=red!20,minimum size=8mm,font=\small,double,double distance=1.5pt] (l2) at (2,2) {};
+  \node[circle,draw,fill=green!20,minimum size=8mm,font=\small] (l3) at (2,0.5) {};
   
-  \node[circle,draw,fill=red!20,minimum size=8mm,font=\small] (r1) at (4,3.5) {$r_1$};
-  \node[circle,draw,fill=red!20,minimum size=8mm,font=\small] (r2) at (4,2) {$r_2$};
-  \node[circle,draw,fill=green!20,minimum size=8mm,font=\small,double,double distance=1.5pt] (r3) at (4,0.5) {$r_3$};
+  \node[circle,draw,fill=red!20,minimum size=8mm,font=\small] (r1) at (4,3.5) {};
+  \node[circle,draw,fill=red!20,minimum size=8mm,font=\small] (r2) at (4,2) {};
+  \node[circle,draw,fill=green!20,minimum size=8mm,font=\small,double,double distance=1.5pt] (r3) at (4,0.5) {};
   
   \draw[->] (s) -- (l1); 
   \draw[->,red,line width=1.5pt] (s) -- node[above,font=\tiny,red,sloped]{corte} (l2); 
   \draw[->] (s) -- (l3);
   
-  \draw[->,line width=1.5pt,blue!80!black] (l1) -- node[font=\footnotesize,fill=white,inner sep=1.5pt,pos=0.3]{$M$} (r3);
-  \draw[->,line width=1.5pt,blue!80!black] (l2) -- node[font=\footnotesize,fill=white,inner sep=1.5pt,pos=0.3]{$M$} (r1);
+  \draw[->,line width=1.5pt,blue!80!black] (l1) -- (r3);
+  \draw[->,line width=1.5pt,blue!80!black] (l2) -- (r1);
   \draw[->] (l2) -- (r2);
   \draw[->] (l3) -- (r3);
   
@@ -755,7 +750,7 @@ A solidez desta extração reside no fato de que, pelas propriedades de conserva
   \node[font=\footnotesize,right] at (4, -2.4) {\textbf{Resultado:} $C = \{l_2, r_3\}$, $|C| = |M| = 2$};
   
 \end{tikzpicture}
-\caption{Teorema de K\'onig: a BFS no digrafo residual $D_f$ particiona os v\'ertices em $S$ (verde) e $T$ (vermelho). Os arcos de $S$ para $T$ (vermelhos) definem o corte m\'inimo. A cobertura m\'inima \'e constru\'ida por $C = (L\cap T) \cup (R \cap S)$, correspondendo aos v\'ertices com borda dupla. Com isso, fica provado visualmente que $|C| = |M| = 2$.}
+\caption{Teorema de K\'onig: a BFS no digrafo residual $D_f$ particiona os v\'ertices em $S$ (verde) e $T$ (vermelho). Os arcos de $S$ para $T$ (vermelhos) definem o corte m\'inimo. A cobertura m\'inima \'e constru\'ida por $C = (L\cap T) \cup (R \cap S)$, correspondendo aos v\'ertices com borda dupla. Com isso, fica provado visualmente que $|C| = |M| = 2$. Arestas azuis grossas representam o emparelhamento $M$.}
 \label{fig:konig_cut}
 \end{figure}
 
@@ -905,7 +900,7 @@ Esta transformação impõe uma restrição de capacidade nos vértices: ao for�
   \draw[->] (s) -- (v); \draw[->] (v) -- (t);
 \end{scope}
 
-\node at (4.5,1.5) {\Large $\Rightarrow$};
+\node at (4.5,1.5) {\Huge $\Rightarrow$};
 
 \begin{scope}[xshift=6cm]
   \node[font=\footnotesize,above] at (3.0,2.8) {\textbf{(b) Vertex Splitting: $D'$}};
@@ -1270,30 +1265,30 @@ O custo total do corte é exatamente a soma dos termos de dados e de regulariza�
 
 \begin{figure}[h]
 \centering
-\begin{tikzpicture}[>=Stealth, thick]
+\begin{tikzpicture}[>=Stealth, thick, scale=1.1, transform shape]
 
   \fill[green!10, rounded corners=15pt] (-4, 1.7) rectangle (8, 6.8);
-  \node[green!60!black, font=\footnotesize\bfseries] at (-2.5, 6.3) {$S$ (Foreground)};
+  \node[green!60!black, font=\footnotesize] at (-2.5, 6.3) {$S$ (Foreground)};
   
   \fill[red!10, rounded corners=15pt] (-4, -3.8) rectangle (8, 1.3);
-  \node[red!60!black, font=\footnotesize\bfseries] at (-2.5, -3.3) {$T$ (Background)};
+  \node[red!60!black, font=\footnotesize] at (-2.5, -3.3) {$T$ (Background)};
   
   \node[circle,draw,fill=green!20,minimum size=8mm,font=\small] (s) at (2, 6) {$s$};
   \node[circle,draw,fill=red!20,minimum size=8mm,font=\small] (t) at (2, -3) {$t$};
   
-  \node[circle,draw,fill=white,minimum size=8mm,font=\small] (p1) at (-1, 3) {$p_1$};
-  \node[circle,draw,fill=white,minimum size=8mm,font=\small] (p2) at (5, 3) {$p_2$};
-  \node[circle,draw,fill=white,minimum size=8mm,font=\small] (p4) at (-1, 0) {$p_4$};
-  \node[circle,draw,fill=white,minimum size=8mm,font=\small] (p3) at (5, 0) {$p_3$};
+  \node[circle,draw,fill=blue!10,minimum size=9mm,font=\small] (p1) at (0, 3) {$p_1$};
+  \node[circle,draw,fill=blue!30,minimum size=9mm,font=\small] (p2) at (4, 3) {$p_2$};
+  \node[circle,draw,fill=orange!20,minimum size=9mm,font=\small] (p4) at (0, 0) {$p_4$};
+  \node[circle,draw,fill=orange!40,minimum size=9mm,font=\small] (p3) at (4, 0) {$p_3$};
   
   \draw[->,green!60!black,dashed] (s) -- node[above left,font=\footnotesize,fill=white,inner sep=2pt]{$w_s=\infty$} (p1);
   \draw[->,green!60!black,dashed] (s) -- node[above right,font=\footnotesize,fill=white,inner sep=2pt]{$w_s$\,alto} (p2);
   
-  \draw[->,green!60!black,dashed] (s) to[out=180, in=135] node[left,font=\footnotesize,fill=white,inner sep=2pt,pos=0.8]{$w_s$\,baixo} (p4);
-  \draw[->,green!60!black,dashed] (s) to[out=0, in=45] node[right,font=\footnotesize,fill=white,inner sep=2pt,pos=0.8]{$w_s$\,baixo} (p3);
+  \draw[->,green!60!black,dashed] (s) to[out=180, in=135] node[left,font=\footnotesize,fill=white,inner sep=2pt,pos=0.85]{$w_s$\,baixo} (p4);
+  \draw[->,green!60!black,dashed] (s) to[out=0, in=45] node[right,font=\footnotesize,fill=white,inner sep=2pt,pos=0.85]{$w_s$\,baixo} (p3);
   
-  \draw[->,red!60!black,dashed] (p1) to[out=225, in=180] node[left,font=\footnotesize,fill=white,inner sep=2pt,pos=0.2]{$w_t$\,baixo} (t);
-  \draw[->,red!60!black,dashed] (p2) to[out=315, in=0] node[right,font=\footnotesize,fill=white,inner sep=2pt,pos=0.2]{$w_t$\,baixo} (t);
+  \draw[->,red!60!black,dashed] (p1) to[out=225, in=180] node[left,font=\footnotesize,fill=white,inner sep=2pt,pos=0.15]{$w_t$\,baixo} (t);
+  \draw[->,red!60!black,dashed] (p2) to[out=315, in=0] node[right,font=\footnotesize,fill=white,inner sep=2pt,pos=0.15]{$w_t$\,baixo} (t);
   
   \draw[->,red!60!black,dashed] (p4) -- node[below left,font=\footnotesize,fill=white,inner sep=2pt]{$w_t=\infty$} (t);
   \draw[->,red!60!black,dashed] (p3) -- node[below right,font=\footnotesize,fill=white,inner sep=2pt]{$w_t=\infty$} (t);
@@ -1304,7 +1299,7 @@ O custo total do corte é exatamente a soma dos termos de dados e de regulariza�
   \draw[-,orange,line width=1.5pt] (p1) -- node[fill=white,inner sep=2pt,font=\footnotesize,text=black,pos=0.25]{$w_n$\,baixo} (p4);
   \draw[-,orange,line width=1.5pt] (p2) -- node[fill=white,inner sep=2pt,font=\footnotesize,text=black,pos=0.25]{$w_n$\,baixo} (p3);
   
-  \draw[red, thick, dashed] (-4.5, 1.5) -- (8.5, 1.5) node[right, font=\footnotesize\bfseries, text=red, fill=white, inner sep=2pt] {Corte M\'inimo};
+  \draw[red, thick, dashed] (-4.5, 1.5) -- (8.5, 1.5) node[right, font=\footnotesize, text=red, fill=white, inner sep=2pt, yshift=3mm] {Corte M\'inimo};
   
 \end{tikzpicture}
 \caption{Geometria do corte m\'inimo na segmenta\c{c}\~ao. Os pixels da camada superior ($p_1, p_2$) s\~ao classificados como Foreground ($S$) e os da inferior ($p_3, p_4$) como Background ($T$). O corte m\'inimo (linha vermelha tracejada) atua como uma guilhotina separando o conjunto $S$ do conjunto $T$. Visualmente, percebe-se que ele rompe com precis\~ao as arestas mais fracas: os N-links verticais ($w_n$ baixo, pixels de cores distintas), e os T-links cruzados fracos ($s \to T$ e $S \to t$). Em contrapartida, os T-links com capacidade $\infty$ (sementes) protegem seus pixels contra cortes indevidos.}

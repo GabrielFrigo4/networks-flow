@@ -1,0 +1,110 @@
+\documentclass[12pt,a4paper]{article}
+
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{bm}
+\usepackage{enumitem}
+\usepackage{mathtools}
+\usepackage{lipsum}
+\usepackage[brazil]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[pdftex]{graphicx}
+\usepackage{color}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta, calc, positioning, decorations.markings}
+\usepackage{verbatim}
+\usepackage{url}
+\usepackage{longtable}
+\usepackage{geometry}
+\geometry{
+    a4paper,
+    margin=2cm
+}
+
+\usepackage{listings}
+\usepackage{xcolor}
+
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.9,0.9,0.9}
+
+\lstset{
+    % Formatação
+    language=C++,
+    basicstyle=\ttfamily\small,
+    tabsize=4,
+    keepspaces=true,
+    columns=fullflexible,
+    lineskip=-2pt,
+    % Cores
+    backgroundcolor=\color{backcolour},
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{blue}\bfseries,
+    stringstyle=\color{codepurple},
+    % Numeração
+    numbers=left,
+    numberstyle=\tiny\color{codegray},
+    numbersep=6pt,
+    % Quebras
+    breaklines=true,
+    breakatwhitespace=false,
+    % Invisíveis
+    showspaces=false,
+    showstringspaces=false,
+    showtabs=false,
+    % Layout
+    frame=single,
+    rulecolor=\color{black},
+    captionpos=b
+}
+
+\usepackage{helvet}
+\renewcommand{\familydefault}{\sfdefault}
+
+\usepackage{hyperref}
+%\usepackage[alf]{abntex2cite}
+%\providecommand{\abntnextkey}{}
+
+\usepackage{titlesec}
+\usepackage{setspace}
+
+\newtheorem{prop}{Proposição}
+
+\begin{document}
+\setlength{\emergencystretch}{3em}
+\onehalfspacing
+
+\begin{center}
+    \textbf{Fundação Universidade Federal do ABC}\\
+    \textbf{Pró-reitoria de pesquisa}\\
+    \small Av. dos Estados, 5001, Santa Terezinha, Santo André/SP, CEP 09210-580\\
+    Bloco L, 3º Andar, Fone (11) 3356-7617 | iniciacao@ufabc.edu.br
+\end{center}
+
+\vspace{0.8cm}
+
+\noindent \textbf{Relatório Final de Iniciação Científica referente ao Edital:} 01/2025 PIC\slash PIBIC\slash PIBITI\slash PIBIC-AF \\[0.5cm]
+\noindent \textbf{Nome do aluno:} Gabriel Frigo \\[0.5cm]
+\noindent \textbf{Assinatura do aluno:} \hrulefill \\[0.5cm]
+\noindent \textbf{Nome do orientador:} Cristiane Maria Sato \\[0.5cm]
+\noindent \textbf{Assinatura do orientador:} \hrulefill \\[0.5cm]
+\noindent \textbf{Título do projeto:} Problemas de Fluxos em Redes: Teoria, Algoritmos e Implementações \\[0.5cm]
+\noindent \textbf{Palavras-chave do projeto:} Otimização Combinatória, Teoria dos Grafos, Fluxos \\[0.5cm]
+\noindent \textbf{Área do conhecimento do projeto:} Ciência da Computação, Matemática Discreta \\[0.5cm]
+\noindent \textbf{Bolsista:} ( \textbf{\textsf{X}} ) Sim \quad ( \quad ) Não. \\
+\textbf{Em caso positivo, informar a modalidade da bolsa:} PIBIC - CNPq \\[1cm]
+
+\begin{center}
+    \textbf{Santo André}\\
+    \textbf{\today}
+\end{center}
+
+\newpage
+\renewcommand{\contentsname}{Sumário}
+\tableofcontents
+\newpage
+
+\section{Resumo}
