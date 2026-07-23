@@ -1203,7 +1203,7 @@ Seja $I$ uma imagem com $n = W \times H$ pixels. A construção da rede de segme
     term/.style={circle, draw, minimum size=9mm, font=\small}
 ]
 
-    \node[term, fill=red!20] (t) at (2,2,-3.5) {$t$};
+    \node[term, fill=red!30] (t) at (2,2,-3.5) {$t$};
     
     \foreach \x in {1,2,3} {
         \foreach \y in {1,2,3} {
@@ -1227,13 +1227,12 @@ Seja $I$ uma imagem com $n = W \times H$ pixels. A construção da rede de segme
       \draw[-] (p11) -- (p21); \draw[-] (p21) -- (p31);
       \draw[-] (p12) -- (p22); \draw[-] (p22) -- (p32);
       \draw[-] (p13) -- (p23); \draw[-] (p23) -- (p33);
-      
       \draw[-] (p11) -- (p12); \draw[-] (p12) -- (p13);
       \draw[-] (p21) -- (p22); \draw[-] (p22) -- (p23);
       \draw[-] (p31) -- (p32); \draw[-] (p32) -- (p33);
     \end{scope}
     
-    \node[term, fill=green!20] (s) at (2,2,3.5) {$s$};
+    \node[term, fill=green!30] (s) at (2,2,3.5) {$s$};
     
     \foreach \x in {1,2,3} {
         \foreach \y in {1,2,3} {
