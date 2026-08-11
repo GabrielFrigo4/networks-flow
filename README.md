@@ -8,6 +8,14 @@
 
 </div>
 
+A documentação oficial da pesquisa é gerada a partir dos códigos-fonte em LaTeX disponíveis na pasta [`LaTeX/`](./LaTeX/). A tabela a seguir detalha a finalidade de cada documento e as diferenças entre eles:
+
+| PDF Gerado             | Arquivo Fonte                            | Descrição e Diferenças                                                                                                                                                                                                                                                   |
+| :--------------------- | :--------------------------------------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 📘 **`projeto.pdf`**   | [`projeto.tex`](./LaTeX/projeto.tex)     | Proposta e plano de trabalho inicial do projeto de pesquisa, submetido para a avaliação do edital.                                                                                                                                                                       |
+| 📙 **`relatorio.pdf`** | [`relatorio.tex`](./LaTeX/relatorio.tex) | Relatório formal de acompanhamento da pesquisa. Contém a capa oficial institucional da UFABC com identificação do edital e campos de assinaturas.                                                                                                                        |
+| 📕 **`ic.pdf`**        | [`ic.tex`](./LaTeX/ic.tex)               | Documento principal compilando todo o conteúdo técnico da pesquisa. **Possui exatamente o mesmo conteúdo textual do `relatorio.tex`**, diferindo apenas por **não ter a capa formal do relatório** (folha de assinaturas), oferecendo uma formatação limpa para leitura. |
+
 ---
 
 ## 📌 Sobre o Projeto
@@ -107,11 +115,18 @@ Software desenvolvido para separar o "fundo" do "objeto principal" em fotografia
 > [!NOTE]
 > Este repositório conta com integração contínua (CI) através do **GitHub Actions** (`.github/workflows/`). A cada _push_, os PDFs são compilados automaticamente na nuvem e disponibilizados nas [Releases do GitHub](https://github.com/GabrielFrigo4/IC_Networks_Flow/releases).
 
-Caso queira gerar o projeto de pesquisa (`ic.pdf`) localmente a partir do código-fonte `ic.tex`:
+Caso queira gerar qualquer um dos PDFs (`ic.pdf`, `relatorio.pdf` ou `projeto.pdf`) localmente a partir dos códigos-fonte em [`LaTeX/`](./LaTeX/):
 
-1.  Certifique-se de ter uma distribuição LaTeX instalada (como TeX Live ou MiKTeX) com suporte aos pacotes requeridos, como `amsmath`, `tikz`, e `geometry`.
-2.  Clone este repositório em sua máquina.
-3.  Compile o arquivo `.tex` principal utilizando o compilador `pdflatex` (e o `bibtex` para referências bibliográficas).
+1. Certifique-se de ter uma distribuição LaTeX instalada (como TeX Live, MiKTeX ou MacTeX) com suporte aos pacotes requeridos (ex: `amsmath`, `tikz`, `geometry`).
+2. Acesse o diretório `LaTeX/` em seu terminal.
+3. Compile o arquivo `.tex` desejado executando a sequência do compilador `pdflatex` e `bibtex` (exemplo com `ic.tex`):
+
+```bash
+pdflatex ic.tex
+bibtex ic.aux
+pdflatex ic.tex
+pdflatex ic.tex
+```
 
 ---
 

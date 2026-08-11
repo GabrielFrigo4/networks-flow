@@ -102,6 +102,7 @@ Options:
 ```
 
 **Exemplo:**
+
 ```bash
 ./segment --input samples/balloon/source.ppm \
           --seeds samples/balloon/source.seeds \
@@ -133,6 +134,7 @@ Options:
 ```
 
 **Exemplos:**
+
 ```bash
 # Texto → imagem PPM (usando dimensões da imagem de entrada)
 ./seeds --txt2ppm --input samples/duck/source.seeds \
@@ -160,14 +162,15 @@ Options:
 
 **Formatos suportados por todas as ferramentas:**
 
-| Formato | Magic | Descrição            |
-|---------|-------|----------------------|
+| Formato | Magic | Descrição             |
+| ------- | ----- | --------------------- |
 | PBM     | P1/P4 | Bitmap (preto/branco) |
 | PGM     | P2/P5 | Escala de cinza       |
 | PPM     | P3/P6 | RGB                   |
 | PAM     | P7    | Arbitrary Map         |
 
 **Exemplo:**
+
 ```bash
 ./ppm --input samples/balloon/source.ppm --output source_bin.ppm --binary
 ```
@@ -201,6 +204,7 @@ Formato texto simples — uma seed por linha:
 ## Tutorial Rápido
 
 **1. Converta a imagem para PPM** (se necessário):
+
 ```bash
 magick minha_imagem.jpg minha_imagem.ppm   # ImageMagick v7+
 ```
@@ -208,6 +212,7 @@ magick minha_imagem.jpg minha_imagem.ppm   # ImageMagick v7+
 **2. Descubra coordenadas** abrindo a imagem em qualquer editor e anotando pixels do objeto e do fundo.
 
 **3. Crie o arquivo de seeds:**
+
 ```text
 # minha_imagem.seeds
 340 210 F
@@ -216,11 +221,13 @@ magick minha_imagem.jpg minha_imagem.ppm   # ImageMagick v7+
 ```
 
 **4. Segmente:**
+
 ```bash
 ./segment --input minha_imagem.ppm --seeds minha_imagem.seeds --output resultado.ppm
 ```
 
 **5. Itere** — se o resultado não ficou perfeito:
+
 - Sobrou fundo grudado no objeto? Adicione o pixel como `B`.
 - Comeu parte do objeto? Adicione como `F`.
 - Borda muito dentada? Tente `--sigma 50.0` (mais tolerante) ou `--sigma 10.0` (mais estrito).

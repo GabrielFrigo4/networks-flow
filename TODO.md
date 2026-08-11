@@ -11,9 +11,11 @@ Progresso das otimizações e refatorações de código no projeto, visando melh
 - [x] Testar e se precisar finalizar a Segmentação de Imagens (Max Flow / Min Cut)
 - [x] Consertar alguns casos de borda do Segmentação de Imagens (Max Flow / Min Cut)
 - [x] Reler o Relatório, fazer uma auditoria completa da iniciação científica
-- [ ] Fazer o Minimum Cost Flow, ver os algoritmos de implementação
-- [ ] Fazer o Network Simplex? Não sei, não precisa
-- [ ] Por fim vazer a auditoria final do Relatório e entregar a IC
+- [x] Fazer o Minimum Cost Flow - Teoria
+- [x] Fazer o Network Simplex - Teoria
+- [ ] Fazer o Minimum Cost Flow - Implementação
+- [ ] Fazer os Benchmarks e Validação Experimental
+- [ ] Por fim fazer a auditoria final do Relatório e entregar a IC
 
 ---
 
@@ -28,6 +30,18 @@ Progresso dos algoritmos de fluxo máximo implementados em C++ e documentados no
 | [Dinic Algorithm](./Implementações/Dinic.hpp)                     |  ✅   |      ✅       | Digrafo de níveis + fluxo bloqueador via DFS. Complexidade $\mathcal{O}(V^2 \cdot E)$. |
 | [Push Relabel FIFO](./Implementações/PushRelabel.hpp)             |  ✅   |      ✅       | Família de pré-fluxo com fila FIFO. Complexidade $\mathcal{O}(V^3)$.                   |
 | [Push Relabel Improved](./Implementações/PushRelabelImproved.hpp) |  ✅   |      ✅       | Push-Relabel com Gap Heuristic para convergência acelerada.                            |
+
+---
+
+# 🧮 TO-DO: Algoritmos de Custo Mínimo
+
+Progresso dos algoritmos de fluxo de custo mínimo. Estes algoritmos estarão documentados no [LaTeX](./LaTeX/ic.tex) e implementados no diretório [Implementações](./Implementações/README.md).
+
+| Nome                                                                | LaTeX | Implementação | Descrição                                                                                             |
+| :------------------------------------------------------------------ | :---: | :-----------: | :---------------------------------------------------------------------------------------------------- |
+| [Cycle Canceling](./Implementações/CycleCanceling.hpp)              |  ❌   |      ❌       | Baseia-se em encontrar fluxos viáveis e iterativamente cancelar ciclos de custo negativo no residual. |
+| [Successive Shortest Path](./Implementações/SuccessiveShortest.hpp) |  ❌   |      ❌       | Usa o algoritmo de Bellman-Ford / Dijkstra com potenciais para rotear fluxo pelo caminho mais barato. |
+| [Network Simplex](./Implementações/NetworkSimplex.hpp)              |  ❌   |      ❌       | Algoritmo muito eficiente na prática que mantém uma estrutura de árvore de base viável.               |
 
 ---
 
@@ -79,27 +93,14 @@ Progresso das técnicas de modelagem e redução documentadas no [LaTeX](./LaTeX
 | Decomposição de Fluxo (Path Recovery) |  ✅   |      ✅       | Algoritmo para extrair caminhos individuais e ciclos a partir do fluxo total.                                       |
 | Complementaridade de Conjuntos        |  ✅   |      ❌       | Relação entre tamanhos de conjuntos em grafos, como o cálculo de Conjunto Independente via $\lvert V \rvert - MVC$. |
 
----
-
-# 💸 TO-DO: Minimum Cost Flow
-
-Progresso das implementações e estudos relacionados ao problema de **Fluxo de Custo Mínimo** (Minimum Cost Flow) e **Fluxo Máximo de Custo Mínimo** (Min Cost Max Flow). Os algoritmos baseados em custos estarão documentados no [LaTeX](./LaTeX/ic.tex) e implementados no diretório [Implementações](./Implementações/README.md).
-
-## 🧮 Algoritmos de Custo Mínimo
-
-| Nome                                                              | LaTeX | Implementação | Descrição                                                                                             |
-| :---------------------------------------------------------------- | :---: | :-----------: | :---------------------------------------------------------------------------------------------------- |
-| [Cycle Canceling](./Implementações/CycleCanceling.hpp)            |  ❌   |      ❌       | Baseia-se em encontrar fluxos viáveis e iterativamente cancelar ciclos de custo negativo no residual. |
-| [Successive Shortest Path](./Implementações/SuccessiveShortest.hpp)|  ❌   |      ❌       | Usa o algoritmo de Bellman-Ford / Dijkstra com potenciais para rotear fluxo pelo caminho mais barato. |
-| [Network Simplex](./Implementações/NetworkSimplex.hpp)            |  ❌   |      ❌       | Algoritmo muito eficiente na prática que mantém uma estrutura de árvore de base viável.               |
-
 ## 📐 Conceitos e Mecânicas de Custo
 
-| Nome                                   | LaTeX | Implementação | Descrição                                                                                      |
-| :------------------------------------- | :---: | :-----------: | :--------------------------------------------------------------------------------------------- |
-| Custos Reduzidos (Reduced Costs)       |  ❌   |      ❌       | Técnica de usar potenciais nos nós ($\pi$) para garantir custos de arestas não-negativos.      |
-| Ciclos de Custo Negativo               |  ❌   |      ❌       | Condição de otimalidade: um fluxo é de custo mínimo se e somente se não há ciclos negativos.   |
-| Transformação Min Cost Max Flow        |  ❌   |      ❌       | Adaptação do MCF para quando desejamos empurrar o *máximo de fluxo* com o menor custo possível.|
+| Nome                             | LaTeX | Implementação | Descrição                                                                                       |
+| :------------------------------- | :---: | :-----------: | :---------------------------------------------------------------------------------------------- |
+| Custos Reduzidos (Reduced Costs) |  ✅   |      ❌       | Técnica de usar potenciais nos nós ($\pi$) para garantir custos de arestas não-negativos.       |
+| Ciclos de Custo Negativo         |  ✅   |      ❌       | Condição de otimalidade: um fluxo é de custo mínimo se e somente se não há ciclos negativos.    |
+| Grafo Residual com Custos        |  ✅   |      ❌       | Extensão do grafo residual com custos nos arcos diretos e custos negativos nos arcos reversos.  |
+| Transformação Min Cost Max Flow  |  ✅   |      ❌       | Adaptação do MCF para quando desejamos empurrar o _máximo de fluxo_ com o menor custo possível. |
 
 ---
 
@@ -133,8 +134,42 @@ Progresso dos teoremas e provas formais documentados no [LaTeX](./LaTeX/ic.tex).
 
 ## 💸 Teoremas de Fluxo de Custo Mínimo
 
-| Nome                                            | LaTeX | Prova | Descrição                                                                                                                |
-| :---------------------------------------------- | :---: | :---: | :----------------------------------------------------------------------------------------------------------------------- |
-| Condição de Otimalidade (Ciclos Negativos)      |  ❌   |  ❌   | Prova formal de que um fluxo é de custo mínimo se e somente se o seu grafo residual não possui ciclos de custo negativo. |
-| Equivalência dos Custos Reduzidos               |  ❌   |  ❌   | Prova de que a ausência de ciclos residuais negativos equivale à existência de um sistema de potenciais $\pi$ válido.    |
-| Complementaridade de Folgas (Complementary Slackness) |  ❌   |  ❌   | Teorema de dualidade linear garantindo que o fluxo ótimo ocorre quando os custos reduzidos e os fluxos estão alinhados.|
+| Nome                                                  | LaTeX | Prova | Descrição                                                                                                                |
+| :---------------------------------------------------- | :---: | :---: | :----------------------------------------------------------------------------------------------------------------------- |
+| Condição de Otimalidade (Ciclos Negativos)            |  ✅   |  ✅   | Prova formal de que um fluxo é de custo mínimo se e somente se o seu grafo residual não possui ciclos de custo negativo. |
+| Equivalência dos Custos Reduzidos                     |  ✅   |  ✅   | Prova de que a ausência de ciclos residuais negativos equivale à existência de um sistema de potenciais $\pi$ válido.    |
+| Complementaridade de Folgas (Complementary Slackness) |  ✅   |  ✅   | Teorema de dualidade linear garantindo que o fluxo ótimo ocorre quando os custos reduzidos e os fluxos estão alinhados.  |
+
+## 🌲 Network Simplex: Conceitos e Estruturas
+
+| Nome                                             | LaTeX | Prova | Descrição                                                                                                   |
+| :----------------------------------------------- | :---: | :---: | :---------------------------------------------------------------------------------------------------------- |
+| Árvore Geradora Básica (Spanning Tree)           |  ✅   |   —   | Estrutura de árvore que define a solução básica viável no Network Simplex.                                  |
+| Potenciais Nodais ($\pi$)                        |  ✅   |   —   | Vetor de variáveis duais associado aos vértices, usado para calcular custos reduzidos.                      |
+| Arcos Básicos, Não-Básicos e Limitados           |  ✅   |   —   | Partição dos arcos da rede em três categorias: arcos na árvore (básicos), arcos livres (L) e saturados (U). |
+| Regra de Pricing (Entering Arc)                  |  ✅   |   —   | Critério de seleção do arco com custo reduzido negativo para entrar na base.                                |
+| Ciclo Fundamental e Arco Limitante (Leaving Arc) |  ✅   |   —   | Identificação do ciclo criado pela inserção de um arco e do arco gargalo que sai da base.                   |
+| Pivoteamento e Atualização da Árvore             |  ✅   |   —   | Operação de atualizar a árvore geradora, o fluxo e os potenciais após cada iteração.                        |
+
+---
+
+# 📊 TO-DO: Benchmarks e Validação Experimental
+
+Progresso dos experimentos computacionais e validação de desempenho dos algoritmos implementados, utilizando instâncias padronizadas de **benchmarks** reconhecidos. Os resultados e análises estarão documentados no [LaTeX](./LaTeX/ic.tex).
+
+## 🏋️ Instâncias e Datasets
+
+| Nome                             | LaTeX | Execução | Descrição                                                                         |
+| :------------------------------- | :---: | :------: | :-------------------------------------------------------------------------------- |
+| Coleções DIMACS (Max Flow)       |  ❌   |    ❌    | Instâncias padronizadas para benchmarking de algoritmos de fluxo máximo.          |
+| Coleções DIMACS (Min Cost Flow)  |  ❌   |    ❌    | Instâncias padronizadas para benchmarking de algoritmos de fluxo de custo mínimo. |
+| Gerador de Instâncias Aleatórias |  ❌   |    ❌    | Scripts para geração de grafos aleatórios com densidades e tamanhos variados.     |
+
+## 📈 Análise Comparativa
+
+| Nome                               | LaTeX | Execução | Descrição                                                                                            |
+| :--------------------------------- | :---: | :------: | :--------------------------------------------------------------------------------------------------- |
+| Tempo de Execução (Max Flow)       |  ❌   |    ❌    | Comparação de tempo entre Edmonds-Karp, Dinic e Push-Relabel em instâncias de diferentes densidades. |
+| Tempo de Execução (Min Cost Flow)  |  ❌   |    ❌    | Análise de desempenho do Network Simplex em instâncias de custo mínimo.                              |
+| Escalabilidade ($\|V\|$ e $\|A\|$) |  ❌   |    ❌    | Testes de escalabilidade variando o número de vértices e arcos para cada algoritmo.                  |
+| Tabelas e Gráficos Comparativos    |  ❌   |    ❌    | Geração de tabelas e gráficos de desempenho para inclusão no relatório LaTeX.                        |

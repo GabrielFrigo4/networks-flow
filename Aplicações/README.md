@@ -8,8 +8,8 @@ Aqui, a teoria se encontra com a prática. Os conceitos de grafos, fluxos de cus
 
 ## 📂 Estrutura do Diretório
 
-| Projeto | Descrição |
-| :--- | :--- |
+| Projeto                                                        | Descrição                                                                                                                                                                                                    |
+| :------------------------------------------------------------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | ✂️ **[Segmentação de Imagens](./Segmentação%20de%20Imagens/)** | Aplicação em C++ que utiliza **Max-Flow / Min-Cut** para extrair o objeto principal (_foreground_) de uma imagem PPM, separando-o do fundo (_background_) a partir de poucas marcações do usuário (_seeds_). |
 
 ---
