@@ -12,7 +12,7 @@ Progresso das otimizações e refatorações de código no projeto, visando melh
 - [x] Consertar alguns casos de borda do Segmentação de Imagens (Max Flow / Min Cut)
 - [x] Reler o Relatório, fazer uma auditoria completa da iniciação científica
 - [x] Fazer o Minimum Cost Flow - Teoria
-- [x] Fazer o Network Simplex - Teoria
+- [-] Fazer o Network Simplex - Teoria
 - [ ] Fazer o Minimum Cost Flow - Implementação
 - [ ] Fazer os Benchmarks e Validação Experimental
 - [ ] Por fim fazer a auditoria final do Relatório e entregar a IC
@@ -145,6 +145,7 @@ Progresso dos teoremas e provas formais documentados no [LaTeX](./LaTeX/ic.tex).
 | Nome                                             | LaTeX | Prova | Descrição                                                                                                   |
 | :----------------------------------------------- | :---: | :---: | :---------------------------------------------------------------------------------------------------------- |
 | Árvore Geradora Básica (Spanning Tree)           |  ✅   |   —   | Estrutura de árvore que define a solução básica viável no Network Simplex.                                  |
+| Matriz Totalmente Unimodular (TUM)               |  ❌   |  ❌   | Matriz de incidência do digrafo, que garante que a solução básica do Network Simplex seja puramente inteira. |
 | Potenciais Nodais ($\pi$)                        |  ✅   |   —   | Vetor de variáveis duais associado aos vértices, usado para calcular custos reduzidos.                      |
 | Arcos Básicos, Não-Básicos e Limitados           |  ✅   |   —   | Partição dos arcos da rede em três categorias: arcos na árvore (básicos), arcos livres (L) e saturados (U). |
 | Regra de Pricing (Entering Arc)                  |  ✅   |   —   | Critério de seleção do arco com custo reduzido negativo para entrar na base.                                |
