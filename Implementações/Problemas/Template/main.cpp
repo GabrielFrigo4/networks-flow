@@ -2,11 +2,11 @@
 // Inclui todos os algoritmos disponíveis na biblioteca.
 // Para trocar o algoritmo, basta alterar o 'using' abaixo.
 
-#include "../../Dinic.hpp"
-#include "../../EdmondsKarp.hpp"
-#include "../../FordFulkerson.hpp"
-#include "../../PushRelabel.hpp"
-#include "../../PushRelabelImproved.hpp"
+#include "../../FlowNetwork/Dinic.hpp"
+#include "../../FlowNetwork/EdmondsKarp.hpp"
+#include "../../FlowNetwork/FordFulkerson.hpp"
+#include "../../FlowNetwork/PushRelabel.hpp"
+#include "../../FlowNetwork/PushRelabelImproved.hpp"
 #include <iostream>
 
 // ============================================================

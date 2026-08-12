@@ -1529,6 +1529,24 @@ As condições de otimalidade podem ser refinadas através do teorema de Complem
 
 Estas condições são equivalentes à exigência de $\bar{w}_\pi \ge 0$ nos arcos residuais. De fato, se um arco original $(u,v)$ tem $f(u,v) > 0$, o arco reverso $(v,u)$ existe em $D_f$ com custo $-w(u,v)$, e a condição $\bar{w}_\pi(v,u) = -w(u,v) - \pi(v) + \pi(u) = -\bar{w}_\pi(u,v) \ge 0$ implica $\bar{w}_\pi(u,v) \le 0$. Combinado com $\bar{w}_\pi(u,v) \ge 0$ (do arco direto, se $f < c$), obtemos $\bar{w}_\pi(u,v) = 0$. Isso formaliza a relação entre custos reduzidos e o estado do fluxo nos arcos.
 
+\subsection{O Algoritmo Cycle Canceling}
+
+O \textit{Cycle Canceling} é o algoritmo mais direto para resolver o MCF, baseado na condição de otimalidade por ciclos negativos (veja~\cite{ahuja1993network}). A estratégia opera em duas fases:
+
+\textbf{Fase 1 --- Obtenção de um fluxo viável máximo.} Resolve-se um problema de fluxo máximo padrão de $s$ a $t$ (ignorando custos), utilizando qualquer algoritmo de fluxo máximo (e.g., Edmonds-Karp via BFS). Ao término, o fluxo $f$ satura a rede com $|f| = |f^*|$, mas potencialmente com custo subótimo.
+
+\textbf{Fase 2 --- Cancelamento iterativo de ciclos negativos.} Enquanto o grafo residual $D_f$ possuir um ciclo de custo negativo $C$, augmenta-se o fluxo ao longo de $C$ pelo gargalo $\delta = \min_{(u,v) \in C} r_f(u,v)$. Cada cancelamento reduz o custo total em $\delta \cdot |w(C)|$, onde $w(C) < 0$ é o custo do ciclo. A detecção do ciclo utiliza o algoritmo de \textit{Bellman-Ford} em $\mathcal{O}(|V| \cdot |A|)$.
+
+A correção do algoritmo segue diretamente do teorema de otimalidade: quando não existem mais ciclos de custo negativo no residual, o fluxo é de custo mínimo. A complexidade total é $\mathcal{O}(|V| \cdot |A|^2 \cdot C \cdot W)$, onde $C$ e $W$ são os maiores valores de capacidade e custo, respectivamente --- pseudopolinomial, porém conceitualmente simples.
+
+\subsection{O Algoritmo Successive Shortest Path}
+
+O \textit{Successive Shortest Path} (SSP) constrói o fluxo de custo mínimo incrementalmente, enviando fluxo ao longo do caminho de menor custo a cada iteração (veja~\cite{ahuja1993network}).
+
+A cada iteração, o algoritmo encontra o caminho mais curto (em termos de custo) de $s$ a $t$ no grafo residual $D_f$ utilizando o \textit{SPFA} (\textit{Shortest Path Faster Algorithm}), uma variante otimizada do algoritmo de \textit{Bellman-Ford} que mantém uma fila de vértices ativos. O fluxo é então augmentado ao longo deste caminho pelo gargalo $\delta = \min_{(u,v) \in P} r_f(u,v)$, e o custo total é incrementado por $\delta \cdot d(t)$, onde $d(t)$ é a distância mínima encontrada.
+
+O algoritmo termina quando não existe mais nenhum caminho de $s$ a $t$ no grafo residual, significando que o fluxo máximo foi atingido. A cada iteração, pelo menos uma unidade de fluxo é enviada (em redes com capacidades inteiras), e o caminho escolhido é sempre o de menor custo acumulado, garantindo a otimalidade do fluxo final. A complexidade é $\mathcal{O}(|V| \cdot |A| \cdot F)$, onde $F = |f^*|$ é o valor do fluxo máximo.
+
 \subsection{O Algoritmo Network Simplex}
 
 O \textit{Network Simplex} é uma especialização do método Simplex clássico de programação linear para a estrutura combinatória de redes de fluxo (veja~\cite{ahuja1993network, dantzig1951application}). A ideia central explora uma correspondência fundamental: cada solução básica viável do programa linear do MCF corresponde bijetivamente a uma \textbf{árvore geradora} (\textit{spanning tree}) do digrafo subjacente. Esta especialização permite que cada iteração do Simplex seja executada em tempo $\mathcal{O}(|V|)$, em contraste com os pivoteamentos genéricos que operam sobre matrizes densas.
@@ -1571,6 +1589,46 @@ Fixando $\pi(r) = 0$ para um vértice raiz $r$ arbitrário, os potenciais de tod
 \caption{Parti\c{c}\~ao dos arcos no Network Simplex. Arcos azuis s\'olidos formam a \'arvore geradora b\'asica $T$ (4 arcos para 5 v\'ertices). Arcos cinza tracejados s\~ao n\~ao-b\'asicos: $L$ (fluxo $= 0$) e $U$ (fluxo $= c$, saturado).}
 \label{fig:spanning_tree_basis}
 \end{figure}
+
+\subsubsection{Total Unimodularidade e Soluções Inteiras}
+
+A razão algébrica pela qual o \textit{Network Simplex} sempre produz soluções inteiras (quando capacidades e demandas são inteiras) reside em uma propriedade fundamental da matriz de restrições do problema de fluxo: a \textbf{Total Unimodularidade} (TUM).
+
+\begin{quote}
+\textbf{Definição.} Uma matriz $M \in \mathbb{Z}^{m \times n}$ é \textit{Totalmente Unimodular} (TUM) se o determinante de toda submatriz quadrada de $M$ pertence ao conjunto $\{-1, 0, +1\}$.
+\end{quote}
+
+A matriz de restrições do problema de fluxo em redes é a \textbf{matriz de incidência} $A \in \{-1, 0, +1\}^{|V| \times |A|}$ do digrafo $D = (V, A)$, definida como:
+\begin{equation}
+    A_{v,e} = \begin{cases}
+        +1, & \text{se } v \text{ é a origem do arco } e \\
+        -1, & \text{se } v \text{ é o destino do arco } e \\
+        \phantom{+}0, & \text{caso contrário}
+    \end{cases}
+\end{equation}
+
+\begin{quote}
+\textbf{Teorema.} A matriz de incidência de qualquer digrafo é Totalmente Unimodular.
+\end{quote}
+
+\textbf{Prova.} Por indução no tamanho $k$ da submatriz quadrada $B$ de $A$.
+
+\textit{Base} ($k = 1$): cada entrada de $A$ pertence a $\{-1, 0, +1\}$, logo $\det(B) \in \{-1, 0, +1\}$.
+
+\textit{Passo indutivo:} considere uma submatriz $B$ de ordem $k > 1$. Distinguimos três casos com base na estrutura das colunas de $B$ (cada coluna de $A$ possui exatamente um $+1$ e um $-1$, correspondendo à origem e ao destino do arco):
+\begin{enumerate}
+    \item Se $B$ possui uma coluna composta inteiramente por zeros, então $\det(B) = 0$.
+    \item Se alguma coluna de $B$ possui exatamente uma entrada não-nula (i.e., $+1$ ou $-1$), expandindo o determinante por essa coluna obtemos $\det(B) = \pm \det(B')$, onde $B'$ é uma submatriz de ordem $k-1$ de $A$. Pela hipótese de indução, $\det(B') \in \{-1, 0, +1\}$, logo $\det(B) \in \{-1, 0, +1\}$.
+    \item Se toda coluna de $B$ possui exatamente duas entradas não-nulas, então cada coluna contém um $+1$ e um $-1$ (pela estrutura da matriz de incidência). Somando todas as linhas de $B$, obtém-se o vetor nulo, o que implica dependência linear entre as linhas. Portanto, $\det(B) = 0$.
+\end{enumerate}
+
+Em todos os casos, $\det(B) \in \{-1, 0, +1\}$, concluindo a prova. $\square$
+
+\textbf{Consequência para o Network Simplex.} O algoritmo Simplex opera invertendo matrizes de base $B$ (submatrizes quadradas não-singulares de $A$). Como $A$ é TUM, temos $\det(B) = \pm 1$, e pela Regra de Cramer:
+\begin{equation}
+    x_B = B^{-1} b = \frac{\text{adj}(B) \cdot b}{\det(B)} = \pm \, \text{adj}(B) \cdot b
+\end{equation}
+onde $\text{adj}(B)$ é a matriz adjunta (cujas entradas são determinantes de submatrizes de $A$, portanto inteiras pela TUM). Quando o vetor de demandas $b$ é inteiro, a solução $x_B$ é necessariamente inteira. Esta é a fundamentação algébrica do Teorema da Integralidade no contexto do \textit{Network Simplex}, e a razão pela qual a solução básica viável pode ser representada como uma árvore geradora com fluxos inteiros nos arcos (veja~\cite{ahuja1993network, schrijver2003combinatorial}).
 
 \subsubsection{Potenciais e Custos Reduzidos na Árvore}
 
@@ -1649,17 +1707,19 @@ O custo negativo no arco artificial incentiva o algoritmo a maximizar o fluxo ci
 
 \section{Conclusões}
 
-Os resultados obtidos ao longo desta Iniciação Científica demonstram o cumprimento bem-sucedido dos objetivos centrais do projeto. Foram estudados em profundidade e implementados com rigor os algoritmos clássicos de fluxo máximo e a infraestrutura de suporte foi organizada em duas camadas distintas:
+Os resultados obtidos ao longo desta Iniciação Científica demonstram o cumprimento bem-sucedido dos objetivos centrais do projeto. Foram estudados em profundidade e implementados com rigor os algoritmos clássicos de fluxo em redes, e a infraestrutura de suporte foi organizada em uma arquitetura de duas famílias polimórficas distintas:
 
 \begin{enumerate}
-    \item \textbf{Núcleo Algorítmico (\textit{Core Framework}):} Composto pela interface \lstinline{FlowNetwork} e pelos motores de fluxo concretos (\lstinline{FordFulkerson}, \lstinline{EdmondsKarp}, \lstinline{Dinic}, \lstinline{PushRelabel} e \lstinline{PushRelabelImproved}), cujos códigos-fonte integrais encontram-se documentados nos Apêndices~\ref{ap:flownetwork} a~\ref{ap:push_relabel_improved}. Esta camada é estritamente responsável pela manutenção da topologia da rede, pela gestão das capacidades residuais e pelo cômputo escalar do valor do fluxo máximo $|f^*|$. O núcleo não possui conhecimento prévio sobre o domínio dos problemas (e.g., ele ignora se a rede representa pixels, casamentos ou caminhos).
+    \item \textbf{Família \lstinline{FlowNetwork} (Fluxo Máximo):} Composta pela interface base \lstinline{FlowNetwork} e pelos motores de fluxo concretos (\lstinline{FordFulkerson}, \lstinline{EdmondsKarp}, \lstinline{Dinic}, \lstinline{PushRelabel} e \lstinline{PushRelabelImproved}), cujos códigos-fonte integrais encontram-se documentados nos Apêndices~\ref{ap:flownetwork} a~\ref{ap:push_relabel_improved}. Esta família provê a interface \lstinline{compute_max_flow(source, sink)} para o cômputo escalar do valor do fluxo máximo $|f^*|$, e é utilizada tanto diretamente quanto como componente interno do \textit{Cycle Canceling}.
     
-    \item \textbf{Camada de Aplicação e Reduções (\textit{Client Application Layer}):} Composta pelos módulos de redução e problemas específicos (como os resolvedores dos problemas \textit{Maximum Bipartite Matching}, \textit{Distinct Routes}, \textit{Police Chase} localizados em \texttt{Implementações/Problemas/} e a ferramenta de \textit{Segmentação de Imagens} em \texttt{Aplicações/Segmentação de Imagens/}). Esta camada atua como cliente do núcleo: ela constrói o digrafo estendido $D'$, invoca o \lstinline{compute_max_flow()} do \textit{Core Framework} e, em seguida, realiza o pós-processamento necessário --- inspecionando a rede residual final via \lstinline{get_edges()} e \lstinline{get_adjacency()} para executar rotinas externas, como travessias BFS para identificação do corte mínimo $(S, T)$ ou decomposição em caminhos simples.
+    \item \textbf{Família \lstinline{CostNetwork} (Custo Mínimo):} Composta pela interface base \lstinline{CostNetwork} e pelos algoritmos de fluxo de custo mínimo (\lstinline{CycleCanceling}, \lstinline{SuccessiveShortest} e \lstinline{NetworkSimplex}), documentados nos Apêndices~\ref{ap:costnetwork} a~\ref{ap:network_simplex}. Esta família estende o modelo de arcos com um campo de custo unitário e provê a interface \lstinline{compute_min_cost_max_flow(source, sink)} para o cômputo do fluxo máximo de custo mínimo.
+    
+    \item \textbf{Camada de Aplicação e Reduções (\textit{Client Application Layer}):} Composta pelos módulos de redução e problemas específicos (como os resolvedores dos problemas \textit{Maximum Bipartite Matching}, \textit{Distinct Routes}, \textit{Police Chase} localizados em \texttt{Implementações/Problemas/} e a ferramenta de \textit{Segmentação de Imagens} em \texttt{Aplicações/Segmentação de Imagens/}). Esta camada atua como cliente das famílias polimórficas, construindo o digrafo estendido $D'$ e invocando os métodos de resolução apropriados.
 \end{enumerate}
 
-Na segunda fase do projeto, a fundamentação teórica do problema de Fluxo de Custo Mínimo foi desenvolvida em detalhes, incluindo a formulação formal com demandas, as condições de otimalidade por ciclos negativos (com prova), a teoria de custos reduzidos e potenciais nodais (com prova de equivalência), o teorema de complementaridade de folgas e a descrição completa do algoritmo \textit{Network Simplex} --- desde a estrutura de árvore geradora básica até o mecanismo de pivoteamento. A transformação para o problema de Fluxo Máximo de Custo Mínimo também foi formalizada.
+A fundamentação teórica foi desenvolvida em profundidade em ambos os domínios. Para fluxo máximo, foram provados formalmente os teoremas de Max-Flow Min-Cut, Integralidade, Decomposição de Fluxo, Menger (arestas e vértices), König e Hall. Para o problema de Fluxo de Custo Mínimo, foram demonstradas a condição de otimalidade por ciclos negativos, a equivalência dos custos reduzidos, o teorema de complementaridade de folgas, e a propriedade de Total Unimodularidade da matriz de incidência --- que fundamenta algebricamente a integralidade das soluções do \textit{Network Simplex}.
 
-O projeto encontra-se em fase de conclusão, restando a implementação computacional do \textit{Network Simplex} em C++ e a condução dos experimentos de \textit{benchmarking} para a análise comparativa de desempenho de todos os algoritmos implementados.
+O projeto encontra-se em fase de conclusão, restando a condução dos experimentos de \textit{benchmarking} para a análise comparativa de desempenho de todos os algoritmos implementados.
 
 
 \newpage
@@ -2341,6 +2401,617 @@ private:
 \end{lstlisting}
 
 \newpage
+\section{Implementação da Interface Base ``Cost-Network''}
+\label{ap:costnetwork}
+
+\begin{lstlisting}[caption={Implementação em C++ da interface base \lstinline{CostNetwork} para a modelagem abstrata de redes de fluxo com custos.}, label={lst:costnetwork}]
+#include <limits>
+#include <memory>
+#include <vector>
+
+using Long = long long;
+using Size = std::size_t;
+
+constexpr Long INF = std::numeric_limits<Long>::max() >> 8;
+constexpr Size MAX = std::numeric_limits<Size>::max() >> 8;
+
+class CostNetwork
+{
+public:
+	struct Edge
+	{
+		Size from, to;
+		Long capacity, cost, flow;
+	};
+
+	explicit CostNetwork(const Size n) : size(n), adjacency(n) {}
+	virtual ~CostNetwork() = default;
+
+	virtual std::unique_ptr<CostNetwork> make(const Size n) const = 0;
+	virtual std::unique_ptr<CostNetwork> clone() const = 0;
+
+	virtual void add_edge(
+	    const Size from, const Size to,
+	    const Long capacity, const Long cost
+	)
+	{
+		adjacency[from].push_back(edges.size());
+		edges.push_back({from, to, capacity, cost, 0});
+		adjacency[to].push_back(edges.size());
+		edges.push_back({to, from, 0, -cost, 0});
+	}
+
+	virtual Long compute_min_cost_max_flow(
+	    const Size source, const Size sink) = 0;
+
+	[[nodiscard]] Long get_total_flow(const Size source) const
+	{
+		Long total = 0;
+		for (const Size edge_id : adjacency[source])
+			total += edges[edge_id].flow;
+		return total;
+	}
+
+	[[nodiscard]] Size get_size() const
+	{
+		return size;
+	}
+
+	[[nodiscard]] const std::vector<Edge> &get_edges() const
+	{
+		return edges;
+	}
+
+	[[nodiscard]] const std::vector<std::vector<Size>>
+	    &get_adjacency() const
+	{
+		return adjacency;
+	}
+
+protected:
+	Size size;
+	std::vector<Edge> edges;
+	std::vector<std::vector<Size>> adjacency;
+
+	[[nodiscard]] Long get_residual_capacity(
+	    const Size edge_id) const
+	{
+		return edges[edge_id].capacity - edges[edge_id].flow;
+	}
+
+	void push_flow(const Size edge_id, const Long flow_amount)
+	{
+		edges[edge_id].flow += flow_amount;
+		edges[edge_id ^ 1ULL].flow -= flow_amount;
+	}
+};
+\end{lstlisting}
+
+\newpage
+\section{Implementação da Classe ``Cycle-Canceling''}
+\label{ap:cycle_canceling}
+
+\begin{lstlisting}[caption={Implementação em C++ do algoritmo \textit{Cycle Canceling}.}, label={lst:cycle_canceling}]
+#include "CostNetwork.hpp"
+#include <algorithm>
+#include <queue>
+
+class CycleCanceling : public CostNetwork
+{
+public:
+	explicit CycleCanceling(const Size n)
+	    : CostNetwork(n), distance(n), parent_edge(n) {}
+
+	static std::unique_ptr<CostNetwork> create(const Size n)
+	{
+		return std::make_unique<CycleCanceling>(n);
+	}
+
+	std::unique_ptr<CostNetwork> make(const Size n) const override
+	{
+		return std::make_unique<CycleCanceling>(n);
+	}
+
+	std::unique_ptr<CostNetwork> clone() const override
+	{
+		return std::make_unique<CycleCanceling>(*this);
+	}
+
+	Long compute_min_cost_max_flow(
+	    const Size source, const Size sink) override
+	{
+		saturate_max_flow(source, sink);
+		while (find_negative_cycle())
+			cancel_cycle();
+		Long total_cost = 0;
+		for (Size i = 0; i < edges.size(); i += 2)
+			total_cost += edges[i].flow * edges[i].cost;
+		return total_cost;
+	}
+
+private:
+	std::vector<Long> distance;
+	std::vector<Size> parent_edge;
+	Size cycle_node;
+
+	void saturate_max_flow(
+	    const Size source, const Size sink)
+	{
+		while (true)
+		{
+			std::vector<Size> parent(size, MAX);
+			std::queue<std::pair<Size, Long>> queue;
+			parent[source] = source;
+			queue.push({source, INF});
+			while (!queue.empty())
+			{
+				const auto [current, current_flow] =
+				    queue.front();
+				queue.pop();
+				for (const Size edge_id : adjacency[current])
+				{
+					const Size next = edges[edge_id].to;
+					if (parent[next] != MAX ||
+					    get_residual_capacity(edge_id) <= 0)
+						continue;
+					parent[next] = edge_id;
+					const Long bottleneck = std::min(
+					    current_flow,
+					    get_residual_capacity(edge_id));
+					if (next == sink)
+					{
+						Size node = sink;
+						while (node != source)
+						{
+							const Size eid = parent[node];
+							push_flow(eid, bottleneck);
+							node = edges[eid].from;
+						}
+						goto next_iteration;
+					}
+					queue.push({next, bottleneck});
+				}
+			}
+			return;
+			next_iteration:;
+		}
+	}
+
+	bool find_negative_cycle()
+	{
+		std::fill(distance.begin(), distance.end(), 0);
+		std::fill(parent_edge.begin(), parent_edge.end(), MAX);
+		for (Size iteration = 0; iteration < size; ++iteration)
+		{
+			cycle_node = MAX;
+			for (Size eid = 0; eid < edges.size(); ++eid)
+			{
+				if (get_residual_capacity(eid) <= 0)
+					continue;
+				const Size u = edges[eid].from;
+				const Size v = edges[eid].to;
+				if (distance[u] + edges[eid].cost
+				    < distance[v])
+				{
+					distance[v] =
+					    distance[u] + edges[eid].cost;
+					parent_edge[v] = eid;
+					cycle_node = v;
+				}
+			}
+		}
+		return cycle_node != MAX;
+	}
+
+	void cancel_cycle()
+	{
+		Size node = cycle_node;
+		for (Size i = 0; i < size; ++i)
+			node = edges[parent_edge[node]].from;
+		Long bottleneck = INF;
+		Size current = node;
+		do
+		{
+			const Size eid = parent_edge[current];
+			bottleneck = std::min(
+			    bottleneck, get_residual_capacity(eid));
+			current = edges[eid].from;
+		} while (current != node);
+		current = node;
+		do
+		{
+			const Size eid = parent_edge[current];
+			push_flow(eid, bottleneck);
+			current = edges[eid].from;
+		} while (current != node);
+	}
+};
+\end{lstlisting}
+
+\newpage
+\section{Implementação da Classe ``Successive-Shortest-Path''}
+\label{ap:successive_shortest}
+
+\begin{lstlisting}[caption={Implementação em C++ do algoritmo \textit{Successive Shortest Path} com SPFA.}, label={lst:successive_shortest}]
+#include "CostNetwork.hpp"
+#include <algorithm>
+#include <queue>
+
+class SuccessiveShortest : public CostNetwork
+{
+public:
+	explicit SuccessiveShortest(const Size n)
+	    : CostNetwork(n), distance(n),
+	      parent_edge(n), in_queue(n) {}
+
+	static std::unique_ptr<CostNetwork> create(const Size n)
+	{
+		return std::make_unique<SuccessiveShortest>(n);
+	}
+
+	std::unique_ptr<CostNetwork> make(
+	    const Size n) const override
+	{
+		return std::make_unique<SuccessiveShortest>(n);
+	}
+
+	std::unique_ptr<CostNetwork> clone() const override
+	{
+		return std::make_unique<SuccessiveShortest>(*this);
+	}
+
+	Long compute_min_cost_max_flow(
+	    const Size source, const Size sink) override
+	{
+		Long total_cost = 0;
+		while (spfa(source, sink))
+		{
+			Long bottleneck = INF;
+			for (Size node = sink; node != source;)
+			{
+				const Size eid = parent_edge[node];
+				bottleneck = std::min(
+				    bottleneck,
+				    get_residual_capacity(eid));
+				node = edges[eid].from;
+			}
+			for (Size node = sink; node != source;)
+			{
+				const Size eid = parent_edge[node];
+				push_flow(eid, bottleneck);
+				node = edges[eid].from;
+			}
+			total_cost += bottleneck * distance[sink];
+		}
+		return total_cost;
+	}
+
+private:
+	std::vector<Long> distance;
+	std::vector<Size> parent_edge;
+	std::vector<bool> in_queue;
+
+	bool spfa(const Size source, const Size sink)
+	{
+		std::fill(distance.begin(), distance.end(), INF);
+		std::fill(parent_edge.begin(),
+		    parent_edge.end(), MAX);
+		std::fill(in_queue.begin(), in_queue.end(), false);
+		distance[source] = 0;
+		in_queue[source] = true;
+		std::queue<Size> queue;
+		queue.push(source);
+		while (!queue.empty())
+		{
+			const Size current = queue.front();
+			queue.pop();
+			in_queue[current] = false;
+			for (const Size eid : adjacency[current])
+			{
+				const Size next = edges[eid].to;
+				const Long nd =
+				    distance[current] + edges[eid].cost;
+				if (get_residual_capacity(eid) <= 0 ||
+				    nd >= distance[next])
+					continue;
+				distance[next] = nd;
+				parent_edge[next] = eid;
+				if (!in_queue[next])
+				{
+					in_queue[next] = true;
+					queue.push(next);
+				}
+			}
+		}
+		return distance[sink] != INF;
+	}
+};
+\end{lstlisting}
+
+\newpage
+\section{Implementação da Classe ``Network-Simplex''}
+\label{ap:network_simplex}
+
+\begin{lstlisting}[caption={Implementação em C++ do algoritmo \textit{Network Simplex}.}, label={lst:network_simplex}]
+#include "CostNetwork.hpp"
+#include <algorithm>
+#include <numeric>
+
+class NetworkSimplex : public CostNetwork
+{
+public:
+	explicit NetworkSimplex(const Size n) : CostNetwork(n) {}
+
+	static std::unique_ptr<CostNetwork> create(const Size n)
+	{
+		return std::make_unique<NetworkSimplex>(n);
+	}
+
+	std::unique_ptr<CostNetwork> make(
+	    const Size n) const override
+	{
+		return std::make_unique<NetworkSimplex>(n);
+	}
+
+	std::unique_ptr<CostNetwork> clone() const override
+	{
+		return std::make_unique<NetworkSimplex>(*this);
+	}
+
+	Long compute_min_cost_max_flow(
+	    const Size source, const Size sink) override
+	{
+		add_edge(sink, source, INF, 0);
+		const Size back_edge = edges.size() - 2;
+		const Size total_nodes = size + 1;
+		const Size root = size;
+		parent.assign(total_nodes, root);
+		depth.assign(total_nodes, 1);
+		thread.resize(total_nodes);
+		potential.assign(total_nodes, 0);
+		parent_edge.assign(total_nodes, MAX);
+		arc_state.assign(
+		    edges.size() / 2, ArcState::LOWER);
+		std::iota(thread.begin(), thread.end(), Size(1));
+		thread[root] = 0;
+		depth[root] = 0;
+		const Long big_m = compute_big_m();
+		for (Size v = 0; v < size; ++v)
+		{
+			adjacency[v].push_back(edges.size());
+			edges.push_back({v, root, big_m, big_m, 0});
+			adjacency[root].push_back(edges.size());
+			edges.push_back({root, v, 0, -big_m, 0});
+			adjacency[root].push_back(edges.size());
+			edges.push_back({root, v, big_m, big_m, 0});
+			adjacency[v].push_back(edges.size());
+			edges.push_back({v, root, 0, -big_m, 0});
+			parent_edge[v] = edges.size() - 4;
+			potential[v] = -big_m;
+			arc_state.push_back(ArcState::TREE);
+			arc_state.push_back(ArcState::TREE);
+		}
+		while (true)
+		{
+			const Size entering = find_entering_arc();
+			if (entering == MAX) break;
+			const Size leaving =
+			    find_leaving_arc(entering);
+			pivot(entering, leaving);
+		}
+		Long total_cost = 0;
+		for (Size i = 0; i < back_edge; i += 2)
+			total_cost += edges[i].flow * edges[i].cost;
+		return total_cost;
+	}
+
+private:
+	enum class ArcState : uint8_t
+	{
+		LOWER, UPPER, TREE
+	};
+	std::vector<Size> parent, depth, thread, parent_edge;
+	std::vector<Long> potential;
+	std::vector<ArcState> arc_state;
+
+	Long compute_big_m() const
+	{
+		Long sum = 1;
+		for (const auto &edge : edges)
+			if (edge.cost > 0)
+				sum += edge.cost * edge.capacity;
+		return sum;
+	}
+
+	[[nodiscard]] Long reduced_cost(
+	    const Size edge_id) const
+	{
+		return edges[edge_id].cost
+		    - potential[edges[edge_id].from]
+		    + potential[edges[edge_id].to];
+	}
+
+	Size find_entering_arc() const
+	{
+		Size best = MAX;
+		Long best_violation = 0;
+		for (Size i = 0; i < edges.size(); i += 2)
+		{
+			const Size arc = i / 2;
+			if (arc_state[arc] == ArcState::TREE)
+				continue;
+			const Long rc = reduced_cost(i);
+			if (arc_state[arc] == ArcState::LOWER
+			    && rc < best_violation)
+			{
+				best_violation = rc;
+				best = i;
+			}
+			else if (arc_state[arc] == ArcState::UPPER
+			    && -rc < best_violation)
+			{
+				best_violation = -rc;
+				best = i;
+			}
+		}
+		return best;
+	}
+
+	Size find_lca(Size u, Size v) const
+	{
+		while (u != v)
+		{
+			if (depth[u] < depth[v]) std::swap(u, v);
+			u = parent[u];
+		}
+		return u;
+	}
+
+	Size find_leaving_arc(const Size entering)
+	{
+		const Size arc = entering / 2;
+		Size u = edges[entering].from;
+		Size v = edges[entering].to;
+		if (arc_state[arc] == ArcState::UPPER)
+			std::swap(u, v);
+		const Size lca = find_lca(u, v);
+		Long bottleneck = get_residual_capacity(entering);
+		Size leaving = entering;
+		for (Size nd = u; nd != lca; nd = parent[nd])
+		{
+			const Size eid = parent_edge[nd];
+			Long r = (edges[eid].from == nd)
+			    ? edges[eid ^ 1ULL].flow
+			    : get_residual_capacity(eid);
+			if (r < bottleneck)
+			    { bottleneck = r; leaving = eid; }
+		}
+		for (Size nd = v; nd != lca; nd = parent[nd])
+		{
+			const Size eid = parent_edge[nd];
+			Long r = (edges[eid].to == nd)
+			    ? edges[eid ^ 1ULL].flow
+			    : get_residual_capacity(eid);
+			if (r <= bottleneck)
+			    { bottleneck = r; leaving = eid; }
+		}
+		for (Size nd = u; nd != lca; nd = parent[nd])
+		{
+			const Size eid = parent_edge[nd];
+			if (edges[eid].from == nd)
+				push_flow(eid ^ 1ULL, bottleneck);
+			else push_flow(eid, bottleneck);
+		}
+		for (Size nd = v; nd != lca; nd = parent[nd])
+		{
+			const Size eid = parent_edge[nd];
+			if (edges[eid].to == nd)
+				push_flow(eid ^ 1ULL, bottleneck);
+			else push_flow(eid, bottleneck);
+		}
+		if (arc_state[arc] == ArcState::LOWER)
+			push_flow(entering, bottleneck);
+		else push_flow(entering ^ 1ULL, bottleneck);
+		return leaving;
+	}
+
+	void pivot(const Size entering, const Size leaving)
+	{
+		const Size ea = entering / 2;
+		const Size la = leaving / 2;
+		if (entering == leaving)
+		{
+			arc_state[ea] =
+			    (arc_state[ea] == ArcState::LOWER)
+			    ? ArcState::UPPER : ArcState::LOWER;
+			return;
+		}
+		arc_state[la] =
+		    (get_residual_capacity(leaving) == 0)
+		    ? ArcState::UPPER : ArcState::LOWER;
+		arc_state[ea] = ArcState::TREE;
+		update_tree(entering, leaving);
+	}
+
+	void update_tree(
+	    const Size entering, const Size leaving)
+	{
+		Size u = edges[entering].from;
+		Size v = edges[entering].to;
+		Size lu = edges[leaving].from;
+		Size lv = edges[leaving].to;
+		if (depth[lu] < depth[lv]) std::swap(lu, lv);
+		std::vector<Size> path;
+		Size nd = lu;
+		while (true)
+		{
+			path.push_back(nd);
+			if (nd == u || nd == v) break;
+			nd = parent[nd];
+		}
+		if (nd != u) std::swap(u, v);
+		for (Size i = path.size() - 1; i > 0; --i)
+		{
+			parent[path[i]] = path[i - 1];
+			parent_edge[path[i]] =
+			    parent_edge[path[i - 1]];
+		}
+		parent[lu] = lv;
+		parent_edge[lu] = entering;
+		rebuild_depth_and_thread();
+	}
+
+	void rebuild_depth_and_thread()
+	{
+		const Size root = size;
+		depth[root] = 0;
+		std::vector<std::vector<Size>> ch(size + 1);
+		for (Size v = 0; v <= size; ++v)
+			if (v != root) ch[parent[v]].push_back(v);
+		Size prev = root;
+		std::vector<Size> stk = {root};
+		while (!stk.empty())
+		{
+			const Size nd = stk.back(); stk.pop_back();
+			if (nd != root)
+				depth[nd] = depth[parent[nd]] + 1;
+			thread[prev] = nd; prev = nd;
+			for (auto it = ch[nd].rbegin();
+			     it != ch[nd].rend(); ++it)
+				stk.push_back(*it);
+		}
+		thread[prev] = root;
+		for (Size v = 0; v <= size; ++v)
+		{
+			if (v == root || parent_edge[v] == MAX)
+				continue;
+			const Long rc = reduced_cost(parent_edge[v]);
+			if (rc != 0)
+			{
+				potential[v] += rc;
+				propagate_potential(v, ch);
+			}
+		}
+	}
+
+	void propagate_potential(const Size nd,
+	    const std::vector<std::vector<Size>> &ch)
+	{
+		for (const Size c : ch[nd])
+		{
+			const Long rc =
+			    reduced_cost(parent_edge[c]);
+			if (rc != 0)
+			{
+				potential[c] += rc;
+				propagate_potential(c, ch);
+			}
+		}
+	}
+};
+\end{lstlisting}
+
+\newpage
 \section{Acesso ao Código-Fonte e Repositório GitHub}
 \label{ap:github}
 
@@ -2348,8 +3019,8 @@ Com o objetivo de garantir a transparência, a reprodutibilidade dos experimento
 
 O repositório \textbf{Networks Flow} contém:
 \begin{itemize}
-    \item A biblioteca base em C++ com a interface polimórfica \lstinline{FlowNetwork};
-    \item Implementações completas dos algoritmos de Edmonds-Karp, Dinic e Push-Relabel (incluindo a \textit{Gap Heuristic});
+    \item As bibliotecas base em C++ com as interfaces polimórficas \lstinline{FlowNetwork} e \lstinline{CostNetwork};
+    \item Implementações completas dos algoritmos de fluxo máximo (Edmonds-Karp, Dinic, Push-Relabel) e de custo mínimo (Cycle Canceling, Successive Shortest Path, Network Simplex);
     \item Scripts para automação de testes e leitura de instâncias no padrão DIMACS;
     \item Documentação técnica sobre a estrutura das classes e instruções para compilação.
 \end{itemize}

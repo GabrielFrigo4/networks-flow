@@ -8,7 +8,7 @@
 #include <string>
 #include <vector>
 
-#include "../../../Implementações/FlowNetwork.hpp"
+#include "../../../Implementações/FlowNetwork/FlowNetwork.hpp"
 
 struct Pixel
 {

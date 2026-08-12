@@ -8,40 +8,42 @@ Progresso das tarefas, correções e direcionamentos solicitados pela orientador
 
 Progresso das otimizações e refatorações de código no projeto, visando melhorar a performance dos algoritmos e organizar a estrutura das classes de implementação.
 
-- [x] Testar e se precisar finalizar a Segmentação de Imagens (Max Flow / Min Cut)
-- [x] Consertar alguns casos de borda do Segmentação de Imagens (Max Flow / Min Cut)
-- [x] Reler o Relatório, fazer uma auditoria completa da iniciação científica
-- [x] Fazer o Minimum Cost Flow - Teoria
-- [-] Fazer o Network Simplex - Teoria
-- [ ] Fazer o Minimum Cost Flow - Implementação
-- [ ] Fazer os Benchmarks e Validação Experimental
-- [ ] Por fim fazer a auditoria final do Relatório e entregar a IC
+- ✅ Testar e se precisar finalizar a Segmentação de Imagens (Max Flow / Min Cut)
+- ✅ Consertar alguns casos de borda do Segmentação de Imagens (Max Flow / Min Cut)
+- ✅ Reler o Relatório, fazer uma auditoria completa da iniciação científica
+- ✅ Fazer o Minimum Cost Flow - Teoria
+- ✅ Fazer o Network Simplex - Teoria
+- ✅ Fazer o Minimum Cost Flow - Implementação
+- ❌ Fazer as Implementações dos Problemas de Fluxo Máximo Restantes
+- ❌ Fazer as Implementações dos Problemas de Fluxo de Custo Mínimo
+- ❌ Fazer os Benchmarks e Validação Experimental
+- ❌ Por fim fazer a auditoria final do Relatório e entregar a IC
 
 ---
 
 # ⚡ TO-DO: Algoritmos de Fluxo Máximo
 
-Progresso dos algoritmos de fluxo máximo implementados em C++ e documentados no [LaTeX](./LaTeX/ic.tex). O código-fonte de cada algoritmo pode ser encontrado no diretório de [Implementações](./Implementações/README.md), onde cada algoritmo herda da classe base abstrata [`FlowNetwork`](./Implementações/README.md).
+Progresso dos algoritmos de fluxo máximo implementados em C++ e documentados no [LaTeX](./LaTeX/ic.tex). O código-fonte de cada algoritmo pode ser encontrado no diretório de [Implementações](./Implementações/README.md), onde cada algoritmo herda da classe base abstrata [`FlowNetwork`](./Implementações/FlowNetwork/FlowNetwork.hpp).
 
-| Nome                                                              | LaTeX | Implementação | Descrição                                                                              |
-| :---------------------------------------------------------------- | :---: | :-----------: | :------------------------------------------------------------------------------------- |
-| [Ford-Fulkerson](./Implementações/FordFulkerson.hpp)              |  ✅   |      ✅       | Método iterativo genérico baseado em caminhos aumentantes (pseudopolinomial).          |
-| [Edmonds-Karp](./Implementações/EdmondsKarp.hpp)                  |  ✅   |      ✅       | Especialização do Ford-Fulkerson com BFS. Complexidade $\mathcal{O}(V \cdot E^2)$.     |
-| [Dinic Algorithm](./Implementações/Dinic.hpp)                     |  ✅   |      ✅       | Digrafo de níveis + fluxo bloqueador via DFS. Complexidade $\mathcal{O}(V^2 \cdot E)$. |
-| [Push Relabel FIFO](./Implementações/PushRelabel.hpp)             |  ✅   |      ✅       | Família de pré-fluxo com fila FIFO. Complexidade $\mathcal{O}(V^3)$.                   |
-| [Push Relabel Improved](./Implementações/PushRelabelImproved.hpp) |  ✅   |      ✅       | Push-Relabel com Gap Heuristic para convergência acelerada.                            |
+| Nome                                                                          | LaTeX | Implementação | Descrição                                                                              |
+| :---------------------------------------------------------------------------- | :---: | :-----------: | :------------------------------------------------------------------------------------- |
+| [Ford-Fulkerson](./Implementações/FlowNetwork/FordFulkerson.hpp)              |  ✅   |      ✅       | Método iterativo genérico baseado em caminhos aumentantes (pseudopolinomial).          |
+| [Edmonds-Karp](./Implementações/FlowNetwork/EdmondsKarp.hpp)                  |  ✅   |      ✅       | Especialização do Ford-Fulkerson com BFS. Complexidade $\mathcal{O}(V \cdot E^2)$.     |
+| [Dinic Algorithm](./Implementações/FlowNetwork/Dinic.hpp)                     |  ✅   |      ✅       | Digrafo de níveis + fluxo bloqueador via DFS. Complexidade $\mathcal{O}(V^2 \cdot E)$. |
+| [Push Relabel FIFO](./Implementações/FlowNetwork/PushRelabel.hpp)             |  ✅   |      ✅       | Família de pré-fluxo com fila FIFO. Complexidade $\mathcal{O}(V^3)$.                   |
+| [Push Relabel Improved](./Implementações/FlowNetwork/PushRelabelImproved.hpp) |  ✅   |      ✅       | Push-Relabel com Gap Heuristic para convergência acelerada.                            |
 
 ---
 
 # 🧮 TO-DO: Algoritmos de Custo Mínimo
 
-Progresso dos algoritmos de fluxo de custo mínimo. Estes algoritmos estarão documentados no [LaTeX](./LaTeX/ic.tex) e implementados no diretório [Implementações](./Implementações/README.md).
+Progresso dos algoritmos de fluxo de custo mínimo. Estes algoritmos estão documentados no [LaTeX](./LaTeX/ic.tex) e implementados no diretório [Implementações](./Implementações/README.md), onde cada algoritmo herda da classe base abstrata [`CostNetwork`](./Implementações/CostNetwork/CostNetwork.hpp).
 
-| Nome                                                                | LaTeX | Implementação | Descrição                                                                                             |
-| :------------------------------------------------------------------ | :---: | :-----------: | :---------------------------------------------------------------------------------------------------- |
-| [Cycle Canceling](./Implementações/CycleCanceling.hpp)              |  ❌   |      ❌       | Baseia-se em encontrar fluxos viáveis e iterativamente cancelar ciclos de custo negativo no residual. |
-| [Successive Shortest Path](./Implementações/SuccessiveShortest.hpp) |  ❌   |      ❌       | Usa o algoritmo de Bellman-Ford / Dijkstra com potenciais para rotear fluxo pelo caminho mais barato. |
-| [Network Simplex](./Implementações/NetworkSimplex.hpp)              |  ❌   |      ❌       | Algoritmo muito eficiente na prática que mantém uma estrutura de árvore de base viável.               |
+| Nome                                                                            | LaTeX | Implementação | Descrição                                                                                             |
+| :------------------------------------------------------------------------------ | :---: | :-----------: | :---------------------------------------------------------------------------------------------------- |
+| [Cycle Canceling](./Implementações/CostNetwork/CycleCanceling.hpp)              |  ✅   |      ✅       | Baseia-se em encontrar fluxos viáveis e iterativamente cancelar ciclos de custo negativo no residual. |
+| [Successive Shortest Path](./Implementações/CostNetwork/SuccessiveShortest.hpp) |  ✅   |      ✅       | Usa o algoritmo de Bellman-Ford / Dijkstra com potenciais para rotear fluxo pelo caminho mais barato. |
+| [Network Simplex](./Implementações/CostNetwork/NetworkSimplex.hpp)              |  ✅   |      ✅       | Algoritmo muito eficiente na prática que mantém uma estrutura de árvore de base viável.               |
 
 ---
 
@@ -97,10 +99,10 @@ Progresso das técnicas de modelagem e redução documentadas no [LaTeX](./LaTeX
 
 | Nome                             | LaTeX | Implementação | Descrição                                                                                       |
 | :------------------------------- | :---: | :-----------: | :---------------------------------------------------------------------------------------------- |
-| Custos Reduzidos (Reduced Costs) |  ✅   |      ❌       | Técnica de usar potenciais nos nós ($\pi$) para garantir custos de arestas não-negativos.       |
-| Ciclos de Custo Negativo         |  ✅   |      ❌       | Condição de otimalidade: um fluxo é de custo mínimo se e somente se não há ciclos negativos.    |
-| Grafo Residual com Custos        |  ✅   |      ❌       | Extensão do grafo residual com custos nos arcos diretos e custos negativos nos arcos reversos.  |
-| Transformação Min Cost Max Flow  |  ✅   |      ❌       | Adaptação do MCF para quando desejamos empurrar o _máximo de fluxo_ com o menor custo possível. |
+| Custos Reduzidos (Reduced Costs) |  ✅   |      ✅       | Técnica de usar potenciais nos nós ($\pi$) para garantir custos de arestas não-negativos.       |
+| Ciclos de Custo Negativo         |  ✅   |      ✅       | Condição de otimalidade: um fluxo é de custo mínimo se e somente se não há ciclos negativos.    |
+| Grafo Residual com Custos        |  ✅   |      ✅       | Extensão do grafo residual com custos nos arcos diretos e custos negativos nos arcos reversos.  |
+| Transformação Min Cost Max Flow  |  ✅   |      ✅       | Adaptação do MCF para quando desejamos empurrar o _máximo de fluxo_ com o menor custo possível. |
 
 ---
 
@@ -142,15 +144,15 @@ Progresso dos teoremas e provas formais documentados no [LaTeX](./LaTeX/ic.tex).
 
 ## 🌲 Network Simplex: Conceitos e Estruturas
 
-| Nome                                             | LaTeX | Prova | Descrição                                                                                                   |
-| :----------------------------------------------- | :---: | :---: | :---------------------------------------------------------------------------------------------------------- |
-| Árvore Geradora Básica (Spanning Tree)           |  ✅   |   —   | Estrutura de árvore que define a solução básica viável no Network Simplex.                                  |
-| Matriz Totalmente Unimodular (TUM)               |  ❌   |  ❌   | Matriz de incidência do digrafo, que garante que a solução básica do Network Simplex seja puramente inteira. |
-| Potenciais Nodais ($\pi$)                        |  ✅   |   —   | Vetor de variáveis duais associado aos vértices, usado para calcular custos reduzidos.                      |
-| Arcos Básicos, Não-Básicos e Limitados           |  ✅   |   —   | Partição dos arcos da rede em três categorias: arcos na árvore (básicos), arcos livres (L) e saturados (U). |
-| Regra de Pricing (Entering Arc)                  |  ✅   |   —   | Critério de seleção do arco com custo reduzido negativo para entrar na base.                                |
-| Ciclo Fundamental e Arco Limitante (Leaving Arc) |  ✅   |   —   | Identificação do ciclo criado pela inserção de um arco e do arco gargalo que sai da base.                   |
-| Pivoteamento e Atualização da Árvore             |  ✅   |   —   | Operação de atualizar a árvore geradora, o fluxo e os potenciais após cada iteração.                        |
+| Nome                                             | LaTeX | Prova | Descrição                                                                                                    |
+| :----------------------------------------------- | :---: | :---: | :----------------------------------------------------------------------------------------------------------- |
+| Árvore Geradora Básica (Spanning Tree)           |  ✅   |   —   | Estrutura de árvore que define a solução básica viável no Network Simplex.                                   |
+| Matriz Totalmente Unimodular (TUM)               |  ✅   |  ✅   | Matriz de incidência do digrafo, que garante que a solução básica do Network Simplex seja puramente inteira. |
+| Potenciais Nodais ($\pi$)                        |  ✅   |   —   | Vetor de variáveis duais associado aos vértices, usado para calcular custos reduzidos.                       |
+| Arcos Básicos, Não-Básicos e Limitados           |  ✅   |   —   | Partição dos arcos da rede em três categorias: arcos na árvore (básicos), arcos livres (L) e saturados (U).  |
+| Regra de Pricing (Entering Arc)                  |  ✅   |   —   | Critério de seleção do arco com custo reduzido negativo para entrar na base.                                 |
+| Ciclo Fundamental e Arco Limitante (Leaving Arc) |  ✅   |   —   | Identificação do ciclo criado pela inserção de um arco e do arco gargalo que sai da base.                    |
+| Pivoteamento e Atualização da Árvore             |  ✅   |   —   | Operação de atualizar a árvore geradora, o fluxo e os potenciais após cada iteração.                         |
 
 ---
 

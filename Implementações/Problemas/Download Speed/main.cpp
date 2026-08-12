@@ -3,11 +3,11 @@
 //
 // Fluxo Máximo simples de s=1 até t=n.
 
-#include "../../Dinic.hpp"
-#include "../../EdmondsKarp.hpp"
-#include "../../FordFulkerson.hpp"
-#include "../../PushRelabel.hpp"
-#include "../../PushRelabelImproved.hpp"
+#include "../../FlowNetwork/Dinic.hpp"
+#include "../../FlowNetwork/EdmondsKarp.hpp"
+#include "../../FlowNetwork/FordFulkerson.hpp"
+#include "../../FlowNetwork/PushRelabel.hpp"
+#include "../../FlowNetwork/PushRelabelImproved.hpp"
 #include <iostream>
 
 using FlowSolver = PushRelabelImproved;

@@ -5,12 +5,12 @@
 #include <queue>
 #include <vector>
 
-#include "../../../Implementações/Dinic.hpp"
-#include "../../../Implementações/EdmondsKarp.hpp"
-#include "../../../Implementações/FlowNetwork.hpp"
-#include "../../../Implementações/FordFulkerson.hpp"
-#include "../../../Implementações/PushRelabel.hpp"
-#include "../../../Implementações/PushRelabelImproved.hpp"
+#include "../../../Implementações/FlowNetwork/Dinic.hpp"
+#include "../../../Implementações/FlowNetwork/EdmondsKarp.hpp"
+#include "../../../Implementações/FlowNetwork/FlowNetwork.hpp"
+#include "../../../Implementações/FlowNetwork/FordFulkerson.hpp"
+#include "../../../Implementações/FlowNetwork/PushRelabel.hpp"
+#include "../../../Implementações/FlowNetwork/PushRelabelImproved.hpp"
 
 #include "image.hpp"
 #include "seeds.hpp"

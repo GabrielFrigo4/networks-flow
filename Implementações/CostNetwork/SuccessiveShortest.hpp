@@ -1,0 +1,101 @@
+#ifndef SUCCESSIVE_SHORTEST_HPP
+#define SUCCESSIVE_SHORTEST_HPP
+
+#include "CostNetwork.hpp"
+#include <algorithm>
+#include <queue>
+
+class SuccessiveShortest : public CostNetwork
+{
+public:
+	explicit SuccessiveShortest(const Size n)
+	    : CostNetwork(n), distance(n), parent_edge(n), in_queue(n) {}
+
+	static std::unique_ptr<CostNetwork> create(const Size n)
+	{
+		return std::make_unique<SuccessiveShortest>(n);
+	}
+
+	std::unique_ptr<CostNetwork> make(const Size n) const override
+	{
+		return std::make_unique<SuccessiveShortest>(n);
+	}
+
+	std::unique_ptr<CostNetwork> clone() const override
+	{
+		return std::make_unique<SuccessiveShortest>(*this);
+	}
+
+	Long compute_min_cost_max_flow(const Size source, const Size sink) override
+	{
+		Long total_cost = 0;
+
+		while (spfa(source, sink))
+		{
+			Long bottleneck = INF;
+			for (Size node = sink; node != source;)
+			{
+				const Size edge_id = parent_edge[node];
+				bottleneck = std::min(bottleneck, get_residual_capacity(edge_id));
+				node = edges[edge_id].from;
+			}
+
+			for (Size node = sink; node != source;)
+			{
+				const Size edge_id = parent_edge[node];
+				push_flow(edge_id, bottleneck);
+				node = edges[edge_id].from;
+			}
+
+			total_cost += bottleneck * distance[sink];
+		}
+
+		return total_cost;
+	}
+
+private:
+	std::vector<Long> distance;
+	std::vector<Size> parent_edge;
+	std::vector<bool> in_queue;
+
+	bool spfa(const Size source, const Size sink)
+	{
+		std::fill(distance.begin(), distance.end(), INF);
+		std::fill(parent_edge.begin(), parent_edge.end(), MAX);
+		std::fill(in_queue.begin(), in_queue.end(), false);
+
+		distance[source] = 0;
+		in_queue[source] = true;
+		std::queue<Size> queue;
+		queue.push(source);
+
+		while (!queue.empty())
+		{
+			const Size current = queue.front();
+			queue.pop();
+			in_queue[current] = false;
+
+			for (const Size edge_id : adjacency[current])
+			{
+				const Size next = edges[edge_id].to;
+				const Long new_distance = distance[current] + edges[edge_id].cost;
+
+				if (get_residual_capacity(edge_id) <= 0 || new_distance >= distance[next])
+					continue;
+
+				distance[next] = new_distance;
+				parent_edge[next] = edge_id;
+
+				if (!in_queue[next])
+				{
+					in_queue[next] = true;
+					queue.push(next);
+				}
+			}
+		}
+
+		return distance[sink] != INF;
+	}
+};
+
+#endif // SUCCESSIVE_SHORTEST_HPP

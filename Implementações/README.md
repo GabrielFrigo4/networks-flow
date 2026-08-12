@@ -1,49 +1,75 @@
 # 💻 Implementações e Códigos
 
-Biblioteca de algoritmos de fluxo máximo em redes implementados em C++. Cada algoritmo é encapsulado em um arquivo de cabeçalho (`.hpp`) que herda da interface base polimórfica [`FlowNetwork`](./FlowNetwork.hpp).
+Biblioteca de algoritmos de fluxo em redes implementados em C++. O projeto está organizado em duas famílias distintas de algoritmos, cada uma com sua interface base polimórfica:
 
-## 🧑‍💻 Algoritmos Implementados
+- **[`FlowNetwork/`](./FlowNetwork/)** — Algoritmos de **Fluxo Máximo** (interface [`FlowNetwork`](./FlowNetwork/FlowNetwork.hpp))
+- **[`CostNetwork/`](./CostNetwork/)** — Algoritmos de **Fluxo de Custo Mínimo** (interface [`CostNetwork`](./CostNetwork/CostNetwork.hpp))
 
-| Algoritmo             | Header                                                 | Complexidade                       | Descrição                                     |
-| :-------------------- | :----------------------------------------------------- | :--------------------------------- | :-------------------------------------------- |
-| Ford-Fulkerson        | [`FordFulkerson.hpp`](./FordFulkerson.hpp)             | $\mathcal{O}(\|A\| \cdot \|f^*\|)$ | Método genérico com DFS (pseudopolinomial).   |
-| Edmonds-Karp          | [`EdmondsKarp.hpp`](./EdmondsKarp.hpp)                 | $\mathcal{O}(V \cdot E^2)$         | Caminhos mais curtos via BFS.                 |
-| Dinic                 | [`Dinic.hpp`](./Dinic.hpp)                             | $\mathcal{O}(V^2 \cdot E)$         | Digrafo de níveis + fluxo bloqueador via DFS. |
-| Push-Relabel FIFO     | [`PushRelabel.hpp`](./PushRelabel.hpp)                 | $\mathcal{O}(V^3)$                 | Pré-fluxo com fila FIFO.                      |
-| Push-Relabel Improved | [`PushRelabelImproved.hpp`](./PushRelabelImproved.hpp) | $\mathcal{O}(V^3)$                 | Push-Relabel com Gap Heuristic.               |
+## ⚡ Algoritmos de Fluxo Máximo
+
+| Algoritmo             | Header                                                             | Complexidade                       | Descrição                                     |
+| :-------------------- | :----------------------------------------------------------------- | :--------------------------------- | :-------------------------------------------- |
+| Ford-Fulkerson        | [`FordFulkerson.hpp`](./FlowNetwork/FordFulkerson.hpp)             | $\mathcal{O}(\|A\| \cdot \|f^*\|)$ | Método genérico com DFS (pseudopolinomial).   |
+| Edmonds-Karp          | [`EdmondsKarp.hpp`](./FlowNetwork/EdmondsKarp.hpp)                 | $\mathcal{O}(V \cdot E^2)$         | Caminhos mais curtos via BFS.                 |
+| Dinic                 | [`Dinic.hpp`](./FlowNetwork/Dinic.hpp)                             | $\mathcal{O}(V^2 \cdot E)$         | Digrafo de níveis + fluxo bloqueador via DFS. |
+| Push-Relabel FIFO     | [`PushRelabel.hpp`](./FlowNetwork/PushRelabel.hpp)                 | $\mathcal{O}(V^3)$                 | Pré-fluxo com fila FIFO.                      |
+| Push-Relabel Improved | [`PushRelabelImproved.hpp`](./FlowNetwork/PushRelabelImproved.hpp) | $\mathcal{O}(V^3)$                 | Push-Relabel com Gap Heuristic.               |
+
+## 🧮 Algoritmos de Custo Mínimo
+
+| Algoritmo                | Header                                                           | Complexidade                                       | Descrição                                                      |
+| :----------------------- | :--------------------------------------------------------------- | :------------------------------------------------- | :------------------------------------------------------------- |
+| Cycle Canceling          | [`CycleCanceling.hpp`](./CostNetwork/CycleCanceling.hpp)         | $\mathcal{O}(\|V\| \cdot \|A\|^2 \cdot C \cdot W)$ | Cancelamento iterativo de ciclos de custo negativo.            |
+| Successive Shortest Path | [`SuccessiveShortest.hpp`](./CostNetwork/SuccessiveShortest.hpp) | $\mathcal{O}(\|V\| \cdot \|A\| \cdot F)$           | Caminhos mais curtos via SPFA com augmentação.                 |
+| Network Simplex          | [`NetworkSimplex.hpp`](./CostNetwork/NetworkSimplex.hpp)         | Exponencial (pior caso)                            | Árvore geradora básica com pivoteamento. Excelente na prática. |
 
 ## 📐 Arquitetura
 
-Todos os algoritmos herdam da classe base abstrata [`FlowNetwork`](./FlowNetwork.hpp), que provê:
+### FlowNetwork
+
+Todos os algoritmos de fluxo máximo herdam da classe base abstrata [`FlowNetwork`](./FlowNetwork/FlowNetwork.hpp), que provê:
 
 - Representação topológica via lista de adjacências com arcos em pares (direto + reverso)
 - Métodos `get_residual_capacity()` e `push_flow()` com truque XOR (`id ^ 1`) para acessar arcos reversos em $\mathcal{O}(1)$
 - Padrões Factory Method (`make`) e Prototype (`clone`)
-- Interface pública `compute_max_flow(source, sink)`, `get_edges()`, `get_adj()`
+- Interface pública `compute_max_flow(source, sink)`, `get_edges()`, `get_adjacency()`
+
+### CostNetwork
+
+Todos os algoritmos de custo mínimo herdam da classe base abstrata [`CostNetwork`](./CostNetwork/CostNetwork.hpp), que estende o modelo de `FlowNetwork` com:
+
+- `Edge` ampliado com campo `cost` (custo unitário por unidade de fluxo)
+- Método `add_edge(from, to, capacity, cost)` que cria automaticamente o arco reverso com custo negativo
+- Interface pública `compute_min_cost_max_flow(source, sink)` que retorna o custo total mínimo
+- Mesmos padrões Factory Method (`make`) e Prototype (`clone`)
 
 ## 🎯 Como Usar
 
-A utilização da biblioteca é projetada para facilitar a alternância entre os algoritmos disponíveis. Para resolver um problema de fluxo, basta incluir os cabeçalhos desejados e selecionar o algoritmo via `using`:
+### Fluxo Máximo
 
 ```cpp
-#include "FordFulkerson.hpp"
-#include "EdmondsKarp.hpp"
-#include "Dinic.hpp"
-#include "PushRelabel.hpp"
-#include "PushRelabelImproved.hpp"
+#include "FlowNetwork/Dinic.hpp"
 
-// Selecione o algoritmo que você deseja utilizar:
-using FlowSolver = PushRelabelImproved;
+using FlowSolver = Dinic;
 
 int main() {
-    // Instancie a rede com o número total de vértices
     auto fn = FlowSolver::create(num_nodes);
-
-    // Adicione as arestas direcionadas
     fn->add_edge(from, to, capacity);
-
-    // Calcule o fluxo máximo da origem (source) para o destino (sink)
     Long max_flow = fn->compute_max_flow(source, sink);
+}
+```
+
+### Fluxo de Custo Mínimo
+
+```cpp
+#include "CostNetwork/NetworkSimplex.hpp"
+
+using CostSolver = NetworkSimplex;
+
+int main() {
+    auto cn = CostSolver::create(num_nodes);
+    cn->add_edge(from, to, capacity, cost);
+    Long min_cost = cn->compute_min_cost_max_flow(source, sink);
 }
 ```
 
