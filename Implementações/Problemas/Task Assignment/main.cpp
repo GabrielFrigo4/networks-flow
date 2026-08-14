@@ -1,9 +1,3 @@
-// Problema: Task Assignment (CSES 2129)
-// https://cses.fi/problemset/task/2129
-//
-// Emparelhamento Bipartido de Custo Mínimo (Assignment Problem) via Min Cost Max Flow.
-// Técnicas: Grafo Bipartido, Super-fonte/Super-sumidouro, Custos Reduzidos.
-
 #include "../../CostNetwork/CycleCanceling.hpp"
 #include "../../CostNetwork/NetworkSimplex.hpp"
 #include "../../CostNetwork/SuccessiveShortest.hpp"

@@ -1,8 +1,3 @@
-// Problema: Police Chase (CSES 1695)
-// https://cses.fi/problemset/task/1695
-//
-// Corte Mínimo via Fluxo Máximo-Corte Mínimo (Max-Flow Min-Cut).
-
 #include "../../FlowNetwork/Dinic.hpp"
 #include "../../FlowNetwork/EdmondsKarp.hpp"
 #include "../../FlowNetwork/FordFulkerson.hpp"

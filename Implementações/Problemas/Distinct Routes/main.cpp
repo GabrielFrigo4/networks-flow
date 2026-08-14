@@ -1,8 +1,3 @@
-// Problema: Distinct Routes (CSES 1711)
-// https://cses.fi/problemset/task/1711
-//
-// Caminhos Disjuntos por Arcos com capacidades unitárias e decomposição de fluxo.
-
 #include "../../FlowNetwork/Dinic.hpp"
 #include "../../FlowNetwork/EdmondsKarp.hpp"
 #include "../../FlowNetwork/FordFulkerson.hpp"

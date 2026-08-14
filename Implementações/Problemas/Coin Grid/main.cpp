@@ -1,9 +1,3 @@
-// Problema: Coin Grid (CSES 1709)
-// https://cses.fi/problemset/task/1709
-//
-// Cobertura de Vértices Mínima em Grafo Bipartido via Fluxo Máximo (König).
-// Técnicas: Complementaridade de Conjuntos (MIS = |V| - MVC), Grafo Bipartido.
-
 #include "../../FlowNetwork/Dinic.hpp"
 #include "../../FlowNetwork/EdmondsKarp.hpp"
 #include "../../FlowNetwork/FordFulkerson.hpp"
@@ -44,9 +38,6 @@ void print_minimum_vertex_cover(
 		}
 	}
 
-	// Teorema de König: MVC = (L \ Z) ∪ (R ∩ Z)
-	// Linha i está no MVC se NÃO é alcançável pela fonte no residual
-	// Coluna j está no MVC se É alcançável pela fonte no residual
 	for (Size i = 1; i <= n; i++)
 	{
 		if (!reachable[i])

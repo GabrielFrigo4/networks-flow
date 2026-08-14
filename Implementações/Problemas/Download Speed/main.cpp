@@ -1,8 +1,3 @@
-// Problema: Download Speed (CSES 1694)
-// https://cses.fi/problemset/task/1694
-//
-// Fluxo Máximo simples de s=1 até t=n.
-
 #include "../../FlowNetwork/Dinic.hpp"
 #include "../../FlowNetwork/EdmondsKarp.hpp"
 #include "../../FlowNetwork/FordFulkerson.hpp"

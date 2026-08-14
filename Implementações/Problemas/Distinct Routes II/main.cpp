@@ -1,9 +1,3 @@
-// Problema: Distinct Routes II (CSES 2130)
-// https://cses.fi/problemset/task/2130
-//
-// k Caminhos Disjuntos por Arcos com Custo Mínimo via Min Cost Max Flow.
-// Técnicas: Min Cost Flow, Caminhos Disjuntos por Arcos, Decomposição de Fluxo (Path Recovery).
-
 #include "../../CostNetwork/CycleCanceling.hpp"
 #include "../../CostNetwork/NetworkSimplex.hpp"
 #include "../../CostNetwork/SuccessiveShortest.hpp"
@@ -66,7 +60,6 @@ void task()
 
 	const auto cn = CostSolver::create(total_nodes);
 
-	// Super-fonte para injetar exatamente k caminhos
 	cn->add_edge(source, real_source, num_paths, 0);
 
 	for (Size i = 0; i < num_edges; i++)

@@ -1,9 +1,3 @@
-// Problema: Parcel Delivery (CSES 2121)
-// https://cses.fi/problemset/task/2121
-//
-// Transporte de k unidades de fluxo com Custo Mínimo via Min Cost Max Flow.
-// Técnicas: Min Cost Flow, Super-fonte para limitação de demanda k, Capacidades e Custos.
-
 #include "../../CostNetwork/CycleCanceling.hpp"
 #include "../../CostNetwork/NetworkSimplex.hpp"
 #include "../../CostNetwork/SuccessiveShortest.hpp"
@@ -25,7 +19,6 @@ void task()
 
 	const auto cn = CostSolver::create(total_nodes);
 
-	// Aresta da super-fonte para limitar a demanda máxima a k parcelas
 	cn->add_edge(source, real_source, num_parcels, 0);
 
 	for (Size i = 0; i < num_routes; i++)

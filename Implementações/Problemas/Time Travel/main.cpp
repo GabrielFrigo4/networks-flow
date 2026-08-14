@@ -1,8 +1,3 @@
-// Problema: Time Travel (Beecrowd 2082)
-// https://judge.beecrowd.com/en/problems/view/2082
-//
-// Corte Mínimo Global via iteração sobre todos os pares (s, t).
-
 #include "../../FlowNetwork/Dinic.hpp"
 #include "../../FlowNetwork/EdmondsKarp.hpp"
 #include "../../FlowNetwork/FordFulkerson.hpp"

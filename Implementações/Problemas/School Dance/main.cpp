@@ -1,8 +1,3 @@
-// Problema: School Dance (CSES 1696)
-// https://cses.fi/problemset/task/1696
-//
-// Emparelhamento Bipartido Máximo via super-fonte e super-sumidouro.
-
 #include "../../FlowNetwork/Dinic.hpp"
 #include "../../FlowNetwork/EdmondsKarp.hpp"
 #include "../../FlowNetwork/FordFulkerson.hpp"

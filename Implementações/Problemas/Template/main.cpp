@@ -1,7 +1,3 @@
-// Template de Problema de Fluxo em Redes
-// Inclui todos os algoritmos disponíveis na biblioteca.
-// Para trocar o algoritmo, basta alterar o 'using' abaixo.
-
 #include "../../FlowNetwork/Dinic.hpp"
 #include "../../FlowNetwork/EdmondsKarp.hpp"
 #include "../../FlowNetwork/FordFulkerson.hpp"
@@ -9,11 +5,7 @@
 #include "../../FlowNetwork/PushRelabelImproved.hpp"
 #include <iostream>
 
-// ============================================================
-// Selecione o algoritmo de fluxo desejado aqui:
 using FlowSolver = PushRelabelImproved;
-// Opções: FordFulkerson, EdmondsKarp, Dinic, PushRelabel, PushRelabelImproved
-// ============================================================
 
 void task()
 {
