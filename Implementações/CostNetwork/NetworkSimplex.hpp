@@ -3,6 +3,7 @@
 
 #include "CostNetwork.hpp"
 #include <algorithm>
+#include <cstdint>
 #include <numeric>
 
 class NetworkSimplex : public CostNetwork

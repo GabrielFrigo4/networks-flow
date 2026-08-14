@@ -14,8 +14,8 @@ Progresso das otimizações e refatorações de código no projeto, visando melh
 - ✅ Fazer o Minimum Cost Flow - Teoria
 - ✅ Fazer o Network Simplex - Teoria
 - ✅ Fazer o Minimum Cost Flow - Implementação
-- ❌ Fazer as Implementações dos Problemas de Fluxo Máximo Restantes
-- ❌ Fazer as Implementações dos Problemas de Fluxo de Custo Mínimo
+- ✅ Fazer as Implementações dos Problemas de Fluxo Máximo Restantes
+- ✅ Fazer as Implementações dos Problemas de Fluxo de Custo Mínimo
 - ❌ Fazer os Benchmarks e Validação Experimental
 - ❌ Por fim fazer a auditoria final do Relatório e entregar a IC
 
@@ -74,7 +74,7 @@ Progresso das técnicas de modelagem e redução documentadas no [LaTeX](./LaTeX
 | Nome                                      | LaTeX | Implementação | Descrição                                                                                       |
 | :---------------------------------------- | :---: | :-----------: | :---------------------------------------------------------------------------------------------- |
 | Super-fonte ($s$) e Super-sumidouro ($t$) |  ✅   |      ✅       | Criação de nós auxiliares para unificar múltiplos pontos de entrada ou saída em uma única rede. |
-| Múltiplas Fontes e Sumidouros             |  ✅   |      ❌       | Redução sistemática de problemas multi-ponto para o modelo canônico $s-t$.                      |
+| Múltiplas Fontes e Sumidouros             |  ✅   |      ✅       | Redução sistemática de problemas multi-ponto para o modelo canônico $s-t$.                      |
 | Grafo Bipartido                           |  ✅   |      ✅       | Estrutura de rede onde os vértices são divididos em dois conjuntos disjuntos e independentes.   |
 
 ## ✂️ Restrições e Divisões
@@ -83,9 +83,9 @@ Progresso das técnicas de modelagem e redução documentadas no [LaTeX](./LaTeX
 | :--------------------------------------------- | :---: | :-----------: | :------------------------------------------------------------------------------------------------- |
 | Capacidades Unitárias ($c=1$)                  |  ✅   |      ✅       | Caso especial de modelagem para problemas de contagem, caminhos disjuntos e emparelhamento.        |
 | Caminhos Disjuntos por Arestas (Edge-Disjoint) |  ✅   |      ✅       | Modelagem de rotas que não compartilham conexões entre si.                                         |
-| Vertex Splitting (Divisão de Vértices)         |  ✅   |      ❌       | Técnica de substituir um nó $v$ por uma aresta $(v_{in}, v_{out})$ para controlar o fluxo interno. |
-| Capacidades em Vértices (Node Capacities)      |  ✅   |      ❌       | Uso de Vertex Splitting para limitar o volume de fluxo que atravessa um nó específico.             |
-| Arestas Bidirecionais vs. Direcionadas         |  ✅   |      ❌       | Diferenciação técnica no tratamento de arcos simétricos no grafo residual.                         |
+| Vertex Splitting (Divisão de Vértices)         |  ✅   |      ✅       | Técnica de substituir um nó $v$ por uma aresta $(v_{in}, v_{out})$ para controlar o fluxo interno. |
+| Capacidades em Vértices (Node Capacities)      |  ✅   |      ✅       | Uso de Vertex Splitting para limitar o volume de fluxo que atravessa um nó específico.             |
+| Arestas Bidirecionais vs. Direcionadas         |  ✅   |      ✅       | Diferenciação técnica no tratamento de arcos simétricos no grafo residual.                         |
 
 ## 📥 Extração e Resultados
 
@@ -93,7 +93,7 @@ Progresso das técnicas de modelagem e redução documentadas no [LaTeX](./LaTeX
 | :------------------------------------ | :---: | :-----------: | :------------------------------------------------------------------------------------------------------------------ |
 | Corte Mínimo (Algoritmo)              |  ✅   |      ✅       | Identificação do conjunto de arestas saturadas que desconectam $s$ de $t$ via busca no residual.                    |
 | Decomposição de Fluxo (Path Recovery) |  ✅   |      ✅       | Algoritmo para extrair caminhos individuais e ciclos a partir do fluxo total.                                       |
-| Complementaridade de Conjuntos        |  ✅   |      ❌       | Relação entre tamanhos de conjuntos em grafos, como o cálculo de Conjunto Independente via $\lvert V \rvert - MVC$. |
+| Complementaridade de Conjuntos        |  ✅   |      ✅       | Relação entre tamanhos de conjuntos em grafos, como o cálculo de Conjunto Independente via $\lvert V \rvert - MVC$. |
 
 ## 📐 Conceitos e Mecânicas de Custo
 

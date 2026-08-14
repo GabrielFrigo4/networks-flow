@@ -74,23 +74,34 @@ Introduzida por Goldberg e Tarjan, esta família quebra o paradigma dos caminhos
 
 ### 🧑‍💻 Algoritmos Implementados
 
-Abaixo estão listados os algoritmos já implementados no escopo deste projeto:
-
+#### ⚡ Algoritmos de Fluxo Máximo
 - 🐢 **[Ford-Fulkerson][ford_fulkerson]**
 - 🚶 **[Edmonds-Karp][edmonds_karp]**
 - 🚀 **[Dinic Algorithm][dinic_algorithm]**
 - ⚙️ **[Push Relabel FIFO][push_relabel]**
 - ⚡ **[Push Relabel Improved][push_relabel_faster]**
 
+#### 🧮 Algoritmos de Fluxo de Custo Mínimo
+- 🔄 **[Cycle Canceling][cycle_canceling]**
+- 📉 **[Successive Shortest Path][successive_shortest]**
+- 🌲 **[Network Simplex][network_simplex]**
+
 ### 🎯 Problemas Resolvidos
 
 Abaixo estão listados os problemas clássicos que foram modelados e resolvidos:
 
+#### ⚡ Fluxo Máximo
 - 🌊 **[Fluxo Máximo (_Download Speed_)][download_speed]**
 - 🤝 **[Emparelhamento Bipartido Máximo (_School Dance_)][school_dance]**
 - 🛣️ **[Caminhos Disjuntos por Arcos (_Distinct Routes_)][distinct_routes]**
 - ✂️ **[Teorema do Fluxo Máximo-Corte Mínimo (_Police Chase_)][police_chase]**
 - 🌐 **[Corte Mínimo Global (_Time Travel_)][time_travel]**
+- 🪙 **[Cobertura Mínima de Vértices (_Coin Grid_)][coin_grid]**
+
+#### 🧮 Fluxo de Custo Mínimo
+- 📋 **[Atribuição de Custo Mínimo (_Task Assignment_)][task_assignment]**
+- 📦 **[Transporte com Demanda Fixa (_Parcel Delivery_)][parcel_delivery]**
+- 🚀 **[Caminhos Disjuntos de Custo Mínimo (_Distinct Routes II_)][distinct_routes_2]**
 
 > [!TIP]
 > Todos os códigos-fonte C++ com as reduções e modelagens para resolver os problemas acima estão disponíveis no diretório **[Implementações/Problemas](./Implementações/Problemas/)**.
@@ -135,11 +146,14 @@ pdflatex ic.tex
 - **Gabriel Frigo** (Autor) - Pesquisador de Iniciação Científica
 - **Cristiane Maria Sato** (Orientador) - Professor(a) Doutor(a)
 
-[ford_fulkerson]: ./Implementações/FordFulkerson.hpp
-[edmonds_karp]: ./Implementações/EdmondsKarp.hpp
-[dinic_algorithm]: ./Implementações/Dinic.hpp
-[push_relabel]: ./Implementações/PushRelabel.hpp
-[push_relabel_faster]: ./Implementações/PushRelabelImproved.hpp
+[ford_fulkerson]: ./Implementações/FlowNetwork/FordFulkerson.hpp
+[edmonds_karp]: ./Implementações/FlowNetwork/EdmondsKarp.hpp
+[dinic_algorithm]: ./Implementações/FlowNetwork/Dinic.hpp
+[push_relabel]: ./Implementações/FlowNetwork/PushRelabel.hpp
+[push_relabel_faster]: ./Implementações/FlowNetwork/PushRelabelImproved.hpp
+[cycle_canceling]: ./Implementações/CostNetwork/CycleCanceling.hpp
+[successive_shortest]: ./Implementações/CostNetwork/SuccessiveShortest.hpp
+[network_simplex]: ./Implementações/CostNetwork/NetworkSimplex.hpp
 [baixar_pdf_ic]: https://github.com/GabrielFrigo4/IC_Networks_Flow/releases/latest/download/ic.pdf
 [baixar_pdf_ic_icon]: https://img.shields.io/badge/IC-Baixar-red?style=for-the-badge&logo=adobeacrobatreader
 [baixar_pdf_projeto]: https://github.com/GabrielFrigo4/IC_Networks_Flow/releases/latest/download/projeto.pdf
@@ -151,5 +165,9 @@ pdflatex ic.tex
 [distinct_routes]: https://cses.fi/problemset/task/1711
 [police_chase]: https://cses.fi/problemset/task/1695
 [time_travel]: https://judge.beecrowd.com/en/problems/view/2082
+[coin_grid]: https://cses.fi/problemset/task/1709
+[task_assignment]: https://cses.fi/problemset/task/2129
+[parcel_delivery]: https://cses.fi/problemset/task/2121
+[distinct_routes_2]: https://cses.fi/problemset/task/2130
 [segmentacao_imagens_codigo]: ./Aplicações/Segmentação%20de%20Imagens/README.md
 [segmentacao_imagens_dataset]: https://vision.cs.uwaterloo.ca/data/maxflow
