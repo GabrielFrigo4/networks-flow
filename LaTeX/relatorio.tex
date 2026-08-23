@@ -577,26 +577,26 @@ A heurística intervém na rede ao detectar a lacuna, elevando a altura de todos
 \begin{tikzpicture}[>=Stealth,thick]
 
 \begin{scope}[xshift=0cm]
-\node[font=\footnotesize,above] at (1.5,5.7) {\textbf{(a) Lacuna detectada no nível $k=3$}};
+\node[font=\footnotesize,above] at (1.5,7.2) {\textbf{(a) Lacuna detectada no nível $k=3$}};
 \foreach \h/\label/\fill in {
-  0/h=0/green!20, 1/h=1/yellow!20, 2/h=2/yellow!20,
-  4/h=4/red!20, 5/h=5/red!20} {
+  0/h=0/green!20, 1.4/h=1/yellow!20, 2.8/h=2/yellow!20,
+  5.6/h=4/red!20, 7.0/h=5/red!20} {
   \node[circle,draw,fill=\fill,minimum size=8mm,font=\footnotesize] at (1.5,\h) {\label};
 }
-\node[font=\footnotesize,red!60!black] at (1.5,3) {\textbf{lacuna!}};
-\draw[<->,red,dashed] (0.2,3.5) -- node[left,font=\footnotesize] {n\'iv. 3 vazio} (0.2,2.5);
+\node[font=\footnotesize,red!60!black] at (1.5,4.2) {\textbf{lacuna!}};
+\draw[<->,red,dashed] (0.2,4.8) -- node[left,font=\footnotesize] {n\'iv. 3 vazio} (0.2,3.5);
 \end{scope}
 
-\node at (5.0,2.5) {\Huge $\Rightarrow$};
+\node at (5.0,3.5) {\Huge $\Rightarrow$};
 
 \begin{scope}[xshift=7cm]
-\node[font=\footnotesize,above] at (1.5,5.7) {\textbf{(b) V\'ertices $h>k$ sobem para $|V|+1$}};
+\node[font=\footnotesize,above] at (1.5,7.2) {\textbf{(b) V\'ertices $h>k$ sobem para $|V|+1$}};
 \foreach \h/\label/\fill in {
-  0/h=0/green!20, 1/h=1/yellow!20, 2/h=2/yellow!20} {
+  0/h=0/green!20, 1.4/h=1/yellow!20, 2.8/h=2/yellow!20} {
   \node[circle,draw,fill=\fill,minimum size=8mm,font=\footnotesize] at (1.5,\h) {\label};
 }
-\node[circle,draw,fill=orange!40,minimum size=9mm,font=\footnotesize] (top) at (1.5,5) {$|V|{+}1$};
-\draw[->,orange!80!black,line width=1.5pt] (1.5,2.8) -- node[right,font=\footnotesize,orange!80!black] {todos sobem} (top);
+\node[circle,draw,fill=orange!40,minimum size=9mm,font=\footnotesize] (top) at (1.5,7.0) {$|V|{+}1$};
+\draw[->,orange!80!black,line width=1.5pt] (1.5,3.6) -- node[right,font=\footnotesize,orange!80!black] {todos sobem} (top);
 \end{scope}
 \end{tikzpicture}
 \caption{Gap Heuristic: (a) após um relabel, o nível $k=3$ esvazia-se (lacuna formada). (b) Todos os vértices com $h > k$ têm suas alturas definidas para $|V|+1$, isolando-os da rede e evitando relabels redundantes.}
@@ -1340,12 +1340,12 @@ Esta formulação unifica diversos problemas clássicos como casos particulares:
 \centering
 \begin{tikzpicture}[>=Stealth, thick,
     main/.style={circle, draw, minimum size=10mm, font=\small}]
-    \node[main, fill=green!20] (s1) at (0, 1.5) {$v_1$};
-    \node[main, fill=green!20] (s2) at (0, -1.5) {$v_2$};
-    \node[main, fill=yellow!10] (m1) at (3, 1.5) {$v_3$};
-    \node[main, fill=yellow!10] (m2) at (3, -1.5) {$v_4$};
-    \node[main, fill=red!20] (t1) at (6, 1.5) {$v_5$};
-    \node[main, fill=red!20] (t2) at (6, -1.5) {$v_6$};
+    \node[main, fill=green!20] (s1) at (0, 2.0) {$v_1$};
+    \node[main, fill=green!20] (s2) at (0, -2.0) {$v_2$};
+    \node[main, fill=yellow!10] (m1) at (3.5, 2.0) {$v_3$};
+    \node[main, fill=yellow!10] (m2) at (3.5, -2.0) {$v_4$};
+    \node[main, fill=red!20] (t1) at (7, 2.0) {$v_5$};
+    \node[main, fill=red!20] (t2) at (7, -2.0) {$v_6$};
 
     \node[font=\footnotesize, above=2pt] at (s1.north) {$b=+5$};
     \node[font=\footnotesize, below=2pt] at (s2.south) {$b=+3$};
@@ -1355,12 +1355,12 @@ Esta formulação unifica diversos problemas clássicos como casos particulares:
     \node[font=\footnotesize, below=2pt] at (t2.south) {$b=-4$};
 
     \draw[->] (s1) -- node[above, font=\footnotesize] {$w\!=\!2,\; c\!=\!4$} (m1);
-    \draw[->] (s1) -- node[above left, font=\footnotesize, pos=0.3] {$w\!=\!5,\; c\!=\!3$} (m2);
-    \draw[->] (s2) -- node[below left, font=\footnotesize, pos=0.3] {$w\!=\!3,\; c\!=\!4$} (m1);
+    \draw[->] (s1) -- node[above left, font=\footnotesize, pos=0.35] {$w\!=\!5,\; c\!=\!3$} (m2);
+    \draw[->] (s2) -- node[below left, font=\footnotesize, pos=0.35] {$w\!=\!3,\; c\!=\!4$} (m1);
     \draw[->] (s2) -- node[below, font=\footnotesize] {$w\!=\!1,\; c\!=\!5$} (m2);
     \draw[->] (m1) -- node[above, font=\footnotesize] {$w\!=\!4,\; c\!=\!5$} (t1);
     \draw[->] (m1) -- node[right, font=\footnotesize] {$w\!=\!2,\; c\!=\!2$} (m2);
-    \draw[->] (m2) -- node[below right, font=\footnotesize, pos=0.3] {$w\!=\!6,\; c\!=\!3$} (t1);
+    \draw[->] (m2) -- node[below right, font=\footnotesize, pos=0.35] {$w\!=\!6,\; c\!=\!3$} (t1);
     \draw[->] (m2) -- node[below, font=\footnotesize] {$w\!=\!3,\; c\!=\!6$} (t2);
 \end{tikzpicture}
 \caption{Rede de custo mínimo com 6 vértices. Cada arco exibe o custo unitário $w$ e a capacidade $c$. Vértices verdes são fontes ($b > 0$), amarelos são transbordo ($b = 0$) e vermelhos são sumidouros ($b < 0$). A condição de equilíbrio $\sum b(v) = 5 + 3 - 4 - 4 = 0$ é satisfeita.}
@@ -1382,35 +1382,35 @@ Para cada arco original $(u,v) \in A$ com fluxo $f(u,v)$:
 \begin{tikzpicture}[>=Stealth, thick]
 
 \begin{scope}[xshift=0cm]
-  \node[circle,draw,fill=green!20,minimum size=8mm,font=\small] (s) at (0,1.2) {$s$};
-  \node[circle,draw,minimum size=8mm,font=\small] (a) at (2.2,2.4) {$a$};
-  \node[circle,draw,minimum size=8mm,font=\small] (b) at (2.2,0) {$b$};
-  \node[circle,draw,fill=red!20,minimum size=8mm,font=\small] (t) at (4.4,1.2) {$t$};
+  \node[circle,draw,fill=green!20,minimum size=8mm,font=\small] (s) at (0,1.4) {$s$};
+  \node[circle,draw,minimum size=8mm,font=\small] (a) at (2.8,3.0) {$a$};
+  \node[circle,draw,minimum size=8mm,font=\small] (b) at (2.8,-0.2) {$b$};
+  \node[circle,draw,fill=red!20,minimum size=8mm,font=\small] (t) at (5.6,1.4) {$t$};
   \draw[->] (s) -- node[above left,font=\footnotesize] {$f\!=\!2,\; w\!=\!3,\; c\!=\!4$} (a);
   \draw[->] (s) -- node[below left,font=\footnotesize] {$f\!=\!1,\; w\!=\!1,\; c\!=\!3$} (b);
   \draw[->] (a) -- node[above right,font=\footnotesize] {$f\!=\!2,\; w\!=\!2,\; c\!=\!3$} (t);
   \draw[->] (b) -- node[below right,font=\footnotesize] {$f\!=\!1,\; w\!=\!5,\; c\!=\!2$} (t);
-  \node[font=\footnotesize,below] at (2.2,-0.8) {\textit{(a) Rede original com fluxo}};
+  \node[font=\footnotesize,below] at (2.8,-1.2) {\textit{(a) Rede original com fluxo}};
 \end{scope}
 
-\node at (5.8,1.2) {\Huge $\Rightarrow$};
+\node at (7.2,1.4) {\Huge $\Rightarrow$};
 
-\begin{scope}[xshift=7.5cm]
-  \node[circle,draw,fill=green!20,minimum size=8mm,font=\small] (s2) at (0,1.2) {$s$};
-  \node[circle,draw,minimum size=8mm,font=\small] (a2) at (2.2,2.4) {$a$};
-  \node[circle,draw,minimum size=8mm,font=\small] (b2) at (2.2,0) {$b$};
-  \node[circle,draw,fill=red!20,minimum size=8mm,font=\small] (t2) at (4.4,1.2) {$t$};
+\begin{scope}[xshift=9cm]
+  \node[circle,draw,fill=green!20,minimum size=8mm,font=\small] (s2) at (0,1.4) {$s$};
+  \node[circle,draw,minimum size=8mm,font=\small] (a2) at (2.8,3.0) {$a$};
+  \node[circle,draw,minimum size=8mm,font=\small] (b2) at (2.8,-0.2) {$b$};
+  \node[circle,draw,fill=red!20,minimum size=8mm,font=\small] (t2) at (5.6,1.4) {$t$};
 
-  \draw[->,blue] (s2) -- node[above left,font=\footnotesize] {$c_f\!=\!2,\; w\!=\!3$} (a2);
-  \draw[->,blue] (s2) -- node[below left,font=\footnotesize] {$c_f\!=\!2,\; w\!=\!1$} (b2);
-  \draw[->,blue] (a2) -- node[above right,font=\footnotesize] {$c_f\!=\!1,\; w\!=\!2$} (t2);
-  \draw[->,blue] (b2) -- node[below right,font=\footnotesize] {$c_f\!=\!1,\; w\!=\!5$} (t2);
+  \draw[->,blue] (s2) -- node[above left,font=\footnotesize,fill=white,inner sep=1pt] {$c_f\!=\!2,\; w\!=\!3$} (a2);
+  \draw[->,blue] (s2) -- node[below left,font=\footnotesize,fill=white,inner sep=1pt] {$c_f\!=\!2,\; w\!=\!1$} (b2);
+  \draw[->,blue] (a2) -- node[above right,font=\footnotesize,fill=white,inner sep=1pt] {$c_f\!=\!1,\; w\!=\!2$} (t2);
+  \draw[->,blue] (b2) -- node[below right,font=\footnotesize,fill=white,inner sep=1pt] {$c_f\!=\!1,\; w\!=\!5$} (t2);
 
-  \draw[->,red,dashed,bend left=20] (a2) to node[left,font=\footnotesize] {$c_f\!=\!2,\; w\!=\!{-3}$} (s2);
-  \draw[->,red,dashed,bend right=20] (b2) to node[left,font=\footnotesize] {$c_f\!=\!1,\; w\!=\!{-1}$} (s2);
-  \draw[->,red,dashed,bend left=20] (t2) to node[right,font=\footnotesize] {$c_f\!=\!2,\; w\!=\!{-2}$} (a2);
-  \draw[->,red,dashed,bend right=20] (t2) to node[right,font=\footnotesize] {$c_f\!=\!1,\; w\!=\!{-5}$} (b2);
-  \node[font=\footnotesize,below] at (2.2,-0.8) {\textit{(b) Digrafo residual} $D_f$ \textit{com custos}};
+  \draw[->,red,dashed,bend left=35] (a2) to node[left,font=\scriptsize,fill=white,inner sep=1pt] {$c_f\!=\!2,\; w\!=\!{-3}$} (s2);
+  \draw[->,red,dashed,bend right=35] (b2) to node[left,font=\scriptsize,fill=white,inner sep=1pt] {$c_f\!=\!1,\; w\!=\!{-1}$} (s2);
+  \draw[->,red,dashed,bend left=35] (t2) to node[right,font=\scriptsize,fill=white,inner sep=1pt] {$c_f\!=\!2,\; w\!=\!{-2}$} (a2);
+  \draw[->,red,dashed,bend right=35] (t2) to node[right,font=\scriptsize,fill=white,inner sep=1pt] {$c_f\!=\!1,\; w\!=\!{-5}$} (b2);
+  \node[font=\footnotesize,below] at (2.8,-1.2) {\textit{(b) Digrafo residual} $D_f$ \textit{com custos}};
 \end{scope}
 \end{tikzpicture}
 \caption{Constru\c{c}\~ao do grafo residual com custos. (a)~Rede original com fluxo, custo e capacidade em cada arco. (b)~Digrafo residual $D_f$: arcos azuis (capacidade ociosa, custo original) e arcos vermelhos tracejados (fluxo cancel\'avel, custo negativo $-w$).}
@@ -1497,20 +1497,20 @@ Rearranjando: $w_f(u,v) - \pi(u) + \pi(v) \ge 0$, ou seja, $\bar{w}_\pi(u,v) \ge
     main/.style={circle, draw, minimum size=10mm, font=\small}]
 
     \node[main, fill=green!20] (s) at (0, 0) {$s$};
-    \node[main] (a) at (3, 1.5) {$a$};
-    \node[main] (b) at (3, -1.5) {$b$};
-    \node[main, fill=red!20] (t) at (6, 0) {$t$};
+    \node[main] (a) at (3.5, 2.0) {$a$};
+    \node[main] (b) at (3.5, -2.0) {$b$};
+    \node[main, fill=red!20] (t) at (7, 0) {$t$};
 
     \node[font=\footnotesize, above=3pt, blue] at (s.north) {$\pi\!=\!0$};
     \node[font=\footnotesize, above=3pt, blue] at (a.north) {$\pi\!=\!2$};
     \node[font=\footnotesize, below=3pt, blue] at (b.south) {$\pi\!=\!1$};
     \node[font=\footnotesize, above=3pt, blue] at (t.north) {$\pi\!=\!5$};
 
-    \draw[->] (s) -- node[above left, font=\footnotesize] {$w\!=\!3$} node[below left, font=\footnotesize, red] {$\bar{w}\!=\!3{-}0{+}2=5$} (a);
-    \draw[->] (s) -- node[below left, font=\footnotesize] {$w\!=\!2$} node[above left, font=\footnotesize, red] {$\bar{w}\!=\!2{-}0{+}1=3$} (b);
-    \draw[->] (a) -- node[above right, font=\footnotesize] {$w\!=\!4$} node[below right, font=\footnotesize, red] {$\bar{w}\!=\!4{-}2{+}5=7$} (t);
-    \draw[->] (b) -- node[below right, font=\footnotesize] {$w\!=\!6$} node[above right, font=\footnotesize, red] {$\bar{w}\!=\!6{-}1{+}5=10$} (t);
-    \draw[->] (a) -- node[right, font=\footnotesize] {$w\!=\!1$} node[left, font=\footnotesize, red] {$\bar{w}\!=\!1{-}2{+}1=0$} (b);
+    \draw[->] (s) -- node[above left, font=\footnotesize] {$w\!=\!3$} node[below left, font=\footnotesize, red, fill=white, inner sep=1pt] {$\bar{w}\!=\!3{-}0{+}2=5$} (a);
+    \draw[->] (s) -- node[below left, font=\footnotesize] {$w\!=\!2$} node[above left, font=\footnotesize, red, fill=white, inner sep=1pt] {$\bar{w}\!=\!2{-}0{+}1=3$} (b);
+    \draw[->] (a) -- node[above right, font=\footnotesize] {$w\!=\!4$} node[below right, font=\footnotesize, red, fill=white, inner sep=1pt] {$\bar{w}\!=\!4{-}2{+}5=7$} (t);
+    \draw[->] (b) -- node[below right, font=\footnotesize] {$w\!=\!6$} node[above right, font=\footnotesize, red, fill=white, inner sep=1pt] {$\bar{w}\!=\!6{-}1{+}5=10$} (t);
+    \draw[->] (a) -- node[right, font=\footnotesize, xshift=3pt] {$w\!=\!1$} node[left, font=\footnotesize, red, fill=white, inner sep=1pt, xshift=-3pt] {$\bar{w}\!=\!1{-}2{+}1=0$} (b);
 \end{tikzpicture}
 \caption{Potenciais nodais $\pi$ (em azul) e custos reduzidos $\bar{w}$ (em vermelho) para cada arco. Todos os custos reduzidos s\~ao $\ge 0$, certificando a otimalidade do fluxo segundo o Teorema de Equival\^encia.}
 \label{fig:reduced_costs}
@@ -1529,27 +1529,72 @@ As condições de otimalidade podem ser refinadas através do teorema de Complem
 
 Estas condições são equivalentes à exigência de $\bar{w}_\pi \ge 0$ nos arcos residuais. De fato, se um arco original $(u,v)$ tem $f(u,v) > 0$, o arco reverso $(v,u)$ existe em $D_f$ com custo $-w(u,v)$, e a condição $\bar{w}_\pi(v,u) = -w(u,v) - \pi(v) + \pi(u) = -\bar{w}_\pi(u,v) \ge 0$ implica $\bar{w}_\pi(u,v) \le 0$. Combinado com $\bar{w}_\pi(u,v) \ge 0$ (do arco direto, se $f < c$), obtemos $\bar{w}_\pi(u,v) = 0$. Isso formaliza a relação entre custos reduzidos e o estado do fluxo nos arcos.
 
+\subsubsection{Arquitetura Orientada a Objetos da Família CostNetwork}
+
+De forma análoga à família \lstinline{FlowNetwork} concebida para o fluxo máximo, os resolvedores de fluxo de custo mínimo foram estruturados sob uma arquitetura orientada a objetos polimórfica e extensível, centralizada na classe-base abstrata \lstinline{CostNetwork} (Código~\ref{lst:costnetwork}, Apêndice~\ref{ap:costnetwork}).
+
+A modelagem de dados estende a estrutura de conexões com o atributo de custo unitário $w(u,v)$:
+\begin{lstlisting}[language=C++, numbers=none, basicstyle=\ttfamily\footnotesize, frame=none, backgroundcolor=\color{white}]
+struct Edge {
+    Size from, to;
+    Long capacity, cost, flow;
+};
+\end{lstlisting}
+
+O método de inserção de conexões \lstinline{add_edge(from, to, capacity, cost)} constrói em par o arco direto e o arco reverso correspondente:
+\begin{itemize}
+    \item Um \textbf{arco direto} $(u,v)$ com capacidade $c$, custo $w$ e fluxo inicial $0$, alocado no índice par $2k$.
+    \item Um \textbf{arco reverso} $(v,u)$ com capacidade residual inicial $0$, custo simétrico $-w$ e fluxo inicial $0$, alocado no índice ímpar subsequente $2k+1$.
+\end{itemize}
+
+Esta disposição contígua em memória permite que o método \lstinline{push_flow(edge_id, flow_amount)} acesse o arco complementar em tempo $\mathcal{O}(1)$ via Ou Exclusivo (\lstinline{id ^ 1ULL}), somando o fluxo no arco direto e subtraindo-o no reverso em uma única operação. A interface pública estabelece o contrato polimórfico fundamental por meio do método virtual puro \lstinline{compute_min_cost_max_flow(Size source, Size sink)}, além dos métodos virtuais \lstinline{make} e \lstinline{clone} para instanciação e clonagem profunda em tempo de execução (padrões \textit{Factory Method} e \textit{Prototype}, veja~\cite{gamma1994design}).
+
 \subsection{O Algoritmo Cycle Canceling}
 
-O \textit{Cycle Canceling} é o algoritmo mais direto para resolver o MCF, baseado na condição de otimalidade por ciclos negativos (veja~\cite{ahuja1993network}). A estratégia opera em duas fases:
+Proposto originalmente por Morton Klein em 1967 (veja~\cite{ahuja1993network, cook1998combinatorial}), o algoritmo \textit{Cycle Canceling} representa a extensão primal mais direta e intuitiva do método de Ford-Fulkerson para o problema de fluxo de custo mínimo. Sua premissa apoia-se inteiramente na condição de otimalidade por ciclos negativos: se um fluxo é viável mas não é de custo mínimo, o digrafo residual necessariamente abriga pelo menos um ciclo direcionado de custo estritamente negativo.
 
-\textbf{Fase 1 --- Obtenção de um fluxo viável máximo.} Resolve-se um problema de fluxo máximo padrão de $s$ a $t$ (ignorando custos), utilizando qualquer algoritmo de fluxo máximo (e.g., Edmonds-Karp via BFS). Ao término, o fluxo $f$ satura a rede com $|f| = |f^*|$, mas potencialmente com custo subótimo.
+O algoritmo opera de forma determinística através de duas fases sequenciais bem definidas:
 
-\textbf{Fase 2 --- Cancelamento iterativo de ciclos negativos.} Enquanto o grafo residual $D_f$ possuir um ciclo de custo negativo $C$, augmenta-se o fluxo ao longo de $C$ pelo gargalo $\delta = \min_{(u,v) \in C} r_f(u,v)$. Cada cancelamento reduz o custo total em $\delta \cdot |w(C)|$, onde $w(C) < 0$ é o custo do ciclo. A detecção do ciclo utiliza o algoritmo de \textit{Bellman-Ford} em $\mathcal{O}(|V| \cdot |A|)$.
+\begin{enumerate}
+    \item \textbf{Fase 1 --- Estabelecimento da Viabilidade Primal (Fluxo Máximo Inicial):} Inicialmente, ignora-se a dimensão dos custos e computa-se um fluxo viável máximo arbitrário de $s$ a $t$ na rede original. Na arquitetura desenvolvida, esta fase aproveita a família polimórfica \lstinline{FlowNetwork} (utilizando, por exemplo, o motor de Edmonds-Karp ou Dinic), saturando a capacidade de transporte da rede de modo que $|f| = |f^*|$. Ao término desta etapa, o fluxo é factível e máximo, porém seu custo total pode ser substancialmente subótimo.
+    
+    \item \textbf{Fase 2 --- Otimização Iterativa por Cancelamento de Ciclos Negativos:} Com o fluxo máximo inicial estabelecido, o algoritmo entra em um laço de melhoria iterativa. A cada iteração:
+    \begin{itemize}
+        \item Constrói-se o digrafo residual $D_f$ com as capacidades residuais $c_f$ e os custos residuais $w_f$.
+        \item Executa-se uma rotina de detecção de ciclo de custo negativo baseada no algoritmo de \textit{Bellman-Ford} (ou em sua variante otimizada \textit{SPFA}), com complexidade $\mathcal{O}(|V| \cdot |A|)$.
+        \item Caso um ciclo negativo $C$ seja identificado, determina-se sua capacidade residual gargalo $\delta = \min_{(u,v) \in C} c_f(u,v) > 0$.
+        \item O fluxo é cancelado (augmentado) ao longo de $C$, somando $\delta$ nos arcos de $C$ e subtraindo $\delta$ em seus respectivos arcos reversos via \lstinline{push_flow}.
+    \end{itemize}
+\end{enumerate}
 
-A correção do algoritmo segue diretamente do teorema de otimalidade: quando não existem mais ciclos de custo negativo no residual, o fluxo é de custo mínimo. A complexidade total é $\mathcal{O}(|V| \cdot |A|^2 \cdot C \cdot W)$, onde $C$ e $W$ são os maiores valores de capacidade e custo, respectivamente --- pseudopolinomial, porém conceitualmente simples.
+Cada cancelamento preserva estritamente a lei de conservação de fluxo em todos os vértices (pois $C$ é um ciclo fechado) e não altera o valor do fluxo líquido transportado ($|f|$ permanece inalterado), mas reduz o custo total da rede em exatamente $\delta \cdot |w(C)| > 0$. O processo repete-se até que o digrafo residual $D_f$ não contenha nenhum ciclo negativo, momento no qual o Teorema da Condição de Otimalidade certifica que o fluxo é de custo mínimo.
+
+\textbf{Análise de Complexidade Assintótica.} Em redes com capacidades e custos inteiros, seja $C = \max_{(u,v) \in A} c(u,v)$ a capacidade máxima e $W = \max_{(u,v) \in A} |w(u,v)|$ o maior custo unitário em módulo. O custo total do fluxo inicial é limitado superiormente por $|A| \cdot C \cdot W$. Como cada cancelamento de ciclo com capacidades inteiras transporta pelo menos $\delta \ge 1$ unidade e reduz o custo por pelo menos $1$ unidade inteira, o algoritmo executa no máximo $\mathcal{O}(|A| \cdot C \cdot W)$ iterações. Multiplicando pelo custo de $\mathcal{O}(|V| \cdot |A|)$ da detecção de ciclo via Bellman-Ford por iteração, obtém-se a complexidade total de pior caso de $\mathcal{O}(|V| \cdot |A|^2 \cdot C \cdot W)$ (veja~\cite{ahuja1993network}).
+
+Trata-se de um limite pseudopolinomial que pode degradar frente a custos ou capacidades de magnitude exponencial. Contudo, variações teóricas que selecionam sistematicamente o ciclo de \textit{custo médio mínimo} (isto é, minimizando $w(C)/|C|$, conforme proposto por Goldberg e Tarjan em 1989, veja~\cite{goldberg1988new, korte2018combinatorial}) alcançam limites fortemente polinomiais de $\mathcal{O}(|V|^2 |A|^3 \log |V|)$. A materialização em C++ da classe \lstinline{CycleCanceling} encontra-se documentada no Código~\ref{lst:cycle_canceling} (disponível no Apêndice~\ref{ap:cycle_canceling}).
 
 \subsection{O Algoritmo Successive Shortest Path}
 
-O \textit{Successive Shortest Path} (SSP) constrói o fluxo de custo mínimo incrementalmente, enviando fluxo ao longo do caminho de menor custo a cada iteração (veja~\cite{ahuja1993network}).
+Desenvolvido independentemente por Jewell (1958), Iri (1960) e Busacker e Gowen (1961) (veja~\cite{ahuja1993network, schrijver2003combinatorial}), o algoritmo \textit{Successive Shortest Path} (SSP) adota uma abordagem dual complementar ao \textit{Cycle Canceling}. Enquanto o \textit{Cycle Canceling} mantém a viabilidade primal do fluxo e cancela sucessivamente ciclos negativos para alcançar a otimalidade de custos, o SSP mantém a \textbf{otimalidade de custos como invariante permanente} (o grafo residual nunca contém ciclos negativos) e constrói a viabilidade do fluxo máximo incrementalmente.
 
-A cada iteração, o algoritmo encontra o caminho mais curto (em termos de custo) de $s$ a $t$ no grafo residual $D_f$ utilizando o \textit{SPFA} (\textit{Shortest Path Faster Algorithm}), uma variante otimizada do algoritmo de \textit{Bellman-Ford} que mantém uma fila de vértices ativos. O fluxo é então augmentado ao longo deste caminho pelo gargalo $\delta = \min_{(u,v) \in P} r_f(u,v)$, e o custo total é incrementado por $\delta \cdot d(t)$, onde $d(t)$ é a distância mínima encontrada.
+O algoritmo inicia com fluxo nulo em todos os arcos ($f \equiv 0$), estado que satisfaz trivialmente a condição de otimalidade por não introduzir nenhum ciclo residual negativo. A cada iteração:
+\begin{enumerate}
+    \item Localiza-se o caminho aumentante de menor custo total $P$ da fonte $s$ ao sumidouro $t$ no digrafo residual $D_f$.
+    \item Computa-se a capacidade residual gargalo ao longo deste caminho: $\delta = \min_{(u,v) \in P} c_f(u,v)$.
+    \item Roteia-se $\delta$ unidades de fluxo através de $P$, atualizando o fluxo e o custo acumulado em $\delta \cdot d(t)$, onde $d(t)$ é a distância mínima de $s$ a $t$ sob os custos residuais.
+\end{enumerate}
 
-O algoritmo termina quando não existe mais nenhum caminho de $s$ a $t$ no grafo residual, significando que o fluxo máximo foi atingido. A cada iteração, pelo menos uma unidade de fluxo é enviada (em redes com capacidades inteiras), e o caminho escolhido é sempre o de menor custo acumulado, garantindo a otimalidade do fluxo final. A complexidade é $\mathcal{O}(|V| \cdot |A| \cdot F)$, onde $F = |f^*|$ é o valor do fluxo máximo.
+Demonstra-se indutivamente que o aumento de fluxo ao longo do caminho de menor custo nunca cria ciclos negativos no grafo residual resultante (veja~\cite{ahuja1993network}). Portanto, quando não existirem mais caminhos residuais de $s$ a $t$, o fluxo obtido é simultaneamente máximo e de custo mínimo.
+
+\textbf{Otimização com SPFA e Potenciais Nodais.} Como os arcos reversos no digrafo residual carregam custos negativos ($w_f(v,u) = -w(u,v)$), o algoritmo clássico de Dijkstra não pode ser aplicado diretamente sobre $w_f$. Na implementação base do projeto (\lstinline{SuccessiveShortest}, Código~\ref{lst:successive_shortest}, Apêndice~\ref{ap:successive_shortest}), a busca pelo caminho mais curto é realizada pelo \textit{SPFA} (\textit{Shortest Path Faster Algorithm}), uma especialização de Bellman-Ford baseada em fila que opera com alto desempenho prático.
+
+Alternativamente, a fundamentação teórica de potenciais nodais ($\pi$) permite transformar os custos dos arcos para custos reduzidos $\bar{w}_\pi(u,v) = w(u,v) - \pi(u) + \pi(v) \ge 0$. Ao atualizar os potenciais a cada iteração via $\pi(v) \leftarrow \pi(v) - d(v)$, garante-se que todos os custos residuais permaneçam não-negativos, viabilizando o uso do algoritmo de Dijkstra com \textit{heap} binária ou de Fibonacci em $\mathcal{O}(|A| + |V| \log |V|)$ por aumento (veja~\cite{ahuja1993network, korte2018combinatorial}).
+
+\textbf{Complexidade Assintótica.} Em redes com capacidades inteiras onde o fluxo máximo final é $F = |f^*|$, cada iteração augmenta pelo menos $\delta \ge 1$ unidade de fluxo. O número total de iterações é limitado superiormente por $F$. Empregando o SPFA com custo de pior caso $\mathcal{O}(|V| \cdot |A|)$, a complexidade global é $\mathcal{O}(|V| \cdot |A| \cdot F)$. Com o uso de potenciais nodais e Dijkstra com heap de Fibonacci, a complexidade atinge $\mathcal{O}(F \cdot (|A| + |V| \log |V|))$. A implementação C++ correspondente encontra-se no Código~\ref{lst:successive_shortest} (Apêndice~\ref{ap:successive_shortest}).
 
 \subsection{O Algoritmo Network Simplex}
 
-O \textit{Network Simplex} é uma especialização do método Simplex clássico de programação linear para a estrutura combinatória de redes de fluxo (veja~\cite{ahuja1993network, dantzig1951application}). A ideia central explora uma correspondência fundamental: cada solução básica viável do programa linear do MCF corresponde bijetivamente a uma \textbf{árvore geradora} (\textit{spanning tree}) do digrafo subjacente. Esta especialização permite que cada iteração do Simplex seja executada em tempo $\mathcal{O}(|V|)$, em contraste com os pivoteamentos genéricos que operam sobre matrizes densas.
+O \textit{Network Simplex} é uma especialização do método Simplex clássico de programação linear (introduzido por George Dantzig em 1951, veja~\cite{dantzig1951application}) para a estrutura combinatória das redes de fluxo. Enquanto o Simplex algébrico genérico requer a manutenção e inversão explícita de matrizes de base de ordem $|V| \times |V|$ (com custo $\mathcal{O}(|V|^2)$ por pivoteamento), o \textit{Network Simplex} explora o fato de que toda base do sistema corresponde univocamente a uma \textbf{árvore geradora} (\textit{spanning tree}) da rede. Consequentemente, todas as operações matriciais de pivoteamento, determinação de variáveis básicas e atualização de potenciais duais são traduzidas em travessias puramente topológicas sobre árvores, executadas em tempo linear $\mathcal{O}(|V|)$ por iteração (veja~\cite{ahuja1993network, cook1998combinatorial}).
 
 \subsubsection{Árvore Geradora Básica}
 
@@ -1589,6 +1634,17 @@ Fixando $\pi(r) = 0$ para um vértice raiz $r$ arbitrário, os potenciais de tod
 \caption{Parti\c{c}\~ao dos arcos no Network Simplex. Arcos azuis s\'olidos formam a \'arvore geradora b\'asica $T$ (4 arcos para 5 v\'ertices). Arcos cinza tracejados s\~ao n\~ao-b\'asicos: $L$ (fluxo $= 0$) e $U$ (fluxo $= c$, saturado).}
 \label{fig:spanning_tree_basis}
 \end{figure}
+
+\subsubsection{Estrutura de Dados da Árvore e Inicialização com Raiz Artificial}
+
+Para viabilizar a execução eficiente das travessias em tempo $\mathcal{O}(|V|)$, a implementação do \textit{Network Simplex} (Código~\ref{lst:network_simplex}, Apêndice~\ref{ap:network_simplex}) mantém a árvore geradora representada por três vetores principais:
+\begin{itemize}
+    \item \lstinline{parent[v]}: armazena o vértice predecessor direto de $v$ na árvore direcionada.
+    \item \lstinline{depth[v]}: registra a profundidade topológica do vértice em relação à raiz, facilitando a identificação do ancestral comum mais próximo (\textit{LCA - Lowest Common Ancestor}) no ciclo fundamental.
+    \item \lstinline{thread[v]}: mantém uma lista encadeada da travessia em pré-ordem da árvore, permitindo iterar sobre toda a subárvore enraizada em $v$ em tempo proporcional ao número de seus descendentes durante a atualização dos potenciais nodais.
+\end{itemize}
+
+\textbf{Construção da Base Inicial:} Para garantir que uma árvore geradora viável inicial esteja sempre disponível sem necessidade de computação preliminar complexa, introduz-se um vértice raiz artificial $r = |V|$. Criam-se arcos artificiais conectando a raiz a cada vértice original com capacidade infinita e custo unitário suficientemente grande $M$ (\textit{Big-M Method}). Estes arcos formam a árvore inicial $T$. Ao longo das iterações do Simplex, os arcos originais da rede entram na base substituindo progressivamente os arcos artificiais, convergindo para uma solução puramente fundamentada nos arcos do digrafo original.
 
 \subsubsection{Total Unimodularidade e Soluções Inteiras}
 
@@ -1647,27 +1703,27 @@ Se algum arco viola estas condições, ele é candidato a entrar na base, desenc
 Cada iteração do \textit{Network Simplex} realiza quatro passos fundamentais (veja~\cite{ahuja1993network, dantzig1951application}):
 
 \textbf{Passo 1 --- Pricing (Seleção do arco entrante):}
-Examina-se os custos reduzidos dos arcos não-básicos. Um arco $(u,v) \in L$ com $\bar{w}_\pi(u,v) < 0$ ou um arco $(u,v) \in U$ com $\bar{w}_\pi(u,v) > 0$ viola as condições de otimalidade e é selecionado como arco entrante (\textit{entering arc}). Se nenhum arco violador existe, a solução atual é ótima e o algoritmo termina.
+Examina-se os custos reduzidos dos arcos não-básicos. Um arco $(u,v) \in L$ com $\bar{w}_\pi(u,v) < 0$ ou um arco $(u,v) \in U$ com $\bar{w}_\pi(u,v) > 0$ viola as condições de otimalidade e é selecionado como arco entrante (\textit{entering arc}). Na implementação, utiliza-se a estratégia de busca por blocos (\textit{Block Search Pricing}) para acelerar a localização do arco violador em grafos densos. Se nenhum arco violador existe, a solução atual é ótima e o algoritmo termina.
 
 \textbf{Passo 2 --- Identificação do Ciclo Fundamental:}
-A inserção do arco entrante $(u,v)$ na árvore $T$ cria exatamente um ciclo $C$ (pelo fato de que uma árvore com $|V|-1$ arcos, ao receber um arco adicional, forma um único ciclo). O ciclo é orientado na direção que permite enviar fluxo pelo arco entrante (aumentando $f$ se o arco vem de $L$, ou diminuindo se vem de $U$).
+A inserção do arco entrante $(u,v)$ na árvore $T$ cria exatamente um ciclo $C$ (pelo fato de que uma árvore com $|V|-1$ arcos, ao receber um arco adicional, forma um único ciclo). O ciclo é percorrido a partir de $u$ e $v$ até o seu ancestral comum mais próximo (\textit{LCA}), orientado na direção que permite enviar fluxo pelo arco entrante.
 
 \textbf{Passo 3 --- Determinação do arco limitante (\textit{leaving arc}):}
-O gargalo $\delta$ é calculado como a menor folga de fluxo ao longo do ciclo $C$: para arcos percorridos na direção do fluxo, a folga é $c(u,v) - f(u,v)$; na direção contrária, é $f(u,v)$. O arco que atinge seu limite (superior ou inferior) é o arco limitante, que sairá da base.
+O gargalo $\delta$ é calculado como a menor folga de fluxo ao longo do ciclo $C$: para arcos percorridos na direção do fluxo, a folga é $c(u,v) - f(u,v)$; na direção contrária, é $f(u,v)$. O arco que atinge seu limite (superior ou inferior) é o arco limitante, que sairá da base. Para prevenir ciclos infinitos causados por degenerescência (quando $\delta = 0$), adota-se a regra de base fortemente viável de Cunningham (\textit{Strongly Feasible Tree}, veja~\cite{ahuja1993network}), que padroniza o desempate na escolha do arco limitante.
 
-\textbf{Passo 4 --- Pivoteamento:}
-O fluxo é augmentado por $\delta$ ao longo do ciclo. O arco limitante é removido de $T$ e movido para $L$ ou $U$ (conforme atingiu o limite inferior ou superior). O arco entrante é inserido em $T$. Os potenciais são atualizados eficientemente, alterando apenas os vértices na subárvore que mudou de posição --- operação em $\mathcal{O}(|V|)$.
+\textbf{Passo 4 --- Pivoteamento e Atualização da Árvore:}
+O fluxo é augmentado por $\delta$ ao longo do ciclo. O arco limitante é removido de $T$ e movido para $L$ ou $U$. O arco entrante é inserido em $T$. A estrutura de dados da árvore (\lstinline{parent}, \lstinline{depth}, \lstinline{thread}) e os potenciais nodais $\pi$ são atualizados eficientemente, ajustando apenas os vértices da subárvore que mudou de ancestralidade --- operação executada em $\mathcal{O}(|V|)$ graças ao vetor \lstinline{thread}.
 
 \begin{figure}[h]
 \centering
 \begin{tikzpicture}[>=Stealth, thick,
-    main/.style={circle, draw, minimum size=9mm, font=\small}]
+    main/.style={circle, draw, minimum size=10mm, font=\small}]
 
 \begin{scope}[xshift=0cm]
-  \node[font=\footnotesize,above] at (2.0,3.2) {\textbf{(a) Antes do pivot}};
+  \node[font=\footnotesize,above] at (2.0,3.8) {\textbf{(a) Antes do pivot}};
   \node[main, fill=green!20] (a1) at (0, 1.5) {$1$};
-  \node[main] (a2) at (2, 2.5) {$2$};
-  \node[main] (a3) at (2, 0.5) {$3$};
+  \node[main] (a2) at (2, 3.0) {$2$};
+  \node[main] (a3) at (2, 0.0) {$3$};
   \node[main, fill=red!20] (a4) at (4, 1.5) {$4$};
 
   \draw[->,blue,line width=2pt] (a1) -- (a2);
@@ -1679,10 +1735,10 @@ O fluxo é augmentado por $\delta$ ao longo do ciclo. O arco limitante é removi
 \node at (5.5,1.5) {\Large $\Rightarrow$};
 
 \begin{scope}[xshift=7cm]
-  \node[font=\footnotesize,above] at (2.0,3.2) {\textbf{(b) Depois do pivot}};
+  \node[font=\footnotesize,above] at (2.0,3.8) {\textbf{(b) Depois do pivot}};
   \node[main, fill=green!20] (b1) at (0, 1.5) {$1$};
-  \node[main] (b2) at (2, 2.5) {$2$};
-  \node[main] (b3) at (2, 0.5) {$3$};
+  \node[main] (b2) at (2, 3.0) {$2$};
+  \node[main] (b3) at (2, 0.0) {$3$};
   \node[main, fill=red!20] (b4) at (4, 1.5) {$4$};
 
   \draw[->,blue,line width=2pt] (b1) -- (b2);
@@ -1695,15 +1751,35 @@ O fluxo é augmentado por $\delta$ ao longo do ciclo. O arco limitante é removi
 \label{fig:ns_pivot}
 \end{figure}
 
-Embora o \textit{Network Simplex} não possua garantia de complexidade polinomial no pior caso (assim como o Simplex clássico), sua eficiência prática é excepcional, superando consistentemente métodos genéricos de programação linear e mesmo algoritmos especializados como o Cycle Canceling e o Successive Shortest Path em instâncias de larga escala (veja~\cite{ahuja1993network}).
+Embora o \textit{Network Simplex} não possua garantia de complexidade polinomial no pior caso (assim como o Simplex clássico), sua eficiência prática é excepcional, superando consistentemente métodos genéricos de programação linear e algoritmos de aumentos iterativos como o Cycle Canceling e o Successive Shortest Path em instâncias de larga escala (veja~\cite{ahuja1993network}). A implementação C++ detalhada da classe \lstinline{NetworkSimplex} encontra-se documentada no Código~\ref{lst:network_simplex} (Apêndice~\ref{ap:network_simplex}).
 
-\subsubsection{Transformação Min-Cost Max-Flow}
+\subsection{Transformação Min-Cost Max-Flow e Comparação Geral}
 
 Uma variante comum do MCF é o problema do \textbf{Fluxo Máximo de Custo Mínimo} (\textit{Min-Cost Max-Flow}): dentre todos os fluxos máximos de $s$ a $t$, encontrar aquele com o menor custo total. Este problema pode ser reduzido ao MCF padrão com demandas através de uma construção simples (veja~\cite{ahuja1993network}).
 
 A transformação consiste em adicionar à rede original um \textbf{arco artificial} $(t, s)$ do sumidouro para a fonte com capacidade infinita ($c(t,s) = \infty$) e custo suficientemente negativo ($w(t,s) = -M$, onde $M > \sum_{(u,v) \in A} |w(u,v)| \cdot c(u,v)$). Em seguida, define-se $b(v) = 0$ para todos os vértices, transformando o problema em um MCF puro sem demandas.
 
 O custo negativo no arco artificial incentiva o algoritmo a maximizar o fluxo circulante pelo ciclo $s \leadsto t \to s$, garantindo simultaneamente o fluxo máximo e o custo mínimo. Qualquer algoritmo de MCF (incluindo o \textit{Network Simplex}) aplicado a esta rede transformada produz a solução desejada.
+
+\subsubsection{Comparação dos Algoritmos de Fluxo de Custo Mínimo}
+
+A Tabela~\ref{tab:complexidades_mcf} sintetiza os paradigmas, invariantes mantidas e as complexidades assintóticas dos três algoritmos de fluxo de custo mínimo desenvolvidos nesta Iniciação Científica.
+
+\begin{table}[h]
+\centering
+\begin{tabular}{l l c l}
+\hline
+\textbf{Algoritmo} & \textbf{Paradigma / Invariante} & \textbf{Complexidade} & \textbf{Tipo de Limite} \\
+\hline
+Cycle Canceling & Primal (mantém viabilidade, cancela ciclos) & $\mathcal{O}(|V| \cdot |A|^2 \cdot C \cdot W)$ & Pseudopolinomial \\
+Successive Shortest Path & Dual (mantém otimalidade, aumenta fluxo) & $\mathcal{O}(|V| \cdot |A| \cdot F)$ & Pseudopolinomial \\
+Network Simplex & Primal-Dual sobre Árvore Geradora & $\mathcal{O}(|V| \cdot |A| \cdot C \cdot W)^*$ & Exponencial no pior caso, \\
+& & & $\mathcal{O}(|V|)$ por pivô (ótimo na prática) \\
+\hline
+\end{tabular}
+\caption{Comparação dos algoritmos de Fluxo de Custo Mínimo implementados no projeto ($C = \max c$, $W = \max |w|$, $F = |f^*|$). $^*$Embora o Network Simplex não possua cota polinomial estrita no pior caso, seu comportamento empírico supera amplamente os demais métodos em grafos de grande escala.}
+\label{tab:complexidades_mcf}
+\end{table}
 
 \section{Conclusões}
 
