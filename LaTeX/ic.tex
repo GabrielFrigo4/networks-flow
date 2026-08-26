@@ -1073,7 +1073,7 @@ O Teorema da Decomposição de Fluxo fornece a fundamentação matemática para 
 
 \subsubsection{Teorema da Decomposição de Fluxo}
 
-\textbf{Teorema.} \textit{Todo fluxo viável $f$ em uma rede $D = (V, A)$ pode ser decomposto em um conjunto de no máximo $|A|$ caminhos simples de $s$ a $t$ e ciclos simples, cada um com um valor de fluxo positivo associado. A soma dos fluxos dos caminhos é igual a $|f|$, e o fluxo total em cada arco é a soma dos fluxos dos caminhos e ciclos que o utilizam.}
+\textbf{Teorema (Decomposição de Fluxo).}\label{teo:flow_decomp} \textit{Todo fluxo viável $f$ em uma rede $D = (V, A)$ pode ser decomposto em um conjunto de no máximo $|A|$ caminhos simples de $s$ a $t$ e ciclos simples, cada um com um valor de fluxo positivo associado. A soma dos fluxos dos caminhos é igual a $|f|$, e o fluxo total em cada arco é a soma dos fluxos dos caminhos e ciclos que o utilizam.}
 
 \textbf{Prova.}
 Procedemos por indução no número de arcos com fluxo positivo (veja~\cite{ahuja1993network}).
@@ -1401,15 +1401,28 @@ O critério fundamental de otimalidade para o problema de fluxo de custo mínimo
 \textbf{Prova.}
 $(\Rightarrow)$ Suponha por contradição que $f$ é um fluxo de custo mínimo e que existe um ciclo direcionado $C$ em $D_f$ com custo total $w(C) = \sum_{(u,v) \in C} w_f(u,v) < 0$. Seja $\delta = \min_{(u,v) \in C} c_f(u,v) > 0$ a capacidade residual mínima ao longo de $C$. Defina um novo fluxo $f'$ augmentando $\delta$ unidades ao longo de $C$:
 \begin{itemize}
-    \item Para cada arco direto $(u,v) \in C$: $f'(u,v) = f(u,v) + \delta$.
-    \item Para cada arco reverso $(v,u) \in C$ (correspondente ao arco original $(u,v)$): $f'(u,v) = f(u,v) - \delta$.
+    \item Se o arco residual $(u,v) \in C$ é direto: $f'(u,v) = f(u,v) + \delta$.
+    \item Se o arco residual $(v,u) \in C$ é reverso (proveniente do arco original $(u,v) \in A$): $f'(u,v) = f(u,v) - \delta$.
 \end{itemize}
 
-Como $C$ é um ciclo, cada vértice em $C$ possui exatamente um arco de entrada e um de saída, preservando a conservação de fluxo. A restrição de capacidade é mantida pela definição de $\delta$. O novo custo total é:
+Como $C$ é um ciclo fechado, cada vértice em $C$ possui exatamente um arco incidente de entrada e um de saída, preservando rigorosamente a lei de conservação de fluxo e o atendimento às demandas $b(v)$. A viabilidade das capacidades é garantida pela escolha de $\delta = \min c_f(u,v) > 0$. O novo custo total é:
 $$\text{custo}(f') = \text{custo}(f) + \delta \cdot w(C) < \text{custo}(f)$$
-o que contradiz a otimalidade de $f$.
+o que contradiz a hipótese de que $f$ era de custo mínimo.
 
-$(\Leftarrow)$ Suponha que $D_f$ não possui ciclos negativos. Seja $f^*$ um fluxo de custo mínimo qualquer (que existe por compacidade do poliedro viável). A diferença $g = f^* - f$ pode ser decomposta em ciclos no digrafo residual $D_f$ (pelo Teorema da Decomposição de Fluxo, pois $g$ satisfaz conservação com demandas nulas). Como nenhum ciclo em $D_f$ possui custo negativo, cada componente da decomposição contribui com custo $\ge 0$, logo $\text{custo}(f^*) \ge \text{custo}(f)$. Portanto, $f$ é de custo mínimo. $\blacksquare$
+$(\Leftarrow)$ Suponha que $D_f$ não contém ciclos direcionados de custo negativo. Seja $f^*$ um fluxo viável ótimo arbitrário (cuja existência é garantida pela compacidade do poliedro de fluxos viáveis). Considere a função diferença $g: A \to \mathbb{R}$ definida por $g(u,v) = f^*(u,v) - f(u,v)$ para todo $(u,v) \in A$.
+
+Como tanto $f^*$ quanto $f$ satisfazem as restrições de conservação com o mesmo vetor de demandas $b$, a divergência líquida de $g$ em cada vértice $v \in V$ é nula:
+$$\sum_{\{w \mid (v,w) \in A\}} g(v,w) - \sum_{\{u \mid (u,v) \in A\}} g(u,v) = b(v) - b(v) = 0$$
+Logo, $g$ define uma circulação pura. Demonstra-se que $g$ induz uma circulação viável no digrafo residual $D_f = (V, A_f)$:
+\begin{itemize}
+    \item Se $g(u,v) > 0$, então $f^*(u,v) > f(u,v)$. Como $f^*(u,v) \le c(u,v)$, segue que $0 < g(u,v) \le c(u,v) - f(u,v) = c_f(u,v)$. Logo, o fluxo $g(u,v)$ é suportado pelo arco direto $(u,v) \in A_f$, com custo unitário residual $w_f(u,v) = w(u,v)$.
+    \item Se $g(u,v) < 0$, então $f(u,v) > f^*(u,v) \ge 0$. Definindo $\tilde{g}(v,u) = -g(u,v) > 0$, temos $0 < \tilde{g}(v,u) \le f(u,v) = c_f(v,u)$. Portanto, $\tilde{g}(v,u)$ é suportado pelo arco reverso $(v,u) \in A_f$, com custo unitário residual $w_f(v,u) = -w(u,v)$.
+\end{itemize}
+Pelo Teorema da Decomposição de Fluxo (Teorema~\ref{teo:flow_decomp}), a circulação viável induzida por $g$ em $D_f$ pode ser decomposta em uma família finita de ciclos direcionados simples $C_1, C_2, \dots, C_k$ em $D_f$, com taxas de fluxo $\delta_i > 0$, tais que $g = \sum_{i=1}^k \delta_i \cdot \mathbf{1}_{C_i}$. O custo da diferença entre os fluxos é expresso linearmente por:
+$$\text{custo}(f^*) - \text{custo}(f) = \sum_{(u,v) \in A} w(u,v) \cdot g(u,v) = \sum_{i=1}^k \delta_i \cdot w(C_i)$$
+Como por hipótese o digrafo residual $D_f$ não possui nenhum ciclo de custo negativo, temos $w(C_i) \ge 0$ para todo $i \in \{1, \dots, k\}$. Consequentemente:
+$$\text{custo}(f^*) - \text{custo}(f) = \sum_{i=1}^k \delta_i \cdot w(C_i) \ge 0 \implies \text{custo}(f) \le \text{custo}(f^*)$$
+Sendo $f^*$ ótimo, conclui-se que $\text{custo}(f) = \text{custo}(f^*)$, isto é, $f$ é necessariamente um fluxo de custo mínimo. $\blacksquare$
 
 \begin{figure}[h]
 \centering
@@ -1462,9 +1475,9 @@ $(\Leftarrow)$ Se $\bar{w}_\pi(u,v) \ge 0$ para todo arco residual, então para 
 $$w(C) = \sum_{(u,v) \in C} w(u,v) = \sum_{(u,v) \in C} \bar{w}_\pi(u,v) \ge 0$$
 Logo, não há ciclos negativos e, pelo teorema anterior, $f$ é de custo mínimo.
 
-$(\Rightarrow)$ Se $f$ é de custo mínimo, não há ciclos negativos em $D_f$. Fixe um vértice $r \in V$ e defina $\pi(v)$ como o custo do caminho mais curto (em termos de custos residuais $w_f$) de $r$ a $v$ em $D_f$. Como não há ciclos negativos, estes caminhos estão bem definidos (por Bellman-Ford). Pela condição de otimalidade de caminhos mais curtos, para todo arco $(u,v) \in A_f$:
+$(\Rightarrow)$ Se $f$ é de custo mínimo, não há ciclos negativos em $D_f$. Fixe um vértice $r \in V$ e defina $\pi(v)$ como o custo do caminho mais curto (em termos de custos residuais $w_f$) de $r$ a $v$ em $D_f$ (caso $D_f$ não seja alcançável a partir de um único $r$, basta introduzir uma raiz virtual $r_0$ com arcos direcionados $(r_0, v)$ de custo zero para todo $v \in V$; como nenhum arco incide em $r_0$, nenhum ciclo novo é formado e as distâncias mínimas tornam-se finitas e bem-definidas para todos os nós). Como não há ciclos de custo negativo em $D_f$, os caminhos mais curtos estão garantidamente bem definidos (computáveis via Bellman-Ford). Pela condição de otimalidade de caminhos mais curtos, para todo arco residual $(u,v) \in A_f$:
 $$\pi(v) \le \pi(u) + w_f(u,v)$$
-Rearranjando: $w_f(u,v) - \pi(u) + \pi(v) \ge 0$, ou seja, $\bar{w}_\pi(u,v) \ge 0$. $\blacksquare$
+Rearranjando os termos: $w_f(u,v) - \pi(u) + \pi(v) \ge 0$, ou seja, $\bar{w}_\pi(u,v) \ge 0$. $\blacksquare$
 
 \begin{figure}[h]
 \centering
@@ -1542,6 +1555,8 @@ O algoritmo opera de forma determinística através de duas fases sequenciais be
     \end{itemize}
 \end{enumerate}
 
+\textbf{Extração Segura do Ciclo Negativo em C++:} Um detalhe algorítmico crucial na implementação prática do \textit{Cycle Canceling} reside na extração precisa do ciclo a partir do vetor de predecessores (\lstinline{parent_edge}). Quando a $|V|$-ésima iteração de relaxação do Bellman-Ford (ou a detecção de contagem de visitas $\ge |V|$ no SPFA) acusa um vértice $v$ cuja distância ainda pôde ser reduzida, este vértice $v$ não necessariamente pertence ao ciclo negativo em si; ele pode residir em um caminho que é alcançável a partir do ciclo (um ``rabo'' que conduz para fora do ciclo). Para isolar com garantia matemática o ciclo fechado, a classe \lstinline{CycleCanceling} (Código~\ref{lst:cycle_canceling}, Apêndice~\ref{ap:cycle_canceling}) aplica o Princípio da Casa dos Pombos: retrocedendo $|V|$ passos ao longo dos arcos predecessores a partir de $v$ (\lstinline{for (Size i = 0; i < size; ++i) node = edges[parent_edge[node]].from;}), qualquer sequência de $|V|$ passos em um grafo com $|V|$ vértices é forçada a repetir pelo menos um nó, prendendo \lstinline{node} garantidamente dentro do ciclo negativo. A partir deste vértice garantido, rastreia-se os predecessores até reencontrá-lo, reconstruindo com rigor o ciclo simples $C$ e computando o gargalo residual $\delta$.
+
 Cada cancelamento preserva estritamente a lei de conservação de fluxo em todos os vértices (pois $C$ é um ciclo fechado) e não altera o valor do fluxo líquido transportado ($|f|$ permanece inalterado), mas reduz o custo total da rede em exatamente $\delta \cdot |w(C)| > 0$. O processo repete-se até que o digrafo residual $D_f$ não contenha nenhum ciclo negativo, momento no qual o Teorema da Condição de Otimalidade certifica que o fluxo é de custo mínimo.
 
 \textbf{Análise de Complexidade Assintótica.} Em redes com capacidades e custos inteiros, seja $C = \max_{(u,v) \in A} c(u,v)$ a capacidade máxima e $W = \max_{(u,v) \in A} |w(u,v)|$ o maior custo unitário em módulo. O custo total do fluxo inicial é limitado superiormente por $|A| \cdot C \cdot W$. Como cada cancelamento de ciclo com capacidades inteiras transporta pelo menos $\delta \ge 1$ unidade e reduz o custo por pelo menos $1$ unidade inteira, o algoritmo executa no máximo $\mathcal{O}(|A| \cdot C \cdot W)$ iterações. Multiplicando pelo custo de $\mathcal{O}(|V| \cdot |A|)$ da detecção de ciclo via Bellman-Ford por iteração, obtém-se a complexidade total de pior caso de $\mathcal{O}(|V| \cdot |A|^2 \cdot C \cdot W)$ (veja~\cite{ahuja1993network}).
@@ -1563,7 +1578,18 @@ Demonstra-se indutivamente que o aumento de fluxo ao longo do caminho de menor c
 
 \textbf{Otimização com SPFA e Potenciais Nodais.} Como os arcos reversos no digrafo residual carregam custos negativos ($w_f(v,u) = -w(u,v)$), o algoritmo clássico de Dijkstra não pode ser aplicado diretamente sobre $w_f$. Na implementação base do projeto (\lstinline{SuccessiveShortest}, Código~\ref{lst:successive_shortest}, Apêndice~\ref{ap:successive_shortest}), a busca pelo caminho mais curto é realizada pelo \textit{SPFA} (\textit{Shortest Path Faster Algorithm}), uma especialização de Bellman-Ford baseada em fila que opera com alto desempenho prático.
 
-Alternativamente, a fundamentação teórica de potenciais nodais ($\pi$) permite transformar os custos dos arcos para custos reduzidos $\bar{w}_\pi(u,v) = w(u,v) - \pi(u) + \pi(v) \ge 0$. Ao atualizar os potenciais a cada iteração via $\pi(v) \leftarrow \pi(v) - d(v)$, garante-se que todos os custos residuais permaneçam não-negativos, viabilizando o uso do algoritmo de Dijkstra com \textit{heap} binária ou de Fibonacci em $\mathcal{O}(|A| + |V| \log |V|)$ por aumento (veja~\cite{ahuja1993network, korte2018combinatorial}).
+Alternativamente, a fundamentação teórica de potenciais nodais ($\pi$) permite transformar os custos dos arcos para custos reduzidos $\bar{w}_\pi(u,v) = w(u,v) - \pi(u) + \pi(v) \ge 0$, técnica pioneiramente explorada por Edmonds e Karp (1972). A preservação da não-negatividade dos custos reduzidos a cada iteração apoia-se diretamente na desigualdade triangular de caminhos mínimos: suponha que na iteração corrente tenhamos $\bar{w}_\pi(u,v) \ge 0$ para todo $(u,v) \in A_f$. Seja $d(v)$ a distância mínima da fonte $s$ a cada vértice $v$ em $D_f$ calculada sob os custos reduzidos $\bar{w}_\pi$. Pela condição de otimalidade de caminhos mais curtos, para todo arco residual viável $(u,v) \in A_f$:
+\begin{equation}
+    d(v) \le d(u) + \bar{w}_\pi(u,v) \iff \bar{w}_\pi(u,v) + d(u) - d(v) \ge 0
+\end{equation}
+Ao atualizar o vetor de potenciais nodais para $\pi'(v) = \pi(v) - d(v)$, o novo custo reduzido do arco $(u,v)$ torna-se:
+\begin{align*}
+    \bar{w}_{\pi'}(u,v) &= w(u,v) - \pi'(u) + \pi'(v) \\
+    &= w(u,v) - (\pi(u) - d(u)) + (\pi(v) - d(v)) \\
+    &= [w(u,v) - \pi(u) + \pi(v)] + d(u) - d(v) \\
+    &= \bar{w}_\pi(u,v) + d(u) - d(v) \ge 0
+\end{align*}
+Para os novos arcos reversos $(v,u)$ criados no digrafo residual pelo envio de fluxo ao longo do caminho mais curto $P$, sabe-se que para todo arco $(u,v) \in P$ a desigualdade triangular é satisfeita na igualdade estrita ($d(v) = d(u) + \bar{w}_\pi(u,v)$), de modo que $\bar{w}_{\pi'}(u,v) = 0$. Consequentemente, o arco reverso recém-habilitado satisfaz $\bar{w}_{\pi'}(v,u) = -\bar{w}_{\pi'}(u,v) = 0 \ge 0$. Portanto, toda a malha de arcos residuais em $D_{f'}$ preserva custos reduzidos não-negativos, viabilizando o uso do algoritmo de Dijkstra com \textit{heap} binária em $\mathcal{O}(|A| \log |V|)$ ou Fibonacci em $\mathcal{O}(|A| + |V| \log |V|)$ em todas as iterações subsequentes (veja~\cite{ahuja1993network, edmonds1972theoretical, korte2018combinatorial}).
 
 \textbf{Complexidade Assintótica.} Em redes com capacidades inteiras onde o fluxo máximo final é $F = |f^*|$, cada iteração augmenta pelo menos $\delta \ge 1$ unidade de fluxo. O número total de iterações é limitado superiormente por $F$. Empregando o SPFA com custo de pior caso $\mathcal{O}(|V| \cdot |A|)$, a complexidade global é $\mathcal{O}(|V| \cdot |A| \cdot F)$. Com o uso de potenciais nodais e Dijkstra com heap de Fibonacci, a complexidade atinge $\mathcal{O}(F \cdot (|A| + |V| \log |V|))$. A implementação C++ correspondente encontra-se no Código~\ref{lst:successive_shortest} (Apêndice~\ref{ap:successive_shortest}).
 
@@ -1686,8 +1712,14 @@ A inserção do arco entrante $(u,v)$ na árvore $T$ cria exatamente um ciclo $C
 \textbf{Passo 3 --- Determinação do arco limitante (\textit{leaving arc}):}
 O gargalo $\delta$ é calculado como a menor folga de fluxo ao longo do ciclo $C$: para arcos percorridos na direção do fluxo, a folga é $c(u,v) - f(u,v)$; na direção contrária, é $f(u,v)$. O arco que atinge seu limite (superior ou inferior) é o arco limitante, que sairá da base. Para prevenir ciclos infinitos causados por degenerescência (quando $\delta = 0$), adota-se a regra de base fortemente viável de Cunningham (\textit{Strongly Feasible Tree}, veja~\cite{ahuja1993network}), que padroniza o desempate na escolha do arco limitante.
 
-\textbf{Passo 4 --- Pivoteamento e Atualização da Árvore:}
-O fluxo é augmentado por $\delta$ ao longo do ciclo. O arco limitante é removido de $T$ e movido para $L$ ou $U$. O arco entrante é inserido em $T$. A estrutura de dados da árvore (\lstinline{parent}, \lstinline{depth}, \lstinline{thread}) e os potenciais nodais $\pi$ são atualizados eficientemente, ajustando apenas os vértices da subárvore que mudou de ancestralidade --- operação executada em $\mathcal{O}(|V|)$ graças ao vetor \lstinline{thread}.
+\textbf{Caso Especial (Arco Auto-Limitante):} Um caso degenerado de particular relevância na implementação ocorre quando a capacidade do próprio arco entrante $e_{in}$ é menor ou igual à folga de todos os arcos da árvore ao longo do ciclo fundamental ($\delta = c(e_{in})$). Nesse cenário, $e_{in}$ atinge seu limite superior antes de qualquer arco básico ser bloqueado ($e_{in} = e_{out}$). A implementação (Código~\ref{lst:network_simplex}, verificação condicional \lstinline{entering == leaving}) detecta e trata esta condição de forma imediata: alterna o estado de $e_{in}$ de $L$ para $U$ (ou de $U$ para $L$), satura o fluxo e retorna sem alterar a topologia da árvore geradora $T$, dispensando qualquer reestruturação desnecessária de ponteiros ou potenciais.
+
+\textbf{Passo 4 --- Pivoteamento e Atualização Topológica em $\mathcal{O}(|V|)$:}
+O fluxo é augmentado por $\delta$ ao longo do ciclo fundamental $C$. O arco limitante $e_{out}$ é removido de $T$ e movido para $L$ ou $U$. O arco entrante $e_{in} = (u,v)$ é inserido em $T$.
+
+A remoção de $e_{out}$ desconecta temporariamente a árvore geradora em duas componentes conexas disjuntas: a componente $T_r$ (que contém a raiz $r$, onde os potenciais nodais permanecem inalterados uma vez que $\pi(r) = 0$) e a subárvore desconectada $T_s$. Para restabelecer a condição básica $\pi(p) - \pi(q) = w(p,q)$ em toda a nova árvore $T' = T \cup \{e_{in}\} \setminus \{e_{out}\}$, basta aplicar um deslocamento escalar constante a todos os vértices pertencentes a $T_s$:
+$$\pi(x) \leftarrow \pi(x) \pm \bar{w}_\pi(e_{in}), \quad \forall x \in V(T_s)$$
+onde a polaridade do sinal depende da orientação do arco entrante em relação à raiz. É neste ponto que a arquitetura dos vetores \lstinline{parent}, \lstinline{depth} e \lstinline{thread} comprova sua superioridade algorítmica: a lista encadeada da travessia em pré-ordem (\lstinline{thread}) permite iterar estritamente sobre os vértices da subárvore $T_s$ em tempo proporcional à sua cardinalidade ($|V(T_s)| \le |V|$), sem inspecionar os demais nós da rede. Em seguida, os apontadores de filiação (\lstinline{parent}) e as profundidades (\lstinline{depth}) são invertidos exclusivamente ao longo do caminho entre o nó de conexão e a raiz da subárvore, assegurando que cada pivoteamento execute em tempo linear estrito $\mathcal{O}(|V|)$.
 
 \begin{figure}[h]
 \centering
