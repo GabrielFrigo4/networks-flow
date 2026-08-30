@@ -5,6 +5,8 @@
 #include <algorithm>
 #include <cstdint>
 #include <numeric>
+#include <queue>
+#include <vector>
 
 class NetworkSimplex : public CostNetwork
 {
@@ -28,58 +30,92 @@ public:
 
 	Long compute_min_cost_max_flow(const Size source, const Size sink) override
 	{
-		add_edge(sink, source, INF, 0);
-		const Size back_edge = edges.size() - 2;
+		Long max_c = 1;
+		for (const auto &e : edges)
+			max_c = std::max(max_c, std::abs(e.cost));
 
-		const Size total_nodes = size + 1;
+		const Long back_cost = -(max_c * static_cast<Long>(size + 2) + 1);
+		const Size back_edge_idx = edges.size();
+		add_edge(sink, source, INF, back_cost);
+
+		const Size num_nodes = size + 1;
 		const Size root = size;
+		adjacency.resize(num_nodes);
 
-		parent.assign(total_nodes, root);
-		depth.assign(total_nodes, 1);
-		thread.resize(total_nodes);
-		potential.assign(total_nodes, 0);
-		parent_edge.assign(total_nodes, MAX);
+		parent.assign(num_nodes, root);
+		depth.assign(num_nodes, 1);
+		potential.assign(num_nodes, 0);
+		parent_edge.assign(num_nodes, MAX);
+		tree_adj.assign(num_nodes, {});
+
 		arc_state.assign(edges.size() / 2, ArcState::LOWER);
 
-		std::iota(thread.begin(), thread.end(), Size(1));
-		thread[root] = 0;
-		depth[root] = 0;
+		const Long big_m = std::abs(back_cost) * static_cast<Long>(size + 2) + 100000;
 
-		const Long big_m = compute_big_m();
+		depth[root] = 0;
+		potential[root] = 0;
 
 		for (Size v = 0; v < size; ++v)
 		{
-			const Size art_forward = edges.size();
-			adjacency[v].push_back(edges.size());
-			edges.push_back({v, root, big_m, big_m, 0});
-			adjacency[root].push_back(edges.size());
+			const Size art_id = edges.size();
+			adjacency[v].push_back(art_id);
+			edges.push_back({v, root, INF, big_m, 0});
+			adjacency[root].push_back(art_id + 1);
 			edges.push_back({root, v, 0, -big_m, 0});
 
-			const Size art_reverse = edges.size();
-			adjacency[root].push_back(edges.size());
-			edges.push_back({root, v, big_m, big_m, 0});
-			adjacency[v].push_back(edges.size());
-			edges.push_back({v, root, 0, -big_m, 0});
-
-			parent_edge[v] = art_forward;
+			parent[v] = root;
+			parent_edge[v] = art_id;
 			potential[v] = -big_m;
 			arc_state.push_back(ArcState::TREE);
-			arc_state.push_back(ArcState::TREE);
+			tree_adj[root].push_back(v);
+			tree_adj[v].push_back(root);
 		}
 
 		while (true)
 		{
-			const Size entering = find_entering_arc();
+			Size entering = MAX;
+			Long best_violation = 0;
+
+			for (Size i = 0; i < edges.size(); i += 2)
+			{
+				const Size arc_idx = i / 2;
+				if (arc_state[arc_idx] == ArcState::TREE)
+					continue;
+
+				const Long rc = reduced_cost(i);
+				if (arc_state[arc_idx] == ArcState::LOWER && rc < best_violation)
+				{
+					best_violation = rc;
+					entering = i;
+				}
+				else if (arc_state[arc_idx] == ArcState::UPPER && -rc < best_violation)
+				{
+					best_violation = -rc;
+					entering = i;
+				}
+			}
+
 			if (entering == MAX)
 				break;
 
-			const Size leaving = find_leaving_arc(entering);
-			pivot(entering, leaving);
+			pivot(entering);
 		}
 
 		Long total_cost = 0;
-		for (Size i = 0; i < back_edge; i += 2)
+		for (Size i = 0; i < back_edge_idx; i += 2)
+		{
 			total_cost += edges[i].flow * edges[i].cost;
+		}
+
+		adjacency[sink].pop_back();
+		adjacency[source].pop_back();
+		for (Size v = 0; v < size; ++v)
+		{
+			adjacency[v].pop_back();
+		}
+		adjacency.resize(size);
+		edges.resize(back_edge_idx);
+
 		return total_cost;
 	}
 
@@ -93,56 +129,14 @@ private:
 
 	std::vector<Size> parent;
 	std::vector<Size> depth;
-	std::vector<Size> thread;
 	std::vector<Long> potential;
 	std::vector<Size> parent_edge;
 	std::vector<ArcState> arc_state;
-
-	Long compute_big_m() const
-	{
-		Long sum = 1;
-		for (const auto &edge : edges)
-			if (edge.cost > 0)
-				sum += edge.cost * edge.capacity;
-		return sum;
-	}
+	std::vector<std::vector<Size>> tree_adj;
 
 	[[nodiscard]] Long reduced_cost(const Size edge_id) const
 	{
-		return edges[edge_id].cost - potential[edges[edge_id].from] + potential[edges[edge_id].to];
-	}
-
-	Size find_entering_arc() const
-	{
-		Size best = MAX;
-		Long best_violation = 0;
-
-		for (Size i = 0; i < edges.size(); i += 2)
-		{
-			const Size arc_idx = i / 2;
-			if (arc_state[arc_idx] == ArcState::TREE)
-				continue;
-
-			if (arc_state[arc_idx] == ArcState::LOWER)
-			{
-				const Long rc = reduced_cost(i);
-				if (rc < best_violation)
-				{
-					best_violation = rc;
-					best = i;
-				}
-			}
-			else
-			{
-				const Long rc = reduced_cost(i);
-				if (-rc < best_violation)
-				{
-					best_violation = -rc;
-					best = i;
-				}
-			}
-		}
-		return best;
+		return edges[edge_id].cost + potential[edges[edge_id].from] - potential[edges[edge_id].to];
 	}
 
 	Size find_lca(Size u, Size v) const
@@ -156,215 +150,166 @@ private:
 		return u;
 	}
 
-	Size find_leaving_arc(const Size entering)
+	void pivot(const Size entering)
 	{
 		const Size arc_idx = entering / 2;
 		Size u = edges[entering].from;
 		Size v = edges[entering].to;
 
-		if (arc_state[arc_idx] == ArcState::UPPER)
+		const bool is_upper = (arc_state[arc_idx] == ArcState::UPPER);
+		if (is_upper)
 			std::swap(u, v);
 
 		const Size lca = find_lca(u, v);
 
-		Long bottleneck = get_residual_capacity(entering);
-		Size leaving = entering;
+		Long bottleneck = is_upper ? edges[entering].flow : (edges[entering].capacity - edges[entering].flow);
+		Size leaving_edge = entering;
+		bool leaving_is_entering = true;
 
-		Size node = u;
-		while (node != lca)
+		for (Size curr = v; curr != lca; curr = parent[curr])
 		{
-			const Size eid = parent_edge[node];
-			Long residual;
-			if (edges[eid].from == node)
-				residual = edges[eid ^ 1ULL].flow;
+			const Size pe = parent_edge[curr];
+			Long cap;
+			if (edges[pe].from == curr)
+				cap = edges[pe].capacity - edges[pe].flow;
 			else
-				residual = get_residual_capacity(eid);
+				cap = edges[pe].flow;
 
-			if (residual < bottleneck)
+			if (cap < bottleneck)
 			{
-				bottleneck = residual;
-				leaving = eid;
+				bottleneck = cap;
+				leaving_edge = pe;
+				leaving_is_entering = false;
 			}
-			node = parent[node];
 		}
 
-		node = v;
-		while (node != lca)
+		for (Size curr = u; curr != lca; curr = parent[curr])
 		{
-			const Size eid = parent_edge[node];
-			Long residual;
-			if (edges[eid].to == node)
-				residual = edges[eid ^ 1ULL].flow;
+			const Size pe = parent_edge[curr];
+			Long cap;
+			if (edges[pe].to == curr)
+				cap = edges[pe].capacity - edges[pe].flow;
 			else
-				residual = get_residual_capacity(eid);
+				cap = edges[pe].flow;
 
-			if (residual <= bottleneck)
+			if (cap <= bottleneck)
 			{
-				bottleneck = residual;
-				leaving = eid;
+				bottleneck = cap;
+				leaving_edge = pe;
+				leaving_is_entering = false;
 			}
-			node = parent[node];
 		}
 
-		Size aug_node = u;
-		while (aug_node != lca)
+		if (bottleneck == 0 && leaving_is_entering)
 		{
-			const Size eid = parent_edge[aug_node];
-			if (edges[eid].from == aug_node)
-				push_flow(eid ^ 1ULL, bottleneck);
-			else
-				push_flow(eid, bottleneck);
-			aug_node = parent[aug_node];
-		}
-
-		aug_node = v;
-		while (aug_node != lca)
-		{
-			const Size eid = parent_edge[aug_node];
-			if (edges[eid].to == aug_node)
-				push_flow(eid ^ 1ULL, bottleneck);
-			else
-				push_flow(eid, bottleneck);
-			aug_node = parent[aug_node];
-		}
-
-		if (arc_state[arc_idx] == ArcState::LOWER)
-			push_flow(entering, bottleneck);
-		else
-			push_flow(entering ^ 1ULL, bottleneck);
-
-		return leaving;
-	}
-
-	void pivot(const Size entering, const Size leaving)
-	{
-		const Size entering_arc = entering / 2;
-		const Size leaving_arc = leaving / 2;
-
-		if (entering == leaving)
-		{
-			if (arc_state[entering_arc] == ArcState::LOWER)
-				arc_state[entering_arc] = ArcState::UPPER;
-			else
-				arc_state[entering_arc] = ArcState::LOWER;
+			arc_state[arc_idx] = is_upper ? ArcState::LOWER : ArcState::UPPER;
 			return;
 		}
 
-		if (get_residual_capacity(leaving) == 0)
-			arc_state[leaving_arc] = ArcState::UPPER;
+		if (!is_upper)
+		{
+			edges[entering].flow += bottleneck;
+			edges[entering ^ 1ULL].flow -= bottleneck;
+		}
 		else
-			arc_state[leaving_arc] = ArcState::LOWER;
-
-		arc_state[entering_arc] = ArcState::TREE;
-
-		update_tree(entering, leaving);
-	}
-
-	void update_tree(const Size entering, const Size leaving)
-	{
-		Size u = edges[entering].from;
-		Size v = edges[entering].to;
-
-		Size leave_u = edges[leaving].from;
-		Size leave_v = edges[leaving].to;
-		if (depth[leave_u] < depth[leave_v])
-			std::swap(leave_u, leave_v);
-
-		std::vector<Size> path_u, path_v;
-		Size node = u;
-		while (node != leave_v && node != leave_u)
 		{
-			path_u.push_back(node);
-			node = parent[node];
+			edges[entering].flow -= bottleneck;
+			edges[entering ^ 1ULL].flow += bottleneck;
 		}
-		bool u_side = (node == leave_u);
 
-		if (!u_side)
+		for (Size curr = v; curr != lca; curr = parent[curr])
 		{
-			std::swap(u, v);
-			path_u.clear();
-			node = u;
-			while (node != leave_u)
+			const Size pe = parent_edge[curr];
+			if (edges[pe].from == curr)
 			{
-				path_u.push_back(node);
-				node = parent[node];
+				edges[pe].flow += bottleneck;
+				edges[pe ^ 1ULL].flow -= bottleneck;
+			}
+			else
+			{
+				edges[pe].flow -= bottleneck;
+				edges[pe ^ 1ULL].flow += bottleneck;
 			}
 		}
 
-		std::vector<Size> reroot_path;
-		node = leave_u;
-		while (true)
+		for (Size curr = u; curr != lca; curr = parent[curr])
 		{
-			reroot_path.push_back(node);
-			if (node == u)
-				break;
-			node = parent[node];
+			const Size pe = parent_edge[curr];
+			if (edges[pe].to == curr)
+			{
+				edges[pe].flow += bottleneck;
+				edges[pe ^ 1ULL].flow -= bottleneck;
+			}
+			else
+			{
+				edges[pe].flow -= bottleneck;
+				edges[pe ^ 1ULL].flow += bottleneck;
+			}
 		}
 
-		for (Size i = reroot_path.size() - 1; i > 0; --i)
+		if (leaving_is_entering)
 		{
-			const Size child = reroot_path[i];
-			const Size new_parent = reroot_path[i - 1];
-			parent[child] = new_parent;
-			parent_edge[child] = parent_edge[new_parent];
+			arc_state[arc_idx] = (edges[entering].flow == edges[entering].capacity) ? ArcState::UPPER : ArcState::LOWER;
+			return;
 		}
 
-		parent[leave_u] = leave_v;
-		parent_edge[leave_u] = entering;
+		const Size leaving_arc_idx = leaving_edge / 2;
+		arc_state[leaving_arc_idx] = (edges[leaving_edge].flow == 0) ? ArcState::LOWER : ArcState::UPPER;
+		arc_state[arc_idx] = ArcState::TREE;
 
-		rebuild_depth_and_thread();
-	}
+		const Size lu = edges[leaving_edge].from;
+		const Size lv = edges[leaving_edge].to;
+		auto &adj_lu = tree_adj[lu];
+		adj_lu.erase(std::remove(adj_lu.begin(), adj_lu.end(), lv), adj_lu.end());
+        auto &adj_lv = tree_adj[lv];
+		adj_lv.erase(std::remove(adj_lv.begin(), adj_lv.end(), lu), adj_lv.end());
 
-	void rebuild_depth_and_thread()
-	{
+		const Size orig_u = edges[entering].from;
+		const Size orig_v = edges[entering].to;
+		tree_adj[orig_u].push_back(orig_v);
+		tree_adj[orig_v].push_back(orig_u);
+
 		const Size root = size;
+		std::vector<bool> visited(size + 1, false);
+		std::queue<Size> q;
+		q.push(root);
+		visited[root] = true;
+		parent[root] = root;
 		depth[root] = 0;
+		parent_edge[root] = MAX;
+		potential[root] = 0;
 
-		std::vector<std::vector<Size>> children(size + 1);
-		for (Size v = 0; v <= size; ++v)
-			if (v != root)
-				children[parent[v]].push_back(v);
-
-		Size prev = root;
-		std::vector<Size> stack = {root};
-		while (!stack.empty())
+		while (!q.empty())
 		{
-			const Size node = stack.back();
-			stack.pop_back();
+			const Size curr = q.front();
+			q.pop();
 
-			if (node != root)
-				depth[node] = depth[parent[node]] + 1;
-
-			thread[prev] = node;
-			prev = node;
-
-			for (auto it = children[node].rbegin(); it != children[node].rend(); ++it)
-				stack.push_back(*it);
-		}
-		thread[prev] = root;
-
-		for (Size v = 0; v <= size; ++v)
-		{
-			if (v == root || parent_edge[v] == MAX)
-				continue;
-			const Long rc = reduced_cost(parent_edge[v]);
-			if (rc != 0)
+			for (const Size neighbor : tree_adj[curr])
 			{
-				potential[v] += rc;
-				propagate_potential(v, children);
-			}
-		}
-	}
+				if (visited[neighbor])
+					continue;
 
-	void propagate_potential(const Size node, const std::vector<std::vector<Size>> &children)
-	{
-		for (const Size child : children[node])
-		{
-			const Long rc = reduced_cost(parent_edge[child]);
-			if (rc != 0)
-			{
-				potential[child] += rc;
-				propagate_potential(child, children);
+				visited[neighbor] = true;
+				parent[neighbor] = curr;
+				depth[neighbor] = depth[curr] + 1;
+
+				Size eid = MAX;
+				for (const Size edge_id : adjacency[curr])
+				{
+					if (edges[edge_id].to == neighbor && arc_state[edge_id / 2] == ArcState::TREE)
+					{
+						eid = edge_id;
+						break;
+					}
+				}
+				parent_edge[neighbor] = eid;
+
+				if (edges[eid].from == curr)
+					potential[neighbor] = potential[curr] + edges[eid].cost;
+				else
+					potential[neighbor] = potential[curr] - edges[eid].cost;
+
+				q.push(neighbor);
 			}
 		}
 	}

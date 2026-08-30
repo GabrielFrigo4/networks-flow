@@ -82,22 +82,23 @@ Todos os problemas estão na pasta [`Problemas/`](./Problemas/) e utilizam a arq
 
 ### ⚡ Problemas de Fluxo Máximo
 
-| Problema | Juiz | Técnica / Redução de Modelagem |
-| :--- | :--- | :--- |
-| [Download Speed](./Problemas/Download%20Speed/) | [CSES 1694](https://cses.fi/problemset/task/1694) | $st$-Fluxo Máximo Canônico, Grafo Residual |
-| [School Dance](./Problemas/School%20Dance/) | [CSES 1696](https://cses.fi/problemset/task/1696) | Grafo Bipartido, Super-fonte/Sumidouro, Capacidades Unitárias |
-| [Distinct Routes](./Problemas/Distinct%20Routes/) | [CSES 1711](https://cses.fi/problemset/task/1711) | Caminhos Disjuntos por Arcos, Decomposição de Fluxo |
-| [Police Chase](./Problemas/Police%20Chase/) | [CSES 1695](https://cses.fi/problemset/task/1695) | Corte Mínimo (Max-Flow Min-Cut), Arestas Bidirecionais |
-| [Time Travel](./Problemas/Time%20Travel/) | [Beecrowd 2082](https://judge.beecrowd.com/en/problems/view/2082) | Corte Mínimo Global, Arestas Bidirecionais |
-| [Coin Grid](./Problemas/Coin%20Grid/) | [CSES 1709](https://cses.fi/problemset/task/1709) | Grafo Bipartido, Cobertura Mínima (König), Complementaridade |
+| Problema                                          | Juiz                                                              | Técnica / Redução de Modelagem                                |
+| :------------------------------------------------ | :---------------------------------------------------------------- | :------------------------------------------------------------ |
+| [Download Speed](./Problemas/Download%20Speed/)   | [CSES 1694](https://cses.fi/problemset/task/1694)                 | $st$-Fluxo Máximo Canônico, Grafo Residual                    |
+| [School Dance](./Problemas/School%20Dance/)       | [CSES 1696](https://cses.fi/problemset/task/1696)                 | Grafo Bipartido, Super-fonte/Sumidouro, Capacidades Unitárias |
+| [Distinct Routes](./Problemas/Distinct%20Routes/) | [CSES 1711](https://cses.fi/problemset/task/1711)                 | Caminhos Disjuntos por Arcos, Decomposição de Fluxo           |
+| [Police Chase](./Problemas/Police%20Chase/)       | [CSES 1695](https://cses.fi/problemset/task/1695)                 | Corte Mínimo (Max-Flow Min-Cut), Arestas Bidirecionais        |
+| [Time Travel](./Problemas/Time%20Travel/)         | [Beecrowd 2082](https://judge.beecrowd.com/en/problems/view/2082) | Corte Mínimo Global, Arestas Bidirecionais                    |
+| [Coin Grid](./Problemas/Coin%20Grid/)             | [CSES 1709](https://cses.fi/problemset/task/1709)                 | Grafo Bipartido, Cobertura Mínima (König), Complementaridade  |
 
 ### 🧮 Problemas de Fluxo de Custo Mínimo
 
-| Problema | Juiz | Técnica / Redução de Modelagem |
-| :--- | :--- | :--- |
-| [Task Assignment](./Problemas/Task%20Assignment/) | [CSES 2129](https://cses.fi/problemset/task/2129) | Grafo Bipartido com Custos (Assignment), Super-fonte/Sumidouro |
-| [Parcel Delivery](./Problemas/Parcel%20Delivery/) | [CSES 2121](https://cses.fi/problemset/task/2121) | Min Cost Flow com Demanda $k$, Limitação via Super-fonte |
-| [Distinct Routes II](./Problemas/Distinct%20Routes%20II/) | [CSES 2130](https://cses.fi/problemset/task/2130) | Min Cost $k$-Disjoint Paths, Decomposição de Fluxo |
+| Problema                                                  | Juiz                                              | Técnica / Redução de Modelagem                                 |
+| :-------------------------------------------------------- | :------------------------------------------------ | :------------------------------------------------------------- |
+| [Task Assignment](./Problemas/Task%20Assignment/)         | [CSES 2129](https://cses.fi/problemset/task/2129) | Grafo Bipartido com Custos (Assignment), Super-fonte/Sumidouro |
+| [Parcel Delivery](./Problemas/Parcel%20Delivery/)         | [CSES 2121](https://cses.fi/problemset/task/2121) | Min Cost Flow com Demanda $k$, Limitação via Super-fonte       |
+| [Distinct Routes II](./Problemas/Distinct%20Routes%20II/) | [CSES 2130](https://cses.fi/problemset/task/2130) | Min Cost $k$-Disjoint Paths, Decomposição de Fluxo             |
+| [Edição de Rede](./Problemas/Edi%C3%A7%C3%A3o%20de%20Rede/) | Maratona SBC 2026 / Regional (Prob. E)            | Transformação de Topologia (Matching de Arestas), Custo Mínimo |
 
 ### 📚 Lista de Problemas Adicionais
 

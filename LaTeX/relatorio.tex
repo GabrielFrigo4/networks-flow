@@ -137,8 +137,8 @@ As atividades do projeto foram estruturadas e encontram-se no seguinte status:
     \item \textbf{Atividade 4:} Estudo de técnicas de modelagem e redução de problemas. \textbf{[Concluída]}
     \item \textbf{Atividade 5:} Implementação de problemas modelados (Emparelhamento e Caminhos Disjuntos). \textbf{[Concluída]}
     \item \textbf{Atividade 6:} Elaboração do relatório final (este documento). \textbf{[Concluída]}
-    \item \textbf{Atividade 7:} Estudo teórico do problema de fluxo de custo mínimo (veja~\cite{cook1998combinatorial}). \textbf{[Em andamento]}
-    \item \textbf{Atividade 8:} Implementação em C++ do algoritmo \textit{network simplex}. \textbf{[A iniciar]}
+    \item \textbf{Atividade 7:} Estudo teórico do problema de fluxo de custo mínimo (veja~\cite{cook1998combinatorial}). \textbf{[Concluída]}
+    \item \textbf{Atividade 8:} Implementação em C++ do algoritmo \textit{network simplex}. \textbf{[Concluída]}
     \item \textbf{Atividade 9:} Testes experimentais em instâncias de larga escala. \textbf{[A iniciar]}
     \item \textbf{Atividade 10:} Análise comparativa de desempenho dos algoritmos. \textbf{[A iniciar]}
     \item \textbf{Atividade 11:} Elaboração do relatório final e artigo de conclusão. \textbf{[A iniciar]}
@@ -937,7 +937,9 @@ Seja $D = (V, A)$ um digrafo e sejam $s, t \in V$ dois vértices distintos e nã
 Pelo Teorema da Integralidade, como todas as capacidades são inteiras, existe um fluxo máximo inteiro $f$, onde cada arco transporta $f(u,v) \in \{0, 1\}$. Um arco com $f(u,v) = 1$ pertence a exatamente um caminho de $s$ a $t$. Como nenhum arco pode transportar mais que $1$ unidade, dois caminhos distintos não podem compartilhar um mesmo arco. Portanto, o valor do fluxo máximo $|f|$ é exatamente o número de caminhos disjuntos por arcos.
 
 Pelo Teorema do Fluxo Máximo e Corte Mínimo, $|f| = \text{cap}(S,T)$ para algum corte mínimo $(S,T)$, onde $\text{cap}(S,T) = \sum_{(u,v) \in A,\, u \in S,\, v \in T} c(u,v)$ é a soma das capacidades de todos os arcos que cruzam do lado $S$ para o lado $T$ do corte. Como $c(u,v) = 1$, a capacidade do corte é precisamente o número de arcos que cruzam de $S$ para $T$, ou seja, o número mínimo de arcos cuja remoção desconecta $s$ de $t$. Conclui-se:
-$$\max\{\text{caminhos disjuntos por arcos de } s \text{ a } t\} = \min\{\text{arcos cuja remoção desconecta } s \text{ de } t\}.$$
+\begin{equation*}
+    \max\{\text{caminhos $st$-disjuntos por arcos}\} = \min\{\text{arcos cuja remoção desconecta $s$ de $t$}\}.
+\end{equation*}
 
 \subsubsection{Prova do Teorema de Menger (Versão por Vértices)}
 
@@ -948,7 +950,10 @@ Seja $D = (V, A)$ um digrafo e sejam $s, t \in V$ não-adjacentes. Construa a re
 Nesta construção, a restrição de capacidade unitária no arco $(v_{in}, v_{out})$ garante que no máximo $1$ unidade de fluxo pode transitar pelo vértice original $v$. Portanto, caminhos disjuntos por arcos em $D'$ correspondem bijetivamente a caminhos disjuntos por vértices em $D$.
 
 Aplicando o Teorema de Menger por arcos a $D'$, obtemos que o número máximo de caminhos disjuntos por arcos em $D'$ (= caminhos disjuntos por vértices em $D$) é igual ao número mínimo de arcos internos $(v_{in}, v_{out})$ no corte mínimo, que correspondem exatamente aos vértices originais cuja remoção desconecta $s$ de $t$. Logo:
-$$\max\{\text{caminhos disjuntos por vértices de } s \text{ a } t\} = \min\{\text{vértices cuja remoção desconecta } s \text{ de } t\}. \qquad \blacksquare$$
+\begin{equation*}
+    \max\{\text{caminhos $st$-disjuntos por vértices}\} = \min\{\text{vértices cuja remoção desconecta $s$ de $t$}\}.
+\end{equation*}
+\hfill $\blacksquare$
 
 \subsubsection{O Teorema de Hall}
 
@@ -2848,7 +2853,10 @@ private:
 \begin{lstlisting}[caption={Implementação em C++ do algoritmo \textit{Network Simplex}.}, label={lst:network_simplex}]
 #include "CostNetwork.hpp"
 #include <algorithm>
+#include <cstdint>
 #include <numeric>
+#include <queue>
+#include <vector>
 
 class NetworkSimplex : public CostNetwork
 {
@@ -2874,47 +2882,93 @@ public:
 	Long compute_min_cost_max_flow(
 	    const Size source, const Size sink) override
 	{
-		add_edge(sink, source, INF, 0);
-		const Size back_edge = edges.size() - 2;
-		const Size total_nodes = size + 1;
+		Long max_c = 1;
+		for (const auto &e : edges)
+			max_c = std::max(max_c, std::abs(e.cost));
+
+		const Long back_cost =
+		    -(max_c * static_cast<Long>(size + 2) + 1);
+		const Size back_edge_idx = edges.size();
+		add_edge(sink, source, INF, back_cost);
+
+		const Size num_nodes = size + 1;
 		const Size root = size;
-		parent.assign(total_nodes, root);
-		depth.assign(total_nodes, 1);
-		thread.resize(total_nodes);
-		potential.assign(total_nodes, 0);
-		parent_edge.assign(total_nodes, MAX);
+		adjacency.resize(num_nodes);
+
+		parent.assign(num_nodes, root);
+		depth.assign(num_nodes, 1);
+		potential.assign(num_nodes, 0);
+		parent_edge.assign(num_nodes, MAX);
+		tree_adj.assign(num_nodes, {});
+
 		arc_state.assign(
 		    edges.size() / 2, ArcState::LOWER);
-		std::iota(thread.begin(), thread.end(), Size(1));
-		thread[root] = 0;
+
+		const Long big_m =
+		    std::abs(back_cost) * static_cast<Long>(size + 2) + 100000;
+
 		depth[root] = 0;
-		const Long big_m = compute_big_m();
+		potential[root] = 0;
+
 		for (Size v = 0; v < size; ++v)
 		{
-			adjacency[v].push_back(edges.size());
-			edges.push_back({v, root, big_m, big_m, 0});
-			adjacency[root].push_back(edges.size());
+			const Size art_id = edges.size();
+			adjacency[v].push_back(art_id);
+			edges.push_back({v, root, INF, big_m, 0});
+			adjacency[root].push_back(art_id + 1);
 			edges.push_back({root, v, 0, -big_m, 0});
-			adjacency[root].push_back(edges.size());
-			edges.push_back({root, v, big_m, big_m, 0});
-			adjacency[v].push_back(edges.size());
-			edges.push_back({v, root, 0, -big_m, 0});
-			parent_edge[v] = edges.size() - 4;
+
+			parent[v] = root;
+			parent_edge[v] = art_id;
 			potential[v] = -big_m;
 			arc_state.push_back(ArcState::TREE);
-			arc_state.push_back(ArcState::TREE);
+			tree_adj[root].push_back(v);
+			tree_adj[v].push_back(root);
 		}
+
 		while (true)
 		{
-			const Size entering = find_entering_arc();
-			if (entering == MAX) break;
-			const Size leaving =
-			    find_leaving_arc(entering);
-			pivot(entering, leaving);
+			Size entering = MAX;
+			Long best_violation = 0;
+
+			for (Size i = 0; i < edges.size(); i += 2)
+			{
+				const Size arc_idx = i / 2;
+				if (arc_state[arc_idx] == ArcState::TREE)
+					continue;
+
+				const Long rc = reduced_cost(i);
+				if (arc_state[arc_idx] == ArcState::LOWER
+				    && rc < best_violation)
+				{
+					best_violation = rc;
+					entering = i;
+				}
+				else if (arc_state[arc_idx] == ArcState::UPPER
+				    && -rc < best_violation)
+				{
+					best_violation = -rc;
+					entering = i;
+				}
+			}
+
+			if (entering == MAX)
+				break;
+
+			pivot(entering);
 		}
+
 		Long total_cost = 0;
-		for (Size i = 0; i < back_edge; i += 2)
+		for (Size i = 0; i < back_edge_idx; i += 2)
 			total_cost += edges[i].flow * edges[i].cost;
+
+		adjacency[sink].pop_back();
+		adjacency[source].pop_back();
+		for (Size v = 0; v < size; ++v)
+			adjacency[v].pop_back();
+		adjacency.resize(size);
+		edges.resize(back_edge_idx);
+
 		return total_cost;
 	}
 
@@ -2923,201 +2977,200 @@ private:
 	{
 		LOWER, UPPER, TREE
 	};
-	std::vector<Size> parent, depth, thread, parent_edge;
+
+	std::vector<Size> parent, depth, parent_edge;
 	std::vector<Long> potential;
 	std::vector<ArcState> arc_state;
-
-	Long compute_big_m() const
-	{
-		Long sum = 1;
-		for (const auto &edge : edges)
-			if (edge.cost > 0)
-				sum += edge.cost * edge.capacity;
-		return sum;
-	}
+	std::vector<std::vector<Size>> tree_adj;
 
 	[[nodiscard]] Long reduced_cost(
 	    const Size edge_id) const
 	{
 		return edges[edge_id].cost
-		    - potential[edges[edge_id].from]
-		    + potential[edges[edge_id].to];
-	}
-
-	Size find_entering_arc() const
-	{
-		Size best = MAX;
-		Long best_violation = 0;
-		for (Size i = 0; i < edges.size(); i += 2)
-		{
-			const Size arc = i / 2;
-			if (arc_state[arc] == ArcState::TREE)
-				continue;
-			const Long rc = reduced_cost(i);
-			if (arc_state[arc] == ArcState::LOWER
-			    && rc < best_violation)
-			{
-				best_violation = rc;
-				best = i;
-			}
-			else if (arc_state[arc] == ArcState::UPPER
-			    && -rc < best_violation)
-			{
-				best_violation = -rc;
-				best = i;
-			}
-		}
-		return best;
+		    + potential[edges[edge_id].from]
+		    - potential[edges[edge_id].to];
 	}
 
 	Size find_lca(Size u, Size v) const
 	{
 		while (u != v)
 		{
-			if (depth[u] < depth[v]) std::swap(u, v);
+			if (depth[u] < depth[v])
+				std::swap(u, v);
 			u = parent[u];
 		}
 		return u;
 	}
 
-	Size find_leaving_arc(const Size entering)
+	void pivot(const Size entering)
 	{
-		const Size arc = entering / 2;
+		const Size arc_idx = entering / 2;
 		Size u = edges[entering].from;
 		Size v = edges[entering].to;
-		if (arc_state[arc] == ArcState::UPPER)
-			std::swap(u, v);
-		const Size lca = find_lca(u, v);
-		Long bottleneck = get_residual_capacity(entering);
-		Size leaving = entering;
-		for (Size nd = u; nd != lca; nd = parent[nd])
-		{
-			const Size eid = parent_edge[nd];
-			Long r = (edges[eid].from == nd)
-			    ? edges[eid ^ 1ULL].flow
-			    : get_residual_capacity(eid);
-			if (r < bottleneck)
-			    { bottleneck = r; leaving = eid; }
-		}
-		for (Size nd = v; nd != lca; nd = parent[nd])
-		{
-			const Size eid = parent_edge[nd];
-			Long r = (edges[eid].to == nd)
-			    ? edges[eid ^ 1ULL].flow
-			    : get_residual_capacity(eid);
-			if (r <= bottleneck)
-			    { bottleneck = r; leaving = eid; }
-		}
-		for (Size nd = u; nd != lca; nd = parent[nd])
-		{
-			const Size eid = parent_edge[nd];
-			if (edges[eid].from == nd)
-				push_flow(eid ^ 1ULL, bottleneck);
-			else push_flow(eid, bottleneck);
-		}
-		for (Size nd = v; nd != lca; nd = parent[nd])
-		{
-			const Size eid = parent_edge[nd];
-			if (edges[eid].to == nd)
-				push_flow(eid ^ 1ULL, bottleneck);
-			else push_flow(eid, bottleneck);
-		}
-		if (arc_state[arc] == ArcState::LOWER)
-			push_flow(entering, bottleneck);
-		else push_flow(entering ^ 1ULL, bottleneck);
-		return leaving;
-	}
 
-	void pivot(const Size entering, const Size leaving)
-	{
-		const Size ea = entering / 2;
-		const Size la = leaving / 2;
-		if (entering == leaving)
+		const bool is_upper =
+		    (arc_state[arc_idx] == ArcState::UPPER);
+		if (is_upper)
+			std::swap(u, v);
+
+		const Size lca = find_lca(u, v);
+
+		Long bottleneck = is_upper
+		    ? edges[entering].flow
+		    : (edges[entering].capacity - edges[entering].flow);
+		Size leaving_edge = entering;
+		bool leaving_is_entering = true;
+
+		for (Size curr = v; curr != lca; curr = parent[curr])
 		{
-			arc_state[ea] =
-			    (arc_state[ea] == ArcState::LOWER)
+			const Size pe = parent_edge[curr];
+			Long cap = (edges[pe].from == curr)
+			    ? edges[pe].capacity - edges[pe].flow
+			    : edges[pe].flow;
+
+			if (cap < bottleneck)
+			{
+				bottleneck = cap;
+				leaving_edge = pe;
+				leaving_is_entering = false;
+			}
+		}
+
+		for (Size curr = u; curr != lca; curr = parent[curr])
+		{
+			const Size pe = parent_edge[curr];
+			Long cap = (edges[pe].to == curr)
+			    ? edges[pe].capacity - edges[pe].flow
+			    : edges[pe].flow;
+
+			if (cap <= bottleneck)
+			{
+				bottleneck = cap;
+				leaving_edge = pe;
+				leaving_is_entering = false;
+			}
+		}
+
+		if (bottleneck == 0 && leaving_is_entering)
+		{
+			arc_state[arc_idx] = is_upper
+			    ? ArcState::LOWER : ArcState::UPPER;
+			return;
+		}
+
+		if (!is_upper)
+		{
+			edges[entering].flow += bottleneck;
+			edges[entering ^ 1ULL].flow -= bottleneck;
+		}
+		else
+		{
+			edges[entering].flow -= bottleneck;
+			edges[entering ^ 1ULL].flow += bottleneck;
+		}
+
+		for (Size curr = v; curr != lca; curr = parent[curr])
+		{
+			const Size pe = parent_edge[curr];
+			if (edges[pe].from == curr)
+			{
+				edges[pe].flow += bottleneck;
+				edges[pe ^ 1ULL].flow -= bottleneck;
+			}
+			else
+			{
+				edges[pe].flow -= bottleneck;
+				edges[pe ^ 1ULL].flow += bottleneck;
+			}
+		}
+
+		for (Size curr = u; curr != lca; curr = parent[curr])
+		{
+			const Size pe = parent_edge[curr];
+			if (edges[pe].to == curr)
+			{
+				edges[pe].flow += bottleneck;
+				edges[pe ^ 1ULL].flow -= bottleneck;
+			}
+			else
+			{
+				edges[pe].flow -= bottleneck;
+				edges[pe ^ 1ULL].flow += bottleneck;
+			}
+		}
+
+		if (leaving_is_entering)
+		{
+			arc_state[arc_idx] =
+			    (edges[entering].flow == edges[entering].capacity)
 			    ? ArcState::UPPER : ArcState::LOWER;
 			return;
 		}
-		arc_state[la] =
-		    (get_residual_capacity(leaving) == 0)
-		    ? ArcState::UPPER : ArcState::LOWER;
-		arc_state[ea] = ArcState::TREE;
-		update_tree(entering, leaving);
-	}
 
-	void update_tree(
-	    const Size entering, const Size leaving)
-	{
-		Size u = edges[entering].from;
-		Size v = edges[entering].to;
-		Size lu = edges[leaving].from;
-		Size lv = edges[leaving].to;
-		if (depth[lu] < depth[lv]) std::swap(lu, lv);
-		std::vector<Size> path;
-		Size nd = lu;
-		while (true)
-		{
-			path.push_back(nd);
-			if (nd == u || nd == v) break;
-			nd = parent[nd];
-		}
-		if (nd != u) std::swap(u, v);
-		for (Size i = path.size() - 1; i > 0; --i)
-		{
-			parent[path[i]] = path[i - 1];
-			parent_edge[path[i]] =
-			    parent_edge[path[i - 1]];
-		}
-		parent[lu] = lv;
-		parent_edge[lu] = entering;
-		rebuild_depth_and_thread();
-	}
+		const Size leaving_arc_idx = leaving_edge / 2;
+		arc_state[leaving_arc_idx] =
+		    (edges[leaving_edge].flow == 0)
+		    ? ArcState::LOWER : ArcState::UPPER;
+		arc_state[arc_idx] = ArcState::TREE;
 
-	void rebuild_depth_and_thread()
-	{
+		const Size lu = edges[leaving_edge].from;
+		const Size lv = edges[leaving_edge].to;
+		auto &adj_lu = tree_adj[lu];
+		adj_lu.erase(std::remove(
+		    adj_lu.begin(), adj_lu.end(), lv), adj_lu.end());
+		auto &adj_lv = tree_adj[lv];
+		adj_lv.erase(std::remove(
+		    adj_lv.begin(), adj_lv.end(), lu), adj_lv.end());
+
+		const Size orig_u = edges[entering].from;
+		const Size orig_v = edges[entering].to;
+		tree_adj[orig_u].push_back(orig_v);
+		tree_adj[orig_v].push_back(orig_u);
+
 		const Size root = size;
+		std::vector<bool> visited(size + 1, false);
+		std::queue<Size> q;
+		q.push(root);
+		visited[root] = true;
+		parent[root] = root;
 		depth[root] = 0;
-		std::vector<std::vector<Size>> ch(size + 1);
-		for (Size v = 0; v <= size; ++v)
-			if (v != root) ch[parent[v]].push_back(v);
-		Size prev = root;
-		std::vector<Size> stk = {root};
-		while (!stk.empty())
-		{
-			const Size nd = stk.back(); stk.pop_back();
-			if (nd != root)
-				depth[nd] = depth[parent[nd]] + 1;
-			thread[prev] = nd; prev = nd;
-			for (auto it = ch[nd].rbegin();
-			     it != ch[nd].rend(); ++it)
-				stk.push_back(*it);
-		}
-		thread[prev] = root;
-		for (Size v = 0; v <= size; ++v)
-		{
-			if (v == root || parent_edge[v] == MAX)
-				continue;
-			const Long rc = reduced_cost(parent_edge[v]);
-			if (rc != 0)
-			{
-				potential[v] += rc;
-				propagate_potential(v, ch);
-			}
-		}
-	}
+		parent_edge[root] = MAX;
+		potential[root] = 0;
 
-	void propagate_potential(const Size nd,
-	    const std::vector<std::vector<Size>> &ch)
-	{
-		for (const Size c : ch[nd])
+		while (!q.empty())
 		{
-			const Long rc =
-			    reduced_cost(parent_edge[c]);
-			if (rc != 0)
+			const Size curr = q.front();
+			q.pop();
+
+			for (const Size neighbor : tree_adj[curr])
 			{
-				potential[c] += rc;
-				propagate_potential(c, ch);
+				if (visited[neighbor])
+					continue;
+
+				visited[neighbor] = true;
+				parent[neighbor] = curr;
+				depth[neighbor] = depth[curr] + 1;
+
+				Size eid = MAX;
+				for (const Size edge_id : adjacency[curr])
+				{
+					if (edges[edge_id].to == neighbor
+					    && arc_state[edge_id / 2] == ArcState::TREE)
+					{
+						eid = edge_id;
+						break;
+					}
+				}
+				parent_edge[neighbor] = eid;
+
+				if (edges[eid].from == curr)
+					potential[neighbor] =
+					    potential[curr] + edges[eid].cost;
+				else
+					potential[neighbor] =
+					    potential[curr] - edges[eid].cost;
+
+				q.push(neighbor);
 			}
 		}
 	}

@@ -10,11 +10,11 @@
 
 A documentação oficial da pesquisa é gerada a partir dos códigos-fonte em LaTeX disponíveis na pasta [`LaTeX/`](./LaTeX/). A tabela a seguir detalha a finalidade de cada documento e as diferenças entre eles:
 
-| PDF Gerado             | Arquivo Fonte                            | Descrição e Diferenças                                                                                                                                                                                                                                                   |
-| :--------------------- | :--------------------------------------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 📘 **`projeto.pdf`**   | [`projeto.tex`](./LaTeX/projeto.tex)     | Proposta e plano de trabalho inicial do projeto de pesquisa, submetido para a avaliação do edital.                                                                                                                                                                       |
-| 📙 **`relatorio.pdf`** | [`relatorio.tex`](./LaTeX/relatorio.tex) | Relatório formal de acompanhamento da pesquisa. Contém a capa oficial institucional da UFABC com identificação do edital e campos de assinaturas.                                                                                                                        |
-| 📕 **`ic.pdf`**        | [`ic.tex`](./LaTeX/ic.tex)               | Documento principal compilando todo o conteúdo técnico da pesquisa. **Possui exatamente o mesmo conteúdo textual do `relatorio.tex`**, diferindo apenas por **não ter a capa formal do relatório** (folha de assinaturas), oferecendo uma formatação limpa para leitura. |
+| PDF Gerado | Arquivo Fonte | Descrição e Diferenças |
+| :--- | :--- | :--- |
+| [📘&nbsp;**`projeto.pdf`**][baixar_pdf_projeto] | [`projeto.tex`](./LaTeX/projeto.tex) | Proposta e plano de trabalho inicial do projeto de pesquisa, submetido para a avaliação do edital. |
+| [📙&nbsp;**`relatorio.pdf`**][baixar_pdf_relatorio] | [`relatorio.tex`](./LaTeX/relatorio.tex) | Relatório formal de acompanhamento da pesquisa. Contém a capa oficial institucional da UFABC com identificação do edital e campos de assinaturas. |
+| [📕&nbsp;**`ic.pdf`**][baixar_pdf_ic] | [`ic.tex`](./LaTeX/ic.tex) | Documento principal compilando todo o conteúdo técnico da pesquisa. **Possui exatamente o mesmo conteúdo textual do `relatorio.tex`**, diferindo apenas por **não ter a capa formal do relatório** (folha de assinaturas), oferecendo uma formatação limpa para leitura. |
 
 ---
 
@@ -75,6 +75,7 @@ Introduzida por Goldberg e Tarjan, esta família quebra o paradigma dos caminhos
 ### 🧑‍💻 Algoritmos Implementados
 
 #### ⚡ Algoritmos de Fluxo Máximo
+
 - 🐢 **[Ford-Fulkerson][ford_fulkerson]**
 - 🚶 **[Edmonds-Karp][edmonds_karp]**
 - 🚀 **[Dinic Algorithm][dinic_algorithm]**
@@ -82,6 +83,7 @@ Introduzida por Goldberg e Tarjan, esta família quebra o paradigma dos caminhos
 - ⚡ **[Push Relabel Improved][push_relabel_faster]**
 
 #### 🧮 Algoritmos de Fluxo de Custo Mínimo
+
 - 🔄 **[Cycle Canceling][cycle_canceling]**
 - 📉 **[Successive Shortest Path][successive_shortest]**
 - 🌲 **[Network Simplex][network_simplex]**
@@ -91,6 +93,7 @@ Introduzida por Goldberg e Tarjan, esta família quebra o paradigma dos caminhos
 Abaixo estão listados os problemas clássicos que foram modelados e resolvidos:
 
 #### ⚡ Fluxo Máximo
+
 - 🌊 **[Fluxo Máximo (_Download Speed_)][download_speed]**
 - 🤝 **[Emparelhamento Bipartido Máximo (_School Dance_)][school_dance]**
 - 🛣️ **[Caminhos Disjuntos por Arcos (_Distinct Routes_)][distinct_routes]**
@@ -99,9 +102,11 @@ Abaixo estão listados os problemas clássicos que foram modelados e resolvidos:
 - 🪙 **[Cobertura Mínima de Vértices (_Coin Grid_)][coin_grid]**
 
 #### 🧮 Fluxo de Custo Mínimo
+
 - 📋 **[Atribuição de Custo Mínimo (_Task Assignment_)][task_assignment]**
 - 📦 **[Transporte com Demanda Fixa (_Parcel Delivery_)][parcel_delivery]**
 - 🚀 **[Caminhos Disjuntos de Custo Mínimo (_Distinct Routes II_)][distinct_routes_2]**
+- 🔄 **[Transformação de Topologia com Custo Mínimo (_Edição de Rede - SBC 2026 / ICPC 1ª Fase_)][edicao_de_rede]**
 
 > [!TIP]
 > Todos os códigos-fonte C++ com as reduções e modelagens para resolver os problemas acima estão disponíveis no diretório **[Implementações/Problemas](./Implementações/Problemas/)**.
@@ -169,5 +174,6 @@ pdflatex ic.tex
 [task_assignment]: https://cses.fi/problemset/task/2129
 [parcel_delivery]: https://cses.fi/problemset/task/2121
 [distinct_routes_2]: https://cses.fi/problemset/task/2130
+[edicao_de_rede]: ./Implementações/Problemas/Edi%C3%A7%C3%A3o%20de%20Rede/
 [segmentacao_imagens_codigo]: ./Aplicações/Segmentação%20de%20Imagens/README.md
 [segmentacao_imagens_dataset]: https://vision.cs.uwaterloo.ca/data/maxflow
