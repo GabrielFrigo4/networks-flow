@@ -1,10 +1,12 @@
-#include "../../CostNetwork/CycleCanceling.hpp"
-#include "../../CostNetwork/NetworkSimplex.hpp"
-#include "../../CostNetwork/SuccessiveShortest.hpp"
+#include "../../../CostNetwork/CycleCanceling.hpp"
+#include "../../../CostNetwork/NetworkSimplex.hpp"
+#include "../../../CostNetwork/SuccessiveShortest.hpp"
+#include "../../../CostNetwork/SuccessiveShortestDijkstra.hpp"
+#include <algorithm>
 #include <iostream>
 #include <vector>
 
-using CostSolver = SuccessiveShortest;
+using CostSolver = NetworkSimplex;
 
 void print_disjoint_paths(
     const std::unique_ptr<CostNetwork> &cn, const Size num_nodes, const Long k

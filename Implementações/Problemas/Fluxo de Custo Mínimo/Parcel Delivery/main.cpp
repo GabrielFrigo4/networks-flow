@@ -1,9 +1,10 @@
-#include "../../CostNetwork/CycleCanceling.hpp"
-#include "../../CostNetwork/NetworkSimplex.hpp"
-#include "../../CostNetwork/SuccessiveShortest.hpp"
+#include "../../../CostNetwork/CycleCanceling.hpp"
+#include "../../../CostNetwork/NetworkSimplex.hpp"
+#include "../../../CostNetwork/SuccessiveShortest.hpp"
+#include "../../../CostNetwork/SuccessiveShortestDijkstra.hpp"
 #include <iostream>
 
-using CostSolver = SuccessiveShortest;
+using CostSolver = NetworkSimplex;
 
 void task()
 {

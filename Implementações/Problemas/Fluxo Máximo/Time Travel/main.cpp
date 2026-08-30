@@ -1,8 +1,8 @@
-#include "../../FlowNetwork/Dinic.hpp"
-#include "../../FlowNetwork/EdmondsKarp.hpp"
-#include "../../FlowNetwork/FordFulkerson.hpp"
-#include "../../FlowNetwork/PushRelabel.hpp"
-#include "../../FlowNetwork/PushRelabelImproved.hpp"
+#include "../../../FlowNetwork/Dinic.hpp"
+#include "../../../FlowNetwork/EdmondsKarp.hpp"
+#include "../../../FlowNetwork/FordFulkerson.hpp"
+#include "../../../FlowNetwork/PushRelabel.hpp"
+#include "../../../FlowNetwork/PushRelabelImproved.hpp"
 #include <iostream>
 
 using FlowSolver = PushRelabelImproved;

@@ -1,12 +1,13 @@
-#include "../../CostNetwork/CycleCanceling.hpp"
-#include "../../CostNetwork/NetworkSimplex.hpp"
-#include "../../CostNetwork/SuccessiveShortest.hpp"
+#include "../../../CostNetwork/CycleCanceling.hpp"
+#include "../../../CostNetwork/NetworkSimplex.hpp"
+#include "../../../CostNetwork/SuccessiveShortest.hpp"
+#include "../../../CostNetwork/SuccessiveShortestDijkstra.hpp"
 #include <algorithm>
 #include <iostream>
 #include <utility>
 #include <vector>
 
-using CostSolver = SuccessiveShortest;
+using CostSolver = NetworkSimplex;
 
 struct EdgePair
 {

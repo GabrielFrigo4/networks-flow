@@ -85,7 +85,8 @@ Introduzida por Goldberg e Tarjan, esta família quebra o paradigma dos caminhos
 #### 🧮 Algoritmos de Fluxo de Custo Mínimo
 
 - 🔄 **[Cycle Canceling][cycle_canceling]**
-- 📉 **[Successive Shortest Path][successive_shortest]**
+- 📉 **[Successive Shortest Path (SPFA)][successive_shortest]**
+- ⚡ **[Successive Shortest Path (Dijkstra + Potenciais)][successive_shortest_dijkstra]**
 - 🌲 **[Network Simplex][network_simplex]**
 
 ### 🎯 Problemas Resolvidos
@@ -100,6 +101,7 @@ Abaixo estão listados os problemas clássicos que foram modelados e resolvidos:
 - ✂️ **[Teorema do Fluxo Máximo-Corte Mínimo (_Police Chase_)][police_chase]**
 - 🌐 **[Corte Mínimo Global (_Time Travel_)][time_travel]**
 - 🪙 **[Cobertura Mínima de Vértices (_Coin Grid_)][coin_grid]**
+- 🔄 **[Transformação de Topologia via Emparelhamento Bipartido (_Edição de Rede - SBC 2026 / ICPC 1ª Fase_)][edicao_de_rede_mf]**
 
 #### 🧮 Fluxo de Custo Mínimo
 
@@ -158,6 +160,7 @@ pdflatex ic.tex
 [push_relabel_faster]: ./Implementações/FlowNetwork/PushRelabelImproved.hpp
 [cycle_canceling]: ./Implementações/CostNetwork/CycleCanceling.hpp
 [successive_shortest]: ./Implementações/CostNetwork/SuccessiveShortest.hpp
+[successive_shortest_dijkstra]: ./Implementações/CostNetwork/SuccessiveShortestDijkstra.hpp
 [network_simplex]: ./Implementações/CostNetwork/NetworkSimplex.hpp
 [baixar_pdf_ic]: https://github.com/GabrielFrigo4/IC_Networks_Flow/releases/latest/download/ic.pdf
 [baixar_pdf_ic_icon]: https://img.shields.io/badge/IC-Baixar-red?style=for-the-badge&logo=adobeacrobatreader
@@ -174,6 +177,7 @@ pdflatex ic.tex
 [task_assignment]: https://cses.fi/problemset/task/2129
 [parcel_delivery]: https://cses.fi/problemset/task/2121
 [distinct_routes_2]: https://cses.fi/problemset/task/2130
-[edicao_de_rede]: ./Implementações/Problemas/Edi%C3%A7%C3%A3o%20de%20Rede/
+[edicao_de_rede_mf]: ./Implementações/Problemas/Fluxo%20M%C3%A1ximo/Edi%C3%A7%C3%A3o%20de%20Rede/
+[edicao_de_rede]: ./Implementações/Problemas/Fluxo%20de%20Custo%20M%C3%ADnimo/Edi%C3%A7%C3%A3o%20de%20Rede/
 [segmentacao_imagens_codigo]: ./Aplicações/Segmentação%20de%20Imagens/README.md
 [segmentacao_imagens_dataset]: https://vision.cs.uwaterloo.ca/data/maxflow

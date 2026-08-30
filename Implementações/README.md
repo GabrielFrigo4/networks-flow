@@ -17,11 +17,12 @@ Biblioteca de algoritmos de fluxo em redes implementados em C++. O projeto está
 
 ## 🧮 Algoritmos de Custo Mínimo
 
-| Algoritmo                | Header                                                           | Complexidade                                       | Descrição                                                      |
-| :----------------------- | :--------------------------------------------------------------- | :------------------------------------------------- | :------------------------------------------------------------- |
-| Cycle Canceling          | [`CycleCanceling.hpp`](./CostNetwork/CycleCanceling.hpp)         | $\mathcal{O}(\|V\| \cdot \|A\|^2 \cdot C \cdot W)$ | Cancelamento iterativo de ciclos de custo negativo.            |
-| Successive Shortest Path | [`SuccessiveShortest.hpp`](./CostNetwork/SuccessiveShortest.hpp) | $\mathcal{O}(\|V\| \cdot \|A\| \cdot F)$           | Caminhos mais curtos via SPFA com augmentação.                 |
-| Network Simplex          | [`NetworkSimplex.hpp`](./CostNetwork/NetworkSimplex.hpp)         | Exponencial (pior caso)                            | Árvore geradora básica com pivoteamento. Excelente na prática. |
+| Algoritmo                     | Header                                                                   | Complexidade                                       | Descrição                                                      |
+| :---------------------------- | :----------------------------------------------------------------------- | :------------------------------------------------- | :------------------------------------------------------------- |
+| Cycle Canceling               | [`CycleCanceling.hpp`](./CostNetwork/CycleCanceling.hpp)                 | $\mathcal{O}(\|V\| \cdot \|A\|^2 \cdot C \cdot W)$ | Cancelamento iterativo de ciclos de custo negativo.            |
+| Successive Shortest (SPFA)    | [`SuccessiveShortest.hpp`](./CostNetwork/SuccessiveShortest.hpp)         | $\mathcal{O}(\|V\| \cdot \|A\| \cdot F)$           | Caminhos mais curtos via SPFA com aumentações sucessivas.      |
+| Successive Shortest (Dijkstra)| [`SuccessiveShortestDijkstra.hpp`](./CostNetwork/SuccessiveShortestDijkstra.hpp) | $\mathcal{O}(F \cdot \|A\| \log \|V\|)$            | Caminhos mais curtos via Dijkstra com Potenciais Nodais ($\pi$). |
+| Network Simplex               | [`NetworkSimplex.hpp`](./CostNetwork/NetworkSimplex.hpp)                 | Exponencial (pior caso)                            | Árvore geradora básica com pivoteamento. Excelente na prática. |
 
 ## 📐 Arquitetura
 
@@ -74,7 +75,7 @@ int main() {
 ```
 
 > [!TIP]
-> Confira o código completo e estruturado no nosso [Template](./Problemas/Template/main.cpp) para iniciar rapidamente a resolução de novos problemas.
+> Confira os códigos completos e estruturados nos nossos templates ([Fluxo Máximo](./Problemas/Fluxo%20M%C3%A1ximo/Template/main.cpp) e [Fluxo de Custo Mínimo](./Problemas/Fluxo%20de%20Custo%20M%C3%ADnimo/Template/main.cpp)) para iniciar rapidamente a resolução de novos problemas.
 
 ## 🔗 Problemas Resolvidos
 
@@ -82,23 +83,24 @@ Todos os problemas estão na pasta [`Problemas/`](./Problemas/) e utilizam a arq
 
 ### ⚡ Problemas de Fluxo Máximo
 
-| Problema                                          | Juiz                                                              | Técnica / Redução de Modelagem                                |
-| :------------------------------------------------ | :---------------------------------------------------------------- | :------------------------------------------------------------ |
-| [Download Speed](./Problemas/Download%20Speed/)   | [CSES 1694](https://cses.fi/problemset/task/1694)                 | $st$-Fluxo Máximo Canônico, Grafo Residual                    |
-| [School Dance](./Problemas/School%20Dance/)       | [CSES 1696](https://cses.fi/problemset/task/1696)                 | Grafo Bipartido, Super-fonte/Sumidouro, Capacidades Unitárias |
-| [Distinct Routes](./Problemas/Distinct%20Routes/) | [CSES 1711](https://cses.fi/problemset/task/1711)                 | Caminhos Disjuntos por Arcos, Decomposição de Fluxo           |
-| [Police Chase](./Problemas/Police%20Chase/)       | [CSES 1695](https://cses.fi/problemset/task/1695)                 | Corte Mínimo (Max-Flow Min-Cut), Arestas Bidirecionais        |
-| [Time Travel](./Problemas/Time%20Travel/)         | [Beecrowd 2082](https://judge.beecrowd.com/en/problems/view/2082) | Corte Mínimo Global, Arestas Bidirecionais                    |
-| [Coin Grid](./Problemas/Coin%20Grid/)             | [CSES 1709](https://cses.fi/problemset/task/1709)                 | Grafo Bipartido, Cobertura Mínima (König), Complementaridade  |
+| Problema                                                                      | Juiz                                                              | Técnica / Redução de Modelagem                                |
+| :---------------------------------------------------------------------------- | :---------------------------------------------------------------- | :------------------------------------------------------------ |
+| [Download Speed](./Problemas/Fluxo%20M%C3%A1ximo/Download%20Speed/)           | [CSES 1694](https://cses.fi/problemset/task/1694)                 | $st$-Fluxo Máximo Canônico, Grafo Residual                    |
+| [School Dance](./Problemas/Fluxo%20M%C3%A1ximo/School%20Dance/)               | [CSES 1696](https://cses.fi/problemset/task/1696)                 | Grafo Bipartido, Super-fonte/Sumidouro, Capacidades Unitárias |
+| [Distinct Routes](./Problemas/Fluxo%20M%C3%A1ximo/Distinct%20Routes/)         | [CSES 1711](https://cses.fi/problemset/task/1711)                 | Caminhos Disjuntos por Arcos, Decomposição de Fluxo           |
+| [Police Chase](./Problemas/Fluxo%20M%C3%A1ximo/Police%20Chase/)               | [CSES 1695](https://cses.fi/problemset/task/1695)                 | Corte Mínimo (Max-Flow Min-Cut), Arestas Bidirecionais        |
+| [Time Travel](./Problemas/Fluxo%20M%C3%A1ximo/Time%20Travel/)                 | [Beecrowd 2082](https://judge.beecrowd.com/en/problems/view/2082) | Corte Mínimo Global, Arestas Bidirecionais                    |
+| [Coin Grid](./Problemas/Fluxo%20M%C3%A1ximo/Coin%20Grid/)                     | [CSES 1709](https://cses.fi/problemset/task/1709)                 | Grafo Bipartido, Cobertura Mínima (König), Complementaridade  |
+| [Edição de Rede](./Problemas/Fluxo%20M%C3%A1ximo/Edi%C3%A7%C3%A3o%20de%20Rede/) | Maratona SBC 2026 / Regional (Prob. E)            | Redução para Emparelhamento Bipartido Máximo, Fórmula Fechada |
 
 ### 🧮 Problemas de Fluxo de Custo Mínimo
 
-| Problema                                                  | Juiz                                              | Técnica / Redução de Modelagem                                 |
-| :-------------------------------------------------------- | :------------------------------------------------ | :------------------------------------------------------------- |
-| [Task Assignment](./Problemas/Task%20Assignment/)         | [CSES 2129](https://cses.fi/problemset/task/2129) | Grafo Bipartido com Custos (Assignment), Super-fonte/Sumidouro |
-| [Parcel Delivery](./Problemas/Parcel%20Delivery/)         | [CSES 2121](https://cses.fi/problemset/task/2121) | Min Cost Flow com Demanda $k$, Limitação via Super-fonte       |
-| [Distinct Routes II](./Problemas/Distinct%20Routes%20II/) | [CSES 2130](https://cses.fi/problemset/task/2130) | Min Cost $k$-Disjoint Paths, Decomposição de Fluxo             |
-| [Edição de Rede](./Problemas/Edi%C3%A7%C3%A3o%20de%20Rede/) | Maratona SBC 2026 / Regional (Prob. E)            | Transformação de Topologia (Matching de Arestas), Custo Mínimo |
+| Problema                                                                              | Juiz                                              | Técnica / Redução de Modelagem                                            |
+| :------------------------------------------------------------------------------------ | :------------------------------------------------ | :------------------------------------------------------------------------ |
+| [Task Assignment](./Problemas/Fluxo%20de%20Custo%20M%C3%ADnimo/Task%20Assignment/)   | [CSES 2129](https://cses.fi/problemset/task/2129) | Grafo Bipartido com Custos (Assignment), Super-fonte/Sumidouro            |
+| [Parcel Delivery](./Problemas/Fluxo%20de%20Custo%20M%C3%ADnimo/Parcel%20Delivery/)   | [CSES 2121](https://cses.fi/problemset/task/2121) | Min Cost Flow com Demanda $k$, Limitação via Super-fonte                  |
+| [Distinct Routes II](./Problemas/Fluxo%20de%20Custo%20M%C3%ADnimo/Distinct%20Routes%20II/) | [CSES 2130](https://cses.fi/problemset/task/2130) | Min Cost $k$-Disjoint Paths, Decomposição de Fluxo                        |
+| [Edição de Rede](./Problemas/Fluxo%20de%20Custo%20M%C3%ADnimo/Edi%C3%A7%C3%A3o%20de%20Rede/) | Maratona SBC 2026 / Regional (Prob. E)            | Transformação de Topologia (Min Cost Flow & Matching de Fluxo Máximo)    |
 
 ### 📚 Lista de Problemas Adicionais
 
