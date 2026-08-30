@@ -669,6 +669,27 @@ Consequentemente, a restrição de capacidade unitária nos arcos conectados à 
 \label{fig:bipartite_flow}
 \end{figure}
 
+\subsubsection{Equivalência com Algoritmos Dedicados e o Colapso do Grafo Residual}
+
+Embora a formulação via rede de fluxo com super-fonte e super-sumidouro proporcione uma visão unificada e viabilize o uso direto de motores de alto desempenho como \lstinline{PushRelabelImproved} e \lstinline{Dinic}, a literatura combinatória consagrou algoritmos dedicados para emparelhamento bipartido, notadamente o \textbf{Algoritmo de Kuhn} (1955) e o \textbf{Algoritmo de Hopcroft-Karp} (1973) (veja~\cite{schrijver2003combinatorial, korte2018combinatorial}).
+
+Sob a perspectiva da teoria de redes, esses algoritmos dedicados não constituem métodos desconexos, mas sim instâncias especializadas do próprio método de caminhos aumentantes de Ford-Fulkerson e Dinic. A aparente simplificação dessas implementações --- que dispensam a manutenção explícita de estruturas de dados de arcos reversos, ponteiros residuais e capacidades em memória --- decorre de uma elegante propriedade matemática: o \textbf{colapso do digrafo residual sob restrição bipartida unitária}:
+
+\begin{enumerate}
+    \item \textbf{Binaridade Estrita das Capacidades ($c \in \{0, 1\}$):} Em uma rede de fluxo genérica, um arco pode carregar qualquer fração ou múltiplo inteiro de fluxo, exigindo o cômputo contínuo de $c_f(u, v) = c(u, v) - f(u, v)$. Em grafos bipartidos unitários, cada aresta admite exclusivamente dois estados: \textit{livre} ($f = 0$, permitindo trânsito direto $L \to R$) ou \textit{emparelhada} ($f = 1$, permitindo trânsito reverso $R \to L$).
+    
+    \item \textbf{Unicidade Determinística dos Arcos Reversos:} Em digrafos gerais, um vértice pode possuir múltiplos arcos afluentes com fluxo positivo, demandando listas de adjacência reversa. Em um emparelhamento bipartido viável, cada vértice $v \in R$ está associado a no máximo um único parceiro $u \in L$. Consequentemente, o arco residual de retorno saindo de $v$ é unívoco e corresponde diretamente ao valor armazenado no vetor de emparelhamento \lstinline{match[v]}.
+    
+    \item \textbf{Alternância Topológica Estrita ($L \to R \to L \to R$):} Pela ausência de arcos internos em $L$ ou $R$, todo caminho aumentante residual descreve uma trajetória estritamente alternante entre arestas não-emparelhadas e arestas emparelhadas. A travessia de retorno $v \to \text{\lstinline{match}}[v]$ simula perfeitamente o cancelamento de fluxo no arco reverso do grafo residual.
+\end{enumerate}
+
+Essa correspondência estabelece uma equivalência assintótica direta entre os paradigmas:
+\begin{itemize}
+    \item \textbf{Kuhn vs. Ford-Fulkerson:} O Algoritmo de Kuhn realiza uma DFS para localizar um caminho aumentante individual por iteração, operando em $\mathcal{O}(|V| \cdot |A|)$. Equivale ao Ford-Fulkerson com DFS em redes unitárias.
+    \item \textbf{Hopcroft-Karp vs. Dinic:} O Algoritmo de Hopcroft-Karp divide a execução em fases: uma BFS simultânea a partir de todos os vértices livres de $L$ determina o comprimento $k$ do menor caminho aumentante, seguida por uma DFS que extrai um conjunto maximal de caminhos disjuntos de comprimento $k$. Como o comprimento dos caminhos estritamente cresce a cada fase ($k_1 < k_2 < \dots$), o número de fases é limitado por $\mathcal{O}(\sqrt{|V|})$, garantindo a complexidade ótima de $\mathcal{O}(|A| \sqrt{|V|})$ (veja~\cite{korte2018combinatorial}). Esta dinâmica é rigorosamente idêntica ao comportamento do algoritmo de Dinic operando sobre a rede $D'$.
+    \item \textbf{Algoritmo Húngaro (Kuhn-Munkres) vs. Successive Shortest Path:} Quando pesos/custos são atribuídos aos emparelhamentos (problema de atribuição ponderada), o Algoritmo Húngaro opera mantendo potenciais duais em matrizes $N \times N$ com custo $\mathcal{O}(|V|^3)$, correspondendo formalmente ao algoritmo \textit{Successive Shortest Path} sob custos reduzidos.
+\end{itemize}
+
 \subsubsection{O Teorema de König e a Cobertura de Vértices Mínima}
 
 O Problema da Cobertura de Vértices Mínima (\textit{Minimum Vertex Cover} - MVC) consiste em determinar o menor subconjunto de vértices $C \subseteq V$ tal que todo arco do digrafo incida em pelo menos um vértice pertencente a $C$. Em digrafos arbitrários, este problema é classificado como NP-Difícil. Contudo, quando a topologia do digrafo é estritamente bipartida, o problema pode ser resolvido em tempo polinomial através da sua profunda relação dual com o emparelhamento máximo.
@@ -1542,6 +1563,20 @@ O método de inserção de conexões \lstinline{add_edge(from, to, capacity, cos
 
 Esta disposição contígua em memória permite que o método \lstinline{push_flow(edge_id, flow_amount)} acesse o arco complementar em tempo $\mathcal{O}(1)$ via Ou Exclusivo (\lstinline{id ^ 1ULL}), somando o fluxo no arco direto e subtraindo-o no reverso em uma única operação. A interface pública estabelece o contrato polimórfico fundamental por meio do método virtual puro \lstinline{compute_min_cost_max_flow(Size source, Size sink)}, além dos métodos virtuais \lstinline{make} e \lstinline{clone} para instanciação e clonagem profunda em tempo de execução (padrões \textit{Factory Method} e \textit{Prototype}, veja~\cite{gamma1994design}).
 
+\textbf{Antissimetria de Custos e o Tratamento de Arestas Bidirecionais.} Uma distinção arquitetural basilar entre as classes \lstinline{FlowNetwork} e \lstinline{CostNetwork} reside na assinatura do método \lstinline{add_edge}. Na família \lstinline{FlowNetwork}, a sobrecarga \lstinline{add_edge(from, to, capacity, reverse_capacity = 0)} permite instanciar canais bidirecionais não-direcionados diretamente em uma única chamada, atribuindo capacidade positiva ao arco reverso. No domínio de fluxo com custos (\lstinline{CostNetwork}), tal simplificação é matematicamente vedada devido ao \textbf{Princípio da Antissimetria de Custos} (veja~\cite{ahuja1993network}):
+\begin{equation}
+    w_f(v, u) = -w_f(u, v) \quad \forall (u, v) \in A
+\end{equation}
+
+Em redes com custos, o arco reverso no digrafo residual possui o propósito semântico estrito de representar a \textit{devolução de custo} associada ao cancelamento de fluxo previamente despachado ($c_f(v, u) = f(u, v)$ com custo $-w$). Se um parâmetro \lstinline{reverse_capacity > 0} fosse injetado no mesmo registro de arco, ocorreria uma ambiguidade insolúvel: o arco reverso deveria custar simultaneamente $+w$ (caso estivesse injetando novo fluxo de $v$ para $u$) e $-w$ (caso estivesse cancelando fluxo vindo de $u$ para $v$). Além disso, atribuir capacidade inicial positiva a um arco com custo residual $-w$ introduziria ciclos negativos espúrios no grafo residual antes mesmo do início da otimização, violando a invariante de otimalidade inicial $f \equiv 0$.
+
+Portanto, em \lstinline{CostNetwork}, conexões bidirecionais ponderadas devem ser modeladas obrigatoriamente através da inserção de \textbf{dois pares direcionados independentes}:
+\begin{itemize}
+    \item \lstinline{add_edge(u, v, c, w)}: cria o canal $u \to v$ com capacidade $c$, custo $+w$ e reverso com capacidade $0$, custo $-w$.
+    \item \lstinline{add_edge(v, u, c, w)}: cria o canal $v \to u$ com capacidade $c$, custo $+w$ e reverso com capacidade $0$, custo $-w$.
+\end{itemize}
+Desta forma, cada sentido de escoamento preserva independentemente seu respectivo canal de avanço e sua trilha de cancelamento simétrico com custo oposto.
+
 \subsection{O Algoritmo Cycle Canceling}
 
 Proposto originalmente por Morton Klein em 1967 (veja~\cite{ahuja1993network, cook1998combinatorial}), o algoritmo \textit{Cycle Canceling} representa a extensão primal mais direta e intuitiva do método de Ford-Fulkerson para o problema de fluxo de custo mínimo. Sua premissa apoia-se inteiramente na condição de otimalidade por ciclos negativos: se um fluxo é viável mas não é de custo mínimo, o digrafo residual necessariamente abriga pelo menos um ciclo direcionado de custo estritamente negativo.
@@ -1596,7 +1631,7 @@ Ao atualizar o vetor de potenciais nodais para $\pi'(v) = \pi(v) - d(v)$, o novo
 \end{align*}
 Para os novos arcos reversos $(v,u)$ criados no digrafo residual pelo envio de fluxo ao longo do caminho mais curto $P$, sabe-se que para todo arco $(u,v) \in P$ a desigualdade triangular é satisfeita na igualdade estrita ($d(v) = d(u) + \bar{w}_\pi(u,v)$), de modo que $\bar{w}_{\pi'}(u,v) = 0$. Consequentemente, o arco reverso recém-habilitado satisfaz $\bar{w}_{\pi'}(v,u) = -\bar{w}_{\pi'}(u,v) = 0 \ge 0$. Portanto, toda a malha de arcos residuais em $D_{f'}$ preserva custos reduzidos não-negativos, viabilizando o uso do algoritmo de Dijkstra com \textit{heap} binária em $\mathcal{O}(|A| \log |V|)$ ou Fibonacci em $\mathcal{O}(|A| + |V| \log |V|)$ em todas as iterações subsequentes (veja~\cite{ahuja1993network, edmonds1972theoretical, korte2018combinatorial}).
 
-\textbf{Complexidade Assintótica.} Em redes com capacidades inteiras onde o fluxo máximo final é $F = |f^*|$, cada iteração augmenta pelo menos $\delta \ge 1$ unidade de fluxo. O número total de iterações é limitado superiormente por $F$. Empregando o SPFA com custo de pior caso $\mathcal{O}(|V| \cdot |A|)$, a complexidade global é $\mathcal{O}(|V| \cdot |A| \cdot F)$. Com o uso de potenciais nodais e Dijkstra com heap de Fibonacci, a complexidade atinge $\mathcal{O}(F \cdot (|A| + |V| \log |V|))$. A implementação C++ correspondente encontra-se no Código~\ref{lst:successive_shortest} (Apêndice~\ref{ap:successive_shortest}).
+\textbf{Complexidade Assintótica.} Em redes com capacidades inteiras onde o fluxo máximo final é $F = |f^*|$, cada iteração augmenta pelo menos $\delta \ge 1$ unidade de fluxo. O número total de iterações é limitado superiormente por $F$. Empregando o SPFA com custo de pior caso $\mathcal{O}(|V| \cdot |A|)$, a complexidade global é $\mathcal{O}(|V| \cdot |A| \cdot F)$ (Código~\ref{lst:successive_shortest}, Apêndice~\ref{ap:successive_shortest}). Com o uso de potenciais nodais e Dijkstra com heap binária, a complexidade atinge $\mathcal{O}(F \cdot |A| \log |V|)$ (Código~\ref{lst:successive_shortest_dijkstra}, Apêndice~\ref{ap:successive_shortest_dijkstra}).
 
 \subsection{O Algoritmo Network Simplex}
 

@@ -67,7 +67,6 @@ void task()
 		return;
 	}
 
-	// 1. Remover gulosamente arestas idênticas (Custo 0)
 	std::vector<bool> used_init(m1, false);
 	std::vector<bool> used_des(m2, false);
 
@@ -105,7 +104,6 @@ void task()
 		return;
 	}
 
-	// 2. Construir Grafo Bipartido de Emparelhamento Máximo para arestas que compartilham 1 ponta (Custo 1)
 	const Size total_nodes = 2 * m_rem + 2;
 	const Size source = 0;
 	const Size sink = total_nodes - 1;
@@ -113,30 +111,21 @@ void task()
 	const auto fn = FlowSolver::create(total_nodes);
 
 	for (Size i = 0; i < m_rem; i++)
-	{
 		fn->add_edge(source, 1 + i, 1);
-	}
 
 	for (Size j = 0; j < m_rem; j++)
-	{
 		fn->add_edge(1 + m_rem + j, sink, 1);
-	}
 
 	for (Size i = 0; i < m_rem; i++)
 	{
 		for (Size j = 0; j < m_rem; j++)
 		{
 			if (rem_init[i].shares_endpoint(rem_des[j]))
-			{
 				fn->add_edge(1 + i, 1 + m_rem + j, 1);
-			}
 		}
 	}
 
-	// 3. Emparelhamento Máximo F
 	const Long matching = fn->compute_max_flow(source, sink);
-
-	// 4. Fórmula Fechada: Custo = 1 * matching + 2 * (m_rem - matching) = 2 * m_rem - matching
 	const Long total_cost = 2 * static_cast<Long>(m_rem) - matching;
 
 	std::cout << total_cost << "\n";
