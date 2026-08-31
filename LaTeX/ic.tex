@@ -696,7 +696,7 @@ O Problema da Cobertura de Vértices Mínima (\textit{Minimum Vertex Cover} - MV
 
 Esta relação de dualidade é formalizada pelo Teorema de König (veja~\cite{korte2018combinatorial}), que estabelece que, em qualquer digrafo bipartido, a cardinalidade do emparelhamento máximo é matematicamente idêntica à cardinalidade da cobertura de vértices mínima ($|M| = |C|$). Sob a ótica da teoria de redes, o Teorema de König nada mais é do que uma manifestação estrutural do Teorema do Fluxo Máximo e Corte Mínimo de Ford-Fulkerson aplicado à modelagem com super-fonte e super-sumidouro (veja~\cite{ahuja1993network}).
 
-A extração computacional dos vértices que compõem a cobertura mínima exige uma análise minuciosa da rede residual $D_f$ gerada logo após a convergência do fluxo máximo. O resolvedor do problema \textit{Minimum Vertex Cover} (na camada de aplicação em \texttt{Implementações/Problemas/}) recupera o conjunto $C$ através do seguinte procedimento algorítmico baseado em cortes mínimos:
+A extração computacional dos vértices que compõem a cobertura mínima exige uma análise minuciosa da rede residual $D_f$ gerada logo após a convergência do fluxo máximo. Na implementação computacional do resolvedor do problema \textit{Minimum Vertex Cover}, a recuperação do conjunto $C$ é realizada através do seguinte procedimento algorítmico baseado em cortes mínimos:
 
 \begin{enumerate}
     \item Após computar o emparelhamento máximo, executa-se uma Busca em Largura (BFS) ou Busca em Profundidade (DFS) partindo da super-fonte $s$ no digrafo residual $D_f$, transitando exclusivamente por arcos que possuam capacidade residual estritamente positiva ($c_f(u,v) > 0$).
@@ -1145,7 +1145,7 @@ Em ambos os casos, o número de arcos com fluxo positivo decresce estritamente, 
 
 \subsubsection{Algoritmo de Extração de Caminhos (Path Recovery)}
 
-Na camada de aplicação (especificamente no resolvedor do problema de caminhos disjuntos \textit{Distinct Routes} em \texttt{Implementações/Problemas/}), o algoritmo de Path Recovery percorre a rede após o cômputo do fluxo máximo para reconstruir os caminhos individuais. Em redes com capacidades unitárias (como nos problemas de caminhos disjuntos), o procedimento é particularmente elegante:
+Na modelagem e implementação de resolvedores para problemas práticos (como na determinação de caminhos disjuntos no problema \textit{Distinct Routes}), o algoritmo de recuperação de caminhos (\textit{Path Recovery}) percorre a rede após o cômputo do fluxo máximo para reconstruir os caminhos individuais. Em redes com capacidades unitárias (como nos problemas de caminhos disjuntos), o procedimento é particularmente elegante:
 
 \begin{enumerate}
     \item Partindo da fonte $s$, siga qualquer arco original (índice par) que possua $f(u,v) = 1$ e ainda não tenha sido utilizado.
@@ -1307,7 +1307,11 @@ O custo total do corte é exatamente a soma dos termos de dados e de regulariza�
 \label{fig:segmentation_cut}
 \end{figure}
 
-Como a rede de segmentação pode conter milhões de vértices ($n = W \times H$) e milhões de arcos ($\approx 4n$ N-links $+ 2n$ T-links), a escolha do algoritmo de fluxo é crucial. A ferramenta de **Segmentação de Imagens** (localizada no diretório \texttt{Aplicações/Segmentação de Imagens/}) emprega a classe \lstinline{PushRelabelImproved} do \textit{Core Framework} (política \textit{Highest Label} com \textit{Gap Heuristic}) pela sua complexidade $\mathcal{O}(|V|^2 \sqrt{|A|})$ (conforme Tabela~\ref{tab:complexidades}), que supera o Push-Relabel FIFO ($\mathcal{O}(|V|^3)$) em redes densas, e pela sua eficiência prática reconhecida em grafos planares de grade (veja~\cite{goldberg1988new}).
+\subsubsection{Implementação Computacional e Escolha do Algoritmo}
+
+Na aplicação prática de segmentação interativa de imagens, a rede construída pode conter milhões de vértices ($n = W \times H$) e milhões de arcos ($\approx 4n$ N-links $+ 2n$ T-links para imagens de alta resolução), tornando a eficiência assintótica e prática do algoritmo de fluxo máximo e corte mínimo um fator determinante para a viabilidade e interatividade do sistema.
+
+A ferramenta computacional desenvolvida neste projeto emprega o motor de fluxo \lstinline{PushRelabelImproved} do arcabouço implementado (baseado na política \textit{Highest Label} combinada com a heurística de lacunas \textit{Gap Heuristic}). Essa escolha fundamenta-se na complexidade de $\mathcal{O}(|V|^2 \sqrt{|A|})$ (conforme Tabela~\ref{tab:complexidades}), que supera o Push-Relabel FIFO ($\mathcal{O}(|V|^3)$) em redes densas, e no seu desempenho consagrado na literatura para grafos planares de grade (veja~\cite{goldberg1988new}). O código-fonte da aplicação interativa está disponibilizado no repositório público do projeto (veja Apêndice~\ref{ap:github}).
 
 \subsection{Fluxo de Custo Mínimo: Formulação e Teoria}
 
@@ -3358,12 +3362,13 @@ private:
 
 Com o objetivo de garantir a transparência, a reprodutibilidade dos experimentos e facilitar a consulta das implementações discutidas neste relatório, todo o material de desenvolvimento foi organizado em um repositório público na plataforma GitHub.
 
-O repositório \textbf{Networks Flow} contém:
+O repositório \textbf{Networks Flow} está estruturado nos seguintes diretórios principais:
 \begin{itemize}
-    \item As bibliotecas base em C++ com as interfaces polimórficas \lstinline{FlowNetwork} e \lstinline{CostNetwork};
-    \item Implementações completas dos algoritmos de fluxo máximo (Edmonds-Karp, Dinic, Push-Relabel) e de custo mínimo (Cycle Canceling, Successive Shortest Path, Network Simplex);
-    \item Scripts para automação de testes e leitura de instâncias no padrão DIMACS;
-    \item Documentação técnica sobre a estrutura das classes e instruções para compilação.
+    \item \texttt{Implementações/FlowNetwork/}: Módulos base e motores de fluxo máximo (\lstinline{FordFulkerson}, \lstinline{EdmondsKarp}, \lstinline{Dinic}, \lstinline{PushRelabel} e \lstinline{PushRelabelImproved});
+    \item \texttt{Implementações/CostNetwork/}: Módulos base e motores de fluxo de custo mínimo (\lstinline{CycleCanceling}, \lstinline{SuccessiveShortestPath} e \lstinline{NetworkSimplex});
+    \item \texttt{Implementações/Problemas/}: Modelagens e resolvedores para problemas combinatórios clássicos (como \textit{Minimum Vertex Cover}, emparelhamentos e caminhos disjuntos);
+    \item \texttt{Aplicações/Segmentação de Imagens/}: Ferramenta completa de segmentação interativa de imagens via corte mínimo em grafos (\textit{Graph Cuts});
+    \item \texttt{Execuções/}: Scripts de automação de testes, leitura de instâncias padronizadas no formato DIMACS e avaliação experimental.
 \end{itemize}
 
 O código-fonte completo pode ser consultado, clonado e executado através do endereço:
