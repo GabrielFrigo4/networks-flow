@@ -112,6 +112,7 @@ Abaixo estão listados os problemas clássicos que foram modelados e resolvidos:
 
 > [!TIP]
 > Todos os códigos-fonte C++ com as reduções e modelagens para resolver os problemas acima estão disponíveis no diretório **[Implementações/Problemas](./Implementações/Problemas/)**.
+> Para submissões em juízes online (*Codeforces, CSES, Beecrowd*), cada pasta de problema conta com um `Makefile` com o comando **`make clip`**, que utiliza o utilitário [`bundle.py`](./Implementações/bundle.py) para empacotar automaticamente todos os headers locais em um único código C++ autocontido e copiá-lo direto para o Clipboard (`wl-copy`).
 
 ---
 

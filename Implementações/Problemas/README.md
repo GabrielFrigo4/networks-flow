@@ -116,3 +116,17 @@ Este diretório serve como validação empírica da corretude e da eficiência d
 
 - 🌊 **Template de Fluxo Máximo:** [`Fluxo Máximo/Template/main.cpp`](./Fluxo%20M%C3%A1ximo/Template/main.cpp)
 - 🧮 **Template de Fluxo de Custo Mínimo:** [`Fluxo de Custo Mínimo/Template/main.cpp`](./Fluxo%20de%20Custo%20M%C3%ADnimo/Template/main.cpp)
+
+---
+
+## 🛠️ Workflow de Desenvolvimento e Submissão (`make clip`)
+
+Cada pasta de problema possui um arquivo `Makefile` com suporte a execução local e empacotamento automático para juízes online através do [`bundle.py`](../bundle.py):
+
+| Comando | Descrição |
+| :--- | :--- |
+| **`make`** ou **`make run`** | Compila a solução local em C++23 com otimização `-O2` e executa usando o arquivo `input.txt`. |
+| **`make clip`** | Executa o bundler automático embutindo todos os headers locais da biblioteca e copia o código unificado final para o **Clipboard** (`wl-copy`) pronto para colar no juiz. |
+| **`make bundle`** | Gera o código C++ unificado e autocontido exibindo-o na saída padrão (terminal). |
+| **`make clean`** | Remove os arquivos binários locais compilados. |
+

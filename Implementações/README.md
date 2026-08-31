@@ -109,3 +109,26 @@ Todos os problemas estão na pasta [`Problemas/`](./Problemas/) e utilizam a arq
 3. [Array and Operations](https://codeforces.com/problemset/problem/498/C)
 4. [Maximum Flow](https://codeforces.com/problemset/problem/843/E)
 5. [Red-Blue Graph](https://codeforces.com/contest/1288/problem/f)
+
+---
+
+## 📦 Bundler para Submissões em Juízes Online (`bundle.py`)
+
+Em plataformas de programação competitiva (*Codeforces*, *CSES*, *Beecrowd*, etc.), submissões multi-arquivo não são suportadas. Para manter a biblioteca 100% modular sem duplicação de código, o projeto inclui o script utilitário [`bundle.py`](./bundle.py).
+
+### O que o `bundle.py` faz:
+- **Resolução Recursiva:** Lê o arquivo `main.cpp` e embute recursivamente todas as classes e headers locais (`#include "..."`).
+- **Limpeza de Guards:** Remove `#pragma once` e include guards (`#ifndef` / `#define` / `#endif`) redundantes dos headers inlined.
+- **Deduplicação de Includes da STL:** Coleta todos os `#include <...>` da biblioteca padrão, remove duplicatas e os posiciona ordenados no topo do arquivo.
+- **Normalização de Espaçamento:** Garante formatação limpa e sem acúmulo de linhas em branco residuais.
+
+### Comandos nos Makefiles de Problemas:
+Cada diretório de problema em [`Problemas/`](./Problemas/) possui um `Makefile` configurado com os seguintes comandos:
+
+| Comando | Ação |
+| :--- | :--- |
+| `make` / `make run` | Compila e executa a solução localmente usando `input.txt`. |
+| `make clip` | Executa o `bundle.py` e copia o código autocontido diretamente para o **Clipboard** (`wl-copy`) pronto para Ctrl+V no juiz. |
+| `make bundle` | Imprime o código unificado completo na saída padrão (terminal). |
+| `make clean` | Remove os executáveis compilados. |
+
