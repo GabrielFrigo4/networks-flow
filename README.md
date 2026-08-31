@@ -129,22 +129,62 @@ Software desenvolvido para separar o "fundo" do "objeto principal" em fotografia
 
 ---
 
-## 🛠️ Como Compilar o Código-Fonte (LaTeX)
+## 📊 Experimentos e Validação Experimental
+
+Módulo dedicado ao benchmarking computacional e avaliação empírica de desempenho de todos os motores algorítmicos implementados contra instâncias padronizadas DIMACS e geradores sintéticos.
+
+- 📁 **[Infraestrutura e Códigos de Experimentos](./Experimentos/)**
+
+---
+
+## 🛠️ Arquitetura de Automação e Makefiles (.POSIX)
+
+O repositório adota um sistema de automação padronizado baseado em **Makefiles compatíveis com a especificação POSIX (`.POSIX:`)**, organizados em uma hierarquia de 3 níveis:
+
+### 1. Nível 1: Maestro Global ([`./Makefile`](./Makefile))
+Permite orquestrar todo o projeto diretamente a partir da raiz:
+
+| Comando | Ação |
+| :--- | :--- |
+| `make` / `make all` | Compila a documentação LaTeX, aplicações práticas e valida a integridade do C++. |
+| `make latex` | Compila todos os documentos LaTeX (`ic.pdf`, `relatorio.pdf`, `projeto.pdf`). |
+| `make apps` | Compila todas as ferramentas e aplicações práticas em [`Aplicações/`](./Aplicações/). |
+| `make impl` | Valida a sintaxe C++23 de todos os motores de fluxo em [`Implementações/`](./Implementações/). |
+| `make test` | Executa a suíte de testes automatizada de todos os problemas e aplicações. |
+| `make clean` | Limpa arquivos e binários temporários em todos os módulos do repositório. |
+
+### 2. Nível 2: Orquestradores de Módulos
+Cada pasta principal possui seu próprio `Makefile` (.POSIX) encapsulado:
+* **[`LaTeX/Makefile`](./LaTeX/Makefile):** Ciclo completo multi-pass com `pdflatex` e `bibtex` (`make ic`, `make relatorio`, `make projeto`, `make clean`, `make distclean`).
+* **[`Aplicações/Makefile`](./Aplicações/Makefile):** Compilação e execução de testes de todas as aplicações.
+* **[`Implementações/Makefile`](./Implementações/Makefile):** `make check` (sintaxe dos headers) e `make test` (testes de soluções).
+* **[`Experimentos/Makefile`](./Experimentos/Makefile):** Automação do pipeline de benchmarks.
+
+### 3. Nível 3: Problemas e Folhas
+Cada problema em [`Implementações/Problemas/`](./Implementações/Problemas/) e aplicação em [`Aplicações/`](./Aplicações/) possui um `Makefile` padronizado (.POSIX) com suporte a `make run`, `make clean`, `make bundle` e `make clip`.
+
+---
+
+## 📄 Como Compilar o Código-Fonte (LaTeX)
 
 > [!NOTE]
 > Este repositório conta com integração contínua (CI) através do **GitHub Actions** (`.github/workflows/`). A cada _push_, os PDFs são compilados automaticamente na nuvem e disponibilizados nas [Releases do GitHub](https://github.com/GabrielFrigo4/IC_Networks_Flow/releases).
 
-Caso queira gerar qualquer um dos PDFs (`ic.pdf`, `relatorio.pdf` ou `projeto.pdf`) localmente a partir dos códigos-fonte em [`LaTeX/`](./LaTeX/):
+Caso queira gerar qualquer um dos PDFs (`ic.pdf`, `relatorio.pdf` ou `projeto.pdf`) localmente:
 
-1. Certifique-se de ter uma distribuição LaTeX instalada (como TeX Live, MiKTeX ou MacTeX) com suporte aos pacotes requeridos (ex: `amsmath`, `tikz`, `geometry`).
-2. Acesse o diretório `LaTeX/` em seu terminal.
-3. Compile o arquivo `.tex` desejado executando a sequência do compilador `pdflatex` e `bibtex` (exemplo com `ic.tex`):
+1. Certifique-se de ter uma distribuição LaTeX instalada (como TeX Live, MiKTeX ou MacTeX) com suporte aos pacotes requeridos (`amsmath`, `tikz`, `geometry`, etc.).
+```bash
+make latex
+```
+
+Ou navegando até o diretório [`LaTeX/`](./LaTeX/) para compilar documentos específicos:
 
 ```bash
-pdflatex ic.tex
-bibtex ic.aux
-pdflatex ic.tex
-pdflatex ic.tex
+cd LaTeX
+make ic
+make relatorio
+make projeto
+make clean
 ```
 
 ---

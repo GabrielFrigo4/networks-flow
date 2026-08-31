@@ -1,3 +1,4 @@
+.POSIX:
 CXX      = c++
 EXT      = cpp
 TARGET   = main

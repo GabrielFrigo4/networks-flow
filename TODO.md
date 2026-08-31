@@ -16,7 +16,7 @@ Progresso das otimizações e refatorações de código no projeto, visando melh
 - ✅ Fazer o Minimum Cost Flow - Implementação
 - ✅ Fazer as Implementações dos Problemas de Fluxo Máximo Restantes
 - ✅ Fazer as Implementações dos Problemas de Fluxo de Custo Mínimo
-- ❌ Fazer os Benchmarks e Validação Experimental
+- ❌ Fazer os Experimentos e Validação Experimental (Experimentos/)
 - ❌ Por fim fazer a auditoria final do Relatório e entregar a IC
 
 ---
@@ -156,23 +156,54 @@ Progresso dos teoremas e provas formais documentados no [LaTeX](./LaTeX/ic.tex).
 
 ---
 
-# 📊 TO-DO: Benchmarks e Validação Experimental
+# 📊 TO-DO: Experimentos e Validação Experimental
 
-Progresso dos experimentos computacionais e validação de desempenho dos algoritmos implementados, utilizando instâncias padronizadas de **benchmarks** reconhecidos. Os resultados e análises estarão documentados no [LaTeX](./LaTeX/ic.tex).
+Progresso dos experimentos computacionais e validação de desempenho dos algoritmos implementados, utilizando instâncias padronizadas de **benchmarks** reconhecidos e geradores sintéticos. Os códigos residem em [`Experimentos/`](./Experimentos/) e os resultados e análises estarão documentados no [LaTeX](./LaTeX/ic.tex).
 
-## 🏋️ Instâncias e Datasets
+## 🛠️ Infraestrutura e Automação
 
-| Nome                             | LaTeX | Execução | Descrição                                                                         |
-| :------------------------------- | :---: | :------: | :-------------------------------------------------------------------------------- |
-| Coleções DIMACS (Max Flow)       |  ❌   |    ❌    | Instâncias padronizadas para benchmarking de algoritmos de fluxo máximo.          |
-| Coleções DIMACS (Min Cost Flow)  |  ❌   |    ❌    | Instâncias padronizadas para benchmarking de algoritmos de fluxo de custo mínimo. |
-| Gerador de Instâncias Aleatórias |  ❌   |    ❌    | Scripts para geração de grafos aleatórios com densidades e tamanhos variados.     |
+| Componente                                | LaTeX | Implementação | Descrição                                                                                             |
+| :---------------------------------------- | :---: | :-----------: | :---------------------------------------------------------------------------------------------------- |
+| Parser DIMACS (Max Flow)                  |   —   |      ❌       | Leitor em C++ otimizado para o formato padronizado DIMACS (`.max`).                                  |
+| Parser DIMACS (Min Cost Flow)             |   —   |      ❌       | Leitor em C++ otimizado para o formato padronizado DIMACS (`.min`).                                  |
+| Drivers C++ de Medição (Harness)          |   —   |      ❌       | Executáveis para rodar os algoritmos com `std::chrono::high_resolution_clock` e medição de memória.   |
+| Script Orquestrador de Execuções (Python) |   —   |      ❌       | Automação para varrer diretórios de instâncias, aplicar timeouts e coletar tempos médios/desvio.      |
+| Gerador de Tabelas e Gráficos             |   —   |      ❌       | Scripts em Python (`pandas`, `matplotlib`/`seaborn`) para gerar tabelas LaTeX e figuras comparativas. |
 
-## 📈 Análise Comparativa
+## 🏋️ Instâncias e Geradores Sintéticos
 
-| Nome                               | LaTeX | Execução | Descrição                                                                                            |
-| :--------------------------------- | :---: | :------: | :--------------------------------------------------------------------------------------------------- |
-| Tempo de Execução (Max Flow)       |  ❌   |    ❌    | Comparação de tempo entre Edmonds-Karp, Dinic e Push-Relabel em instâncias de diferentes densidades. |
-| Tempo de Execução (Min Cost Flow)  |  ❌   |    ❌    | Análise de desempenho do Network Simplex em instâncias de custo mínimo.                              |
-| Escalabilidade ($\|V\|$ e $\|A\|$) |  ❌   |    ❌    | Testes de escalabilidade variando o número de vértices e arcos para cada algoritmo.                  |
-| Tabelas e Gráficos Comparativos    |  ❌   |    ❌    | Geração de tabelas e gráficos de desempenho para inclusão no relatório LaTeX.                        |
+| Nome                                   | LaTeX | Implementação | Descrição                                                                                         |
+| :------------------------------------- | :---: | :-----------: | :------------------------------------------------------------------------------------------------ |
+| Coleções DIMACS (Max Flow)             |  ❌   |      ❌       | Download e organização de instâncias canônicas da literatura (Washington, RMF, Genrmf).          |
+| Coleções DIMACS (Min Cost Flow)        |  ❌   |      ❌       | Download e organização de instâncias canônicas de custo mínimo (Netgen, Grid).                    |
+| Gerador: Grafos Aleatórios Esparsos    |  ❌   |      ❌       | Geração controlada de grafos com $|A| \approx 4|V|$ variando $|V|$ em escala logarítmica.         |
+| Gerador: Grafos Aleatórios Densos      |  ❌   |      ❌       | Geração controlada de grafos com $|A| \approx |V|^2 / 4$ para testar limites de algoritmos densos. |
+| Gerador: Redes em Grade (Grid 2D/3D)   |  ❌   |      ❌       | Topologia em grade simulando problemas de visão computacional / segmentação.                      |
+| Gerador: Casos Patológicos de Pior Caso |  ❌   |      ❌       | Redes desenhadas para induzir o pior caso de caminhos aumentantes (ex: Ford-Fulkerson exponencial).|
+
+## ⚡ Bateria de Testes: Fluxo Máximo
+
+| Nome                                   | LaTeX | Execução | Descrição                                                                                             |
+| :------------------------------------- | :---: | :------: | :---------------------------------------------------------------------------------------------------- |
+| Escalabilidade por Vértices ($|V|$)    |  ❌   |    ❌    | Comparação de tempo (EK vs. Dinic vs. Push-Relabel FIFO vs. Push-Relabel Improved) variando $|V|$.   |
+| Escalabilidade por Arestas ($|A|$)     |  ❌   |    ❌    | Teste de sensibilidade variando a densidade do grafo com número fixo de vértices.                     |
+| Avaliação da Gap Heuristic             |  ❌   |    ❌    | Comparação direta de convergência entre Push-Relabel padrão e Push-Relabel Improved.                 |
+| Verificação de Corretude Cruzada       |  ❌   |    ❌    | Validação automática garantindo que todos os algoritmos encontram exatamente o mesmo valor $f^*$.     |
+
+## 🧮 Bateria de Testes: Fluxo de Custo Mínimo
+
+| Nome                                   | LaTeX | Execução | Descrição                                                                                             |
+| :------------------------------------- | :---: | :------: | :---------------------------------------------------------------------------------------------------- |
+| Escalabilidade Esparsa vs. Densa       |  ❌   |    ❌    | Comparação entre Cycle Canceling, SSP (SPFA), SSP (Dijkstra + $\pi$) e Network Simplex.              |
+| Sensibilidade a Custos e Capacidades   |  ❌   |    ❌    | Avaliação de desempenho variando a magnitude dos custos ($C$) e capacidades ($U$).                   |
+| Eficiência Prática do Network Simplex  |  ❌   |    ❌    | Contagem empírica do número de pivoteamentos e tempo por iteração frente aos métodos de caminhos.     |
+| Verificação de Corretude Cruzada       |  ❌   |    ❌    | Validação automática garantindo que todas as soluções viáveis convergem para o mesmo custo ótimo $z^*$. |
+
+## 📑 Integração com LaTeX e Relatório
+
+| Nome                                   | LaTeX | Execução | Descrição                                                                                             |
+| :------------------------------------- | :---: | :------: | :---------------------------------------------------------------------------------------------------- |
+| Seção de Resultados Experimentais      |  ❌   |    —     | Redação da metodologia experimental, especificações da máquina de testes e discussão dos resultados.  |
+| Tabelas Comparativas de Desempenho     |  ❌   |    ❌    | Inclusão de tabelas formatadas em `booktabs` com tempo de CPU, desvio e número de operações.           |
+| Gráficos de Desempenho e Escalabilidade|  ❌   |    ❌    | Curvas de complexidade assintótica empírica em escala log-log e gráficos de barras comparativos.      |
+

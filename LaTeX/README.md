@@ -33,18 +33,19 @@ _(Alternativamente, você pode importar estes arquivos para plataformas online c
 
 ### Passos de Compilação
 
-Abra o terminal neste diretório e execute os comandos (usando `ic.tex` como exemplo):
+O diretório conta com um [`Makefile`](./Makefile) compatível com POSIX que automatiza o ciclo completo de múltiplas passagens (`pdflatex` e `bibtex`), garantindo que o sumário, referências cruzadas e citações sejam gerados corretamente:
+
+| Comando | Ação |
+| :--- | :--- |
+| `make` / `make all` | Compila todos os documentos (`ic.pdf`, `relatorio.pdf`, `projeto.pdf`). |
+| `make ic` | Compila apenas o documento principal da IC (`ic.pdf`). |
+| `make relatorio` | Compila apenas o relatório formal com capa institucional (`relatorio.pdf`). |
+| `make projeto` | Compila apenas a proposta inicial (`projeto.pdf`). |
+| `make clean` | Remove arquivos temporários e auxiliares (`.aux`, `.log`, `.toc`, `.out`, `.bbl`, etc.). |
+| `make distclean` | Remove arquivos temporários e também todos os PDFs compilados. |
 
 ```bash
-# 1. Primeira passagem do pdflatex para gerar os arquivos auxiliares
-pdflatex ic.tex
-
-# 2. Processar a bibliografia com o BibTeX
-bibtex ic.aux
-
-# 3. Segundas e terceiras passagens do pdflatex para acertar referências cruzadas
-pdflatex ic.tex
-pdflatex ic.tex
+make all
 ```
 
 > [!NOTE]

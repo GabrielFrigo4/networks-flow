@@ -15,7 +15,7 @@
 \usepackage{tikz}
 \usetikzlibrary{arrows.meta, calc, positioning, decorations.markings}
 \usepackage{verbatim}
-\usepackage{url}
+\usepackage[hyphens]{url}
 \usepackage{longtable}
 \usepackage[section]{placeins}
 \usepackage{geometry}
@@ -88,16 +88,16 @@
 
 \vspace{0.8cm}
 
-\noindent \textbf{Relatório Final de Iniciação Científica referente ao Edital:} 01/2025 PIC\slash PIBIC\slash PIBITI\slash PIBIC-AF \\[0.5cm]
-\noindent \textbf{Nome do aluno:} Gabriel Frigo \\[0.5cm]
-\noindent \textbf{Assinatura do aluno:} \hrulefill \\[0.5cm]
-\noindent \textbf{Nome do orientador:} Cristiane Maria Sato \\[0.5cm]
-\noindent \textbf{Assinatura do orientador:} \hrulefill \\[0.5cm]
-\noindent \textbf{Título do projeto:} Problemas de Fluxos em Redes: Teoria, Algoritmos e Implementações \\[0.5cm]
-\noindent \textbf{Palavras-chave do projeto:} Otimização Combinatória, Teoria dos Grafos, Fluxos \\[0.5cm]
-\noindent \textbf{Área do conhecimento do projeto:} Ciência da Computação, Matemática Discreta \\[0.5cm]
-\noindent \textbf{Bolsista:} ( \textbf{\textsf{X}} ) Sim \quad ( \quad ) Não. \\
-\textbf{Em caso positivo, informar a modalidade da bolsa:} PIBIC - CNPq \\[1cm]
+\noindent \textbf{Relatório Final de Iniciação Científica referente ao Edital:} 01/2025 PIC\slash PIBIC\slash PIBITI\slash PIBIC-AF\par\vspace{0.4cm}
+\noindent \textbf{Nome do aluno:} Gabriel Frigo\par\vspace{0.4cm}
+\noindent \textbf{Assinatura do aluno:} \hrulefill\par\vspace{0.4cm}
+\noindent \textbf{Nome do orientador:} Cristiane Maria Sato\par\vspace{0.4cm}
+\noindent \textbf{Assinatura do orientador:} \hrulefill\par\vspace{0.4cm}
+\noindent \textbf{Título do projeto:} Problemas de Fluxos em Redes: Teoria, Algoritmos e Implementações\par\vspace{0.4cm}
+\noindent \textbf{Palavras-chave do projeto:} Otimização Combinatória, Teoria dos Grafos, Fluxos\par\vspace{0.4cm}
+\noindent \textbf{Área do conhecimento do projeto:} Ciência da Computação, Matemática Discreta\par\vspace{0.4cm}
+\noindent \textbf{Bolsista:} ( \textbf{\textsf{X}} ) Sim \quad ( \quad ) Não.\par\vspace{0.4cm}
+\noindent \textbf{Em caso positivo, informar a modalidade da bolsa:} PIBIC - CNPq\par\vspace{0.8cm}
 
 \begin{center}
     \textbf{Santo André}\\
@@ -156,7 +156,7 @@ A topologia desta rede é dotada de dois vértices terminais distintos: uma orig
 
 A Figura~\ref{fig:rede_fluxo_basica} ilustra uma rede de fluxo elementar com quatro vértices, onde as capacidades estão indicadas sobre os arcos.
 
-\begin{figure}[h]
+\begin{figure}[!ht]
 \centering
 \begin{tikzpicture}[>=Stealth, node distance=2.5cm, thick,
     main/.style={circle, draw, minimum size=9mm, font=\small}]
@@ -206,7 +206,7 @@ Operando sobre a topologia de $D_f$, define-se um caminho aumentante como qualqu
 
 A Figura~\ref{fig:residual_net} ilustra uma rede com fluxo parcial e seu correspondente digrafo residual $D_f$, evidenciando os arcos diretos (capacidade ociosa) e inversos (fluxo cancelavel).
 
-\begin{figure}[h]
+\begin{figure}[!ht]
 \centering
 \begin{tikzpicture}[>=Stealth, thick]
 
@@ -260,7 +260,7 @@ Suponha que $f$ seja um fluxo máximo. Se existisse um caminho aumentante $P$ de
 
 Como não há caminho aumentante, o sumidouro $t$ é inalcançável a partir de $s$ em $D_f$, logo $t \in T$ e $s \in S$. Temos, portanto, um corte $s-t$ válido particionando a rede.
 
-\begin{figure}[h]
+\begin{figure}[!ht]
 \centering
 \begin{tikzpicture}[>=Stealth, node distance=2cm, thick,
     main/.style={circle, draw, minimum size=8mm, font=\small}]
@@ -358,7 +358,7 @@ Conclui-se analiticamente que, entre duas saturações consecutivas de uma mesma
 
 Existindo $\mathcal{O}(|A|)$ arcos na malha geométrica, o limite superior de aumentos globais é estritamente circunscrito a $\mathcal{O}(|V| \cdot |A|)$. Multiplicando este fator de repetição pelo custo computacional intrínseco de $\mathcal{O}(|A|)$ operações de uma busca BFS, o tempo de execução de pior caso é cravado rigorosamente em $\mathcal{O}(|V| \cdot |A|^2)$ (veja~\cite{korte2018combinatorial}). A materialização desta heurística, utilizando a herança e o encapsulamento orientado a objetos da interface principal, encontra-se estruturada no Código~\ref{lst:edmonds_karp} (disponível no Apêndice~\ref{ap:edmonds_karp}).
 
-\begin{figure}[h]
+\begin{figure}[!ht]
 \centering
 \begin{tikzpicture}[>=Stealth, thick]
   \node[circle, draw, minimum size=9mm, fill=green!20, font=\small] (s) at (0, 0) {$s$ (0)};
@@ -392,7 +392,7 @@ Para assegurar a viabilidade temporal desta busca exaustiva, a implementação d
 
 Esta poda dramática na árvore de recursão garante uma amortização matemática rigorosa: a extração completa do fluxo bloqueador opera no limite estrito de $\mathcal{O}(|V| \cdot |A|)$ operações (veja~\cite{korte2018combinatorial}). Como a propriedade de monotonicidade garante que a distância de $s$ a $t$ aumente pelo menos uma unidade a cada novo Digrafo de Níveis construído, o sistema processa um limite superior absoluto de $|V|$ fases. Multiplicando o custo da DFS por fase pelo número máximo de fases, a complexidade assintótica global é inquestionavelmente estabelecida em $\mathcal{O}(|V|^2 \cdot |A|)$ (veja~\cite{dinic1970algorithm}). A materialização destas otimizações de estado na arquitetura C++ encontra-se no Código~\ref{lst:dinic} (disponível no Apêndice~\ref{ap:dinic}).
 
-\begin{figure}[h]
+\begin{figure}[!ht]
 \centering
 \begin{tikzpicture}[>=Stealth,thick]
 
@@ -453,7 +453,7 @@ Uma função de altura é considerada matematicamente válida para um pré-fluxo
 
 A terceira condição garante que o excesso não despencará em ``quedas livres'' descontroladas e, principalmente, que não existe nenhum caminho direcionado viável de $s$ para $t$ na rede residual, atestando a otimalidade topológica do sistema a todo instante. O algoritmo termina quando o conjunto de vértices ativos torna-se vazio ($e(v) = 0, \forall v \in V \setminus \{s, t\}$). Neste ponto exato, o pré-fluxo converte-se em um fluxo viável e, pela ausência de caminhos da fonte ao sumidouro, o Teorema do Fluxo Máximo e Corte Mínimo certifica que este fluxo é máximo.
 
-\begin{figure}[h]
+\begin{figure}[!ht]
 \centering
 \begin{tikzpicture}[>=Stealth, thick]
   \node[circle, draw, minimum size=8mm, fill=green!20] (s) at (0, 0) {$s$};
@@ -490,7 +490,7 @@ Durante o ciclo de resolução principal, o algoritmo inspeciona vértices ativo
 
 A eficiência global do algoritmo é intrinsecamente dependente da política de seleção: qual vértice ativo deve ser processado primeiro? A implementação canônica emprega uma estrutura de dados de fila (\textit{Queue}) para gerenciar estes vértices sob uma política \textit{First-In, First-Out} (FIFO). Demonstra-se matematicamente que a ordem de processamento FIFO amortece severamente o número de empurrões não-saturantes necessários para a convergência. Graças a esta amortização estrutural, o limite assintótico de tempo de pior caso para o algoritmo Push-Relabel padrão é cravado analiticamente em $\mathcal{O}(|V|^3)$ (veja~\cite{goldberg1988new}). A materialização em C++ deste algoritmo no \textit{Core Framework} encontra-se detalhada no Código~\ref{lst:push_relabel} (disponível no Apêndice~\ref{ap:push_relabel}).
 
-\begin{figure}[h]
+\begin{figure}[!ht]
 \centering
 \begin{tikzpicture}[>=Stealth,thick,node distance=2.2cm,
     main/.style={circle,draw,minimum size=10mm}]
@@ -544,7 +544,7 @@ A fundamentação desta heurística baseia-se na observação de descontinuidade
 
 A validade matemática desta dedução reside na invariante de altura do \textit{Push-Relabel}. Em qualquer rede residual válida, a diferença de altura em uma aresta $(u,v)$ obedece rigorosamente à regra $h(u) \le h(v) + 1$. Isso significa que o fluxo pode descer, no máximo, um único nível topológico por passo (um ``degrau'' de cada vez). Portanto, para que exista um caminho residual de um vértice acima da lacuna (ex: $h(u) = 4$) até o sumidouro ($h(t) = 0$), a rota \textbf{necessariamente} precisaria visitar pelo menos um vértice no nível $k$. Se o nível $k$ está vazio (lacuna), é matematicamente impossível ``pular'' o degrau. O caminho é fisicamente quebrado, provando que $t$ é inalcançável. A Figura~\ref{fig:gap_proof} ilustra esta propriedade visualmente.
 
-\begin{figure}[h]
+\begin{figure}[!ht]
 \centering
 \begin{tikzpicture}[>=Stealth,thick]
   \draw[gray!30,dashed] (-2, 0) -- (6, 0) node[right,black,font=\footnotesize] {$h=0$ (sumidouro $t$)};
@@ -574,7 +574,7 @@ A validade matemática desta dedução reside na invariante de altura do \textit
 
 A heurística intervém na rede ao detectar a lacuna, elevando a altura de todos os vértices acima de $k$ para o patamar de isolamento ($|V| + 1$) (veja~\cite{korte2018combinatorial}). Esta operação reduz o número de operações de \textit{relabel} redundantes, otimizando a convergência do algoritmo em grafos densos (veja~\cite{goldberg1988new}).
 
-\begin{figure}[h]
+\begin{figure}[!ht]
 \centering
 \begin{tikzpicture}[>=Stealth,thick]
 
@@ -623,8 +623,9 @@ A intuição por trás da melhoria da complexidade de tempo de pior caso de $\ma
 
 \textbf{Implementação eficiente da Gap Heuristic:} O \textit{array} de frequências \lstinline{height_count[h]} (com \lstinline{height_count[h]++} a cada inserção e \lstinline{height_count[h]--} a cada remoção/relabel) é atualizado em $\mathcal{O}(1)$ por operação. Após cada \textit{relabel} de $u$ de $h$ para $h'$, basta verificar se \lstinline{height_count[h] == 0}: se sim, a lacuna $h$ foi formada, e todos os vértices com $h(v) > h$ (exceto $s$) têm sua altura definida para $|V|+1$ em uma varredura linear única por \lstinline{active_buckets}. Esta varredura custa $\mathcal{O}(|V|)$ no pior caso, mas acontece no máximo $|V|$ vezes, resultando em custo amortizado $\mathcal{O}(1)$ por operação.
 
-\begin{table}[h]
+\begin{table}[!ht]
 \centering
+\small
 \begin{tabular}{l c l}
 \hline
 \textbf{Algoritmo} & \textbf{Complexidade} & \textbf{Estratégia} \\
@@ -661,7 +662,7 @@ A prova de correção desta modelagem repousa sobre o Teorema da Integralidade (
 
 Consequentemente, a restrição de capacidade unitária nos arcos conectados à super-fonte e ao super-sumidouro força a lei de conservação a atuar como um restritor de exclusividade: se $1$ unidade de fluxo transita por um vértice $u \in L$, ela só pode ser roteada por um único arco em direção a $R$. O valor numérico do fluxo máximo computado pela rede $D'$ equivale perfeitamente à cardinalidade $|M|$ do emparelhamento máximo, e os arcos ativos ($f(u,v) = 1$) que cruzam de $L$ para $R$ constituem os pares da solução exata.
 
-\begin{figure}[h]
+\begin{figure}[!ht]
 \centering
 \begin{tikzpicture}[>=Stealth,thick]
 
@@ -733,7 +734,7 @@ A extração computacional dos vértices que compõem a cobertura mínima exige 
 
 A solidez desta extração reside no fato de que, pelas propriedades de conservação do corte mínimo em capacidades unitárias, não pode existir nenhum arco residual viável cruzando de $S$ para $T$. Consequentemente, a seleção $(L \cap T) \cup (R \cap S)$ garante de forma inequívoca que todos os arcos originais do digrafo bipartido estão ``cobertos'' por, no mínimo, um destes vértices selecionados, consolidando a prova empírica do Teorema de König.
 
-\begin{figure}[h]
+\begin{figure}[!ht]
 \centering
 \begin{tikzpicture}[>=Stealth,thick]
   \node[font=\large] at (2,4.5) {$\mathbf{L}$};
@@ -794,7 +795,7 @@ Desta forma, a extração computacional do Conjunto Independente Máximo dispens
 
 A cardinalidade do Conjunto Independente Máximo é dada algebricamente por $|I| = |V| - |C|$. Esta sequência de reduções demonstra a aplicabilidade do modelo de fluxo em redes: a partir de uma única construção baseada em super-fonte e super-sumidouro, o sistema soluciona simultaneamente o Emparelhamento Máximo, a Cobertura de Vértices Mínima e o Conjunto Independente Máximo.
 
-\begin{figure}[h]
+\begin{figure}[!ht]
 \centering
 \begin{tikzpicture}[>=Stealth, thick]
   \begin{scope}[shift={(0,0)}]
@@ -854,7 +855,7 @@ onde $|M^*|$ é o tamanho do emparelhamento máximo, $|C_V^*|$ o da cobertura de
 
 Esses quatro objetos são ``faces da mesma moeda'', variando apenas o que cobre (vértice ou arco) e o que se emparelha (vértice ou arco), nas dimensões de minimizar/maximizar:
 
-\begin{table}[h]
+\begin{table}[!ht]
 \centering
 \begin{tabular}{l c c}
 \hline
@@ -870,7 +871,7 @@ Esses quatro objetos são ``faces da mesma moeda'', variando apenas o que cobre 
 
 As relações $|M^*| = |C_V^*|$ (König) e $|I^*| + |C_V^*| = |V|$ e $|M^*| + |F^*| = |V|$ (Gallai) mostram que conhecer qualquer um destes valores determina os demais. Neste projeto, os três primeiros ($M$, $C_V$, $I$) são resolvidos via fluxo máximo; a cobertura de arcos mínima é obtida a partir de $M^*$ por pós-processamento em $\mathcal{O}(|V|)$, sem necessidade de novo cálculo de fluxo.
 
-\begin{figure}[h]
+\begin{figure}[!ht]
 \centering
 \begin{tikzpicture}[>=Stealth, thick]
   \node[rectangle, draw, rounded corners, fill=blue!10, text width=3.5cm, align=center, minimum height=1.5cm] (mis) at (0, 6) {\textbf{Conjunto Independente} \\ MIS \\ (Maximizar, V\'ertices)};
@@ -913,7 +914,7 @@ A técnica de \textit{Vertex Splitting} altera a topologia do digrafo original $
 
 Esta transformação impõe uma restrição de capacidade nos vértices: ao forçar todo o fluxo que transita pelo nó original $v$ a atravessar um arco interno $(v_{in}, v_{out})$ de capacidade $1$, a rede garante que não mais do que $1$ unidade de fluxo possa cruzar aquele vértice. Ao submeter esta nova topologia estendida $D'$ (onde $V' = V \cup \{v_{in}, v_{out} : v \in V \setminus \{s,t\}\}$) aos algoritmos implementados, o fluxo máximo computado determina o número máximo de rotas disjuntas por vértices (veja~\cite{korte2018combinatorial}).
 
-\begin{figure}[h]
+\begin{figure}[!ht]
 \centering
 \begin{tikzpicture}[>=Stealth,thick]
 
@@ -994,7 +995,7 @@ Para a suficiência, empregamos a dualidade de König-Egerváry (veja~\cite{kort
 $$|N(S)| \le |C_R| = |C| - |C_L| = |M| - |C_L| < |L| - |C_L| = |S|,$$
 contradizendo a condição de Hall. Portanto, $|M| = |L|$. $\blacksquare$
 
-\begin{figure}[h]
+\begin{figure}[!ht]
 \centering
 \begin{tikzpicture}[>=Stealth, thick,
     lnode/.style={circle, draw, fill=blue!15, minimum size=7mm, font=\small},
@@ -1037,7 +1038,7 @@ A transformação consiste em expandir a rede $D = (V, A)$ para uma rede estendi
     \item Um \textbf{super-sumidouro} $t^*$, conectado a partir de cada sumidouro original $t_j$ por um arco $(t_j, t^*)$ com capacidade infinita (ou igual à capacidade total de entrada de $t_j$).
 \end{enumerate}
 
-\begin{figure}[h]
+\begin{figure}[!ht]
 \centering
 \begin{tikzpicture}[>=Stealth, thick,
     main/.style={circle, draw, fill=white, minimum size=8mm, font=\small}]
@@ -1096,7 +1097,7 @@ Na implementação desta biblioteca, esta modelagem é realizada nativamente pel
 
 \textbf{Observação --- \lstinline{add_edge(a,b,cap)} seguido de \lstinline{add_edge(b,a,cap)}:} Chamar \lstinline{add_edge} duas vezes para o mesmo par de vértices em sentidos opostos é seguro e correto. Cada chamada cria um par independente de arcos (direto + reverso de capacidade 0), indexados por XOR. Portanto, \lstinline{add_edge(a,b,cap)} cria os arcos de índices $2k$ e $2k+1$, e \lstinline{add_edge(b,a,cap)} cria os arcos $2k+2$ e $2k+3$, todos com seus reversos corretamente emparelhados. Esta modelagem é equivalente a \lstinline{add_edge(a,b,cap,cap)} e representa uma aresta bidirecional (grafo não-direcionado). Contudo, se a intenção for modelar um arco \emph{apenas} de $a$ para $b$ em um digrafo, \lstinline{add_edge} deve ser chamado apenas uma vez, pois duas chamadas criam arcos paralelos entre $a$ e $b$ --- o que é matematicamente válido (arcos paralelos simplesmente acumulam capacidade), mas raramente é a modelagem desejada.
 
-\begin{figure}[h]
+\begin{figure}[!ht]
 \centering
 \begin{tikzpicture}[>=Stealth, thick]
   \begin{scope}[shift={(0,0)}]
@@ -1143,7 +1144,7 @@ Procedemos por indução no número de arcos com fluxo positivo (veja~\cite{ahuj
 
 Em ambos os casos, o número de arcos com fluxo positivo decresce estritamente, e a hipótese de indução se aplica a $f'$. Como este processo termina em no máximo $|A|$ iterações, a decomposição produz no máximo $|A|$ caminhos e ciclos. $\blacksquare$
 
-\begin{figure}[h]
+\begin{figure}[!ht]
 \centering
 \begin{tikzpicture}[>=Stealth, thick]
   \begin{scope}[shift={(0,0)}]
@@ -1218,7 +1219,7 @@ Seja $I$ uma imagem com $n = W \times H$ pixels. A construção da rede de segme
     onde $\|I_p - I_{s_j}\|$ representa a distância euclidiana tridimensional no espaço de cores RGB e o limite inferior $\max(\dots, 1)$ impede instabilidades numéricas.
 \end{enumerate}
 
-\begin{figure}[h]
+\begin{figure}[!ht]
 \centering
 \begin{tikzpicture}[>=Stealth,
     x={(-1.2cm, -0.6cm)}, 
@@ -1293,7 +1294,7 @@ A geometria desse corte divide os arcos cortados em \textbf{duas categorias} pri
 
 O custo total do corte é exatamente a soma dos termos de dados e de regularização da energia.
 
-\begin{figure}[h]
+\begin{figure}[!ht]
 \centering
 \begin{tikzpicture}[>=Stealth, thick, transform shape]
   \fill[green!10, rounded corners=15pt] (-4.5, 1.7) rectangle (8.5, 6.8);
@@ -1368,7 +1369,7 @@ sujeito às restrições de capacidade $0 \le f(u,v) \le c(u,v)$ para todo $(u,v
 
 Esta formulação unifica diversos problemas clássicos como casos particulares: o problema de transporte, o problema de atribuição (\textit{Assignment}), o problema do caminho mais curto e o próprio fluxo máximo (veja~\cite{korte2018combinatorial, cook1998combinatorial}).
 
-\begin{figure}[h]
+\begin{figure}[!ht]
 \centering
 \begin{tikzpicture}[>=Stealth, thick,
     main/.style={circle, draw, minimum size=10mm, font=\small}]
@@ -1409,7 +1410,7 @@ Para cada arco original $(u,v) \in A$ com fluxo $f(u,v)$:
     \item Se $f(u,v) > 0$: existe um \textbf{arco reverso} $(v,u)$ em $A_f$ com capacidade residual $c_f(v,u) = f(u,v)$ e custo $w_f(v,u) = -w(u,v)$. Cancelar fluxo previamente enviado economiza $w(u,v)$ por unidade cancelada, justificando o custo negativo.
 \end{itemize}
 
-\begin{figure}[h]
+\begin{figure}[!ht]
 \centering
 \begin{tikzpicture}[>=Stealth, thick]
 
@@ -1481,7 +1482,7 @@ Como por hipótese o digrafo residual $D_f$ não possui nenhum ciclo de custo ne
 $$\text{custo}(f^*) - \text{custo}(f) = \sum_{i=1}^k \delta_i \cdot w(C_i) \ge 0 \implies \text{custo}(f) \le \text{custo}(f^*)$$
 Sendo $f^*$ ótimo, conclui-se que $\text{custo}(f) = \text{custo}(f^*)$, isto é, $f$ é necessariamente um fluxo de custo mínimo. $\blacksquare$
 
-\begin{figure}[h]
+\begin{figure}[!ht]
 \centering
 \begin{tikzpicture}[>=Stealth, thick]
 
@@ -1536,7 +1537,7 @@ $(\Rightarrow)$ Se $f$ é de custo mínimo, não há ciclos negativos em $D_f$. 
 $$\pi(v) \le \pi(u) + w_f(u,v)$$
 Rearranjando os termos: $w_f(u,v) - \pi(u) + \pi(v) \ge 0$, ou seja, $\bar{w}_\pi(u,v) \ge 0$. $\blacksquare$
 
-\begin{figure}[h]
+\begin{figure}[!ht]
 \centering
 \begin{tikzpicture}[>=Stealth, thick,
     main/.style={circle, draw, minimum size=10mm, font=\small}]
@@ -1641,7 +1642,7 @@ Desenvolvido independentemente por Jewell (1958), Iri (1960) e Busacker e Gowen 
 O algoritmo inicia com fluxo nulo em todos os arcos ($f \equiv 0$), estado que satisfaz trivialmente a condição de otimalidade por não introduzir nenhum ciclo residual negativo. A cada iteração:
 \begin{enumerate}
     \item Localiza-se o caminho aumentante de menor custo total $P$ da fonte $s$ ao sumidouro $t$ no digrafo residual $D_f$.
-    \item Computa-se a capacidade residual gargalo ao longo deste caminho: $\delta = \min_{(u,v) \in P} c_f(u,v)$.
+    \item Computa-se a capacidade residual gargalo $\delta = \min_{(u,v) \in P} c_f(u,v)$ ao longo deste caminho.
     \item Roteia-se $\delta$ unidades de fluxo através de $P$, atualizando o fluxo e o custo acumulado em $\delta \cdot d(t)$, onde $d(t)$ é a distância mínima de $s$ a $t$ sob os custos residuais.
 \end{enumerate}
 
@@ -1684,7 +1685,7 @@ Dada uma árvore geradora $T$, o fluxo nos arcos básicos é unicamente determin
 
 Fixando $\pi(r) = 0$ para um vértice raiz $r$ arbitrário, os potenciais de todos os demais vértices são propagados pela árvore em tempo $\mathcal{O}(|V|)$.
 
-\begin{figure}[h]
+\begin{figure}[!ht]
 \centering
 \begin{tikzpicture}[>=Stealth, thick,
     main/.style={circle, draw, minimum size=9mm, font=\small}]
@@ -1792,7 +1793,7 @@ A remoção de $e_{out}$ desconecta temporariamente a árvore geradora em duas c
 $$\pi(x) \leftarrow \pi(x) \pm \bar{w}_\pi(e_{in}), \quad \forall x \in V(T_s)$$
 onde a polaridade do sinal depende da orientação do arco entrante em relação à raiz. É neste ponto que a arquitetura dos vetores \lstinline{parent}, \lstinline{depth} e \lstinline{thread} comprova sua superioridade algorítmica: a lista encadeada da travessia em pré-ordem (\lstinline{thread}) permite iterar estritamente sobre os vértices da subárvore $T_s$ em tempo proporcional à sua cardinalidade ($|V(T_s)| \le |V|$), sem inspecionar os demais nós da rede. Em seguida, os apontadores de filiação (\lstinline{parent}) e as profundidades (\lstinline{depth}) são invertidos exclusivamente ao longo do caminho entre o nó de conexão e a raiz da subárvore, assegurando que cada pivoteamento execute em tempo linear estrito $\mathcal{O}(|V|)$.
 
-\begin{figure}[h]
+\begin{figure}[!ht]
 \centering
 \begin{tikzpicture}[>=Stealth, thick,
     main/.style={circle, draw, minimum size=10mm, font=\small}]
@@ -1843,8 +1844,9 @@ O custo negativo no arco artificial incentiva o algoritmo a maximizar o fluxo ci
 
 A Tabela~\ref{tab:complexidades_mcf} sintetiza os paradigmas, invariantes mantidas e as complexidades assintóticas dos três algoritmos de fluxo de custo mínimo desenvolvidos nesta Iniciação Científica.
 
-\begin{table}[h]
+\begin{table}[!ht]
 \centering
+\small
 \begin{tabular}{l c l}
 \hline
 \textbf{Algoritmo} & \textbf{Complexidade} & \textbf{Paradigma / Invariante} \\
@@ -3390,11 +3392,11 @@ Com o objetivo de garantir a transparência, a reprodutibilidade dos experimento
 
 O repositório \textbf{Networks Flow} está estruturado nos seguintes diretórios principais:
 \begin{itemize}
-    \item \texttt{Implementações/FlowNetwork/}: Módulos base e motores de fluxo máximo (\lstinline{FordFulkerson}, \lstinline{EdmondsKarp}, \lstinline{Dinic}, \lstinline{PushRelabel} e \lstinline{PushRelabelImproved});
-    \item \texttt{Implementações/CostNetwork/}: Módulos base e motores de fluxo de custo mínimo (\lstinline{CycleCanceling}, \lstinline{SuccessiveShortestPath} e \lstinline{NetworkSimplex});
-    \item \texttt{Implementações/Problemas/}: Modelagens e resolvedores para problemas combinatórios clássicos (como \textit{Minimum Vertex Cover}, emparelhamentos e caminhos disjuntos);
-    \item \texttt{Aplicações/Segmentação de Imagens/}: Ferramenta completa de segmentação interativa de imagens via corte mínimo em grafos (\textit{Graph Cuts});
-    \item \texttt{Execuções/}: Scripts de automação de testes, leitura de instâncias padronizadas no formato DIMACS e avaliação experimental.
+    \item \textbf{Fluxo Máximo} (\texttt{Implementações/FlowNetwork/}): Módulos base e motores (\lstinline{FordFulkerson}, \lstinline{EdmondsKarp}, \lstinline{Dinic}, \lstinline{PushRelabel} e \lstinline{PushRelabelImproved});
+    \item \textbf{Fluxo de Custo Mínimo} (\texttt{Implementações/CostNetwork/}): Módulos base e motores (\lstinline{CycleCanceling}, \lstinline{SuccessiveShortestPath} e \lstinline{NetworkSimplex});
+    \item \textbf{Problemas} (\texttt{Implementações/Problemas/}): Resolvedores para problemas combinatórios clássicos (como \textit{Minimum Vertex Cover}, emparelhamentos e caminhos disjuntos);
+    \item \textbf{Aplicações Práticas} (\texttt{Aplicações/Segmentação de Imagens/}): Ferramenta completa de segmentação de imagens via corte mínimo em grafos (\textit{Graph Cuts});
+    \item \textbf{Experimentos} (\texttt{Experimentos/}): Scripts de automação de testes, leitura de instâncias no formato DIMACS e avaliação experimental.
 \end{itemize}
 
 O código-fonte completo pode ser consultado, clonado e executado através do endereço:

@@ -1,10 +1,12 @@
+.POSIX:
+
 CXX      = c++
 CXXFLAGS = -Wl,-z,stack-size=268435456 -std=c++23 -O2
 SEG_EXE  = ./segment
 SEED_EXE = ./seeds
 PPM_EXE  = ./ppm
 
-.PHONY: all seed run test example clean
+.PHONY: all seed run test example clean clear
 
 all: $(SEG_EXE) $(SEED_EXE) $(PPM_EXE) seed
 
@@ -33,14 +35,14 @@ test: $(SEG_EXE) $(PPM_EXE)
 			$(PPM_EXE) --input "$${dir}goal.ppm"   --output "$${dir}goal.tmp.ppm"   --binary > "/dev/null" 2>&1; \
 			$(PPM_EXE) --input "$${dir}output.ppm" --output "$${dir}output.tmp.ppm" --binary > "/dev/null" 2>&1; \
 			if cmp -s "$${dir}output.tmp.ppm" "$${dir}goal.tmp.ppm"; then \
-				printf "[PASS] $$name\n"; \
+				printf "[PASS] %s\n" "$$name"; \
 			else \
-				printf "[FAIL] $$name (outputs differ)\n"; \
+				printf "[FAIL] %s (outputs differ)\n" "$$name"; \
 				FAILED=$$((FAILED+1)); \
 			fi; \
 			rm -f "$${dir}output.tmp.ppm" "$${dir}goal.tmp.ppm"; \
 		else \
-			printf "[FAIL] $$name (execution failed)\n"; \
+			printf "[FAIL] %s (execution failed)\n" "$$name"; \
 			FAILED=$$((FAILED+1)); \
 		fi; \
 	done; \

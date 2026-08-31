@@ -17,11 +17,13 @@ jobs:
       - name: Fazer Checkout do código
         uses: actions/checkout@v4
 
-      - name: Compilar todos os arquivos LaTeX
+      - name: Compilar todos os arquivos LaTeX via Makefile
         uses: xu-cheng/latex-action@v4
         with:
           root_file: "*.tex"
           working_directory: LaTeX
+          extra_system_packages: "make"
+          pre_compile: "make all"
 
       - name: Deletar Release e Tag 'latest' antigas
         uses: dev-drprasad/delete-tag-and-release@v1.0

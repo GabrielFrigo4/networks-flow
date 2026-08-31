@@ -123,12 +123,48 @@ Em plataformas de programação competitiva (*Codeforces*, *CSES*, *Beecrowd*, e
 - **Normalização de Espaçamento:** Garante formatação limpa e sem acúmulo de linhas em branco residuais.
 
 ### Comandos nos Makefiles de Problemas:
-Cada diretório de problema em [`Problemas/`](./Problemas/) possui um `Makefile` configurado com os seguintes comandos:
+Cada diretório de problema em [`Problemas/`](./Problemas/) possui um `Makefile` padronizado compatível com POSIX (`.POSIX:`):
 
 | Comando | Ação |
 | :--- | :--- |
-| `make` / `make run` | Compila e executa a solução localmente usando `input.txt`. |
+| `make` / `make all` | Compila a solução C++ e executa automaticamente com os dados de `input.txt`. |
+| `make run` | Executa o binário compilado redirecionando `input.txt` para a entrada padrão (`stdin`). |
 | `make clip` | Executa o `bundle.py` e copia o código autocontido diretamente para o **Clipboard** (`wl-copy`) pronto para Ctrl+V no juiz. |
 | `make bundle` | Imprime o código unificado completo na saída padrão (terminal). |
 | `make clean` | Remove os executáveis compilados. |
+
+### 📋 Template Canônico de Makefile para Problemas:
+
+```makefile
+.POSIX:
+
+CXX      = c++
+EXT      = cpp
+TARGET   = main
+INPUT    = input.txt
+SRC      = $(TARGET).$(EXT)
+CXXFLAGS = -Wl,-z,stack-size=268435456 -std=c++23 -O2
+EXE      = ./$(TARGET)
+CLIP     = wl-copy
+BUNDLE   = python3 ../../../bundle.py
+
+.PHONY: all run clean clip bundle
+
+all: $(EXE) run
+
+$(EXE): $(SRC)
+	$(CXX) $(CXXFLAGS) "$(SRC)" -o "$(EXE)"
+
+run:
+	"$(EXE)" < "$(INPUT)"
+
+clean:
+	rm -f "$(EXE)"
+
+bundle:
+	$(BUNDLE) "$(SRC)"
+
+clip:
+	$(BUNDLE) "$(SRC)" | $(CLIP)
+```
 

@@ -74,13 +74,17 @@ Uma BFS no grafo residual a partir de Source classifica cada pixel: alcançável
 
 ## Compilação e Uso
 
+| Comando | Ação |
+| :--- | :--- |
+| `make` / `make all` | Compila todos os utilitários (`segment`, `seeds`, `ppm`) e gera os overlays de seeds. |
+| `make test` | Executa a validação automática comparando os outputs com os gabaritos em `samples/`. |
+| `make seed` | Gera imagens `seeds.ppm` a partir de `source.seeds` para cada amostra. |
+| `make run` | Executa o utilitário `segment` em modo interativo. |
+| `make example` | Executa uma demonstração rápida com a amostra `grid1`. |
+| `make clean` | Remove todos os executáveis e imagens geradas. |
+
 ```bash
-make        # compila segment, seeds e ppm
-make test   # roda todos os casos em samples/ e exibe [PASS]/[FAIL]
-make seed   # gera seeds.ppm a partir de source.seeds em cada sample
-make run    # modo interativo do segment
-make example  # roda o caso grid1 como demo rápida
-make clean  # remove binários e arquivos gerados
+make
 ```
 
 ---
@@ -133,14 +137,15 @@ Options:
   -h, --help               Exibe esta mensagem
 ```
 
-**Exemplos:**
+**Exemplos de conversão:**
 
+Converter arquivo de seeds (texto) para imagem PPM com overlay:
 ```bash
-# Texto → imagem PPM (usando dimensões da imagem de entrada)
-./seeds --txt2ppm --input samples/duck/source.seeds \
-        --output seeds_preview.ppm --reference samples/duck/source.ppm
+./seeds --txt2ppm --input samples/duck/source.seeds --output seeds_preview.ppm --reference samples/duck/source.ppm
+```
 
-# Imagem PPM → texto
+Converter imagem PPM de overlay para arquivo de texto com as coordenadas:
+```bash
 ./seeds --ppm2txt --input seeds_preview.ppm --output seeds_extraidas.txt
 ```
 
@@ -203,10 +208,10 @@ Formato texto simples — uma seed por linha:
 
 ## Tutorial Rápido
 
-**1. Converta a imagem para PPM** (se necessário):
+**1. Converta a imagem para PPM** (via ImageMagick se necessário):
 
 ```bash
-magick minha_imagem.jpg minha_imagem.ppm   # ImageMagick v7+
+magick minha_imagem.jpg minha_imagem.ppm
 ```
 
 **2. Descubra coordenadas** abrindo a imagem em qualquer editor e anotando pixels do objeto e do fundo.
