@@ -6,8 +6,9 @@ SRC      = $(TARGET).$(EXT)
 CXXFLAGS = -Wl,-z,stack-size=268435456 -std=c++23 -O2
 EXE      = ./$(TARGET)
 CLIP     = wl-copy
+BUNDLE   = python3 ../../../bundle.py
 
-.PHONY: all run clean clip
+.PHONY: all run clean clip bundle
 
 all: $(EXE) run
 
@@ -20,5 +21,8 @@ run:
 clean:
 	rm -f "$(EXE)"
 
+bundle:
+	$(BUNDLE) "$(SRC)"
+
 clip:
-	$(CLIP) < "$(SRC)"
+	$(BUNDLE) "$(SRC)" | $(CLIP)

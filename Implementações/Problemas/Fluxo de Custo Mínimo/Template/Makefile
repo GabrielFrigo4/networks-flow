@@ -1,18 +1,28 @@
-CXX = c++
-CXXFLAGS = -std=c++23 -O2 -Wall -Wextra -pedantic
+CXX      = c++
+EXT      = cpp
+TARGET   = main
+INPUT    = input.txt
+SRC      = $(TARGET).$(EXT)
+CXXFLAGS = -Wl,-z,stack-size=268435456 -std=c++23 -O2
+EXE      = ./$(TARGET)
+CLIP     = wl-copy
+BUNDLE   = python3 ../../../bundle.py
 
-TARGET = main
-SRCS = main.cpp
+.PHONY: all run clean clip bundle
 
-all: $(TARGET)
+all: $(EXE) run
 
-$(TARGET): $(SRCS)
-	$(CXX) $(CXXFLAGS) -o $(TARGET) $(SRCS)
+$(EXE): $(SRC)
+	$(CXX) $(CXXFLAGS) "$(SRC)" -o "$(EXE)"
+
+run:
+	"$(EXE)" < "$(INPUT)"
 
 clean:
-	rm -f $(TARGET)
+	rm -f "$(EXE)"
 
-run: $(TARGET)
-	./$(TARGET) < input.txt
+bundle:
+	$(BUNDLE) "$(SRC)"
 
-.PHONY: all clean run
+clip:
+	$(BUNDLE) "$(SRC)" | $(CLIP)

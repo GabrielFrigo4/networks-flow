@@ -177,7 +177,8 @@ pdflatex ic.tex
 [task_assignment]: https://cses.fi/problemset/task/2129
 [parcel_delivery]: https://cses.fi/problemset/task/2121
 [distinct_routes_2]: https://cses.fi/problemset/task/2130
-[edicao_de_rede_mf]: ./Implementações/Problemas/Fluxo%20M%C3%A1ximo/Edi%C3%A7%C3%A3o%20de%20Rede/
-[edicao_de_rede]: ./Implementações/Problemas/Fluxo%20de%20Custo%20M%C3%ADnimo/Edi%C3%A7%C3%A3o%20de%20Rede/
+[edicao_de_rede_mf]: https://codeforces.com/gym/106679/problem/E
+[edicao_de_rede]: https://codeforces.com/gym/106679/problem/E
+[gym_sbc_2026]: https://codeforces.com/gym/106679
 [segmentacao_imagens_codigo]: ./Aplicações/Segmentação%20de%20Imagens/README.md
 [segmentacao_imagens_dataset]: https://vision.cs.uwaterloo.ca/data/maxflow

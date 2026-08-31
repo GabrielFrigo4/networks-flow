@@ -19,11 +19,11 @@ Este diretório serve como validação empírica da corretude e da eficiência d
 | ✂️ **[Police Chase](./Fluxo%20M%C3%A1ximo/Police%20Chase/)**                 | [CSES 1695](https://cses.fi/problemset/task/1695)                                   | [Fluxo Máximo](./Fluxo%20M%C3%A1ximo/)                  | • Corte Mínimo (Algoritmo / Teorema Max-Flow Min-Cut)<br>• Arestas Bidirecionais vs. Direcionadas<br>• Capacidades Unitárias ($c=1$)                                                                                            |
 | 🌐 **[Time Travel](./Fluxo%20M%C3%A1ximo/Time%20Travel/)**                   | [Beecrowd 2082](https://judge.beecrowd.com/en/problems/view/2082)                   | [Fluxo Máximo](./Fluxo%20M%C3%A1ximo/)                  | • Corte Mínimo Global<br>• Arestas Bidirecionais vs. Direcionadas<br>• Clonagem de Rede (`clone()`)                                                                                                                             |
 | 🪙 **[Coin Grid](./Fluxo%20M%C3%A1ximo/Coin%20Grid/)**                       | [CSES 1709](https://cses.fi/problemset/task/1709)                                   | [Fluxo Máximo](./Fluxo%20M%C3%A1ximo/)                  | • Grafo Bipartido<br>• Super-fonte ($s$) e Super-sumidouro ($t$)<br>• Cobertura de Vértices Mínima (MVC / König)<br>• Complementaridade de Conjuntos ($\lvert V \rvert - MVC$)                                                  |
-| 🔄 **[Edição de Rede (Fluxo Máximo)](./Fluxo%20M%C3%A1ximo/Edi%C3%A7%C3%A3o%20de%20Rede/)** | [Maratona SBC 2026 / Regional (Prob. E)](https://maratona.sbc.org.br/) | [Fluxo Máximo](./Fluxo%20M%C3%A1ximo/) | • Redução para Emparelhamento Bipartido Máximo ($\mathcal{O}(M \sqrt{M})$)<br>• Remoção Gulosa de Identidades ($k \times 0$)<br>• Fórmula Fechada: $2(M - k) - F$                                                           |
+| 🔄 **[Edição de Rede (Fluxo Máximo)](./Fluxo%20M%C3%A1ximo/Edi%C3%A7%C3%A3o%20de%20Rede/)** | [CF Gym 106679E](https://codeforces.com/gym/106679/problem/E) ([Gym 106679](https://codeforces.com/gym/106679)) | [Fluxo Máximo](./Fluxo%20M%C3%A1ximo/) | • Redução para Emparelhamento Bipartido Máximo ($\mathcal{O}(M \sqrt{M})$)<br>• Remoção Gulosa de Identidades ($k \times 0$)<br>• Fórmula Fechada: $2(M - k) - F$                                                           |
 | 📋 **[Task Assignment](./Fluxo%20de%20Custo%20M%C3%ADnimo/Task%20Assignment/)** | [CSES 2129](https://cses.fi/problemset/task/2129)                               | [Fluxo de Custo Mínimo](./Fluxo%20de%20Custo%20M%C3%ADnimo/) | • Grafo Bipartido com Custos (Assignment Problem)<br>• Super-fonte ($s$) e Super-sumidouro ($t$)<br>• Múltiplas Fontes e Sumidouros<br>• Custos Reduzidos (Reduced Costs)<br>• Transformação Min Cost Max Flow                  |
 | 📦 **[Parcel Delivery](./Fluxo%20de%20Custo%20M%C3%ADnimo/Parcel%20Delivery/)** | [CSES 2121](https://cses.fi/problemset/task/2121)                               | [Fluxo de Custo Mínimo](./Fluxo%20de%20Custo%20M%C3%ADnimo/) | • Min Cost Flow com Demanda Fixa ($k$ parcelas)<br>• Super-fonte ($s$) para Limitação de Demanda<br>• Grafo Residual com Custos<br>• Custos Reduzidos (Reduced Costs)                                                           |
 | 🚀 **[Distinct Routes II](./Fluxo%20de%20Custo%20M%C3%ADnimo/Distinct%20Routes%20II/)** | [CSES 2130](https://cses.fi/problemset/task/2130)                           | [Fluxo de Custo Mínimo](./Fluxo%20de%20Custo%20M%C3%ADnimo/) | • $k$ Caminhos Disjuntos de Custo Mínimo (Min-Cost $k$-Disjoint Paths)<br>• Capacidades Unitárias ($c=1$)<br>• Decomposição de Fluxo (Path Recovery)<br>• Custos Reduzidos (Reduced Costs)<br>• Transformação Min Cost Max Flow |
-| 🔄 **[Edição de Rede (Custo Mínimo)](./Fluxo%20de%20Custo%20M%C3%ADnimo/Edi%C3%A7%C3%A3o%20de%20Rede/)** | [Maratona SBC 2026 / Regional (Prob. E)](https://maratona.sbc.org.br/) | [Fluxo de Custo Mínimo](./Fluxo%20de%20Custo%20M%C3%ADnimo/) | • Emparelhamento Bipartido com Custos (Min Cost Flow)<br>• Super-fonte ($s$) e Super-sumidouro ($t$)<br>• Nó Intermediário Dummy (2-Hop Substitution)<br>• Resolução com `NetworkSimplex`                                     |
+| 🔄 **[Edição de Rede (Custo Mínimo)](./Fluxo%20de%20Custo%20M%C3%ADnimo/Edi%C3%A7%C3%A3o%20de%20Rede/)** | [CF Gym 106679E](https://codeforces.com/gym/106679/problem/E) ([Gym 106679](https://codeforces.com/gym/106679)) | [Fluxo de Custo Mínimo](./Fluxo%20de%20Custo%20M%C3%ADnimo/) | • Emparelhamento Bipartido com Custos (Min Cost Flow)<br>• Super-fonte ($s$) e Super-sumidouro ($t$)<br>• Nó Intermediário Dummy (2-Hop Substitution)<br>• Resolução com `NetworkSimplex`                                     |
 
 ---
 
@@ -67,8 +67,9 @@ Este diretório serve como validação empírica da corretude e da eficiência d
     - A linha $i$ pertence ao MVC se **não** for alcançável pela fonte ($i \notin Z$).
     - A coluna $j$ pertence ao MVC se **for** alcançável pela fonte ($j \in Z$).
 
-### 7. 🔄 Edição de Rede via Matching Bipartido (Maratona SBC 2026 / Regional - Problema E)
+### 7. 🔄 Edição de Rede via Matching Bipartido (CF Gym 106679E / Maratona SBC 2026)
 - **Pasta:** [`Fluxo Máximo/Edição de Rede/`](./Fluxo%20M%C3%A1ximo/Edi%C3%A7%C3%A3o%20de%20Rede/)
+- **Link do Problema:** [Codeforces Gym 106679 - Problema E (Edição de Rede)](https://codeforces.com/gym/106679/problem/E) ([Contest Gym 106679](https://codeforces.com/gym/106679))
 - **Problema:** Determinar o número mínimo de intervenções para transformar $M_1$ arestas na topologia desejada de $M_2$ arestas.
 - **Redução para Fluxo Máximo:**
   - Remove as $k$ arestas idênticas (custo $0$).
@@ -99,8 +100,9 @@ Este diretório serve como validação empírica da corretude e da eficiência d
 - **Modelagem:** Super-fonte conectada à sala $1$ com capacidade $k$ e custo $0$. Cada conexão original entre salas recebe capacidade $1$ e custo $1$.
 - **Extração de Resultado:** `compute_min_cost_max_flow` empurra $k$ unidades de fluxo pelo caminho mais barato. A reconstrução dos $k$ caminhos é realizada via decomposição de fluxo no residual com rastreamento de arestas visitadas.
 
-### 11. 🔄 Edição de Rede via Custo Mínimo (Maratona SBC 2026 / Regional - Problema E)
+### 11. 🔄 Edição de Rede via Custo Mínimo (CF Gym 106679E / Maratona SBC 2026)
 - **Pasta:** [`Fluxo de Custo Mínimo/Edição de Rede/`](./Fluxo%20de%20Custo%20M%C3%ADnimo/Edi%C3%A7%C3%A3o%20de%20Rede/)
+- **Link do Problema:** [Codeforces Gym 106679 - Problema E (Edição de Rede)](https://codeforces.com/gym/106679/problem/E) ([Contest Gym 106679](https://codeforces.com/gym/106679))
 - **Problema:** Determinar o número mínimo de intervenções para transformar a topologia de conexões.
 - **Modelagem com Min Cost Flow:**
   - Se $M_1 \neq M_2$, retorna `-1`.

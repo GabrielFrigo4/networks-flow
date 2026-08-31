@@ -91,7 +91,7 @@ Todos os problemas estão na pasta [`Problemas/`](./Problemas/) e utilizam a arq
 | [Police Chase](./Problemas/Fluxo%20M%C3%A1ximo/Police%20Chase/)               | [CSES 1695](https://cses.fi/problemset/task/1695)                 | Corte Mínimo (Max-Flow Min-Cut), Arestas Bidirecionais        |
 | [Time Travel](./Problemas/Fluxo%20M%C3%A1ximo/Time%20Travel/)                 | [Beecrowd 2082](https://judge.beecrowd.com/en/problems/view/2082) | Corte Mínimo Global, Arestas Bidirecionais                    |
 | [Coin Grid](./Problemas/Fluxo%20M%C3%A1ximo/Coin%20Grid/)                     | [CSES 1709](https://cses.fi/problemset/task/1709)                 | Grafo Bipartido, Cobertura Mínima (König), Complementaridade  |
-| [Edição de Rede](./Problemas/Fluxo%20M%C3%A1ximo/Edi%C3%A7%C3%A3o%20de%20Rede/) | Maratona SBC 2026 / Regional (Prob. E)            | Redução para Emparelhamento Bipartido Máximo, Fórmula Fechada |
+| [Edição de Rede](./Problemas/Fluxo%20M%C3%A1ximo/Edi%C3%A7%C3%A3o%20de%20Rede/) | [CF Gym 106679E](https://codeforces.com/gym/106679/problem/E) (Maratona SBC 2026) | Redução para Emparelhamento Bipartido Máximo, Fórmula Fechada |
 
 ### 🧮 Problemas de Fluxo de Custo Mínimo
 
@@ -100,7 +100,7 @@ Todos os problemas estão na pasta [`Problemas/`](./Problemas/) e utilizam a arq
 | [Task Assignment](./Problemas/Fluxo%20de%20Custo%20M%C3%ADnimo/Task%20Assignment/)   | [CSES 2129](https://cses.fi/problemset/task/2129) | Grafo Bipartido com Custos (Assignment), Super-fonte/Sumidouro            |
 | [Parcel Delivery](./Problemas/Fluxo%20de%20Custo%20M%C3%ADnimo/Parcel%20Delivery/)   | [CSES 2121](https://cses.fi/problemset/task/2121) | Min Cost Flow com Demanda $k$, Limitação via Super-fonte                  |
 | [Distinct Routes II](./Problemas/Fluxo%20de%20Custo%20M%C3%ADnimo/Distinct%20Routes%20II/) | [CSES 2130](https://cses.fi/problemset/task/2130) | Min Cost $k$-Disjoint Paths, Decomposição de Fluxo                        |
-| [Edição de Rede](./Problemas/Fluxo%20de%20Custo%20M%C3%ADnimo/Edi%C3%A7%C3%A3o%20de%20Rede/) | Maratona SBC 2026 / Regional (Prob. E)            | Transformação de Topologia (Min Cost Flow & Matching de Fluxo Máximo)    |
+| [Edição de Rede](./Problemas/Fluxo%20de%20Custo%20M%C3%ADnimo/Edi%C3%A7%C3%A3o%20de%20Rede/) | [CF Gym 106679E](https://codeforces.com/gym/106679/problem/E) (Maratona SBC 2026) | Transformação de Topologia (Min Cost Flow & Matching de Fluxo Máximo)    |
 
 ### 📚 Lista de Problemas Adicionais
 
