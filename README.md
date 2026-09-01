@@ -147,6 +147,7 @@ Permite orquestrar todo o projeto diretamente a partir da raiz:
 | Comando | Ação |
 | :--- | :--- |
 | `make` / `make all` | Compila a documentação LaTeX, aplicações práticas e valida a integridade do C++. |
+| `make setup` | Configura o ambiente local e ativa os hooks do Git em [`.githooks/`](./.githooks/) para prevenção de commits de binários/artefatos. |
 | `make latex` | Compila todos os documentos LaTeX (`ic.pdf`, `relatorio.pdf`, `projeto.pdf`). |
 | `make apps` | Compila todas as ferramentas e aplicações práticas em [`Aplicações/`](./Aplicações/). |
 | `make impl` | Valida a sintaxe C++23 de todos os motores de fluxo em [`Implementações/`](./Implementações/). |

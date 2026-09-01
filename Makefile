@@ -1,8 +1,12 @@
 .POSIX:
 
-.PHONY: all latex apps impl exp test clean
+.PHONY: all latex apps impl exp test setup clean
 
 all: latex apps impl
+
+setup:
+	git config core.hooksPath .githooks
+	chmod +x .githooks/*
 
 latex:
 	$(MAKE) -C LaTeX all
