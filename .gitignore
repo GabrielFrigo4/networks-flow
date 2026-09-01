@@ -9,6 +9,10 @@
 *.app
 *.lib
 *.a
+*.bin
+*.elf
+main
+**/main
 bin/
 build/
 out/

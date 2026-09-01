@@ -1257,7 +1257,7 @@ Seja $I$ uma imagem com $n = W \times H$ pixels. A construção da rede de segme
 
 \subsubsection{Segmentação via Corte Mínimo}
 
-O corte mínimo $(S, T)$ na rede construída induz naturalmente a partição da imagem, minimizando a energia da segmentação. Os pixels no conjunto $S$ (alcançáveis a partir de $s$ na rede residual) pertencem ao \textit{foreground}; os pixels em $T$ pertencem ao \textit{background}.
+O corte mínimo $(S, T)$ na rede construída induz naturalmente a partição da imagem, minimizando a energia da segmentação. Os pixels no conjunto $S$ (alcançáveis a partir de $s$ na rede residual) pertencem ao \textit{foreground}; os pixels no conjunto complementar $T = V \setminus S$ (inalcançáveis a partir de $s$) pertencem ao \textit{background}.
 
 A geometria desse corte divide os arcos cortados em \textbf{duas categorias} principais de penalidades (Regionais e de Fronteira):
 \begin{itemize}

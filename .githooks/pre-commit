@@ -1,0 +1,37 @@
+#!/usr/bin/env sh
+set -e
+
+RED='\033[1;31m'
+YELLOW='\033[1;33m'
+RESET='\033[0m'
+
+is_binary() {
+	file "$1" 2>/dev/null | grep -qE "ELF (32|64)-bit"
+}
+
+is_artifact() {
+	case "$1" in
+		*.o|*.obj|*.exe|*.dll|*.so|*.dylib|*.out|*.a|*.lib|*.bin|*.elf)
+			return 0
+			;;
+		*)
+			return 1
+			;;
+	esac
+}
+
+has_error=0
+
+for target in $(git diff --cached --name-only --diff-filter=ACM); do
+	[ -f "$target" ] || continue
+
+	if is_binary "$target" || is_artifact "$target"; then
+		printf "%b\n" "${RED}erro:${RESET} binário ou artefato detectado no commit: '$target'" >&2
+		has_error=1
+	fi
+done
+
+if [ "$has_error" -ne 0 ]; then
+	printf "%b\n" "${YELLOW}dica:${RESET} execute 'make clean' ou 'git rm --cached <arquivo>'" >&2
+	exit 1
+fi
