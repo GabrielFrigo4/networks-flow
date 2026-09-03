@@ -269,6 +269,67 @@ Para qualquer arco original $(u,v) \in A$ tal que $u \in S$ e $v \in T$, sabemos
 
 Conclui-se que o fluxo líquido através do corte $(S, T)$ é exatamente a soma das capacidades dos arcos de $S$ para $T$, o que corresponde à capacidade total do corte. Como o fluxo da rede deve passar através deste gargalo, provamos que o valor $|f|$ iguala a capacidade deste corte, atestando a otimalidade de ambos (veja~\cite{ford1956maximal}).
 
+\subsubsection{A Formulação Primal-Dual em Programação Linear}
+
+A equivalência fundamental entre o valor do fluxo máximo e a capacidade do corte mínimo admite uma demonstração algébrica rigorosa quando examinada sob a ótica da Programação Linear (veja~\cite{cook1998combinatorial, schrijver2003combinatorial}). Longe de se restringir a uma propriedade puramente topológica da rede residual, o Teorema do Fluxo Máximo e Corte Mínimo é a manifestação direta do Teorema da Dualidade Forte de von Neumann e Dantzig.
+
+O Problema do Fluxo Máximo pode ser expresso canonicamente como o seguinte Programa Linear Primal:
+\begin{align}
+    \max \quad & |f| = \sum_{\{v \mid (s,v) \in A\}} f(s,v) - \sum_{\{u \mid (u,s) \in A\}} f(u,s) \label{eq:lp_primal_obj} \\
+    \text{sujeito a} \quad & \sum_{\{w \mid (v,w) \in A\}} f(v,w) - \sum_{\{u \mid (u,v) \in A\}} f(u,v) = 0, \quad \forall v \in V \setminus \{s, t\} \label{eq:lp_primal_conservation} \\
+    & 0 \le f(u,v) \le c(u,v), \quad \forall (u,v) \in A \label{eq:lp_primal_capacity}
+\end{align}
+
+Para derivar o Programa Linear Dual correspondente, associamos multiplicadores de Lagrange (variáveis duais) às restrições estruturais do primal:
+\begin{enumerate}
+    \item Para cada restrição de conservação de fluxo no vértice intermediário $v \in V \setminus \{s,t\}$ (Equação~\ref{eq:lp_primal_conservation}), introduz-se uma variável dual irrestrita em sinal $p(v) \in \mathbb{R}$, interpretável fisicamente como um \textbf{potencial nodal}. Para uniformizar a formulação em todos os vértices da rede, convencionam-se as condições de contorno nos terminais como $p(s) = 1$ e $p(t) = 0$.
+    \item Para cada restrição de capacidade superior $f(u,v) \le c(u,v)$ (Equação~\ref{eq:lp_primal_capacity}), introduz-se uma variável dual não negativa $d(u,v) \ge 0$, que quantifica a \textbf{tensão} ou o desnível de potencial incidente ao longo do arco direcionado $(u,v)$.
+\end{enumerate}
+
+Pela teoria clássica da dualidade linear, a maximização do fluxo converte-se na minimização do produto escalar das capacidades pelas tensões dos arcos. O Programa Linear Dual resultante assume a forma:
+\begin{align}
+    \min \quad & \sum_{(u,v) \in A} c(u,v) \cdot d(u,v) \label{eq:lp_dual_obj} \\
+    \text{sujeito a} \quad & d(u,v) - p(u) + p(v) \ge 0, \quad \forall (u,v) \in A \label{eq:lp_dual_tension} \\
+    & d(u,v) \ge 0, \quad \forall (u,v) \in A \\
+    & p(s) = 1, \quad p(t) = 0, \quad p(v) \in \mathbb{R}, \quad \forall v \in V
+\end{align}
+
+A interpretação da inequação~\eqref{eq:lp_dual_tension} é intuitiva: para qualquer arco $(u,v)$, a variável $d(u,v)$ deve satisfazer $d(u,v) \ge p(u) - p(v)$. Como o objetivo de minimização~\eqref{eq:lp_dual_obj} possui coeficientes não negativos ($c(u,v) \ge 0$), a solução ótima dual adotará o menor valor viável:
+\begin{equation}
+    d(u,v) = \max\{0, \, p(u) - p(v)\}
+\end{equation}
+
+Em um programa linear arbitrário, as variáveis duais $p(v)$ poderiam assumir valores contínuos fracionários no intervalo $[0, 1]$. Contudo, a matriz de coeficientes do sistema de restrições deste problema é a transposta da matriz de incidência do digrafo $D$. Como demonstrado formalmente adiante no Teorema da Subseção~\ref{subsec:tum}, a matriz de incidência de qualquer digrafo direcionado é \textbf{Totalmente Unimodular (TUM)}.
+
+Pela teoria dos Poliedros e da Programação Inteira (veja~\cite{cook1998combinatorial, korte2018combinatorial}), a total unimodularidade da matriz de restrições garante que \textbf{todos os vértices do poliedro dual são estritamente inteiros}. Consequentemente, para qualquer vetor de capacidades inteiras, existe uma solução básica ótima dual onde os potenciais nodais assumem exclusivamente valores binários:
+\begin{equation}
+    p^*(v) \in \{0, 1\}, \quad \forall v \in V
+\end{equation}
+
+Esta propriedade binária estabelece a bijeção perfeita com a partição geométrica de cortes: a solução dual ótima particiona univocamente o conjunto de vértices $V$ em dois subconjuntos disjuntos:
+\begin{equation}
+    S = \{v \in V \mid p^*(v) = 1\} \quad \text{e} \quad T = \{v \in V \mid p^*(v) = 0\}
+\end{equation}
+Como $p^*(s) = 1$ e $p^*(t) = 0$, temos garantidamente $s \in S$ e $t \in T$, definindo um legítimo \textbf{corte $s$-$t$}. 
+
+Avaliando agora o valor das variáveis de arco $d^*(u,v) = \max\{0, \, p^*(u) - p^*(v)\}$ sob esta partição binária:
+\begin{equation}
+    d^*(u,v) = \begin{cases}
+        1, & \text{se } u \in S \text{ e } v \in T \quad (p^*(u) = 1, \, p^*(v) = 0); \\
+        0, & \text{caso contrário (se } u,v \text{ estão no mesmo lado, ou se } u \in T, \, v \in S).
+    \end{cases}
+\end{equation}
+Substituindo $d^*(u,v)$ diretamente na função objetivo dual~\eqref{eq:lp_dual_obj}:
+\begin{equation}
+    \sum_{(u,v) \in A} c(u,v) \cdot d^*(u,v) = \sum_{u \in S, \, v \in T} c(u,v) = \text{cap}(S, T)
+\end{equation}
+
+Pelo Teorema da Dualidade Forte da Programação Linear, o valor ótimo primal coincide rigorosamente com o valor ótimo dual:
+\begin{equation}
+    \max |f| = \min \sum_{(u,v) \in A} c(u,v) d(u,v) = \min_{(S,T)} \text{cap}(S,T)
+\end{equation}
+o que comprova formalmente que o problema da Cobertura por Corte Mínimo é o dual exato do Problema do Fluxo Máximo.
+
 \subsubsection{O Teorema da Integralidade}
 
 Para que os problemas clássicos de Otimização Combinatória possam ser reduzidos a instâncias de fluxo, um último pilar matemático faz-se necessário: a garantia de que as soluções encontradas pertencerão ao domínio dos números inteiros ($\mathbb{Z}$).
@@ -305,14 +366,19 @@ No escopo da interface pública, para contornar as restrições de instanciaçã
 
 Por fim, a classe expõe a interface polimórfica primária \lstinline{compute_max_flow(Size source, Size sink)}, um método virtual puro que atua como um contrato estrutural obrigatório para todas as subclasses. Além disso, para viabilizar a extração de resultados práticos após a convergência do fluxo (como a identificação das conexões ativas em um Emparelhamento Bipartido Máximo), a classe provê o método \lstinline{get_edges()}. O retorno da estrutura através de uma referência constante (\lstinline{const &}) permite a leitura externa de toda a malha de arcos sem comprometer o rigor e a segurança do encapsulamento orientado a objetos. A consolidação estrutural de todas estas decisões arquiteturais e a definição completa da interface C++ encontram-se detalhadas no Código~\ref{lst:flownetwork} (disponível no Apêndice~\ref{ap:flownetwork}).
 
-\subsection{Algoritmos Baseados em Caminhos Aumentantes}
+\subsection{A Abordagem Primal: Algoritmos de Caminhos Aumentantes}
+\label{subsec:primal_flow}
 
-O cômputo computacional do Fluxo Máximo pode ser estruturado teoricamente sob três grandes perspectivas matemáticas da Otimização Combinatória:
-\begin{enumerate}
-    \item \textbf{A Abordagem Primal (Caminhos Aumentantes):} Mantém rigorosamente a lei de conservação de fluxo (viabilidade primal) em todos os vértices intermediários durante toda a execução, avançando iterativamente em direção à otimalidade ao saturar trajetos de $s$ a $t$ no digrafo residual. Compreende o método pioneiro de Ford-Fulkerson e suas especializações fortemente polinomiais de Edmonds-Karp e Dinic, analisadas nesta subseção.
-    \item \textbf{A Abordagem Dual (Pré-fluxo e Alturas):} Inverte a invariante clássica: assegura a otimalidade de corte desde o início através de rótulos de distância topológicos ($h(s) = |V|$), mas relaxa a viabilidade primal ao admitir o acúmulo temporário de excessos de fluxo nos nós, operando até drenar ou devolver todos os excessos. Compreende a família Push-Relabel detalhada na Subseção~\ref{subsec:preflow}.
-    \item \textbf{A Abordagem de Programação Linear (Network Simplex):} Modela o fluxo máximo como um programa linear contínuo sobre o poliedro de fluxos, resolvido por pivoteamentos de bases em árvores geradoras. Embora seja perfeitamente possível resolver o fluxo máximo pelo Simplex em redes mediante a inserção de um arco artificial de retorno $(t,s)$ com custo negativo (formalizado na Subseção~\ref{subsec:mcmf}), para instâncias de fluxo máximo puro os algoritmos combinatórios dedicados (em especial Dinic e Push-Relabel) são assintoticamente e empiricamente superiores ($\mathcal{O}(|V|^2 \sqrt{|A|})$). A hegemonia prática do \textit{Network Simplex} consolida-se plenamente quando custos são atribuídos a cada arco, objeto da Subseção~\ref{subsec:mcf}.
-\end{enumerate}
+A vertente primal para a resolução do Problema do Fluxo Máximo fundamenta-se na preservação irrestrita da \textbf{viabilidade das restrições de fluxo} ao longo de todas as etapas de execução. Sob esta ótica, a lei de conservação de fluxo nos nós intermediários ($\sum f_{in} = \sum f_{out}$) e os limites de capacidade nos arcos ($0 \le f \le c$) jamais são violados em nenhuma iteração.
+
+O paradigma opera partindo da solução viável inicial trivial --- o fluxo nulo $f(u,v) = 0$ para todo $(u,v) \in A$ --- e progride iterativamente em direção à fronteira ótima. A cada passo, busca-se na rede residual $D_f$ um trajeto direcionado viável da fonte $s$ ao sumidouro $t$ (o caminho aumentante). Ao localizar tal percurso, injeta-se o maior volume viável admitido pelo arco de menor capacidade residual no trajeto (o arco gargalo), incrementando o valor global $|f|$ sem romper o equilíbrio de conservação em nenhum vértice intermediário. O algoritmo atinge a otimalidade no instante em que o corte mínimo é completamente saturado, momento no qual a rede residual não abriga mais nenhum trajeto viável conectando a fonte ao sumidouro.
+
+A grande evolução teórica e algorítmica dentro desta vertente consistiu em disciplinar a seleção desses trajetos para transpor a barreira pseudopolinomial do método original de Ford e Fulkerson:
+\begin{itemize}
+    \item O método pioneiro de \textbf{Ford-Fulkerson} utiliza busca em profundidade (DFS) sem restrições de ordem, apresentando tempo de execução sensível à magnitude das capacidades ($\mathcal{O}(|A| \cdot |f^*|)$);
+    \item O algoritmo de \textbf{Edmonds-Karp} disciplina a seleção elegendo sistematicamente o caminho aumentante mais curto em número de arcos via busca em largura (BFS), conquistando a primeira garantia fortemente polinomial ($\mathcal{O}(|V| \cdot |A|^2)$);
+    \item O algoritmo de \textbf{Dinic} eleva o paradigma primal ao estado da arte ao introduzir o processamento em fases estruturado pelo Digrafo de Níveis (\textit{Level Graph}), saturando múltiplos caminhos de uma só vez através de fluxos bloqueadores com custo amortizado ($\mathcal{O}(|V|^2 \cdot |A|)$).
+\end{itemize}
 
 \subsubsection{O Método Genérico de Ford-Fulkerson e a Barreira Pseudopolinomial}
 
@@ -409,12 +475,14 @@ Esta poda dramática na árvore de recursão garante uma amortização matemáti
 \label{fig:level_graph}
 \end{figure}
 
-\subsection{Algoritmos Baseados em Pré-fluxo (Família Push-Relabel)}
+\subsection{A Abordagem Dual: Algoritmos de Pré-fluxo e Alturas (Família Push-Relabel)}
 \label{subsec:preflow}
 
-Se os algoritmos de caminhos aumentantes constituem a vertente primal clássica (mantendo a viabilidade de conservação e buscando a otimalidade), a família concebida por Goldberg e Tarjan em 1988 (veja~\cite{goldberg1988new}) representa a \textbf{vertente dual} por excelência. Em vez de preservar a conservação e procurar caminhos aumentantes, o método do pré-fluxo inverte a invariante: a ausência de caminhos viáveis da fonte ao sumidouro no digrafo residual é imposta e mantida desde o primeiro instante através da função de alturas ($h(s) = |V|$ e $h(t) = 0$), assegurando a otimalidade topológica de corte. Em contrapartida, a viabilidade primal é temporariamente relaxada, permitindo que os vértices acumulem fluidos denominados pré-fluxos (\textit{preflows}) (veja~\cite{ahuja1993network}). O algoritmo trabalha então localmente para restabelecer a viabilidade primal através do cancelamento ou retorno de todos os excessos.
+Em contraposição direta à abordagem primal de caminhos aumentantes detalhada na subseção anterior, a família de algoritmos concebida por Andrew Goldberg e Robert Tarjan em 1988 (veja~\cite{goldberg1988new}) estabelece a \textbf{vertente dual} por excelência na resolução do Fluxo Máximo.
 
-Em 1988, Andrew Goldberg e Robert Tarjan (veja~\cite{goldberg1988new}) propuseram uma inversão dramática deste paradigma. A família de algoritmos por eles introduzida inverte a invariante: a otimalidade (inexistência de caminhos da fonte ao sumidouro na rede residual) é mantida desde a configuração inicial, mas a viabilidade do fluxo é deliberadamente relaxada. A lei de conservação é suspensa durante as iterações intermediárias, permitindo que os vértices acumulem recursos temporariamente. Esta estrutura de roteamento relaxada é matematicamente definida como um pré-fluxo (\textit{preflow}) (veja~\cite{ahuja1993network}).
+O método opera invertendo radicalmente a invariante clássica de execução: em vez de preservar a viabilidade de fluxo e buscar iterativamente a otimalidade de corte, a \textbf{otimalidade de corte é mantida desde a inicialização como invariante permanente}, enquanto a viabilidade primal de conservação de fluxo é temporariamente relaxada. Para isolar a fonte do sumidouro logo no primeiro instante, a fonte satura todos os arcos de saída incidentes a ela, e atribui-se a ela uma altura topológica $h(s) = |V|$, enquanto o sumidouro permanece em $h(t) = 0$. Sob a condição de que nenhum arco residual possa descer mais de uma unidade de altura ($h(u) \le h(v) + 1$), torna-se matematicamente impossível a existência de qualquer caminho aumentante de $s$ a $t$ na rede residual $D_f$ --- ou seja, a barreira do corte residual já é intransponível desde o início.
+
+Nesse processo, os vértices intermediários recebem temporariamente mais fluxo do que conseguem escoar, suspendendo a lei de conservação e acumulando fluidos denominados \textbf{pré-fluxos} (\textit{preflows}) (veja~\cite{ahuja1993network}). A dinâmica do algoritmo consiste em atuar de forma estritamente local, operando como um sistema gravitacional que drena esses excessos ladeira abaixo através de operações de empurrar (\textit{Push}) e elevação de potencial (\textit{Relabel}), até que todos os excessos sejam descarregados no sumidouro $t$ ou devolvidos à fonte $s$. No momento exato em que todos os nós intermediários têm seus excessos zerados, a viabilidade primal é restabelecida e, pela preservação contínua da otimalidade dual de corte, o fluxo resultante é comprovadamente máximo.
 
 Formalmente, um pré-fluxo $f$ é uma função que respeita estritamente as restrições de capacidade ($0 \le f(u,v) \le c(u,v)$), mas que permite que a quantidade total de fluxo que ingressa em um vértice $v \in V \setminus \{s, t\}$ seja maior ou igual à quantidade que dele diverge. A diferença algébrica entre o influxo e o efluxo de um vértice é denominada excesso, denotada por $e(v)$:
 \begin{equation}
@@ -609,27 +677,37 @@ A intuição por trás da melhoria da complexidade de tempo de pior caso de $\ma
 \begin{table}[!ht]
 \centering
 \small
-\begin{tabular}{l c l}
+\begin{tabular}{l c c l l}
 \hline
-\textbf{Algoritmo} & \textbf{Complexidade} & \textbf{Estratégia} \\
+\textbf{Algoritmo} & \textbf{Paradigma} & \textbf{Invariante Primária} & \textbf{Complexidade} & \textbf{Estratégia} \\
 \hline
-Ford-Fulkerson (DFS) & $\mathcal{O}(|A| \cdot |f^*|)$ & Pseudopolinomial \\
-Edmonds-Karp (BFS) & $\mathcal{O}(|V| \cdot |A|^2)$ & Caminho mais curto \\
-Dinic & $\mathcal{O}(|V|^2 \cdot |A|)$ & Fluxo bloqueador \\
-Push-Relabel (FIFO) & $\mathcal{O}(|V|^3)$ & Pré-fluxo \\
-Push-Relabel (Highest Label) & $\mathcal{O}(|V|^2 \sqrt{|A|})$ & Pré-fluxo otimizado \\
+Ford-Fulkerson & Primal & Conservação ($e(v)=0$) & $\mathcal{O}(|A| \cdot |f^*|)$ & DFS (caminho aumentante qualquer) \\
+Edmonds-Karp & Primal & Conservação ($e(v)=0$) & $\mathcal{O}(|V| \cdot |A|^2)$ & BFS (menor caminho aumentante) \\
+Dinic & Primal & Conservação ($e(v)=0$) & $\mathcal{O}(|V|^2 \cdot |A|)$ & Grafo de Níveis e Fluxo Bloqueador \\
+Push-Relabel (FIFO) & Dual & Otimalidade de corte & $\mathcal{O}(|V|^3)$ & Descarga em fila de nós ativos \\
+Push-Relabel (Highest Label) & Dual & Otimalidade de corte & $\mathcal{O}(|V|^2 \sqrt{|A|})$ & Nó mais alto + \textit{Gap Heuristic} \\
 \hline
 \end{tabular}
-\caption{Comparação das complexidades assintóticas dos algoritmos de fluxo máximo implementados neste projeto.}
+\caption{Comparação das complexidades assintóticas e paradigmas dos algoritmos de fluxo máximo implementados neste projeto.}
 \label{tab:complexidades}
 \end{table}
 
-\subsection{Reduções e Aplicações Combinatórias}
+\subsubsection{Síntese Comparativa: Primalidade versus Dualidade no Fluxo Máximo}
+
+A Tabela~\ref{tab:complexidades} sintetiza a simetria conceitual construída ao longo do estudo do Fluxo Máximo. O problema revela-se não como um agregado disperso de heurísticas computacionais, mas como um campo estruturado por duas forças matemáticas complementares que convergem para a mesma fronteira ótima garantida pelo Teorema de Ford-Fulkerson:
+\begin{itemize}
+    \item \textbf{A Vertente Primal (Caminhos Aumentantes):} Ancora-se estritamente no espaço das soluções viáveis físicas. O fluxo é roteado por percursos globais $s \leadsto t$, aumentando o valor da função objetivo passo a passo até que a capacidade do corte mínimo seja atingida. Nesta categoria, o algoritmo de Dinic destaca-se como o motor de maior eficiência, reduzindo drasticamente o trabalho assintótico ao consolidar múltiplos aumentos por fase através de fluxos bloqueadores no Digrafo de Níveis.
+    \item \textbf{A Vertente Dual (Alturas e Pré-fluxo):} Inicia o processo na fronteira de corte ótimo e atua no espaço das soluções infezíveis (pré-fluxos com excessos nodais). Suas decisões são puramente locais e assíncronas, dispensando buscas globais de caminhos pela rede e propagando o fluido por gradientes topológicos induzidos pelas alturas $h(v)$. A variante \textit{Highest Label} combinada com a heurística de lacunas (\textit{Gap Heuristic}) atinge o limite de $\mathcal{O}(|V|^2 \sqrt{|A|})$, consagrando-se como a implementação de melhor desempenho empírico e assintótico em grafos densos dentre os resolvedores desenvolvidos.
+\end{itemize}
+
+Essa dualidade algorítmica oferece um arcabouço robusto para a engenharia de software: enquanto o Dinic sobressai-se em redes esparsas e unitárias (como nas reduções bipartidas), o Push-Relabel com Gap Heuristic domina grafos densos e de alta capacidade (como na segmentação de imagens). Esse leque de motores fornece o ferramental exato para as reduções a problemas de otimização combinatória analisadas na sequência.
+
+\subsection{Reduções e Aplicações Combinatórias em Grafos Bipartidos}
 O Problema do Fluxo Máximo é frequentemente utilizado como base para resolver outros problemas de otimização combinatória via redução polinomial (veja~\cite{cook1998combinatorial}). O processo consiste em mapear a instância de um problema original para uma rede de fluxo equivalente, computar o fluxo máximo e traduzir o estado da rede residual de volta para a solução do problema original.
 
 Um digrafo $D = (V, A)$ é classificado como bipartido se o seu conjunto de vértices $V$ puder ser particionado em dois subconjuntos disjuntos independentes, convencionalmente denotados por $L$ (esquerdo) e $R$ (direito), de modo que todo arco $a \in A$ conecte obrigatoriamente um vértice de $L$ a um vértice de $R$. Esta topologia é a estrutura canônica para a modelagem de sistemas de alocação bidirecional.
 
-\subsubsection{Emparelhamento Máximo em Grafos Bipartidos}
+\subsubsection{Emparelhamento Máximo}
 
 O Problema do Emparelhamento Bipartido de Cardinalidade Máxima (\textit{Maximum Bipartite Matching}) busca encontrar o maior subconjunto de arcos $M \subseteq A$ tal que nenhum vértice do digrafo incida em mais de um arco de $M$. Em termos práticos, representa a maximização de pares exclusivos entre os conjuntos $L$ e $R$.
 
@@ -680,7 +758,7 @@ Consequentemente, a restrição de capacidade unitária nos arcos conectados à 
 \label{fig:bipartite_flow}
 \end{figure}
 
-\subsubsection{Cobertura de Vértices Mínima em Grafos Bipartidos e o Teorema de König}
+\subsubsection{Cobertura de Vértices Mínima e o Teorema de König}
 
 O Problema da Cobertura de Vértices Mínima (\textit{Minimum Vertex Cover} - MVC) consiste em determinar o menor subconjunto de vértices $C \subseteq V$ tal que todo arco do digrafo incida em pelo menos um vértice pertencente a $C$. Em digrafos arbitrários, este problema é classificado como NP-Difícil. Contudo, quando a topologia do digrafo é estritamente bipartida, o problema pode ser resolvido em tempo polinomial através da sua profunda relação dual com o emparelhamento máximo.
 
@@ -742,7 +820,7 @@ A solidez desta extração reside no fato de que, pelas propriedades de conserva
 \label{fig:konig_cut}
 \end{figure}
 
-\subsubsection{Conjunto Independente Máximo em Grafos Bipartidos}
+\subsubsection{Conjunto Independente Máximo}
 
 O Problema do Conjunto Independente Máximo (\textit{Maximum Independent Set} - MIS) visa identificar o maior subconjunto de vértices $I \subseteq V$ no qual nenhuma dupla de vértices seja adjacente entre si. Assim como nos casos anteriores, o problema é tratado aqui sobre um \textbf{digrafo bipartido}, contexto em que a dualidade com a Cobertura de Vértices Mínima --- resultado do Teorema de König --- permite resolvê-lo em tempo polinomial via fluxo máximo. Em outras palavras, nenhum arco do digrafo pode possuir ambas as extremidades contidas no conjunto $I$.
 
@@ -802,7 +880,7 @@ A cardinalidade do Conjunto Independente Máximo é dada algebricamente por $|I|
 \label{fig:independent_set}
 \end{figure}
 
-\subsubsection{Cobertura de Arestas Mínima em Grafos Bipartidos}
+\subsubsection{Cobertura de Arcos Mínima}
 
 Até este ponto, estudamos três dos quatro objetos combinatórios fundamentais em grafos bipartidos. O quarto é a \textbf{Cobertura de Arcos Mínima} (\textit{Minimum Edge Cover} - MEC): o menor subconjunto de arcos $F \subseteq A$ tal que todo vértice do digrafo seja incidente a pelo menos um arco de $F$ (ou seja, $F$ ``cobre'' todos os vértices). Ao contrário dos problemas de cobertura de vértices, este problema admite solução eficiente também em grafos gerais, não apenas bipartidos.
 
@@ -1460,12 +1538,13 @@ $$\text{custo}(f^*) - \text{custo}(f) = \sum_{i=1}^k \delta_i \cdot w(C_i) \ge 0
 Sendo $f^*$ ótimo, conclui-se que $\text{custo}(f) = \text{custo}(f^*)$, isto é, $f$ é necessariamente um fluxo de custo mínimo. $\blacksquare$
 
 \paragraph{O Papel Universal dos Ciclos Negativos na Tríade Algorítmica.}
-A condição de inexistência de ciclos de custo negativo em $D_f$ não é apenas um critério analítico isolado de parada; ela atua como o \textbf{certificado universal de otimalidade} que rege, direta ou indiretamente, toda a tríade de algoritmos de fluxo de custo mínimo implementados neste projeto:
+A condição de inexistência de ciclos direcionados de custo negativo em $D_f$ atua como o \textbf{certificado universal de otimalidade} que rege, sob diferentes perspectivas metodológicas, os três algoritmos de fluxo de custo mínimo implementados neste projeto:
 \begin{itemize}
-    \item \textbf{No Cycle Canceling (Abordagem Primal Direta):} O critério é executado na sua forma literal. O algoritmo busca diretamente ciclos direcionados negativos na rede residual utilizando variantes de caminhos mínimos (como Bellman-Ford ou SPFA) e os satura progressivamente. A otimalidade é atestada precisamente quando o detector de ciclos negativos certifica a ausência de novos circuitos violadores.
-    \item \textbf{No Successive Shortest Path (Abordagem Dual Construtiva):} O algoritmo jamais procura ativamente por ciclos negativos. Em vez disso, apoia-se no lema fundamental de Jewell e Busacker-Gowen: \textit{enviar fluxo ao longo do caminho residual mais curto de $s$ a $t$ nunca introduz ciclos direcionados de custo negativo em $D_f$}. Iniciando de um fluxo nulo viável (que trivialmente não contém ciclos negativos), cada iteração preserva a inexistência de ciclos negativos como uma invariante indutiva estrita. Ao alcançar o valor de fluxo estipulado, a ausência de ciclos negativos já está assegurada por construção, garantindo que o custo resultante é ótimo.
-    \item \textbf{No Network Simplex (Abordagem Primal-Dual em Árvore):} Cada arco não básico $(u,v)$ candidato a entrar na base com custo reduzido violador ($\bar{w}_\pi(u,v) < 0$) cria, ao ser inserido na árvore geradora $T$, exatamente um ciclo fundamental cujo custo orientado na rede residual é estritamente negativo. Cada pivoteamento do Simplex consiste em enviar fluxo por este ciclo fundamental e remover o arco limitante da árvore, o que equivale a um cancelamento altamente acelerado de ciclo negativo estruturado pela árvore. Quando a condição de otimalidade é satisfeita ($\bar{w}_\pi(u,v) \ge 0$ para todos os arcos), o Teorema dos Custos Reduzidos garante algebricamente a inexistência de qualquer ciclo de custo negativo em $D_f$.
+    \item \textbf{Cycle Canceling (Abordagem Primal Direta):} Mantém a viabilidade primal do fluxo e cancela iterativamente ciclos direcionados negativos detectados no digrafo residual até eliminá-los completamente;
+    \item \textbf{Successive Shortest Path (Abordagem Dual Construtiva):} Mantém a otimalidade de custos como invariante permanente (assegurando que nenhum ciclo negativo seja criado ao rotear fluxo por caminhos residuais mínimos) e constrói a viabilidade do fluxo por aumentos sucessivos;
+    \item \textbf{Network Simplex (Abordagem Primal-Dual em Árvore):} Estrutura as soluções básicas viáveis sobre árvores geradoras da rede, onde a entrada de um arco não básico com custo reduzido negativo induz um ciclo fundamental direcionado de custo negativo a ser saturado e pivotado.
 \end{itemize}
+A formulação detalhada, estruturas de dados e complexidades de cada uma destas abordagens são apresentadas individualmente nas seções dedicadas a seguir.
 
 \begin{figure}[!ht]
 \centering
