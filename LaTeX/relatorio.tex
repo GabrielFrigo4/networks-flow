@@ -114,15 +114,46 @@
 
 % Estilos TikZ
 \tikzset{
-    flow node/.style={circle, draw, minimum size=8mm, font=\small},
+    >=Stealth,
+    % Redes de fluxo e otimização
+    flow node/.style={circle, draw, minimum size=8.5mm, inner sep=1pt, font=\small},
     source node/.style={flow node, fill=green!20},
     sink node/.style={flow node, fill=red!20},
-    cut S/.style={dashed, blue, rounded corners, thick},
-    cut T/.style={dashed, orange, rounded corners, thick},
+    trans node/.style={flow node, fill=yellow!15},
     flow edge/.style={->, thick},
     sat edge/.style={->, line width=1.5pt, red},
-    res edge/.style={->, blue, dashed}
+    res edge/.style={->, blue, dashed},
+    cut S/.style={dashed, blue, rounded corners, thick},
+    cut T/.style={dashed, orange, rounded corners, thick},
+    % Network Simplex e bases
+    tree edge/.style={->, line width=1.8pt, blue!80!black},
+    nontree edge/.style={->, gray, dashed},
+    pivot enter/.style={->, red, dashed, line width=1.5pt},
+    pivot leave/.style={->, gray, dashed, line width=1.2pt},
+    % Grafos em camadas, distâncias e altitudes
+    active node/.style={flow node, fill=yellow!30},
+    gap node/.style={flow node, fill=orange!40},
+    layer line/.style={gray!40, dashed},
+    % Grafos bipartidos e reduções
+    bip L/.style={circle, draw, fill=blue!15, minimum size=7.5mm, inner sep=1pt, font=\small},
+    bip R/.style={circle, draw, fill=orange!15, minimum size=7.5mm, inner sep=1pt, font=\small},
+    cover node/.style={double, double distance=1.2pt},
+    match edge/.style={-, line width=1.8pt, blue!80!black},
+    unmatch edge/.style={-, gray},
+    % Segmentação de imagens e conceitual
+    pixel node/.style={circle, draw, fill=white, minimum size=8mm, font=\footnotesize},
+    nlink/.style={-, thick},
+    tlink s/.style={->, green!60!black, dashed},
+    tlink t/.style={->, red!70!black, dashed},
+    concept box/.style={draw, rounded corners=4pt, minimum height=1.4cm, align=center, font=\small},
+    % Elementos auxiliares e legendas
+    legend node/.style={circle, draw, minimum size=4mm, inner sep=0pt},
+    % Compatibilidade
+    main/.style={flow node}
 }
+
+% Macros de diagramas
+\newcommand{\tikzsubcaption}[2]{\node[font=\footnotesize\bfseries, above] at #1 {#2};}
 
 % Notação matemática
 \newcommand{\cred}[2][]{\bar{w}_{#1}(#2)}      % Custo reduzido: \cred[\pi]{u,v}
@@ -314,18 +345,17 @@ A Figura~\ref{fig:rede_fluxo} ilustra uma rede de fluxo elementar com quatro vé
 
 \begin{figure}[!ht]
 \centering
-\begin{tikzpicture}[>=Stealth, node distance=2.5cm, thick,
-    main/.style={circle, draw, minimum size=9mm, font=\small}]
-    \node[main, fill=green!20] (s) at (0, 0) {$s$};
-    \node[main] (u) at (2.6, 1.5) {$u$};
-    \node[main] (v) at (2.6, -1.5) {$v$};
-    \node[main, fill=red!20] (t) at (5.2, 0) {$t$};
+\begin{tikzpicture}[node distance=2.5cm, thick]
+    \node[source node] (s) at (0, 0) {$s$};
+    \node[flow node] (u) at (2.6, 1.5) {$u$};
+    \node[flow node] (v) at (2.6, -1.5) {$v$};
+    \node[sink node] (t) at (5.2, 0) {$t$};
 
-    \draw[->] (s) -- node[above left] {$10$} (u);
-    \draw[->] (s) -- node[below left] {$8$} (v);
-    \draw[->] (u) -- node[right] {$5$} (v);
-    \draw[->] (u) -- node[above right] {$7$} (t);
-    \draw[->] (v) -- node[below right] {$10$} (t);
+    \draw[flow edge] (s) -- node[above left] {$10$} (u);
+    \draw[flow edge] (s) -- node[below left] {$8$} (v);
+    \draw[flow edge] (u) -- node[right] {$5$} (v);
+    \draw[flow edge] (u) -- node[above right] {$7$} (t);
+    \draw[flow edge] (v) -- node[below right] {$10$} (t);
 \end{tikzpicture}
 \caption{Rede de fluxo com fonte $s$, sumidouro $t$ e capacidades nos arcos.}
 \label{fig:rede_fluxo}
@@ -364,39 +394,39 @@ A Figura~\ref{fig:rede_residual} ilustra uma rede com fluxo parcial e seu corres
 
 \begin{figure}[!ht]
 \centering
-\begin{tikzpicture}[>=Stealth, thick]
+\begin{tikzpicture}[thick]
 
 \begin{scope}[xshift=0cm]
-  \node[circle,draw,fill=green!20,minimum size=8mm] (s) at (0,1.2) {$s$};
-  \node[circle,draw,minimum size=8mm] (a) at (2,2.4) {$a$};
-  \node[circle,draw,minimum size=8mm] (b) at (2,0) {$b$};
-  \node[circle,draw,fill=red!20,minimum size=8mm] (t) at (4,1.2) {$t$};
-  \draw[->] (s) -- node[above left,font=\footnotesize] {$2/3$} (a);
-  \draw[->] (s) -- node[below left,font=\footnotesize] {$1/2$} (b);
-  \draw[->] (a) -- node[right,font=\footnotesize] {$1/1$} (b);
-  \draw[->] (a) -- node[above right,font=\footnotesize] {$1/3$} (t);
-  \draw[->] (b) -- node[below right,font=\footnotesize] {$2/3$} (t);
+  \node[source node] (s) at (0,1.2) {$s$};
+  \node[flow node] (a) at (2,2.4) {$a$};
+  \node[flow node] (b) at (2,0) {$b$};
+  \node[sink node] (t) at (4,1.2) {$t$};
+  \draw[flow edge] (s) -- node[above left,font=\footnotesize] {$2/3$} (a);
+  \draw[flow edge] (s) -- node[below left,font=\footnotesize] {$1/2$} (b);
+  \draw[flow edge] (a) -- node[right,font=\footnotesize] {$1/1$} (b);
+  \draw[flow edge] (a) -- node[above right,font=\footnotesize] {$1/3$} (t);
+  \draw[flow edge] (b) -- node[below right,font=\footnotesize] {$2/3$} (t);
   \node[font=\footnotesize,below] at (2,-0.7) {\textit{(a) Rede original} $f/c$};
 \end{scope}
 
 \node at (5.2,1.2) {\Huge $\Rightarrow$};
 
 \begin{scope}[xshift=6.5cm]
-  \node[circle,draw,fill=green!20,minimum size=8mm] (s2) at (0,1.2) {$s$};
-  \node[circle,draw,minimum size=8mm] (a2) at (2,2.4) {$a$};
-  \node[circle,draw,minimum size=8mm] (b2) at (2,0) {$b$};
-  \node[circle,draw,fill=red!20,minimum size=8mm] (t2) at (4,1.2) {$t$};
+  \node[source node] (s2) at (0,1.2) {$s$};
+  \node[flow node] (a2) at (2,2.4) {$a$};
+  \node[flow node] (b2) at (2,0) {$b$};
+  \node[sink node] (t2) at (4,1.2) {$t$};
   
-  \draw[->,blue] (s2) -- node[above left,font=\footnotesize] {$1$} (a2);
-  \draw[->,blue] (s2) -- node[below left,font=\footnotesize] {$1$} (b2);
-  \draw[->,blue] (a2) -- node[above right,font=\footnotesize] {$2$} (t2);
-  \draw[->,blue] (b2) -- node[below right,font=\footnotesize] {$1$} (t2);
+  \draw[flow edge,blue] (s2) -- node[above left,font=\footnotesize] {$1$} (a2);
+  \draw[flow edge,blue] (s2) -- node[below left,font=\footnotesize] {$1$} (b2);
+  \draw[flow edge,blue] (a2) -- node[above right,font=\footnotesize] {$2$} (t2);
+  \draw[flow edge,blue] (b2) -- node[below right,font=\footnotesize] {$1$} (t2);
   
-  \draw[->,red,dashed,bend left=20] (a2) to node[above left,font=\footnotesize] {$2$} (s2);
-  \draw[->,red,dashed,bend right=20] (b2) to node[below left,font=\footnotesize] {$1$} (s2);
-  \draw[->,red,dashed] (b2) -- node[left,font=\footnotesize] {$1$} (a2);
-  \draw[->,red,dashed,bend left=20] (t2) to node[above right,font=\footnotesize] {$1$} (a2);
-  \draw[->,red,dashed,bend right=20] (t2) to node[below right,font=\footnotesize] {$2$} (b2);
+  \draw[res edge,bend left=20] (a2) to node[above left,font=\footnotesize] {$2$} (s2);
+  \draw[res edge,bend right=20] (b2) to node[below left,font=\footnotesize] {$1$} (s2);
+  \draw[res edge] (b2) -- node[left,font=\footnotesize] {$1$} (a2);
+  \draw[res edge,bend left=20] (t2) to node[above right,font=\footnotesize] {$1$} (a2);
+  \draw[res edge,bend right=20] (t2) to node[below right,font=\footnotesize] {$2$} (b2);
   \node[font=\footnotesize,below] at (2,-0.7) {\textit{(b) Digrafo residual} $D_f$};
 \end{scope}
 \end{tikzpicture}
@@ -427,31 +457,30 @@ Como não há caminho aumentante, o sumidouro $t$ é inalcançável a partir de 
 
 \begin{figure}[!ht]
 \centering
-\begin{tikzpicture}[>=Stealth, node distance=2cm, thick,
-    main/.style={circle, draw, minimum size=8mm, font=\small}]
+\begin{tikzpicture}[node distance=2cm, thick]
     
-    \node[main, fill=green!20] (s) {$s$};
-    \node[main, fill=green!10, right=2cm of s] (a) {$a$};
-    \node[main, fill=green!10, above=1cm of a] (b) {$b$};
+    \node[source node] (s) {$s$};
+    \node[flow node, fill=green!10, right=2cm of s] (a) {$a$};
+    \node[flow node, fill=green!10, above=1cm of a] (b) {$b$};
     
-    \node[main, fill=red!10, right=2cm of a] (c) {$c$};
+    \node[flow node, fill=red!10, right=2cm of a] (c) {$c$};
     \node[main, fill=red!20, right=2cm of c] (t) {$t$};
-    \node[main, fill=red!10, above=1cm of c] (d) {$d$};
+    \node[flow node, fill=red!10, above=1cm of c] (d) {$d$};
 
     
-    \draw[->, line width=1.5pt, red] (a) -- node[below] {\footnotesize$f=c$} (c);
-    \draw[->, line width=1.5pt, red] (b) -- node[above] {\footnotesize$f=c$} (d);
+    \draw[sat edge] (a) -- node[below] {\footnotesize$f=c$} (c);
+    \draw[sat edge] (b) -- node[above] {\footnotesize$f=c$} (d);
     
-    \draw[->] (s) -- (a);
-    \draw[->] (s) -- (b);
-    \draw[->] (c) -- (t);
-    \draw[->] (d) -- (t);
-    \draw[->] (b) -- (a);
-    \draw[->] (d) -- (c);
+    \draw[flow edge] (s) -- (a);
+    \draw[flow edge] (s) -- (b);
+    \draw[flow edge] (c) -- (t);
+    \draw[flow edge] (d) -- (t);
+    \draw[flow edge] (b) -- (a);
+    \draw[flow edge] (d) -- (c);
 
     
-    \draw[dashed, blue, rounded corners, thick] (-0.6,-1.0) rectangle (3.4,2.6) node[above left] {$S$};
-    \draw[dashed, orange, rounded corners, thick] (4.8,-1.0) rectangle (9.2,2.6) node[above left] {$T$};
+    \draw[cut S] (-0.6,-1.0) rectangle (3.4,2.6) node[above left] {$S$};
+    \draw[cut T] (4.8,-1.0) rectangle (9.2,2.6) node[above left] {$T$};
 \end{tikzpicture}
 \caption{Corte mínimo $(S,T)$: os arcos que cruzam de $S$ para $T$ (em vermelho) estão saturados ($f = c$).}
 \label{fig:corte_minimo}
@@ -642,21 +671,21 @@ A materialização desta heurística, utilizando a herança e o encapsulamento o
 
 \begin{figure}[!ht]
 \centering
-\begin{tikzpicture}[>=Stealth, thick]
-  \node[circle, draw, minimum size=9mm, fill=green!20, font=\small] (s) at (0, 0) {$s$ (0)};
-  \node[circle, draw, minimum size=9mm, font=\small] (a) at (3.5, 1.5) {$a$ (1)};
-  \node[circle, draw, minimum size=9mm, font=\small] (b) at (2, -1.5) {$b$ (1)};
-  \node[circle, draw, minimum size=9mm, font=\small] (c) at (5, -1.5) {$c$ (2)};
-  \node[circle, draw, minimum size=9mm, fill=red!20, font=\small] (t) at (7, 0) {$t$ (2)};
+\begin{tikzpicture}[thick]
+  \node[source node] (s) at (0, 0) {$s$ (0)};
+  \node[flow node] (a) at (3.5, 1.5) {$a$ (1)};
+  \node[flow node] (b) at (2, -1.5) {$b$ (1)};
+  \node[flow node] (c) at (5, -1.5) {$c$ (2)};
+  \node[sink node] (t) at (7, 0) {$t$ (2)};
 
-  \draw[->, blue, dashed, line width=1.5pt] (s) -- node[above left, font=\footnotesize, text=black] {$c=5$} (a);
-  \draw[->, blue, dashed, line width=1.5pt] (a) -- node[above right, font=\footnotesize, text=black] {$c=5$} (t);
+  \draw[res edge, line width=1.5pt] (s) -- node[above left, font=\footnotesize, text=black] {$c=5$} (a);
+  \draw[res edge, line width=1.5pt] (a) -- node[above right, font=\footnotesize, text=black] {$c=5$} (t);
   
-  \draw[->, black] (s) -- node[below left, font=\footnotesize, text=black] {$c=10$} (b);
-  \draw[->, black] (b) -- node[below, font=\footnotesize, text=black] {$c=10$} (c);
-  \draw[->, black] (c) -- node[below right, font=\footnotesize, text=black] {$c=10$} (t);
+  \draw[flow edge] (s) -- node[below left, font=\footnotesize, text=black] {$c=10$} (b);
+  \draw[flow edge] (b) -- node[below, font=\footnotesize, text=black] {$c=10$} (c);
+  \draw[flow edge] (c) -- node[below right, font=\footnotesize, text=black] {$c=10$} (t);
   
-  \draw[->, black] (a) -- node[right, font=\footnotesize, text=black] {$c=2$} (b);
+  \draw[flow edge] (a) -- node[right, font=\footnotesize, text=black] {$c=2$} (b);
 \end{tikzpicture}
 \caption{O Algoritmo de Edmonds-Karp utiliza busca em largura (BFS) na rede residual para encontrar sempre o caminho aumentante mais curto (em número de arestas). Na figura, embora o caminho inferior $s \to b \to c \to t$ suporte maior fluxo gargalo ($c=10$), a BFS garante a escolha imediata do caminho superior $s \to a \to t$ (azul tracejado), por ser topologicamente mais curto (comprimento 2 versus 3). Os níveis descobertos pela BFS são indicados entre parênteses.}
 \label{fig:edmonds_karp}
@@ -683,33 +712,33 @@ A materialização destas otimizações de estado na arquitetura C++ encontra-se
 
 \begin{figure}[!ht]
 \centering
-\begin{tikzpicture}[>=Stealth,thick]
+\begin{tikzpicture}[thick]
 
-\foreach \x in {0,2.5,5.0,7.5} { \draw[gray!30,dashed] (\x,-0.7) -- (\x,3.8); }
+\foreach \x in {0,2.5,5.0,7.5} { \draw[layer line] (\x,-0.7) -- (\x,3.8); }
 
 \node[gray,font=\footnotesize] at (0,4.1) {nív. 0};
 \node[gray,font=\footnotesize] at (2.5,4.1) {nív. 1};
 \node[gray,font=\footnotesize] at (5.0,4.1) {nív. 2};
 \node[gray,font=\footnotesize] at (7.5,4.1) {nív. 3};
 
-\node[circle,draw,fill=green!20,minimum size=8mm,font=\small] (s) at (0,1.5) {$s$};
-\node[circle,draw,fill=white,minimum size=8mm,font=\small] (a) at (2.5,3) {$a$};
-\node[circle,draw,fill=white,minimum size=8mm,font=\small] (b) at (2.5,0) {$b$};
-\node[circle,draw,fill=white,minimum size=8mm,font=\small] (c) at (5.0,3) {$c$};
-\node[circle,draw,fill=white,minimum size=8mm,font=\small] (d) at (5.0,0) {$d$};
-\node[circle,draw,fill=red!20,minimum size=8mm,font=\small] (t) at (7.5,1.5) {$t$};
+\node[source node] (s) at (0,1.5) {$s$};
+\node[flow node] (a) at (2.5,3) {$a$};
+\node[flow node] (b) at (2.5,0) {$b$};
+\node[flow node] (c) at (5.0,3) {$c$};
+\node[flow node] (d) at (5.0,0) {$d$};
+\node[sink node] (t) at (7.5,1.5) {$t$};
 
-\draw[->,line width=1.5pt,blue] (s) -- (a);
-\draw[->,line width=1.5pt,blue] (s) -- (b);
-\draw[->,line width=1.5pt,blue] (a) -- (c);
-\draw[->,line width=1.5pt,blue] (b) -- (d);
-\draw[->,line width=1.5pt,blue] (a) -- (d);
-\draw[->,line width=1.5pt,blue] (b) -- (c);
-\draw[->,line width=1.5pt,blue] (c) -- (t);
-\draw[->,line width=1.5pt,blue] (d) -- (t);
+\draw[flow edge,blue,line width=1.5pt] (s) -- (a);
+\draw[flow edge,blue,line width=1.5pt] (s) -- (b);
+\draw[flow edge,blue,line width=1.5pt] (a) -- (c);
+\draw[flow edge,blue,line width=1.5pt] (b) -- (d);
+\draw[flow edge,blue,line width=1.5pt] (a) -- (d);
+\draw[flow edge,blue,line width=1.5pt] (b) -- (c);
+\draw[flow edge,blue,line width=1.5pt] (c) -- (t);
+\draw[flow edge,blue,line width=1.5pt] (d) -- (t);
 
-\draw[->,gray,dashed,bend right=30] (a) to (b);
-\draw[->,gray,dashed,bend right=20] (c) to (a);
+\draw[nontree edge,bend right=30] (a) to (b);
+\draw[nontree edge,bend right=20] (c) to (a);
 
 \end{tikzpicture}
 \caption{Digrafo de Níveis no Algoritmo de Dinic (organizado em colunas, onde cada coluna da esquerda para a direita representa um nível crescente). Arcos azuis são os arcos admissíveis (avançam exatamente um nível: $d(v) = d(u)+1$), que compõem o Digrafo de Níveis. Arcos cinza tracejados são excluídos por não avançarem nível. O Fluxo Bloqueador é extraído apenas sobre os arcos azuis.}
@@ -747,22 +776,22 @@ A terceira condição garante que o excesso não despencará em ``quedas livres'
 
 \begin{figure}[!ht]
 \centering
-\begin{tikzpicture}[>=Stealth, thick]
-  \node[circle, draw, minimum size=8mm, fill=green!20] (s) at (0, 0) {$s$};
-  \node[circle, draw, minimum size=8mm, fill=yellow!30] (a) at (2, 1) {$a$};
-  \node[circle, draw, minimum size=8mm] (b) at (2, -1) {$b$};
-  \node[circle, draw, minimum size=8mm, fill=yellow!30] (c) at (4, 0) {$c$};
-  \node[circle, draw, minimum size=8mm, fill=red!20] (t) at (6, 0) {$t$};
+\begin{tikzpicture}[thick]
+  \node[source node] (s) at (0, 0) {$s$};
+  \node[active node] (a) at (2, 1) {$a$};
+  \node[flow node] (b) at (2, -1) {$b$};
+  \node[active node] (c) at (4, 0) {$c$};
+  \node[sink node] (t) at (6, 0) {$t$};
 
   \node[above, font=\footnotesize] at (a.north) {$e(a) = 3$};
   \node[below, font=\footnotesize] at (b.south) {$e(b) = 0$};
   \node[above, font=\footnotesize] at (c.north) {$e(c) = 1$};
   
-  \draw[->] (s) -- node[above left, font=\footnotesize] {5} (a);
-  \draw[->] (s) -- node[below left, font=\footnotesize] {2} (b);
-  \draw[->] (a) -- node[above, font=\footnotesize, pos=0.35] {2} (c);
-  \draw[->] (b) -- node[below, font=\footnotesize, pos=0.35] {2} (c);
-  \draw[->] (c) -- node[above, font=\footnotesize] {3} (t);
+  \draw[flow edge] (s) -- node[above left, font=\footnotesize] {5} (a);
+  \draw[flow edge] (s) -- node[below left, font=\footnotesize] {2} (b);
+  \draw[flow edge] (a) -- node[above, font=\footnotesize, pos=0.35] {2} (c);
+  \draw[flow edge] (b) -- node[below, font=\footnotesize, pos=0.35] {2} (c);
+  \draw[flow edge] (c) -- node[above, font=\footnotesize] {3} (t);
 \end{tikzpicture}
 \caption{Exemplo de um pré-fluxo em que a conservação de fluxo é relaxada. Vértices intermediários como $a$ e $c$ podem possuir excesso positivo ($e(u) > 0$), tornando-os ativos (destacados em amarelo).}
 \label{fig:prefluxo}
@@ -784,38 +813,37 @@ A eficiência global do algoritmo é intrinsecamente dependente da política de 
 
 \begin{figure}[!ht]
 \centering
-\begin{tikzpicture}[>=Stealth,thick,node distance=2.2cm,
-    main/.style={circle,draw,minimum size=10mm}]
+\begin{tikzpicture}[thick,node distance=2.2cm]
 
-\node[font=\footnotesize,above] at (1.5,4.0) {\textbf{Antes do Push: arco admissível}};
+\tikzsubcaption{(1.5,4.0)}{Antes do Push: arco admissível}
 
-\node[main,fill=yellow!30] (u) at (0.0,3.0) {$u$};
+\node[active node] (u) at (0.0,3.0) {$u$};
 \node[font=\footnotesize,above=2pt of u] {$h{=}3,\,e{=}5$};
 
-\node[main,fill=blue!10] (v) at (3.0,3.0) {$v$};
+\node[flow node,fill=blue!10] (v) at (3.0,3.0) {$v$};
 \node[font=\footnotesize,above=2pt of v] {$h{=}2,\,e{=}1$};
 
 \draw[->,line width=1.5pt,green!60!black] (u) -- node[above,font=\footnotesize] {$c_f=4$} (v);
 
-\node[font=\footnotesize,above] at (1.5,1.0) {\textbf{Depois do Push($u$,$v$,$\delta$=4)}};
-\node[main,fill=yellow!30] (u2) at (0.0,0.0) {$u$};
+\tikzsubcaption{(1.5,1.0)}{Depois do Push($u$,$v$,$\delta$=4)}
+\node[active node] (u2) at (0.0,0.0) {$u$};
 \node[font=\footnotesize,above=2pt of u2] {$h{=}3,\,e{=}1$};
-\node[main,fill=blue!10] (v2) at (3.0,0.0) {$v$};
+\node[flow node,fill=blue!10] (v2) at (3.0,0.0) {$v$};
 \node[font=\footnotesize,above=2pt of v2] {$h{=}2,\,e{=}5$};
-\draw[->,gray,dashed] (u2) -- node[above,font=\footnotesize,gray] {$c_f=0$} (v2);
+\draw[nontree edge] (u2) -- node[above,font=\footnotesize,gray] {$c_f=0$} (v2);
 
 % === RIGHT: Relabel ===
-\node[font=\footnotesize,above] at (8.5,4.0) {\textbf{Antes do Relabel: $u$ preso}};
-\node[main,fill=orange!30] (r1) at (7.0,3.0) {$u$};
+\tikzsubcaption{(8.5,4.0)}{Antes do Relabel: $u$ preso}
+\node[gap node,fill=orange!30] (r1) at (7.0,3.0) {$u$};
 \node[font=\footnotesize,above=2pt of r1] {$h{=}2,\,e{=}3$};
-\node[main,fill=gray!10] (r2) at (10.0,3.0) {$w$};
+\node[flow node,fill=gray!10] (r2) at (10.0,3.0) {$w$};
 \node[font=\footnotesize,above=2pt of r2] {$h{=}3$};
-\draw[->,gray,dashed] (r1) -- node[above,font=\footnotesize,align=center] {$c_f=2$\\inadmissível} (r2);
+\draw[nontree edge] (r1) -- node[above,font=\footnotesize,align=center] {$c_f=2$\\inadmissível} (r2);
 
-\node[font=\footnotesize,above] at (8.5,1.0) {\textbf{Depois do Relabel($u$): $h(u)\leftarrow 4$}};
-\node[main,fill=orange!50] (r3) at (7.0,0.0) {$u$};
+\tikzsubcaption{(8.5,1.0)}{Depois do Relabel($u$): $h(u)\leftarrow 4$}
+\node[gap node,fill=orange!50] (r3) at (7.0,0.0) {$u$};
 \node[font=\footnotesize,above=2pt of r3] {$h{=}4,\,e{=}3$};
-\node[main,fill=gray!10] (r4) at (10.0,0.0) {$w$};
+\node[flow node,fill=gray!10] (r4) at (10.0,0.0) {$w$};
 \node[font=\footnotesize,above=2pt of r4] {$h{=}3$};
 \draw[->,green!60!black,line width=1.5pt] (r3) -- node[above,font=\footnotesize] {admissível!} (r4);
 \end{tikzpicture}
@@ -838,19 +866,19 @@ A validade matemática desta dedução reside na invariante de altura do \textit
 
 \begin{figure}[!ht]
 \centering
-\begin{tikzpicture}[>=Stealth,thick]
-  \draw[gray!30,dashed] (-2, 0) -- (6, 0) node[right,black,font=\footnotesize] {$h=0$ (sumidouro $t$)};
+\begin{tikzpicture}[thick]
+  \draw[layer line] (-2, 0) -- (6, 0) node[right,black,font=\footnotesize] {$h=0$ (sumidouro $t$)};
   \foreach \y/\h in {1.5/1, 3.0/2, 6.0/4} {
-    \draw[gray!30,dashed] (-2, \y) -- (6, \y) node[right,black,font=\footnotesize] {$h=\h$};
+    \draw[layer line] (-2, \y) -- (6, \y) node[right,black,font=\footnotesize] {$h=\h$};
   }
   \draw[red!40,dashed,line width=1.5pt] (-2, 4.5) -- (6, 4.5) node[right,red!80!black,font=\footnotesize] {$h=3$ (\textbf{LACUNA})};
 
-  \node[circle,draw,fill=green!20,minimum size=8mm,font=\footnotesize] (t) at (2, 0) {$t$};
-  \node[circle,draw,fill=yellow!20,minimum size=8mm,font=\footnotesize] (a) at (2, 1.5) {$a$};
-  \node[circle,draw,fill=yellow!20,minimum size=8mm,font=\footnotesize] (b) at (0.5, 3.0) {$b$};
-  \node[circle,draw,fill=yellow!20,minimum size=8mm,font=\footnotesize] (c) at (3.5, 3.0) {$c$};
+  \node[source node,font=\footnotesize] (t) at (2, 0) {$t$};
+  \node[flow node,fill=yellow!20,font=\footnotesize] (a) at (2, 1.5) {$a$};
+  \node[flow node,fill=yellow!20,font=\footnotesize] (b) at (0.5, 3.0) {$b$};
+  \node[flow node,fill=yellow!20,font=\footnotesize] (c) at (3.5, 3.0) {$c$};
   
-  \node[circle,draw,fill=red!20,minimum size=8mm,font=\footnotesize] (u) at (2, 6.0) {$u$};
+  \node[gap node,fill=red!20,font=\footnotesize] (u) at (2, 6.0) {$u$};
   
   \draw[->,blue!80!black] (b) -- (a);
   \draw[->,blue!80!black] (c) -- (a);
@@ -868,10 +896,10 @@ A heurística intervém na rede ao detectar a lacuna, elevando a altura de todos
 
 \begin{figure}[!ht]
 \centering
-\begin{tikzpicture}[>=Stealth,thick]
+\begin{tikzpicture}[thick]
 
 \begin{scope}[xshift=0cm]
-\node[font=\footnotesize,above] at (1.5,6.8) {\textbf{(a) Lacuna detectada no nível $k=3$}};
+\tikzsubcaption{(1.5,6.8)}{(a) Lacuna detectada no nível $k=3$}
 \foreach \h/\label/\fill in {
   0/h=0/green!20, 1.2/h=1/yellow!20, 2.4/h=2/yellow!20,
   4.8/h=4/red!20, 6.0/h=5/red!20} {
@@ -884,12 +912,12 @@ A heurística intervém na rede ao detectar a lacuna, elevando a altura de todos
 \node at (5.0,3.0) {\Huge $\Rightarrow$};
 
 \begin{scope}[xshift=7cm]
-\node[font=\footnotesize,above] at (1.5,6.8) {\textbf{(b) Vértices $h>k$ sobem para $|V|+1$}};
+\tikzsubcaption{(1.5,6.8)}{(b) Vértices $h>k$ sobem para $|V|+1$}
 \foreach \h/\label/\fill in {
   0/h=0/green!20, 1.2/h=1/yellow!20, 2.4/h=2/yellow!20} {
   \node[circle,draw,fill=\fill,minimum size=8mm,font=\footnotesize] at (1.5,\h) {\label};
 }
-\node[circle,draw,fill=orange!40,minimum size=9mm,font=\footnotesize] (top) at (1.5,6.0) {$|V|{+}1$};
+\node[gap node,font=\footnotesize] (top) at (1.5,6.0) {$|V|{+}1$};
 \draw[->,orange!80!black,line width=1.5pt] (1.5,3.3) -- node[right,font=\footnotesize,orange!80!black] {todos sobem} (1.5,5.05);
 \end{scope}
 \end{tikzpicture}
@@ -975,13 +1003,13 @@ Consequentemente, a restrição de capacidade unitária nos arcos conectados à 
 
 \begin{figure}[!ht]
 \centering
-\begin{tikzpicture}[>=Stealth,thick]
+\begin{tikzpicture}[thick]
 
 \begin{scope}[xshift=0cm]
-  \node[font=\footnotesize,above] at (1.5,3.8) {\textbf{(a) Grafo bipartido}};
+  \tikzsubcaption{(1.5,3.8)}{(a) Grafo bipartido}
   \foreach \i/\y in {1/3, 2/1.5, 3/0} {
-    \node[circle,draw,fill=blue!15,minimum size=8mm,font=\small] (l\i) at (0,\y) {$l_\i$};
-    \node[circle,draw,fill=orange!15,minimum size=8mm,font=\small] (r\i) at (3,\y) {$r_\i$};
+    \node[bip L] (l\i) at (0,\y) {$l_\i$};
+    \node[bip R] (r\i) at (3,\y) {$r_\i$};
   }
   \draw[-] (l1) -- (r1); \draw[-] (l1) -- (r2);
   \draw[-] (l2) -- (r2); \draw[-] (l2) -- (r3);
@@ -990,18 +1018,18 @@ Consequentemente, a restrição de capacidade unitária nos arcos conectados à 
 \node at (5,1.5) {\Huge $\Rightarrow$};
 
 \begin{scope}[xshift=6.5cm]
-  \node[font=\footnotesize,above] at (2.5,3.8) {\textbf{(b) Rede de fluxo $D'$}};
-  \node[circle,draw,fill=green!30,minimum size=8mm,font=\small] (s) at (0,1.5) {$s$};
-  \node[circle,draw,fill=red!30,minimum size=8mm,font=\small] (t) at (5,1.5) {$t$};
+  \tikzsubcaption{(2.5,3.8)}{(b) Rede de fluxo $D'$}
+  \node[source node] (s) at (0,1.5) {$s$};
+  \node[sink node] (t) at (5,1.5) {$t$};
   \foreach \i/\y in {1/3, 2/1.5, 3/0} {
-    \node[circle,draw,fill=blue!15,minimum size=7mm,font=\footnotesize] (fl\i) at (1.8,\y) {$l_\i$};
-    \node[circle,draw,fill=orange!15,minimum size=7mm,font=\footnotesize] (fr\i) at (3.2,\y) {$r_\i$};
-    \draw[->] (s) -- node[above,font=\footnotesize] {$1$} (fl\i);
-    \draw[->] (fr\i) -- node[above,font=\footnotesize] {$1$} (t);
+    \node[bip L,font=\footnotesize] (fl\i) at (1.8,\y) {$l_\i$};
+    \node[bip R,font=\footnotesize] (fr\i) at (3.2,\y) {$r_\i$};
+    \draw[flow edge] (s) -- node[above,font=\footnotesize] {$1$} (fl\i);
+    \draw[flow edge] (fr\i) -- node[above,font=\footnotesize] {$1$} (t);
   }
-  \draw[->,line width=1.5pt,blue] (fl1) -- (fr1); \draw[->] (fl1) -- (fr2);
-  \draw[->,line width=1.5pt,blue] (fl2) -- (fr2); \draw[->] (fl2) -- (fr3);
-  \draw[->] (fl3) -- (fr1); \draw[->,line width=1.5pt,blue] (fl3) -- (fr3);
+  \draw[flow edge,blue,line width=1.5pt] (fl1) -- (fr1); \draw[flow edge] (fl1) -- (fr2);
+  \draw[flow edge,blue,line width=1.5pt] (fl2) -- (fr2); \draw[flow edge] (fl2) -- (fr3);
+  \draw[flow edge] (fl3) -- (fr1); \draw[flow edge,blue,line width=1.5pt] (fl3) -- (fr3);
 \end{scope}
 \end{tikzpicture}
 \caption{Redução do Emparelhamento Bipartido a Fluxo Máximo. (a) Grafo bipartido original com $L = \{l_1,l_2,l_3\}$ e $R = \{r_1,r_2,r_3\}$. (b) Rede de fluxo $D'$: arcos de $s$ para $L$ e de $R$ para $t$ com capacidade~1; arcos de $L$ para $R$ herdados do grafo original. Arcos azuis grossos indicam o emparelhamento máximo obtido pelo fluxo máximo $|f^*|=3$.}
@@ -1040,41 +1068,41 @@ A solidez desta extração reside no fato de que, pelas propriedades de conserva
 
 \begin{figure}[!ht]
 \centering
-\begin{tikzpicture}[>=Stealth,thick]
+\begin{tikzpicture}[thick]
   \node[font=\large] at (2,4.5) {$\mathbf{L}$};
   \node[font=\large] at (4,4.5) {$\mathbf{R}$};
   
-  \node[circle,draw,fill=green!20,minimum size=8mm,font=\small] (s) at (0,2) {$s$};
-  \node[circle,draw,fill=red!20,minimum size=8mm,font=\small] (t) at (6,2) {$t$};
+  \node[source node] (s) at (0,2) {$s$};
+  \node[sink node] (t) at (6,2) {$t$};
   
-  \node[circle,draw,fill=green!20,minimum size=8mm,font=\small] (l1) at (2,3.5) {$l_1$};
-  \node[circle,draw,fill=red!20,minimum size=8mm,font=\small,double,double distance=1.5pt] (l2) at (2,2) {$l_2$};
-  \node[circle,draw,fill=green!20,minimum size=8mm,font=\small] (l3) at (2,0.5) {$l_3$};
+  \node[source node] (l1) at (2,3.5) {$l_1$};
+  \node[sink node,cover node] (l2) at (2,2) {$l_2$};
+  \node[source node] (l3) at (2,0.5) {$l_3$};
   
-  \node[circle,draw,fill=red!20,minimum size=8mm,font=\small] (r1) at (4,3.5) {$r_1$};
-  \node[circle,draw,fill=red!20,minimum size=8mm,font=\small] (r2) at (4,2) {$r_2$};
-  \node[circle,draw,fill=green!20,minimum size=8mm,font=\small,double,double distance=1.5pt] (r3) at (4,0.5) {$r_3$};
+  \node[sink node] (r1) at (4,3.5) {$r_1$};
+  \node[sink node] (r2) at (4,2) {$r_2$};
+  \node[source node,cover node] (r3) at (4,0.5) {$r_3$};
   
   \draw[->] (s) -- (l1); 
-  \draw[->,red,line width=1.5pt] (s) -- node[above,font=\footnotesize,red,sloped]{corte} (l2); 
+  \draw[sat edge] (s) -- node[above,font=\footnotesize,red,sloped]{corte} (l2); 
   \draw[->] (s) -- (l3);
   
-  \draw[->,line width=1.5pt,blue!80!black] (l1) -- (r3);
-  \draw[->,line width=1.5pt,blue!80!black] (l2) -- (r1);
+  \draw[match edge,->] (l1) -- (r3);
+  \draw[match edge,->] (l2) -- (r1);
   \draw[->] (l2) -- (r2);
   \draw[->] (l3) -- (r3);
   
   \draw[->] (r1) -- (t); 
   \draw[->] (r2) -- (t); 
-  \draw[->,red,line width=1.5pt] (r3) -- node[above,font=\footnotesize,red,sloped]{corte} (t);
+  \draw[sat edge] (r3) -- node[above,font=\footnotesize,red,sloped]{corte} (t);
   
-  \node[draw,circle,fill=green!20,minimum size=4mm] (legS) at (0, -1.0) {};
+  \node[legend node,fill=green!20] (legS) at (0, -1.0) {};
   \node[right,font=\footnotesize] at (legS.east) {$\in S$ (Alcançável no grafo residual)};
   
-  \node[draw,circle,fill=red!20,minimum size=4mm] (legT) at (0, -1.7) {};
+  \node[legend node,fill=red!20] (legT) at (0, -1.7) {};
   \node[right,font=\footnotesize] at (legT.east) {$\in T$ (Inalcançável)};
 
-  \node[draw,circle,double,double distance=1.5pt,minimum size=4mm] (legC) at (0, -2.4) {};
+  \node[legend node,cover node] (legC) at (0, -2.4) {};
   \node[right,font=\footnotesize] at (legC.east) {$\in C$ (Cobertura Mínima)};
   
   \node[font=\footnotesize,align=center] at (3, -3.1) {\textbf{Resultado:} $C = \{l_2, r_3\}$, $|C| = |M| = 2$};
@@ -1101,17 +1129,17 @@ A cardinalidade do Conjunto Independente Máximo é dada algebricamente por $|I|
 
 \begin{figure}[!ht]
 \centering
-\begin{tikzpicture}[>=Stealth, thick]
+\begin{tikzpicture}[thick]
   \begin{scope}[shift={(0,0)}]
-    \node[font=\footnotesize,above] at (2.5,4.2) {(a) Cobertura de Vértices $C$};
+    \tikzsubcaption{(2.5,4.2)}{(a) Cobertura de Vértices $C$}
     
-    \node[circle,draw,fill=blue!15,minimum size=8mm,font=\small] (l1) at (1.7,3.5) {$l_1$};
-    \node[circle,draw,fill=blue!15,minimum size=8mm,font=\small] (l3) at (1.7,0.5) {$l_3$};
-    \node[circle,draw,fill=orange!15,minimum size=8mm,font=\small] (r1) at (3.3,3.5) {$r_1$};
-    \node[circle,draw,fill=orange!15,minimum size=8mm,font=\small] (r2) at (3.3,2) {$r_2$};
+    \node[bip L] (l1) at (1.7,3.5) {$l_1$};
+    \node[bip L] (l3) at (1.7,0.5) {$l_3$};
+    \node[bip R] (r1) at (3.3,3.5) {$r_1$};
+    \node[bip R] (r2) at (3.3,2) {$r_2$};
     
-    \node[circle,draw,fill=blue!40,minimum size=8mm,font=\small,double] (l2) at (1.7,2) {$l_2$};
-    \node[circle,draw,fill=orange!40,minimum size=8mm,font=\small,double] (r3) at (3.3,0.5) {$r_3$};
+    \node[bip L,fill=blue!40,cover node] (l2) at (1.7,2) {$l_2$};
+    \node[bip R,fill=orange!40,cover node] (r3) at (3.3,0.5) {$r_3$};
     
     \draw[-] (l1) -- (r3);
     \draw[-] (l2) -- (r2);
@@ -1122,15 +1150,15 @@ A cardinalidade do Conjunto Independente Máximo é dada algebricamente por $|I|
   \end{scope}
   
   \begin{scope}[shift={(6,0)}]
-    \node[font=\footnotesize,above] at (2.5,4.2) {(b) Conjunto Independente $I = V \setminus C$};
+    \tikzsubcaption{(2.5,4.2)}{(b) Conjunto Independente $I = V \setminus C$}
     
-    \node[circle,draw,fill=blue!40,minimum size=8mm,font=\small,double] (l1) at (1.7,3.5) {$l_1$};
-    \node[circle,draw,fill=blue!40,minimum size=8mm,font=\small,double] (l3) at (1.7,0.5) {$l_3$};
-    \node[circle,draw,fill=orange!40,minimum size=8mm,font=\small,double] (r1) at (3.3,3.5) {$r_1$};
-    \node[circle,draw,fill=orange!40,minimum size=8mm,font=\small,double] (r2) at (3.3,2) {$r_2$};
+    \node[bip L,fill=blue!40,cover node] (l1) at (1.7,3.5) {$l_1$};
+    \node[bip L,fill=blue!40,cover node] (l3) at (1.7,0.5) {$l_3$};
+    \node[bip R,fill=orange!40,cover node] (r1) at (3.3,3.5) {$r_1$};
+    \node[bip R,fill=orange!40,cover node] (r2) at (3.3,2) {$r_2$};
     
-    \node[circle,draw,fill=blue!15,minimum size=8mm,font=\small] (l2) at (1.7,2) {$l_2$};
-    \node[circle,draw,fill=orange!15,minimum size=8mm,font=\small] (r3) at (3.3,0.5) {$r_3$};
+    \node[bip L] (l2) at (1.7,2) {$l_2$};
+    \node[bip R] (r3) at (3.3,0.5) {$r_3$};
     
     \draw[-] (l1) -- (r3);
     \draw[-] (l2) -- (r2);
@@ -1191,14 +1219,14 @@ As relações $|M^*| = |C_V^*|$ (König) e $|I^*| + |C_V^*| = |V|$ e $|M^*| + |F
 
 \begin{figure}[!ht]
 \centering
-\begin{tikzpicture}[>=Stealth, thick]
-  \node[rectangle, draw, rounded corners, fill=blue!10, text width=3.5cm, align=center, minimum height=1.5cm] (mis) at (0, 6) {\textbf{Conjunto Independente} \\ MIS \\ (Maximizar, Vértices)};
+\begin{tikzpicture}[thick]
+  \node[concept box, fill=blue!10, text width=3.5cm] (mis) at (0, 6) {\textbf{Conjunto Independente} \\ MIS \\ (Maximizar, Vértices)};
   
-  \node[rectangle, draw, rounded corners, fill=orange!10, text width=3.5cm, align=center, minimum height=1.5cm] (match) at (9, 6) {\textbf{Emparelhamento} \\ Matching \\ (Maximizar, Arcos)};
+  \node[concept box, fill=orange!10, text width=3.5cm] (match) at (9, 6) {\textbf{Emparelhamento} \\ Matching \\ (Maximizar, Arcos)};
   
-  \node[rectangle, draw, rounded corners, fill=blue!10, text width=3.5cm, align=center, minimum height=1.5cm] (mvc) at (0, 0) {\textbf{Cobertura de Vértices} \\ MVC \\ (Minimizar, Vértices)};
+  \node[concept box, fill=blue!10, text width=3.5cm] (mvc) at (0, 0) {\textbf{Cobertura de Vértices} \\ MVC \\ (Minimizar, Vértices)};
   
-  \node[rectangle, draw, rounded corners, fill=orange!10, text width=3.5cm, align=center, minimum height=1.5cm] (mec) at (9, 0) {\textbf{Cobertura de Arcos} \\ MEC \\ (Minimizar, Arcos)};
+  \node[concept box, fill=orange!10, text width=3.5cm] (mec) at (9, 0) {\textbf{Cobertura de Arcos} \\ MEC \\ (Minimizar, Arcos)};
 
   \draw[<->] (mis) -- node[left, font=\footnotesize, align=right] {Complemento\\$|I| = |V| - |C_V|$} (mvc);
   \draw[<->] (match) -- node[right, font=\footnotesize, align=left] {Gallai\\$|M| + |F| = |V|$} (mec);
@@ -1249,25 +1277,23 @@ Isso resulta em $|C| \ge |L|$, o que contradiz frontalmente o fato estabelecido 
 
 \begin{figure}[!ht]
 \centering
-\begin{tikzpicture}[>=Stealth, thick,
-    lnode/.style={circle, draw, fill=blue!15, minimum size=7mm, font=\small},
-    rnode/.style={circle, draw, fill=orange!15, minimum size=7mm, font=\small}]
+\begin{tikzpicture}[thick]
     
-    \node[lnode] (l1) at (0,3) {$l_1$};
-    \node[lnode] (l2) at (0,1.5) {$l_2$};
-    \node[lnode] (l3) at (0,0) {$l_3$};
+    \node[bip L] (l1) at (0,3) {$l_1$};
+    \node[bip L] (l2) at (0,1.5) {$l_2$};
+    \node[bip L] (l3) at (0,0) {$l_3$};
     
-    \node[rnode] (r1) at (3,3) {$r_1$};
-    \node[rnode] (r2) at (3,1.5) {$r_2$};
-    \node[rnode] (r3) at (3,0) {$r_3$};
+    \node[bip R] (r1) at (3,3) {$r_1$};
+    \node[bip R] (r2) at (3,1.5) {$r_2$};
+    \node[bip R] (r3) at (3,0) {$r_3$};
     
-    \draw[-, line width=2pt, blue] (l1) -- (r1);
-    \draw[-, line width=2pt, blue] (l2) -- (r2);
-    \draw[-, line width=2pt, blue] (l3) -- (r3);
+    \draw[match edge] (l1) -- (r1);
+    \draw[match edge] (l2) -- (r2);
+    \draw[match edge] (l3) -- (r3);
     
-    \draw[-, gray] (l1) -- (r2);
-    \draw[-, gray] (l2) -- (r3);
-    \draw[-, gray] (l3) -- (r1);
+    \draw[unmatch edge] (l1) -- (r2);
+    \draw[unmatch edge] (l2) -- (r3);
+    \draw[unmatch edge] (l3) -- (r1);
     
     \node[above] at (0,3.5) {$L$};
     \node[above] at (3,3.5) {$R$};
@@ -1322,27 +1348,27 @@ Esta transformação impõe uma restrição de capacidade nos vértices: ao for�
 
 \begin{figure}[!ht]
 \centering
-\begin{tikzpicture}[>=Stealth,thick]
+\begin{tikzpicture}[thick]
 
 \begin{scope}[xshift=0cm]
-  \node[font=\footnotesize,above] at (1.5,2.8) {\textbf{(a) Original $D$}};
-  \node[circle,draw,fill=green!20,minimum size=8mm,font=\small] (s) at (0,1.5) {$s$};
-  \node[circle,draw,minimum size=8mm,font=\small] (v) at (1.5,1.5) {$v$};
-  \node[circle,draw,fill=red!20,minimum size=8mm,font=\small] (t) at (3,1.5) {$t$};
-  \draw[->] (s) -- (v); \draw[->] (v) -- (t);
+  \tikzsubcaption{(1.5,2.8)}{(a) Original $D$}
+  \node[source node] (s) at (0,1.5) {$s$};
+  \node[flow node] (v) at (1.5,1.5) {$v$};
+  \node[sink node] (t) at (3,1.5) {$t$};
+  \draw[flow edge] (s) -- (v); \draw[flow edge] (v) -- (t);
 \end{scope}
 
 \node at (4.5,1.5) {\Huge $\Rightarrow$};
 
 \begin{scope}[xshift=6cm]
-  \node[font=\footnotesize,above] at (3.0,2.8) {\textbf{(b) Vertex Splitting: $D'$}};
-  \node[circle,draw,fill=green!20,minimum size=8mm,font=\small] (s2) at (0,1.5) {$s$};
-  \node[circle,draw,fill=blue!10,minimum size=9mm,font=\small,inner sep=0pt] (vin) at (2.2,1.5) {$v_{in}$};
-  \node[circle,draw,fill=blue!20,minimum size=9mm,font=\small,inner sep=0pt] (vout) at (4.2,1.5) {$v_{out}$};
-  \node[circle,draw,fill=red!20,minimum size=8mm,font=\small] (t2) at (6.4,1.5) {$t$};
-  \draw[->] (s2) -- node[above,font=\footnotesize]{$\infty$} (vin);
-  \draw[->,red,line width=1.5pt] (vin) -- node[above,font=\footnotesize,red]{$c=1$} (vout);
-  \draw[->] (vout) -- node[above,font=\footnotesize]{$\infty$} (t2);
+  \tikzsubcaption{(3.0,2.8)}{(b) Vertex Splitting: $D'$}
+  \node[source node] (s2) at (0,1.5) {$s$};
+  \node[flow node,fill=blue!10] (vin) at (2.2,1.5) {$v_{in}$};
+  \node[flow node,fill=blue!20] (vout) at (4.2,1.5) {$v_{out}$};
+  \node[sink node] (t2) at (6.4,1.5) {$t$};
+  \draw[flow edge] (s2) -- node[above,font=\footnotesize]{$\infty$} (vin);
+  \draw[sat edge] (vin) -- node[above,font=\footnotesize,red]{$c=1$} (vout);
+  \draw[flow edge] (vout) -- node[above,font=\footnotesize]{$\infty$} (t2);
   \node[font=\footnotesize,below] at (3.2,0.7) {arco interno (gargalo)};
 \end{scope}
 \end{tikzpicture}
@@ -1396,35 +1422,34 @@ A transformação consiste em expandir a rede $D = (V, A)$ para uma rede estendi
 
 \begin{figure}[!ht]
 \centering
-\begin{tikzpicture}[>=Stealth, thick,
-    main/.style={circle, draw, fill=white, minimum size=8mm, font=\small}]
+\begin{tikzpicture}[thick]
     
-    \node[main, fill=green!30] (ss) at (0, 0) {$s^*$};
-    \node[main, fill=green!10] (s1) at (2, 1.5) {$s_1$};
-    \node[main, fill=green!10] (s2) at (2, -1.5) {$s_2$};
+    \node[source node] (ss) at (0, 0) {$s^*$};
+    \node[flow node, fill=green!10] (s1) at (2, 1.5) {$s_1$};
+    \node[flow node, fill=green!10] (s2) at (2, -1.5) {$s_2$};
     
-    \node[main] (v1) at (4, 1.5) {$v_1$};
-    \node[main] (v2) at (4, -1.5) {$v_2$};
-    \node[main] (v3) at (5.5, 0) {$v_3$};
+    \node[flow node] (v1) at (4, 1.5) {$v_1$};
+    \node[flow node] (v2) at (4, -1.5) {$v_2$};
+    \node[flow node] (v3) at (5.5, 0) {$v_3$};
     
-    \node[main, fill=red!10] (t1) at (7, 1.5) {$t_1$};
-    \node[main, fill=red!10] (t2) at (7, -1.5) {$t_2$};
+    \node[flow node, fill=red!10] (t1) at (7, 1.5) {$t_1$};
+    \node[flow node, fill=red!10] (t2) at (7, -1.5) {$t_2$};
     
-    \node[main, fill=red!30] (ts) at (9, 0) {$t^*$};
+    \node[sink node] (ts) at (9, 0) {$t^*$};
     
     \draw[->, dashed, blue, line width=1.2pt] (ss) -- node[above left, font=\footnotesize] {$\infty$} (s1);
     \draw[->, dashed, blue, line width=1.2pt] (ss) -- node[below left, font=\footnotesize] {$\infty$} (s2);
     
-    \draw[->] (s1) -- (v1);
-    \draw[->] (s1) -- (v3);
-    \draw[->] (s2) -- (v2);
-    \draw[->] (s2) -- (v3);
+    \draw[flow edge] (s1) -- (v1);
+    \draw[flow edge] (s1) -- (v3);
+    \draw[flow edge] (s2) -- (v2);
+    \draw[flow edge] (s2) -- (v3);
     
-    \draw[->] (v1) -- (t1);
-    \draw[->] (v1) -- (v3);
-    \draw[->] (v3) -- (t1);
-    \draw[->] (v3) -- (t2);
-    \draw[->] (v2) -- (t2);
+    \draw[flow edge] (v1) -- (t1);
+    \draw[flow edge] (v1) -- (v3);
+    \draw[flow edge] (v3) -- (t1);
+    \draw[flow edge] (v3) -- (t2);
+    \draw[flow edge] (v2) -- (t2);
     
     \draw[->, dashed, red, line width=1.2pt] (t1) -- node[above right, font=\footnotesize] {$\infty$} (ts);
     \draw[->, dashed, red, line width=1.2pt] (t2) -- node[below right, font=\footnotesize] {$\infty$} (ts);
@@ -1455,18 +1480,18 @@ Na implementação desta biblioteca, esta modelagem é realizada nativamente pel
 
 \begin{figure}[!ht]
 \centering
-\begin{tikzpicture}[>=Stealth, thick]
+\begin{tikzpicture}[thick]
   \begin{scope}[shift={(0,0)}]
-    \node[font=\footnotesize,above] at (1.5,1.5) {(a) Aresta Não-direcionada};
-    \node[circle, draw, minimum size=8mm, fill=yellow!20] (u) at (0, 0) {$u$};
-    \node[circle, draw, minimum size=8mm, fill=yellow!20] (v) at (3, 0) {$v$};
+    \tikzsubcaption{(1.5,1.5)}{(a) Aresta Não-direcionada}
+    \node[trans node] (u) at (0, 0) {$u$};
+    \node[trans node] (v) at (3, 0) {$v$};
     \draw[-] (u) -- node[above, font=\footnotesize] {$c$} (v);
   \end{scope}
   
   \begin{scope}[shift={(6,0)}]
-    \node[font=\footnotesize,above] at (1.5,1.5) {(b) Arcos Direcionados};
-    \node[circle, draw, minimum size=8mm, fill=yellow!20] (u2) at (0, 0) {$u$};
-    \node[circle, draw, minimum size=8mm, fill=yellow!20] (v2) at (3, 0) {$v$};
+    \tikzsubcaption{(1.5,1.5)}{(b) Arcos Direcionados}
+    \node[trans node] (u2) at (0, 0) {$u$};
+    \node[trans node] (v2) at (3, 0) {$v$};
     \draw[->, transform canvas={yshift=1.5mm}] (u2) -- node[above, font=\footnotesize] {$c$} (v2);
     \draw[<-, transform canvas={yshift=-1.5mm}] (u2) -- node[below, font=\footnotesize] {$c$} (v2);
   \end{scope}
@@ -1516,18 +1541,18 @@ Pela hipótese de indução, $f'$ pode ser decomposto em no máximo $|A_{f'}^+| 
 
 \begin{figure}[!ht]
 \centering
-\begin{tikzpicture}[>=Stealth, thick]
+\begin{tikzpicture}[thick]
   \begin{scope}[shift={(0,0)}]
-    \node[circle, draw, minimum size=8mm, fill=green!20, font=\footnotesize] (s) at (0, 1) {$s$};
-    \node[circle, draw, minimum size=8mm, font=\footnotesize] (a) at (2, 2) {$a$};
-    \node[circle, draw, minimum size=8mm, font=\footnotesize] (b) at (2, 0) {$b$};
-    \node[circle, draw, minimum size=8mm, fill=red!20, font=\footnotesize] (t) at (4, 1) {$t$};
+    \node[source node, font=\footnotesize] (s) at (0, 1) {$s$};
+    \node[flow node, font=\footnotesize] (a) at (2, 2) {$a$};
+    \node[flow node, font=\footnotesize] (b) at (2, 0) {$b$};
+    \node[sink node, font=\footnotesize] (t) at (4, 1) {$t$};
 
-    \draw[->] (s) -- node[above left, font=\footnotesize] {3} (a);
-    \draw[->] (s) -- node[below left, font=\footnotesize] {2} (b);
-    \draw[->] (a) -- node[right, font=\footnotesize] {1} (b);
-    \draw[->] (a) -- node[above right, font=\footnotesize] {2} (t);
-    \draw[->] (b) -- node[below right, font=\footnotesize] {3} (t);
+    \draw[flow edge] (s) -- node[above left, font=\footnotesize] {3} (a);
+    \draw[flow edge] (s) -- node[below left, font=\footnotesize] {2} (b);
+    \draw[flow edge] (a) -- node[right, font=\footnotesize] {1} (b);
+    \draw[flow edge] (a) -- node[above right, font=\footnotesize] {2} (t);
+    \draw[flow edge] (b) -- node[below right, font=\footnotesize] {3} (t);
   \end{scope}
 
   \begin{scope}[shift={(6,0.5)}]
@@ -1591,15 +1616,13 @@ Seja $I$ uma imagem com $n = W \times H$ pixels. A construção da rede de segme
 
 \begin{figure}[!ht]
 \centering
-\begin{tikzpicture}[>=Stealth,
+\begin{tikzpicture}[
     x={(-1.2cm, -0.6cm)}, 
     y={(1.2cm, -0.6cm)}, 
-    z={(0cm, 1.5cm)},
-    pixel/.style={circle, draw, fill=white, minimum size=8mm, font=\footnotesize},
-    term/.style={circle, draw, minimum size=9mm, font=\small}
+    z={(0cm, 1.5cm)}
 ]
 
-    \node[term, fill=red!30] (t) at (2,2,-3.5) {$t$};
+    \node[sink node] (t) at (2,2,-3.5) {$t$};
     
     \foreach \x in {1,2,3} {
         \foreach \y in {1,2,3} {
@@ -1615,7 +1638,7 @@ Seja $I$ uma imagem com $n = W \times H$ pixels. A construção da rede de segme
     
     \foreach \x in {1,2,3} {
         \foreach \y in {1,2,3} {
-            \node[pixel] (p\x\y) at (\x,\y,0) {$p_{\x\y}$};
+            \node[pixel node] (p\x\y) at (\x,\y,0) {$p_{\x\y}$};
         }
     }
     
@@ -1628,7 +1651,7 @@ Seja $I$ uma imagem com $n = W \times H$ pixels. A construção da rede de segme
       \draw[-] (p31) -- (p32); \draw[-] (p32) -- (p33);
     \end{scope}
     
-    \node[term, fill=green!30] (s) at (2,2,3.5) {$s$};
+    \node[source node] (s) at (2,2,3.5) {$s$};
     
     \foreach \x in {1,2,3} {
         \foreach \y in {1,2,3} {
@@ -1666,20 +1689,20 @@ O custo total do corte é exatamente a soma dos termos de dados e de regulariza�
 
 \begin{figure}[!ht]
 \centering
-\begin{tikzpicture}[>=Stealth, thick, transform shape]
+\begin{tikzpicture}[thick, transform shape]
   \fill[green!10, rounded corners=15pt] (-4.5, 1.7) rectangle (8.5, 6.8);
   \node[green!60!black, font=\footnotesize] at (-2.5, 6.3) {$S$ (Foreground)};
   
   \fill[red!10, rounded corners=15pt] (-4.5, -3.8) rectangle (8.5, 1.3);
   \node[red!60!black, font=\footnotesize] at (-2.5, -3.3) {$T$ (Background)};
   
-  \node[circle,draw,fill=green!20,minimum size=8mm,font=\small] (s) at (2, 6) {$s$};
-  \node[circle,draw,fill=red!20,minimum size=8mm,font=\small] (t) at (2, -3) {$t$};
+  \node[source node] (s) at (2, 6) {$s$};
+  \node[sink node] (t) at (2, -3) {$t$};
   
-  \node[circle,draw,fill=blue!10,minimum size=9mm,font=\small] (p1) at (0, 3) {$p_1$};
-  \node[circle,draw,fill=blue!30,minimum size=9mm,font=\small] (p2) at (4, 3) {$p_2$};
-  \node[circle,draw,fill=orange!20,minimum size=9mm,font=\small] (p4) at (0, 0) {$p_4$};
-  \node[circle,draw,fill=orange!40,minimum size=9mm,font=\small] (p3) at (4, 0) {$p_3$};
+  \node[flow node, fill=blue!10] (p1) at (0, 3) {$p_1$};
+  \node[flow node, fill=blue!30] (p2) at (4, 3) {$p_2$};
+  \node[flow node, fill=orange!20] (p4) at (0, 0) {$p_4$};
+  \node[flow node, fill=orange!40] (p3) at (4, 0) {$p_3$};
 
   \draw[-,blue!70,line width=1.5pt] (p1) -- node[above,font=\footnotesize,text=black]{$w_n$\,alto} (p2);
   \draw[-,blue!70,line width=1.5pt] (p4) -- node[below,font=\footnotesize,text=black]{$w_n$\,alto} (p3);
@@ -1746,14 +1769,13 @@ Esta formulação unifica diversos problemas clássicos como casos particulares:
 
 \begin{figure}[!ht]
 \centering
-\begin{tikzpicture}[>=Stealth, thick,
-    main/.style={circle, draw, minimum size=10mm, font=\small}]
-    \node[main, fill=green!20] (s1) at (0, 2.0) {$v_1$};
-    \node[main, fill=green!20] (s2) at (0, -2.0) {$v_2$};
-    \node[main, fill=yellow!10] (m1) at (3.5, 2.0) {$v_3$};
-    \node[main, fill=yellow!10] (m2) at (3.5, -2.0) {$v_4$};
-    \node[main, fill=red!20] (t1) at (7, 2.0) {$v_5$};
-    \node[main, fill=red!20] (t2) at (7, -2.0) {$v_6$};
+\begin{tikzpicture}[thick]
+    \node[source node] (s1) at (0, 2.0) {$v_1$};
+    \node[source node] (s2) at (0, -2.0) {$v_2$};
+    \node[trans node] (m1) at (3.5, 2.0) {$v_3$};
+    \node[trans node] (m2) at (3.5, -2.0) {$v_4$};
+    \node[sink node] (t1) at (7, 2.0) {$v_5$};
+    \node[sink node] (t2) at (7, -2.0) {$v_6$};
 
     \node[font=\footnotesize, above=2pt] at (s1.north) {$b=+5$};
     \node[font=\footnotesize, below=2pt] at (s2.south) {$b=+3$};
@@ -1762,14 +1784,14 @@ Esta formulação unifica diversos problemas clássicos como casos particulares:
     \node[font=\footnotesize, above=2pt] at (t1.north) {$b=-4$};
     \node[font=\footnotesize, below=2pt] at (t2.south) {$b=-4$};
 
-    \draw[->] (s1) -- node[above, font=\footnotesize] {$w\!=\!2,\; c\!=\!4$} (m1);
-    \draw[->] (s1) -- node[above left, font=\footnotesize, pos=0.32, fill=white, inner sep=1.5pt] {$w\!=\!5,\; c\!=\!3$} (m2);
-    \draw[->] (s2) -- node[below left, font=\footnotesize, pos=0.32, fill=white, inner sep=1.5pt] {$w\!=\!3,\; c\!=\!4$} (m1);
-    \draw[->] (s2) -- node[below, font=\footnotesize] {$w\!=\!1,\; c\!=\!5$} (m2);
-    \draw[->] (m1) -- node[above, font=\footnotesize] {$w\!=\!4,\; c\!=\!5$} (t1);
-    \draw[->] (m1) -- node[right=2pt, font=\footnotesize, pos=0.25, fill=white, inner sep=1.5pt] {$w\!=\!2,\; c\!=\!2$} (m2);
-    \draw[->] (m2) -- node[below right, font=\footnotesize, pos=0.35, fill=white, inner sep=1.5pt] {$w\!=\!6,\; c\!=\!3$} (t1);
-    \draw[->] (m2) -- node[below, font=\footnotesize] {$w\!=\!3,\; c\!=\!6$} (t2);
+    \draw[flow edge] (s1) -- node[above, font=\footnotesize] {$w\!=\!2,\; c\!=\!4$} (m1);
+    \draw[flow edge] (s1) -- node[above left, font=\footnotesize, pos=0.32, fill=white, inner sep=1.5pt] {$w\!=\!5,\; c\!=\!3$} (m2);
+    \draw[flow edge] (s2) -- node[below left, font=\footnotesize, pos=0.32, fill=white, inner sep=1.5pt] {$w\!=\!3,\; c\!=\!4$} (m1);
+    \draw[flow edge] (s2) -- node[below, font=\footnotesize] {$w\!=\!1,\; c\!=\!5$} (m2);
+    \draw[flow edge] (m1) -- node[above, font=\footnotesize] {$w\!=\!4,\; c\!=\!5$} (t1);
+    \draw[flow edge] (m1) -- node[right=2pt, font=\footnotesize, pos=0.25, fill=white, inner sep=1.5pt] {$w\!=\!2,\; c\!=\!2$} (m2);
+    \draw[flow edge] (m2) -- node[below right, font=\footnotesize, pos=0.35, fill=white, inner sep=1.5pt] {$w\!=\!6,\; c\!=\!3$} (t1);
+    \draw[flow edge] (m2) -- node[below, font=\footnotesize] {$w\!=\!3,\; c\!=\!6$} (t2);
 \end{tikzpicture}
 \caption{Rede de custo mínimo com 6 vértices. Cada arco exibe o custo unitário $w$ e a capacidade $c$. Vértices verdes são fontes ($b > 0$), amarelos são transbordo ($b = 0$) e vermelhos são sumidouros ($b < 0$). A condição de equilíbrio $\sum b(v) = 5 + 3 - 4 - 4 = 0$ é satisfeita.}
 \label{fig:mcf_rede}
@@ -1787,38 +1809,38 @@ Para cada arco original $(u,v) \in A$ com fluxo $f(u,v)$:
 
 \begin{figure}[!ht]
 \centering
-\begin{tikzpicture}[>=Stealth, thick]
+\begin{tikzpicture}[thick]
 
 \begin{scope}[xshift=0cm]
-  \node[circle,draw,fill=green!20,minimum size=8mm,font=\small] (s) at (0,1.4) {$s$};
-  \node[circle,draw,minimum size=8mm,font=\small] (a) at (2.8,3.0) {$a$};
-  \node[circle,draw,minimum size=8mm,font=\small] (b) at (2.8,-0.2) {$b$};
-  \node[circle,draw,fill=red!20,minimum size=8mm,font=\small] (t) at (5.6,1.4) {$t$};
-  \draw[->] (s) -- node[above left,font=\footnotesize] {$f\!=\!2,\; w\!=\!3,\; c\!=\!4$} (a);
-  \draw[->] (s) -- node[below left,font=\footnotesize] {$f\!=\!1,\; w\!=\!1,\; c\!=\!3$} (b);
-  \draw[->] (a) -- node[above right,font=\footnotesize] {$f\!=\!2,\; w\!=\!2,\; c\!=\!3$} (t);
-  \draw[->] (b) -- node[below right,font=\footnotesize] {$f\!=\!1,\; w\!=\!5,\; c\!=\!2$} (t);
-  \node[font=\footnotesize,below] at (2.8,-1.2) {\textit{(a) Rede original com fluxo}};
+  \node[source node] (s) at (0,1.4) {$s$};
+  \node[flow node] (a) at (2.8,3.0) {$a$};
+  \node[flow node] (b) at (2.8,-0.2) {$b$};
+  \node[sink node] (t) at (5.6,1.4) {$t$};
+  \draw[flow edge] (s) -- node[above left,font=\footnotesize] {$f\!=\!2,\; w\!=\!3,\; c\!=\!4$} (a);
+  \draw[flow edge] (s) -- node[below left,font=\footnotesize] {$f\!=\!1,\; w\!=\!1,\; c\!=\!3$} (b);
+  \draw[flow edge] (a) -- node[above right,font=\footnotesize] {$f\!=\!2,\; w\!=\!2,\; c\!=\!3$} (t);
+  \draw[flow edge] (b) -- node[below right,font=\footnotesize] {$f\!=\!1,\; w\!=\!5,\; c\!=\!2$} (t);
+  \tikzsubcaption{(2.8,-1.2)}{(a) Rede original com fluxo}
 \end{scope}
 
 \node at (7.2,1.4) {\Huge $\Rightarrow$};
 
 \begin{scope}[xshift=9cm]
-  \node[circle,draw,fill=green!20,minimum size=8mm,font=\small] (s2) at (0,1.4) {$s$};
-  \node[circle,draw,minimum size=8mm,font=\small] (a2) at (2.8,3.0) {$a$};
-  \node[circle,draw,minimum size=8mm,font=\small] (b2) at (2.8,-0.2) {$b$};
-  \node[circle,draw,fill=red!20,minimum size=8mm,font=\small] (t2) at (5.6,1.4) {$t$};
+  \node[source node] (s2) at (0,1.4) {$s$};
+  \node[flow node] (a2) at (2.8,3.0) {$a$};
+  \node[flow node] (b2) at (2.8,-0.2) {$b$};
+  \node[sink node] (t2) at (5.6,1.4) {$t$};
 
-  \draw[->,blue] (s2) -- node[below,sloped,font=\footnotesize,fill=white,inner sep=1pt,pos=0.5] {$c_f\!=\!2,\; w\!=\!3$} (a2);
-  \draw[->,blue] (s2) -- node[above,sloped,font=\footnotesize,fill=white,inner sep=1pt,pos=0.5] {$c_f\!=\!2,\; w\!=\!1$} (b2);
-  \draw[->,blue] (a2) -- node[below,sloped,font=\footnotesize,fill=white,inner sep=1pt,pos=0.5] {$c_f\!=\!1,\; w\!=\!2$} (t2);
-  \draw[->,blue] (b2) -- node[above,sloped,font=\footnotesize,fill=white,inner sep=1pt,pos=0.5] {$c_f\!=\!1,\; w\!=\!5$} (t2);
+  \draw[flow edge,blue] (s2) -- node[below,sloped,font=\footnotesize,fill=white,inner sep=1pt,pos=0.5] {$c_f\!=\!2,\; w\!=\!3$} (a2);
+  \draw[flow edge,blue] (s2) -- node[above,sloped,font=\footnotesize,fill=white,inner sep=1pt,pos=0.5] {$c_f\!=\!2,\; w\!=\!1$} (b2);
+  \draw[flow edge,blue] (a2) -- node[below,sloped,font=\footnotesize,fill=white,inner sep=1pt,pos=0.5] {$c_f\!=\!1,\; w\!=\!2$} (t2);
+  \draw[flow edge,blue] (b2) -- node[above,sloped,font=\footnotesize,fill=white,inner sep=1pt,pos=0.5] {$c_f\!=\!1,\; w\!=\!5$} (t2);
 
-  \draw[->,red,dashed,bend right=30] (a2) to node[above,sloped,font=\scriptsize,fill=white,inner sep=1pt,pos=0.5] {$c_f\!=\!2,\; w\!=\!{-3}$} (s2);
-  \draw[->,red,dashed,bend left=30] (b2) to node[below,sloped,font=\scriptsize,fill=white,inner sep=1pt,pos=0.5] {$c_f\!=\!1,\; w\!=\!{-1}$} (s2);
-  \draw[->,red,dashed,bend right=30] (t2) to node[above,sloped,font=\scriptsize,fill=white,inner sep=1pt,pos=0.5] {$c_f\!=\!2,\; w\!=\!{-2}$} (a2);
-  \draw[->,red,dashed,bend left=30] (t2) to node[below,sloped,font=\scriptsize,fill=white,inner sep=1pt,pos=0.5] {$c_f\!=\!1,\; w\!=\!{-5}$} (b2);
-  \node[font=\footnotesize,below] at (2.8,-1.2) {\textit{(b) Digrafo residual} $D_f$ \textit{com custos}};
+  \draw[res edge,bend right=30] (a2) to node[above,sloped,font=\scriptsize,fill=white,inner sep=1pt,pos=0.5] {$c_f\!=\!2,\; w\!=\!{-3}$} (s2);
+  \draw[res edge,bend left=30] (b2) to node[below,sloped,font=\scriptsize,fill=white,inner sep=1pt,pos=0.5] {$c_f\!=\!1,\; w\!=\!{-1}$} (s2);
+  \draw[res edge,bend right=30] (t2) to node[above,sloped,font=\scriptsize,fill=white,inner sep=1pt,pos=0.5] {$c_f\!=\!2,\; w\!=\!{-2}$} (a2);
+  \draw[res edge,bend left=30] (t2) to node[below,sloped,font=\scriptsize,fill=white,inner sep=1pt,pos=0.5] {$c_f\!=\!1,\; w\!=\!{-5}$} (b2);
+  \tikzsubcaption{(2.8,-1.2)}{(b) Digrafo residual $D_f$ com custos}
 \end{scope}
 \end{tikzpicture}
 \caption{Construção do grafo residual com custos. (a)~Rede original com fluxo, custo e capacidade em cada arco. (b)~Digrafo residual $D_f$: arcos azuis (capacidade ociosa, custo original) e arcos vermelhos tracejados (fluxo cancelável, custo negativo $-w$).}
@@ -1881,13 +1903,13 @@ A detecção explícita e repetida de ciclos negativos em $D_f$ por métodos dir
 
 \begin{figure}[!ht]
 \centering
-\begin{tikzpicture}[>=Stealth, thick]
+\begin{tikzpicture}[thick]
 
 \begin{scope}[xshift=0cm]
-  \node[font=\footnotesize,above] at (1.5,2.8) {\textbf{(a) Ciclo negativo em $D_f$}};
-  \node[circle,draw,minimum size=8mm,font=\small] (a) at (0,1.5) {$a$};
-  \node[circle,draw,minimum size=8mm,font=\small] (b) at (3,1.5) {$b$};
-  \node[circle,draw,minimum size=8mm,font=\small] (c) at (1.5,0) {$c$};
+  \tikzsubcaption{(1.5,2.8)}{(a) Ciclo negativo em $D_f$}
+  \node[flow node] (a) at (0,1.5) {$a$};
+  \node[flow node] (b) at (3,1.5) {$b$};
+  \node[flow node] (c) at (1.5,0) {$c$};
   \draw[->,red,line width=1.5pt] (a) -- node[above=2pt,font=\footnotesize,pos=0.5] {$w\!=\!2$} (b);
   \draw[->,red,line width=1.5pt] (b) -- node[right=3pt,font=\footnotesize,pos=0.5] {$w\!=\!{-4}$} (c);
   \draw[->,red,line width=1.5pt] (c) -- node[left=3pt,font=\footnotesize,pos=0.5] {$w\!=\!1$} (a);
@@ -1897,10 +1919,10 @@ A detecção explícita e repetida de ciclos negativos em $D_f$ por métodos dir
 \node at (5.5,1.0) {\Huge $\Rightarrow$};
 
 \begin{scope}[xshift=7.5cm]
-  \node[font=\footnotesize,above] at (1.5,2.8) {\textbf{(b) Após cancelamento}};
-  \node[circle,draw,minimum size=8mm,font=\small] (a2) at (0,1.5) {$a$};
-  \node[circle,draw,minimum size=8mm,font=\small] (b2) at (3,1.5) {$b$};
-  \node[circle,draw,minimum size=8mm,font=\small] (c2) at (1.5,0) {$c$};
+  \tikzsubcaption{(1.5,2.8)}{(b) Após cancelamento}
+  \node[flow node] (a2) at (0,1.5) {$a$};
+  \node[flow node] (b2) at (3,1.5) {$b$};
+  \node[flow node] (c2) at (1.5,0) {$c$};
   \draw[->,blue,line width=1.5pt] (a2) -- node[above=2pt,font=\footnotesize,pos=0.5] {$+\delta$} (b2);
   \draw[->,blue,line width=1.5pt] (b2) -- node[right=3pt,font=\footnotesize,pos=0.5] {$+\delta$} (c2);
   \draw[->,blue,line width=1.5pt] (c2) -- node[left=3pt,font=\footnotesize,pos=0.5] {$+\delta$} (a2);
@@ -1961,24 +1983,23 @@ o que confirma a existência do vetor de potenciais nodais satisfazendo a condi�
 
 \begin{figure}[!ht]
 \centering
-\begin{tikzpicture}[>=Stealth, thick,
-    main/.style={circle, draw, minimum size=10mm, font=\small}]
+\begin{tikzpicture}[thick]
 
-    \node[main, fill=green!20] (s) at (0, 0) {$s$};
-    \node[main] (a) at (3.5, 2.0) {$a$};
-    \node[main] (b) at (3.5, -2.0) {$b$};
-    \node[main, fill=red!20] (t) at (7, 0) {$t$};
+    \node[source node] (s) at (0, 0) {$s$};
+    \node[flow node] (a) at (3.5, 2.0) {$a$};
+    \node[flow node] (b) at (3.5, -2.0) {$b$};
+    \node[sink node] (t) at (7, 0) {$t$};
 
     \node[font=\footnotesize, above=3pt, blue] at (s.north) {$\pi\!=\!0$};
     \node[font=\footnotesize, above=3pt, blue] at (a.north) {$\pi\!=\!2$};
     \node[font=\footnotesize, below=3pt, blue] at (b.south) {$\pi\!=\!1$};
     \node[font=\footnotesize, above=3pt, blue] at (t.north) {$\pi\!=\!5$};
 
-    \draw[->] (s) -- node[above left, font=\footnotesize] {$w\!=\!3$} node[below right, font=\footnotesize, red, fill=white, inner sep=1.5pt] {$\bar{w}\!=\!5$} (a);
-    \draw[->] (s) -- node[below left, font=\footnotesize] {$w\!=\!2$} node[above right, font=\footnotesize, red, fill=white, inner sep=1.5pt] {$\bar{w}\!=\!3$} (b);
-    \draw[->] (a) -- node[above right, font=\footnotesize] {$w\!=\!4$} node[below left, font=\footnotesize, red, fill=white, inner sep=1.5pt] {$\bar{w}\!=\!7$} (t);
-    \draw[->] (b) -- node[below right, font=\footnotesize] {$w\!=\!6$} node[above left, font=\footnotesize, red, fill=white, inner sep=1.5pt] {$\bar{w}\!=\!10$} (t);
-    \draw[->] (a) -- node[right=4pt, font=\footnotesize] {$w\!=\!1$} node[left=4pt, font=\footnotesize, red, fill=white, inner sep=1.5pt] {$\bar{w}\!=\!0$} (b);
+    \draw[flow edge] (s) -- node[above left, font=\footnotesize] {$w\!=\!3$} node[below right, font=\footnotesize, red, fill=white, inner sep=1.5pt] {$\bar{w}\!=\!5$} (a);
+    \draw[flow edge] (s) -- node[below left, font=\footnotesize] {$w\!=\!2$} node[above right, font=\footnotesize, red, fill=white, inner sep=1.5pt] {$\bar{w}\!=\!3$} (b);
+    \draw[flow edge] (a) -- node[above right, font=\footnotesize] {$w\!=\!4$} node[below left, font=\footnotesize, red, fill=white, inner sep=1.5pt] {$\bar{w}\!=\!7$} (t);
+    \draw[flow edge] (b) -- node[below right, font=\footnotesize] {$w\!=\!6$} node[above left, font=\footnotesize, red, fill=white, inner sep=1.5pt] {$\bar{w}\!=\!10$} (t);
+    \draw[flow edge] (a) -- node[right=4pt, font=\footnotesize] {$w\!=\!1$} node[left=4pt, font=\footnotesize, red, fill=white, inner sep=1.5pt] {$\bar{w}\!=\!0$} (b);
 \end{tikzpicture}
 \caption{Potenciais nodais $\pi$ (em azul) e custos reduzidos $\bar{w} = w(u,v) - \pi(u) + \pi(v)$ (em vermelho). Todos os custos reduzidos são $\ge 0$, certificando a otimalidade do fluxo segundo o Teorema de Equivalência.}
 \label{fig:custos_reduzidos}
@@ -2147,22 +2168,21 @@ Fixando $\pi(r) = 0$ para um vértice raiz $r$ arbitrário, os potenciais de tod
 
 \begin{figure}[!ht]
 \centering
-\begin{tikzpicture}[>=Stealth, thick,
-    main/.style={circle, draw, minimum size=9mm, font=\small}]
+\begin{tikzpicture}[thick]
 
-    \node[main, fill=green!20] (v1) at (0, 0) {$v_1$};
-    \node[main] (v2) at (2.5, 1.5) {$v_2$};
-    \node[main] (v3) at (2.5, -1.5) {$v_3$};
-    \node[main] (v4) at (5, 1.5) {$v_4$};
-    \node[main, fill=red!20] (v5) at (5, -1.5) {$v_5$};
+    \node[source node] (v1) at (0, 0) {$v_1$};
+    \node[flow node] (v2) at (2.5, 1.5) {$v_2$};
+    \node[flow node] (v3) at (2.5, -1.5) {$v_3$};
+    \node[flow node] (v4) at (5, 1.5) {$v_4$};
+    \node[sink node] (v5) at (5, -1.5) {$v_5$};
 
-    \draw[->,blue,line width=2pt] (v1) -- node[above left,font=\footnotesize] {$T$} (v2);
-    \draw[->,blue,line width=2pt] (v1) -- node[below left,font=\footnotesize] {$T$} (v3);
-    \draw[->,blue,line width=2pt] (v2) -- node[above,font=\footnotesize] {$T$} (v4);
-    \draw[->,blue,line width=2pt] (v3) -- node[below,font=\footnotesize] {$T$} (v5);
+    \draw[tree edge] (v1) -- node[above left,font=\footnotesize] {$T$} (v2);
+    \draw[tree edge] (v1) -- node[below left,font=\footnotesize] {$T$} (v3);
+    \draw[tree edge] (v2) -- node[above,font=\footnotesize] {$T$} (v4);
+    \draw[tree edge] (v3) -- node[below,font=\footnotesize] {$T$} (v5);
 
-    \draw[->,gray,dashed] (v2) -- node[right,font=\footnotesize] {$L$} (v3);
-    \draw[->,gray,dashed] (v4) -- node[right,font=\footnotesize] {$U$} (v5);
+    \draw[nontree edge] (v2) -- node[right,font=\footnotesize] {$L$} (v3);
+    \draw[nontree edge] (v4) -- node[right,font=\footnotesize] {$U$} (v5);
 \end{tikzpicture}
 \caption{Partição dos arcos no Network Simplex. Arcos azuis sólidos formam a árvore geradora básica $T$ (4 arcos para 5 vértices). Arcos cinza tracejados são não-básicos: $L$ (fluxo $= 0$) e $U$ (fluxo $= c$, saturado).}
 \label{fig:arvore_base}
@@ -2268,35 +2288,34 @@ onde a polaridade do sinal depende da orientação do arco entrante em relação
 
 \begin{figure}[!ht]
 \centering
-\begin{tikzpicture}[>=Stealth, thick,
-    main/.style={circle, draw, minimum size=10mm, font=\small}]
+\begin{tikzpicture}[thick]
 
 \begin{scope}[xshift=0cm]
-  \node[font=\footnotesize,above] at (2.0,4.2) {\textbf{(a) Antes do pivot}};
-  \node[main, fill=green!20] (a1) at (0, 1.5) {$1$};
-  \node[main] (a2) at (2, 3.0) {$2$};
-  \node[main] (a3) at (2, 0.0) {$3$};
-  \node[main, fill=red!20] (a4) at (4, 1.5) {$4$};
+  \tikzsubcaption{(2.0,4.2)}{(a) Antes do pivot}
+  \node[source node] (a1) at (0, 1.5) {$1$};
+  \node[flow node] (a2) at (2, 3.0) {$2$};
+  \node[flow node] (a3) at (2, 0.0) {$3$};
+  \node[sink node] (a4) at (4, 1.5) {$4$};
 
-  \draw[->,blue,line width=2pt] (a1) -- (a2);
-  \draw[->,blue,line width=2pt] (a2) -- (a4);
-  \draw[->,blue,line width=2pt] (a1) -- (a3);
-  \draw[->,red,dashed,line width=1.5pt] (a3) -- node[below,sloped,font=\footnotesize,fill=white,inner sep=1pt] {entra} (a4);
+  \draw[tree edge] (a1) -- (a2);
+  \draw[tree edge] (a2) -- (a4);
+  \draw[tree edge] (a1) -- (a3);
+  \draw[pivot enter] (a3) -- node[below,sloped,font=\footnotesize,fill=white,inner sep=1pt] {entra} (a4);
 \end{scope}
 
 \node at (5.5,1.5) {\Large $\Rightarrow$};
 
 \begin{scope}[xshift=7cm]
-  \node[font=\footnotesize,above] at (2.0,4.2) {\textbf{(b) Depois do pivot}};
-  \node[main, fill=green!20] (b1) at (0, 1.5) {$1$};
-  \node[main] (b2) at (2, 3.0) {$2$};
-  \node[main] (b3) at (2, 0.0) {$3$};
-  \node[main, fill=red!20] (b4) at (4, 1.5) {$4$};
+  \tikzsubcaption{(2.0,4.2)}{(b) Depois do pivot}
+  \node[source node] (b1) at (0, 1.5) {$1$};
+  \node[flow node] (b2) at (2, 3.0) {$2$};
+  \node[flow node] (b3) at (2, 0.0) {$3$};
+  \node[sink node] (b4) at (4, 1.5) {$4$};
 
-  \draw[->,blue,line width=2pt] (b1) -- (b2);
-  \draw[->,gray,dashed] (b2) -- node[above,sloped,font=\footnotesize,fill=white,inner sep=1pt] {sai} (b4);
-  \draw[->,blue,line width=2pt] (b1) -- (b3);
-  \draw[->,blue,line width=2pt] (b3) -- (b4);
+  \draw[tree edge] (b1) -- (b2);
+  \draw[pivot leave] (b2) -- node[above,sloped,font=\footnotesize,fill=white,inner sep=1pt] {sai} (b4);
+  \draw[tree edge] (b1) -- (b3);
+  \draw[tree edge] (b3) -- (b4);
 \end{scope}
 \end{tikzpicture}
 \caption{Uma iteração do Network Simplex. (a)~O arco $(3,4)$ (vermelho tracejado) é selecionado para entrar na base, criando o ciclo $1 \to 2 \to 4 \leftarrow 3 \leftarrow 1$. (b)~Após enviar $\delta$ unidades pelo ciclo, o arco $(2,4)$ atinge seu limite e sai da base, enquanto $(3,4)$ passa a integrar a árvore.}
