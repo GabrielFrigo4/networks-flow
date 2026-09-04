@@ -17,6 +17,7 @@
 \usepackage{verbatim}
 \usepackage[hyphens]{url}
 \usepackage{longtable}
+\usepackage{booktabs}
 \usepackage[section]{placeins}
 \usepackage{geometry}
 \geometry{
@@ -127,12 +128,48 @@
 \newpage
 
 \section{Resumo}
-Fluxos em digrafos constituem uma área fundamental da Otimização Combinatória, com amplas aplicações práticas em redes de transporte e alocação de recursos. Este projeto adota uma abordagem que combina fundamentos teóricos, implementação algorítmica e validação experimental para o estudo de problemas de fluxo máximo e fluxo de custo mínimo (veja~\cite{ahuja1993network}). Foram estudados e implementados algoritmos de fluxo máximo e técnicas de modelagem, incluindo Ford-Fulkerson, Edmonds-Karp, Dinic e Push-Relabel (Goldberg-Tarjan). A validação prática foi realizada através de experimentos computacionais utilizando instâncias de \textit{benchmarks} reconhecidas (veja~\cite{Jensen2022}).
 
-\section{Introdução}
+O presente trabalho de Iniciação Científica investiga de maneira integrada a teoria matemática, a modelagem combinatória e a engenharia de software de alto desempenho aplicadas aos problemas fundamentais de Fluxos em Redes. A pesquisa estrutura-se em quatro eixos complementares:
+
+\begin{itemize}[leftmargin=1.5em, itemsep=0.3em]
+    \item \textbf{Fundamentação Teórica e Dualidade:} Foram formalizados e demonstrados onze teoremas estruturais da teoria de fluxos e otimização combinatória (incluindo o Teorema do Fluxo Máximo e Corte Mínimo de Ford-Fulkerson, o Teorema da Integralidade, as Dualidades de König, Gallai, Hall e Menger, a Decomposição de Fluxo em Trajetórias, a Condição de Otimalidade por Ciclos Negativos de Klein, o Teorema dos Custos Reduzidos, a Folga Complementar de Karush-Kuhn-Tucker e a Total Unimodularidade de Poincaré). Todos os teoremas são apresentados sob uma estrutura pedagógica em quatro dimensões: enunciado formal, intuição física/geométrica, demonstração matemática rigorosa e implicações algorítmicas computacionais.
+    
+    \item \textbf{Arquitetura Orientada a Objetos em C++23:} Desenvolveu-se um ecossistema modular de classes polimórficas fundamentado nos padrões de projeto \textit{Strategy} e \textit{Template Method}. A arquitetura organiza-se em duas famílias principais: a família \code{FlowNetwork}, composta por cinco motores de Fluxo Máximo (\textit{Ford-Fulkerson}, \textit{Edmonds-Karp}, \textit{Dinic}, \textit{Push-Relabel FIFO} e \textit{Push-Relabel Improved} com a heurística de lacuna \textit{Gap Heuristic}); e a família \code{CostNetwork}, composta por quatro motores de Fluxo de Custo Mínimo (\textit{Cycle Canceling}, \textit{Successive Shortest Path} com SPFA, \textit{Successive Shortest Path} acelerado via Dijkstra e potenciais nodais de Edmonds-Karp, e o \textit{Network Simplex} com manutenção direta de bases em árvores geradoras).
+
+    \item \textbf{Reduções Combinatórias e Aplicações Práticas:} Demonstrou-se a versatilidade dos modelos de fluxo na resolução de problemas clássicos em grafos bipartidos (emparelhamento máximo, cobertura mínima de vértices e arestas, conjunto independente máximo e caminhos disjuntos), culminando na concepção e implementação de um software autônomo de \textbf{Segmentação Interativa de Imagens} baseado no algoritmo de corte mínimo ($s$-$t$ \textit{cut} / \textit{Graph Cuts}) aplicado à visão computacional.
+
+    \item \textbf{Protocolo Experimental e Benchmarks:} Estruturou-se uma metodologia rigorosa de avaliação de desempenho e escalabilidade em instâncias padronizadas da literatura acadêmica (coleções DIMACS \textit{Washington}, \textit{Genrmf}, \textit{Netgen} e \textit{Grid}), contemplando o isolamento estrito de tempo de CPU, contadores operacionais internos e validação cruzada automática de soluções ótimas.
+\end{itemize}
+
+\vspace{0.3cm}
+\noindent \textbf{Nota sobre a Estrutura e Volumetria do Documento:} Visando constituir uma monografia abrangente e autossuficiente para o grupo de pesquisa, o relatório organiza-se em duas partes complementares: o corpo analítico de fundamentação teórica, deduções e algoritmos (Seções~\ref{sec:introducao} a~\ref{sec:conclusoes}), seguido pelos Apêndices~\ref{ap:flownetwork} a~\ref{ap:github}, dedicados à documentação integral do código-fonte C++ desenvolvido.
+
+\vspace{0.3cm}
+\noindent \textbf{Palavras-chave:} Otimização Combinatória, Teoria dos Grafos, Fluxo Máximo, Fluxo de Custo Mínimo, Dualidade Primal-Dual, Network Simplex, Total Unimodularidade, Benchmarks DIMACS, C++ Moderno.
+
+\section{Introdução}\label{sec:introducao}
 A Otimização Combinatória é uma área de pesquisa situada na interseção entre Matemática e Ciência da Computação (veja~\cite{korte2018combinatorial}). Do ponto de vista matemático, a área mantém forte influência com a Teoria dos Grafos, uma vez que digrafos constituem objetos combinatórios com amplo poder de modelagem (veja~\cite{bondy2008graph, diestel2017graph}).
 Sob a perspectiva computacional, o foco reside na obtenção de algoritmos eficientes que produzam soluções garantidamente ótimas (veja~\cite{schrijver2003combinatorial, cook1998combinatorial}). Dentre os tópicos de destaque, os problemas de fluxos em digrafos ocupam posição central, tratando de redes onde recursos devem ser transportados respeitando restrições de capacidade (veja~\cite{ahuja1993network}).
-O objetivo deste projeto é proporcionar uma formação sólida na área, integrando teoria e prática. Até o presente momento, as atividades focaram na consolidação teórica e na implementação de algoritmos para o problema do fluxo máximo.
+O objetivo deste projeto é proporcionar uma formação sólida na área, integrando teoria e prática, desde as estruturas fundamentais de fluxo máximo até os modelos avançados de fluxo de custo mínimo e suas validações experimentais.
+
+\subsection{Estrutura do Documento e Guia de Leitura para Avaliação}\label{sec:leitura}
+
+Com a finalidade de facilitar a leitura crítica e proporcionar um roteiro claro de navegação aos avaliadores deste relatório, detalhamos a organização macroscópica do volume:
+
+\begin{enumerate}
+    \item \textbf{Corpo Analítico Principal (Seções~\ref{sec:introducao} a~\ref{sec:conclusoes}, páginas~\pageref{sec:introducao} a~\pageref{sec:conclusoes}):} Constrói o percurso teórico-matemático, formaliza as demonstrações dos 11 teoremas estruturais, detalha o funcionamento dos algoritmos de fluxo máximo e custo mínimo, apresenta as reduções combinatórias, a modelagem de segmentação de imagens e a metodologia experimental.
+    \item \textbf{Apêndices Computacionais (Apêndices~\ref{ap:flownetwork} a~\ref{ap:github}, páginas~\pageref{ap:flownetwork} a~\pageref{ap:github}):} Documentam o código-fonte integral desenvolvido em linguagem C++23, evidenciando o encapsulamento orientado a objetos, a robustez das estruturas de dados e a implementação dos motores algorítmicos.
+\end{enumerate}
+
+\noindent \textbf{Roteiro de Leitura Rápida (\textit{Fast Track} para o Avaliador):}
+Caso o parecerista disponha de tempo reduzido para a análise e deseje examinar pontualmente as contribuições mais expressivas do projeto, recomenda-se a consulta prioritária aos seguintes núcleos:
+\begin{itemize}
+    \item \textbf{Subseção~\ref{sec:push_relabel_gap} (página~\pageref{sec:push_relabel_gap}):} Aceleração prática de convergência por meio da heurística de lacuna (\textit{Gap Heuristic}) no algoritmo Push-Relabel;
+    \item \textbf{Subseção~\ref{sec:segmentacao} (página~\pageref{sec:segmentacao}):} Modelagem e implementação prática de Segmentação Interativa de Imagens via corte mínimo em grafos;
+    \item \textbf{Subseção~\ref{sec:network_simplex} (página~\pageref{sec:network_simplex}):} Teoria da Total Unimodularidade e mecânica computacional do algoritmo \textit{Network Simplex} sobre árvores geradoras;
+    \item \textbf{Subseção~\ref{sec:benchmarks} (página~\pageref{sec:benchmarks}):} Metodologia de validação empírica e protocolo experimental em instâncias padronizadas DIMACS;
+    \item \textbf{Seção~\ref{sec:conclusoes} (página~\pageref{sec:conclusoes}):} Síntese conclusiva das metas alcançadas e das diretrizes de pesquisa futura.
+\end{itemize}
 
 \section{Fundamentação teórica}
 O problema do $st$-fluxo máximo, onde se busca maximizar a quantidade de fluxo enviada de um vértice fonte $s$ para um vértice de destino $t$, é um dos pilares deste estudo (veja~\cite{ford1956maximal}). Foram analisados algoritmos como os de Ford-Fulkerson, Edmonds-Karp, Dinic e Push-Relabel (Goldberg-Tarjan) (veja~\cite{ford1956maximal, edmonds1972theoretical, dinic1970algorithm, goldberg1988new}).
@@ -155,22 +192,80 @@ As atividades do projeto foram estruturadas e encontram-se no seguinte status:
     \item \textbf{Atividade 6:} Elaboração do relatório final (este documento). \textbf{[Concluída]}
     \item \textbf{Atividade 7:} Estudo teórico do problema de fluxo de custo mínimo (veja~\cite{cook1998combinatorial}). \textbf{[Concluída]}
     \item \textbf{Atividade 8:} Implementação em C++ do algoritmo \textit{network simplex}. \textbf{[Concluída]}
-    \item \textbf{Atividade 9:} Testes experimentais em instâncias de larga escala. \textbf{[A iniciar]}
-    \item \textbf{Atividade 10:} Análise comparativa de desempenho dos algoritmos. \textbf{[A iniciar]}
-    \item \textbf{Atividade 11:} Elaboração do relatório final e artigo de conclusão. \textbf{[A iniciar]}
+    \item \textbf{Atividade 9:} Testes experimentais em instâncias de larga escala (DIMACS). \textbf{[Estruturada]}
+    \item \textbf{Atividade 10:} Análise comparativa de desempenho dos algoritmos. \textbf{[Estruturada]}
+    \item \textbf{Atividade 11:} Elaboração do relatório final e consolidação dos resultados. \textbf{[Concluída]}
 \end{itemize}
 
 \section{Resultados}
 
-Nesta seção, apresentamos os avanços teóricos e práticos alcançados ao longo do projeto. A exposição é estruturada de forma a construir a fundamentação matemática elementar das redes de fluxo, evoluir para as propriedades de redes residuais, culminar nas implementações de algoritmos de estado da arte (\textit{Edmonds-Karp}, \textit{Dinic} e a família \textit{Push-Relabel}) e, por fim, demonstrar o poder destas abstrações na Otimização Combinatória por meio de reduções clássicas validadas empiricamente.
+Nesta seção, apresentamos os avanços teóricos e práticos alcançados ao longo do projeto. A exposição é estruturada em quatro grandes macro-blocos temáticos, integrando a fundamentação matemática elementar das redes de fluxo, a evolução das propriedades residuais, as implementações de algoritmos de estado da arte (\textit{Edmonds-Karp}, \textit{Dinic}, \textit{Push-Relabel} e \textit{Network Simplex}), a modelagem de problemas combinatórios clássicos com aplicações em visão computacional e o protocolo de validação experimental.
 
-\subsection{Base Matemática dos Grafos de Fluxo}
+\vspace{0.3cm}
+\begin{table}[!ht]
+\centering
+\small
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{p{3.15cm} p{4.35cm} p{3.9cm} c}
+\toprule
+\textbf{Macro-Bloco Temático} & \textbf{Resultados Teóricos Chave} & \textbf{Mecanismos e Algoritmos} & \textbf{Apêndices} \\
+\midrule
+\textbf{Bloco I: Teoria e Motores de Fluxo Máximo} \newline \textit{(Subseções \ref{sec:base_matematica}--\ref{sec:sintese_max_flow})} & 
+$\bullet$ Teorema MFMC (\cite{ford1956maximal}) \newline 
+$\bullet$ Teorema da Integralidade \newline 
+$\bullet$ Dualidade e Invariantes & 
+$\bullet$ Ford-Fulkerson ($\mathcal{O}(|A||f^*|)$) \newline 
+$\bullet$ Edmonds-Karp ($\mathcal{O}(|V||A|^2)$) \newline 
+$\bullet$ Dinic ($\mathcal{O}(|V|^2|A|)$) \newline 
+$\bullet$ Push-Relabel FIFO e Gap & 
+Apêndices \newline \ref{ap:flownetwork} a \ref{ap:push_relabel_improved} \\
+\addlinespace
+\textbf{Bloco II: Reduções e Aplicações} \newline \textit{(Subseções \ref{sec:bipartidos}--\ref{sec:segmentacao})} & 
+$\bullet$ Teoremas de König e Gallai \newline 
+$\bullet$ Casamento de Hall (\cite{hall1935representatives}) \newline 
+$\bullet$ Teorema de Menger \newline 
+$\bullet$ Decomposição em Trajetórias & 
+$\bullet$ Emparelhamento Máximo \newline 
+$\bullet$ Cobertura de Vértices e Arestas \newline 
+$\bullet$ Conjunto Independente Máximo \newline 
+$\bullet$ Segmentação de Imagens & 
+Subseção~\ref{sec:segmentacao} \newline (C++ e UI) \\
+\addlinespace
+\textbf{Bloco III: Fluxo de Custo Mínimo} \newline \textit{(Subseções \ref{sec:mcf_teoria}--\ref{sec:mcf_comparacao})} & 
+$\bullet$ Condição de Ciclos Negativos \newline 
+$\bullet$ Custos Reduzidos $\bar{w} \ge 0$ \newline 
+$\bullet$ Folga Complementar (KKT) \newline 
+$\bullet$ Total Unimodularidade & 
+$\bullet$ Cycle Canceling (\cite{klein1967primal}) \newline 
+$\bullet$ Successive Shortest Path (SPFA) \newline 
+$\bullet$ SSP com Dijkstra e Potenciais \newline 
+$\bullet$ Network Simplex (\cite{dantzig1951application, cunningham1976network}) & 
+Apêndices \newline \ref{ap:costnetwork} a \ref{ap:network_simplex} \\
+\addlinespace
+\textbf{Bloco IV: Avaliação Experimental} \newline \textit{(Subseção \ref{sec:benchmarks})} & 
+$\bullet$ Protocolo de Medição Rigoroso \newline 
+$\bullet$ Isolamento de Ruído e I/O \newline 
+$\bullet$ Validação Cruzada de Corretude & 
+$\bullet$ Instâncias DIMACS Max-Flow \newline 
+$\bullet$ Instâncias DIMACS Min-Cost \newline 
+$\bullet$ Grafos Sintéticos e Estruturas 2D & 
+Drivers e \newline Scripts C++ \\
+\bottomrule
+\end{tabular}
+\caption{Quadro-Síntese dos resultados, contribuições teóricas e motores computacionais desenvolvidos no projeto.}
+\label{tab:sintese}
+\end{table}
+\vspace{0.3cm}
+
+\noindent\textbf{\large Bloco I: Teoria e Algoritmos do Fluxo Máximo}\par\addvspace{0.6\baselineskip}
+
+\subsection{Base Matemática dos Grafos de Fluxo}\label{sec:base_matematica}
 
 Para a formulação rigorosa do problema de fluxo, baseamo-nos nas definições clássicas da Teoria dos Grafos e Otimização Combinatória (veja~\cite{ahuja1993network, bondy2008graph}). Uma rede de fluxo é formalmente definida como um digrafo (grafo direcionado) $D = (V, A)$, onde $V$ representa o conjunto de vértices e $A$ o conjunto de arcos.
 
 A topologia desta rede é dotada de dois vértices terminais distintos: uma origem $s \in V$ (fonte ou \textit{source}) e um destino $t \in V$ (sumidouro ou \textit{sink}). Cada arco $a \in A$, que conecta um vértice $u$ a um vizinho $v$, é representado pelo par ordenado $(u,v)$ e possui associada uma capacidade não negativa estipulada por uma função $c: A \rightarrow \mathbb{R}_{\ge 0}$. Esta capacidade $c(u,v)$ dita o limite superior do recurso (físico ou informacional) que pode transitar diretamente através desta conexão.
 
-A Figura~\ref{fig:rede_fluxo_basica} ilustra uma rede de fluxo elementar com quatro vértices, onde as capacidades estão indicadas sobre os arcos.
+A Figura~\ref{fig:rede_fluxo} ilustra uma rede de fluxo elementar com quatro vértices, onde as capacidades estão indicadas sobre os arcos.
 
 \begin{figure}[!ht]
 \centering
@@ -188,7 +283,7 @@ A Figura~\ref{fig:rede_fluxo_basica} ilustra uma rede de fluxo elementar com qua
     \draw[->] (v) -- node[below right] {$10$} (t);
 \end{tikzpicture}
 \caption{Rede de fluxo com fonte $s$, sumidouro $t$ e capacidades nos arcos.}
-\label{fig:rede_fluxo_basica}
+\label{fig:rede_fluxo}
 \end{figure}
 
 Um fluxo em $D$ é caracterizado por uma função $f: A \rightarrow \mathbb{R}_{\ge 0}$ que atribui a cada arco $(u,v)$ um valor de tráfego $f(u,v)$. Para que este roteamento seja classificado como um fluxo factível (ou viável) do ponto de vista matemático, a função $f$ deve satisfazer estritamente dois axiomas fundamentais (veja~\cite{ford1956maximal, cook1998combinatorial}):
@@ -220,7 +315,7 @@ Esta formulação matemática é de suma importância estrutural, pois o termo a
 
 Operando sobre a topologia de $D_f$, define-se um caminho aumentante como qualquer caminho simples com origem na fonte $s$ e término no sumidouro $t$. A existência de tal caminho implica de forma direta que o fluxo global $|f|$ pode ser estritamente incrementado sem violar as restrições estruturais da rede original. O incremento máximo viável ao longo deste trajeto é delimitado pelo arco de menor capacidade residual, comumente denominado arco gargalo.
 
-A Figura~\ref{fig:residual_net} ilustra uma rede com fluxo parcial e seu correspondente digrafo residual $D_f$, evidenciando os arcos diretos (capacidade ociosa) e inversos (fluxo cancelável).
+A Figura~\ref{fig:rede_residual} ilustra uma rede com fluxo parcial e seu correspondente digrafo residual $D_f$, evidenciando os arcos diretos (capacidade ociosa) e inversos (fluxo cancelável).
 
 \begin{figure}[!ht]
 \centering
@@ -261,12 +356,12 @@ A Figura~\ref{fig:residual_net} ilustra uma rede com fluxo parcial e seu corresp
 \end{scope}
 \end{tikzpicture}
 \caption{Rede com fluxo parcial (esquerda, valores $f/c$) e o digrafo residual $D_f$ resultante (direita). Arcos azuis: capacidade ociosa ($c_f > 0$). Arcos vermelhos tracejados: capacidade reversa (fluxo cancelável). Observe que o arco $(a,b)$ saturado desaparece como arco direto e só aparece como reverso.}
-\label{fig:residual_net}
+\label{fig:rede_residual}
 \end{figure}
 
 O critério de parada para os algoritmos de aumento iterativo, bem como o certificado matemático de otimalidade, é assegurado pelo Teorema do Fluxo Máximo e Corte Mínimo (\textit{Max-Flow Min-Cut Theorem}) (veja~\cite{ford1956maximal}). O teorema introduz a noção de um corte $s-t$, definido como uma partição do conjunto de vértices $V$ em dois subconjuntos mutuamente exclusivos $S$ e $T$, tais que $s \in S$ e $t \in T$. A capacidade deste corte é computada pela soma escalar das capacidades de todos os arcos originais direcionados de $S$ para~$T$.
 
-\begin{teorema}[Fluxo Máximo e Corte Mínimo --- Ford e Fulkerson, 1956][teo:max_flow_min_cut]
+\begin{teorema}[Fluxo Máximo e Corte Mínimo --- Ford e Fulkerson, 1956][teo:mfmc]
 Em qualquer rede de fluxo $D = (V, A)$ com capacidades não negativas, fonte $s$ e sumidouro $t$, o valor do fluxo máximo é estritamente igual à capacidade do corte $s-t$ mínimo:
 \begin{equation}
     \max_f |f| = \min_{(S,T)} \mathrm{cap}(S,T)
@@ -314,7 +409,7 @@ Como não há caminho aumentante, o sumidouro $t$ é inalcançável a partir de 
     \draw[dashed, orange, rounded corners, thick] (4.8,-1.0) rectangle (9.2,2.6) node[above left] {$T$};
 \end{tikzpicture}
 \caption{Corte mínimo $(S,T)$: os arcos que cruzam de $S$ para $T$ (em vermelho) estão saturados ($f = c$).}
-\label{fig:min_cut}
+\label{fig:corte_minimo}
 \end{figure}
 
 Para qualquer arco original $(u,v) \in A$ tal que $u \in S$ e $v \in T$, sabemos que $v$ não é alcançável a partir de $u$ em $D_f$. Isto implica obrigatoriamente que a capacidade residual $c_f(u,v) = 0$. Pela definição de capacidade residual, isto só ocorre se o arco original estiver completamente saturado, ou seja, $f(u,v) = c(u,v)$. De forma análoga, para qualquer arco no sentido reverso, de $T$ para $S$, o fluxo deve ser nulo ($f(v,u) = 0$), caso contrário haveria capacidade residual reversa permitindo a travessia de $S$ para $T$ (veja~\cite{cook1998combinatorial}).
@@ -329,31 +424,31 @@ A equivalência fundamental entre o valor do fluxo máximo e a capacidade do cor
 
 O Problema do Fluxo Máximo pode ser expresso canonicamente como o seguinte Programa Linear Primal:
 \begin{align}
-    \max \quad & |f| = \sum_{\{v \mid (s,v) \in A\}} f(s,v) - \sum_{\{u \mid (u,s) \in A\}} f(u,s) \label{eq:lp_primal_obj} \\
-    \text{sujeito a} \quad & \sum_{\{w \mid (v,w) \in A\}} f(v,w) - \sum_{\{u \mid (u,v) \in A\}} f(u,v) = 0, \quad \forall v \in V \setminus \{s, t\} \label{eq:lp_primal_conservation} \\
-    & 0 \le f(u,v) \le c(u,v), \quad \forall (u,v) \in A \label{eq:lp_primal_capacity}
+    \max \quad & |f| = \sum_{\{v \mid (s,v) \in A\}} f(s,v) - \sum_{\{u \mid (u,s) \in A\}} f(u,s) \label{eq:primal_obj} \\
+    \text{sujeito a} \quad & \sum_{\{w \mid (v,w) \in A\}} f(v,w) - \sum_{\{u \mid (u,v) \in A\}} f(u,v) = 0, \quad \forall v \in V \setminus \{s, t\} \label{eq:primal_conservacao} \\
+    & 0 \le f(u,v) \le c(u,v), \quad \forall (u,v) \in A \label{eq:primal_capacidade}
 \end{align}
 
 Para derivar o Programa Linear Dual correspondente, associamos multiplicadores de Lagrange (variáveis duais) às restrições estruturais do primal:
 \begin{enumerate}
-    \item Para cada restrição de conservação de fluxo no vértice intermediário $v \in V \setminus \{s,t\}$ (Equação~\ref{eq:lp_primal_conservation}), introduz-se uma variável dual irrestrita em sinal $p(v) \in \mathbb{R}$, interpretável fisicamente como um \textbf{potencial nodal}. Para uniformizar a formulação em todos os vértices da rede, convencionam-se as condições de contorno nos terminais como $p(s) = 1$ e $p(t) = 0$.
-    \item Para cada restrição de capacidade superior $f(u,v) \le c(u,v)$ (Equação~\ref{eq:lp_primal_capacity}), introduz-se uma variável dual não negativa $d(u,v) \ge 0$, que quantifica a \textbf{tensão} ou o desnível de potencial incidente ao longo do arco direcionado $(u,v)$.
+    \item Para cada restrição de conservação de fluxo no vértice intermediário $v \in V \setminus \{s,t\}$ (Equação~\ref{eq:primal_conservacao}), introduz-se uma variável dual irrestrita em sinal $p(v) \in \mathbb{R}$, interpretável fisicamente como um \textbf{potencial nodal}. Para uniformizar a formulação em todos os vértices da rede, convencionam-se as condições de contorno nos terminais como $p(s) = 1$ e $p(t) = 0$.
+    \item Para cada restrição de capacidade superior $f(u,v) \le c(u,v)$ (Equação~\ref{eq:primal_capacidade}), introduz-se uma variável dual não negativa $d(u,v) \ge 0$, que quantifica a \textbf{tensão} ou o desnível de potencial incidente ao longo do arco direcionado $(u,v)$.
 \end{enumerate}
 
 Pela teoria clássica da dualidade linear, a maximização do fluxo converte-se na minimização do produto escalar das capacidades pelas tensões dos arcos. O Programa Linear Dual resultante assume a forma:
 \begin{align}
-    \min \quad & \sum_{(u,v) \in A} c(u,v) \cdot d(u,v) \label{eq:lp_dual_obj} \\
-    \text{sujeito a} \quad & d(u,v) - p(u) + p(v) \ge 0, \quad \forall (u,v) \in A \label{eq:lp_dual_tension} \\
+    \min \quad & \sum_{(u,v) \in A} c(u,v) \cdot d(u,v) \label{eq:dual_obj} \\
+    \text{sujeito a} \quad & d(u,v) - p(u) + p(v) \ge 0, \quad \forall (u,v) \in A \label{eq:dual_tensao} \\
     & d(u,v) \ge 0, \quad \forall (u,v) \in A \\
     & p(s) = 1, \quad p(t) = 0, \quad p(v) \in \mathbb{R}, \quad \forall v \in V
 \end{align}
 
-A interpretação da inequação~\eqref{eq:lp_dual_tension} é intuitiva: para qualquer arco $(u,v)$, a variável $d(u,v)$ deve satisfazer $d(u,v) \ge p(u) - p(v)$. Como o objetivo de minimização~\eqref{eq:lp_dual_obj} possui coeficientes não negativos ($c(u,v) \ge 0$), a solução ótima dual adotará o menor valor viável:
+A interpretação da inequação~\eqref{eq:dual_tensao} é intuitiva: para qualquer arco $(u,v)$, a variável $d(u,v)$ deve satisfazer $d(u,v) \ge p(u) - p(v)$. Como o objetivo de minimização~\eqref{eq:dual_obj} possui coeficientes não negativos ($c(u,v) \ge 0$), a solução ótima dual adotará o menor valor viável:
 \begin{equation}
     d(u,v) = \max\{0, \, p(u) - p(v)\}
 \end{equation}
 
-Em um programa linear arbitrário, as variáveis duais $p(v)$ poderiam assumir valores contínuos fracionários no intervalo $[0, 1]$. Contudo, a matriz de coeficientes do sistema de restrições deste problema é a transposta da matriz de incidência do digrafo $D$. Como demonstrado formalmente adiante no Teorema da Subseção~\ref{subsec:tum}, a matriz de incidência de qualquer digrafo direcionado é \textbf{Totalmente Unimodular (TUM)}.
+Em um programa linear arbitrário, as variáveis duais $p(v)$ poderiam assumir valores contínuos fracionários no intervalo $[0, 1]$. Contudo, a matriz de coeficientes do sistema de restrições deste problema é a transposta da matriz de incidência do digrafo $D$. Como demonstrado formalmente adiante no Teorema da Subseção~\ref{sec:tum_secao}, a matriz de incidência de qualquer digrafo direcionado é \textbf{Totalmente Unimodular (TUM)}.
 
 Pela teoria dos Poliedros e da Programação Inteira (veja~\cite{cook1998combinatorial, korte2018combinatorial}), a total unimodularidade da matriz de restrições garante que \textbf{todos os vértices do poliedro dual são estritamente inteiros}. Consequentemente, para qualquer vetor de capacidades inteiras, existe uma solução básica ótima dual onde os potenciais nodais assumem exclusivamente valores binários:
 \begin{equation}
@@ -373,7 +468,7 @@ Avaliando agora o valor das variáveis de arco $d^*(u,v) = \max\{0, \, p^*(u) - 
         0, & \text{caso contrário (se } u,v \text{ estão no mesmo lado, ou se } u \in T, \, v \in S).
     \end{cases}
 \end{equation}
-Substituindo $d^*(u,v)$ diretamente na função objetivo dual~\eqref{eq:lp_dual_obj}:
+Substituindo $d^*(u,v)$ diretamente na função objetivo dual~\eqref{eq:dual_obj}:
 \begin{equation}
     \sum_{(u,v) \in A} c(u,v) \cdot d^*(u,v) = \sum_{u \in S, \, v \in T} c(u,v) = \text{cap}(S, T)
 \end{equation}
@@ -418,11 +513,11 @@ O novo fluxo $f_{k+1}$ é obtido somando ou subtraindo $\delta_k$:
 $$f_{k+1}(u,v) = \begin{cases} f_k(u,v) + \delta_k, & \text{se } (u,v) \in P \text{ é direto} \\ f_k(u,v) - \delta_k, & \text{se } (v,u) \in P \text{ é reverso} \\ f_k(u,v), & \text{caso contrário} \end{cases}$$
 Como a soma e subtração de inteiros é fechada em $\mathbb{Z}$, temos $f_{k+1}(u,v) \in \mathbb{Z}$ para todo $(u,v) \in A$.
 
-Por fim, como as capacidades originais são finitas, a capacidade de qualquer corte $s-t$ é finita. Visto que cada iteração estritamente aumenta o fluxo em pelo menos uma unidade inteira ($\delta_k \ge 1$), o algoritmo atinge a condição de ausência de caminhos aumentantes em um número finito de passos. Pelo Teorema~\ref{teo:max_flow_min_cut}, o fluxo final $f^*$ é máximo e estritamente inteiro. \end{demonstracao}
+Por fim, como as capacidades originais são finitas, a capacidade de qualquer corte $s-t$ é finita. Visto que cada iteração estritamente aumenta o fluxo em pelo menos uma unidade inteira ($\delta_k \ge 1$), o algoritmo atinge a condição de ausência de caminhos aumentantes em um número finito de passos. Pelo Teorema~\ref{teo:mfmc}, o fluxo final $f^*$ é máximo e estritamente inteiro. \end{demonstracao}
 
 \implicacoes{e o Poder das Reduções Combinatórias} A consequência algorítmica deste teorema é extraordinária: embora a formulação padrão de fluxo máximo seja um programa linear contínuo, não é necessário impor restrições explícitas de integralidade ($\mathbb{Z}$) --- que em problemas gerais transformam formulações polinomiais em problemas $\mathcal{NP}$-difíceis. A integralidade natural garante que a solução ótima do programa contínuo coincide com um vértice inteiro do poliedro de fluxos. Isso permite modelar problemas de otimização combinatória puramente discretos (como emparelhamentos, alocações de tarefas, escalonamento e cobertura) diretamente como redes de fluxo contínuas, resolvendo-os em tempo estritamente polinomial.
 
-\textbf{Observação crítica:} Além da mera existência, todos os algoritmos implementados neste projeto --- Ford-Fulkerson, Edmonds-Karp, Dinic e Push-Relabel --- constroem \emph{exatamente} este fluxo inteiro ao longo de toda a execução, pois partem de um fluxo nulo inteiro e efetuam incrementos inteiros em cada passo. Não se trata de uma mera garantia de existência: é uma propriedade construtiva. Esta é a razão pela qual todas as reduções apresentadas nas seções seguintes (emparelhamento bipartido, caminhos disjuntos, etc.) tratam o fluxo obtido diretamente como uma solução inteira, sem necessidade de arredondamento ou pós-processamento. Vale ressaltar que, sob a perspectiva da Programação Linear e da Otimização Poliedral, a garantia algébrica fundamental de que os poliedros de fluxo possuem exclusivamente vértices inteiros decorre da \textbf{Total Unimodularidade} da matriz de incidência da rede, propriedade formalmente demonstrada na Subseção~\ref{subsec:tum}.
+\textbf{Observação crítica:} Além da mera existência, todos os algoritmos implementados neste projeto --- Ford-Fulkerson, Edmonds-Karp, Dinic e Push-Relabel --- constroem \emph{exatamente} este fluxo inteiro ao longo de toda a execução, pois partem de um fluxo nulo inteiro e efetuam incrementos inteiros em cada passo. Não se trata de uma mera garantia de existência: é uma propriedade construtiva. Esta é a razão pela qual todas as reduções apresentadas nas seções seguintes (emparelhamento bipartido, caminhos disjuntos, etc.) tratam o fluxo obtido diretamente como uma solução inteira, sem necessidade de arredondamento ou pós-processamento. Vale ressaltar que, sob a perspectiva da Programação Linear e da Otimização Poliedral, a garantia algébrica fundamental de que os poliedros de fluxo possuem exclusivamente vértices inteiros decorre da \textbf{Total Unimodularidade} da matriz de incidência da rede, propriedade formalmente demonstrada na Subseção~\ref{sec:tum_secao}.
 
 \subsection{Arquitetura Orientada a Objetos e Estruturas de Dados}
 
@@ -451,7 +546,7 @@ No escopo da interface pública, para contornar as restrições de instanciaçã
 Por fim, a classe expõe a interface polimórfica primária \lstinline{compute_max_flow(Size source, Size sink)}, um método virtual puro que atua como um contrato estrutural obrigatório para todas as subclasses. Além disso, para viabilizar a extração de resultados práticos após a convergência do fluxo (como a identificação das conexões ativas em um Emparelhamento Bipartido Máximo), a classe provê o método \lstinline{get_edges()}. O retorno da estrutura através de uma referência constante (\lstinline{const &}) permite a leitura externa de toda a malha de arcos sem comprometer o rigor e a segurança do encapsulamento orientado a objetos. A consolidação estrutural de todas estas decisões arquiteturais e a definição completa da interface C++ encontram-se detalhadas no Código~\ref{lst:flownetwork} (disponível no Apêndice~\ref{ap:flownetwork}).
 
 \subsection{A Abordagem Primal: Algoritmos de Caminhos Aumentantes}
-\label{subsec:primal_flow}
+\label{sec:fluxo_primal}
 
 A vertente primal para a resolução do Problema do Fluxo Máximo fundamenta-se na preservação irrestrita da \textbf{viabilidade das restrições de fluxo} ao longo de todas as etapas de execução. Sob esta ótica, a lei de conservação de fluxo nos nós intermediários ($\sum f_{in} = \sum f_{out}$) e os limites de capacidade nos arcos ($0 \le f \le c$) jamais são violados em nenhuma iteração.
 
@@ -519,7 +614,7 @@ A materialização desta heurística, utilizando a herança e o encapsulamento o
   \draw[->, black] (a) -- node[right, font=\footnotesize, text=black] {$c=2$} (b);
 \end{tikzpicture}
 \caption{O Algoritmo de Edmonds-Karp utiliza busca em largura (BFS) na rede residual para encontrar sempre o caminho aumentante mais curto (em número de arestas). Na figura, embora o caminho inferior $s \to b \to c \to t$ suporte maior fluxo gargalo ($c=10$), a BFS garante a escolha imediata do caminho superior $s \to a \to t$ (azul tracejado), por ser topologicamente mais curto (comprimento 2 versus 3). Os níveis descobertos pela BFS são indicados entre parênteses.}
-\label{fig:edmonds_karp_bfs}
+\label{fig:edmonds_karp}
 \end{figure}
 
 \subsubsection{O Algoritmo de Dinic}
@@ -573,11 +668,11 @@ A materialização destas otimizações de estado na arquitetura C++ encontra-se
 
 \end{tikzpicture}
 \caption{Digrafo de Níveis no Algoritmo de Dinic (organizado em colunas, onde cada coluna da esquerda para a direita representa um nível crescente). Arcos azuis são os arcos admissíveis (avançam exatamente um nível: $d(v) = d(u)+1$), que compõem o Digrafo de Níveis. Arcos cinza tracejados são excluídos por não avançarem nível. O Fluxo Bloqueador é extraído apenas sobre os arcos azuis.}
-\label{fig:level_graph}
+\label{fig:grafo_niveis}
 \end{figure}
 
 \subsection{A Abordagem Dual: Algoritmos de Pré-fluxo e Alturas (Família Push-Relabel)}
-\label{subsec:preflow}
+\label{sec:prefluxo}
 
 Em contraposição direta à abordagem primal de caminhos aumentantes detalhada na subseção anterior, a família de algoritmos concebida por Andrew Goldberg e Robert Tarjan em 1988 (veja~\cite{goldberg1988new}) estabelece a \textbf{vertente dual} por excelência na resolução do Fluxo Máximo.
 
@@ -625,7 +720,7 @@ A terceira condição garante que o excesso não despencará em ``quedas livres'
   \draw[->] (c) -- node[above, font=\footnotesize] {3} (t);
 \end{tikzpicture}
 \caption{Exemplo de um pré-fluxo em que a conservação de fluxo é relaxada. Vértices intermediários como $a$ e $c$ podem possuir excesso positivo ($e(u) > 0$), tornando-os ativos (destacados em amarelo).}
-\label{fig:preflow_example}
+\label{fig:prefluxo}
 \end{figure}
 
 \subsubsection{A Família Push-Relabel}
@@ -680,7 +775,7 @@ A eficiência global do algoritmo é intrinsecamente dependente da política de 
 \draw[->,green!60!black,line width=1.5pt] (r3) -- node[above,font=\footnotesize] {admissível!} (r4);
 \end{tikzpicture}
 \caption{Operações elementares do Push-Relabel. Esquerda: Push admissível de $u$ para $v$ (arco com $c_f > 0$ e $h(u)=h(v)+1$), transferindo $\delta = \min(e(u),c_f)$ de fluxo. Direita: Relabel de $u$ quando não há arco admissível --- a altura é ajustada para criar um novo declive.}
-\label{fig:push_relabel_ops}
+\label{fig:push_relabel}
 \end{figure}
 
 \subsubsection{Cuidados na Inicialização e Aritmética de Infinitos}
@@ -688,13 +783,13 @@ Durante a inicialização do pré-fluxo, é vital saturar os arcos adjacentes à
 
 Em implementações ingênuas, é comum atribuir à fonte um excesso infinito estático (\lstinline{excess[source] = INF}) e reaproveitar a operação de empurrar genérica. No entanto, em domínios matemáticos como Segmentação de Imagens (onde restrições rígidas são modeladas com arcos de capacidade literalmente igual a \lstinline{INF}), essa abordagem colapsa por limites aritméticos da arquitetura computacional. Como \lstinline{INF} em C++ é uma constante discreta em limite de representação inteira, empurrar \lstinline{INF} de fluxo subtrai integralmente o estoque em uma única iteração (\lstinline{INF - INF = 0}), esgotando artificialmente a fonte e causando paralisação prematura do pré-fluxo. Para evitar este problema e garantir o funcionamento seguro em qualquer domínio de rede, a inicialização correta injeta diretamente o valor integral da capacidade do arco (\lstinline{push_flow(edge_id, cap)}) abstendo-se completamente de rastrear ou subtrair recursos do vértice de origem.
 
-\subsubsection{Otimização Empírica: A Heurística de Lacuna (\textit{Gap Heuristic})}
+\subsubsection{Otimização Empírica: A Heurística de Lacuna (\textit{Gap Heuristic})}\label{sec:push_relabel_gap}
 
 O gargalo crítico a ser suprimido é o elevado número de operações de \textit{Relabel} redundantes: sem nenhuma heurística, um vértice ativo pode ser rerrotulado $\mathcal{O}(|V|)$ vezes, e com $|V|$ vértices, isto pode gerar $\mathcal{O}(|V|^2)$ relabels por saturação de arco. A literatura moderna incorpora uma modificação estrutural conhecida como Heurística de Lacuna (\textit{Gap Heuristic}) para atenuar este custo. A arquitetura do sistema é expandida para manter um histograma dinâmico (\textit{array} de frequências) que registra em tempo constante o número exato de vértices presentes em cada estrato de altura da rede.
 
 A fundamentação desta heurística baseia-se na observação de descontinuidades no histograma de alturas. Se, após uma operação de \textit{relabel}, um determinado nível topológico $k$ (onde $0 < k < |V|$) esvaziar-se completamente, forma-se uma lacuna (\textit{gap}). A existência desta lacuna implica que o sumidouro $t$ tornou-se inalcançável para todo vértice com altura estritamente superior a $k$.
 
-A validade matemática desta dedução reside na invariante de altura do \textit{Push-Relabel}. Em qualquer rede residual válida, a diferença de altura em uma aresta $(u,v)$ obedece rigorosamente à regra $h(u) \le h(v) + 1$. Isso significa que o fluxo pode descer, no máximo, um único nível topológico por passo (um ``degrau'' de cada vez). Portanto, para que exista um caminho residual de um vértice acima da lacuna (ex: $h(u) = 4$) até o sumidouro ($h(t) = 0$), a rota \textbf{necessariamente} precisaria visitar pelo menos um vértice no nível $k$. Se o nível $k$ está vazio (lacuna), é matematicamente impossível ``pular'' o degrau. O caminho é fisicamente quebrado, provando que $t$ é inalcançável. A Figura~\ref{fig:gap_proof} ilustra esta propriedade visualmente.
+A validade matemática desta dedução reside na invariante de altura do \textit{Push-Relabel}. Em qualquer rede residual válida, a diferença de altura em uma aresta $(u,v)$ obedece rigorosamente à regra $h(u) \le h(v) + 1$. Isso significa que o fluxo pode descer, no máximo, um único nível topológico por passo (um ``degrau'' de cada vez). Portanto, para que exista um caminho residual de um vértice acima da lacuna (ex: $h(u) = 4$) até o sumidouro ($h(t) = 0$), a rota \textbf{necessariamente} precisaria visitar pelo menos um vértice no nível $k$. Se o nível $k$ está vazio (lacuna), é matematicamente impossível ``pular'' o degrau. O caminho é fisicamente quebrado, provando que $t$ é inalcançável. A Figura~\ref{fig:gap_prova} ilustra esta propriedade visualmente.
 
 \begin{figure}[!ht]
 \centering
@@ -721,7 +816,7 @@ A validade matemática desta dedução reside na invariante de altura do \textit
   
 \end{tikzpicture}
 \caption{Prova visual de inalcançabilidade na Heurística de Lacuna. A invariante de altura ($h(u) \le h(v) + 1$) obriga que caminhos residuais desçam no máximo 1 nível por aresta. A inexistência de vértices no nível $h=3$ quebra qualquer possibilidade de formação de ``degraus'' caindo de $h=4$ para os níveis inferiores, separando o grafo residual.}
-\label{fig:gap_proof}
+\label{fig:gap_prova}
 \end{figure}
 
 A heurística intervém na rede ao detectar a lacuna, elevando a altura de todos os vértices acima de $k$ para o patamar de isolamento ($|V| + 1$) (veja~\cite{korte2018combinatorial}). Esta operação reduz o número de operações de \textit{relabel} redundantes, otimizando a convergência do algoritmo em grafos densos (veja~\cite{goldberg1988new}).
@@ -754,7 +849,7 @@ A heurística intervém na rede ao detectar a lacuna, elevando a altura de todos
 \end{scope}
 \end{tikzpicture}
 \caption{Gap Heuristic: (a) após um relabel, o nível $k=3$ esvazia-se (lacuna formada). (b) Todos os vértices com $h > k$ têm suas alturas definidas para $|V|+1$, isolando-os da rede e evitando relabels redundantes.}
-\label{fig:gap_heuristic}
+\label{fig:gap_heuristica}
 \end{figure}
 
 \subsubsection{Política de Seleção: FIFO vs. Highest Label}
@@ -793,12 +888,12 @@ Push-Relabel (Highest Label) & $\mathcal{O}(|V|^2 \sqrt{|A|})$ & Seleção por m
 \hline
 \end{tabular}
 \caption{Comparação das complexidades assintóticas e estratégias dos algoritmos de fluxo máximo implementados.}
-\label{tab:complexidades}
+\label{tab:max_flow}
 \end{table}
 
-\subsubsection{Síntese Comparativa: Primalidade versus Dualidade no Fluxo Máximo}
+\subsubsection{Síntese Comparativa: Primalidade versus Dualidade no Fluxo Máximo}\label{sec:sintese_max_flow}
 
-A Tabela~\ref{tab:complexidades} sintetiza a simetria conceitual construída ao longo do estudo do Fluxo Máximo. O problema revela-se não como um agregado disperso de heurísticas computacionais, mas como um campo estruturado por duas forças matemáticas complementares que convergem para a mesma fronteira ótima garantida pelo Teorema de Ford-Fulkerson:
+A Tabela~\ref{tab:max_flow} sintetiza a simetria conceitual construída ao longo do estudo do Fluxo Máximo. O problema revela-se não como um agregado disperso de heurísticas computacionais, mas como um campo estruturado por duas forças matemáticas complementares que convergem para a mesma fronteira ótima garantida pelo Teorema de Ford-Fulkerson:
 \begin{itemize}
     \item \textbf{A Vertente Primal (Caminhos Aumentantes):} Ancora-se estritamente no espaço das soluções viáveis físicas. O fluxo é roteado por percursos globais $s \leadsto t$, aumentando o valor da função objetivo passo a passo até que a capacidade do corte mínimo seja atingida. Nesta categoria, o algoritmo de Dinic destaca-se como o motor de maior eficiência, reduzindo drasticamente o trabalho assintótico ao consolidar múltiplos aumentos por fase através de fluxos bloqueadores no Digrafo de Níveis.
     \item \textbf{A Vertente Dual (Alturas e Pré-fluxo):} Inicia o processo na fronteira de corte ótimo e atua no espaço das soluções infezíveis (pré-fluxos com excessos nodais). Suas decisões são puramente locais e assíncronas, dispensando buscas globais de caminhos pela rede e propagando o fluido por gradientes topológicos induzidos pelas alturas $h(v)$. A variante \textit{Highest Label} combinada com a heurística de lacunas (\textit{Gap Heuristic}) atinge o limite de $\mathcal{O}(|V|^2 \sqrt{|A|})$, consagrando-se como a implementação de melhor desempenho empírico e assintótico em grafos densos dentre os resolvedores desenvolvidos.
@@ -806,7 +901,10 @@ A Tabela~\ref{tab:complexidades} sintetiza a simetria conceitual construída ao 
 
 Essa dualidade algorítmica oferece um arcabouço robusto para a engenharia de software: enquanto o Dinic sobressai-se em redes esparsas e unitárias (como nas reduções bipartidas), o Push-Relabel com Gap Heuristic domina grafos densos e de alta capacidade (como na segmentação de imagens). Esse leque de motores fornece o ferramental exato para as reduções a problemas de otimização combinatória analisadas na sequência.
 
-\subsection{Reduções e Aplicações Combinatórias em Grafos Bipartidos}
+\vspace{0.8cm}
+\noindent\textbf{\large Bloco II: Reduções Combinatórias e Aplicações}\par\addvspace{0.6\baselineskip}
+
+\subsection{Reduções e Aplicações Combinatórias em Grafos Bipartidos}\label{sec:bipartidos}
 O Problema do Fluxo Máximo é frequentemente utilizado como base para resolver outros problemas de otimização combinatória via redução polinomial (veja~\cite{cook1998combinatorial}). O processo consiste em mapear a instância de um problema original para uma rede de fluxo equivalente, computar o fluxo máximo e traduzir o estado da rede residual de volta para a solução do problema original.
 
 Um digrafo $D = (V, A)$ é classificado como bipartido se o seu conjunto de vértices $V$ puder ser particionado em dois subconjuntos disjuntos independentes, convencionalmente denotados por $L$ (esquerdo) e $R$ (direito), de modo que todo arco $a \in A$ conecte obrigatoriamente um vértice de $L$ a um vértice de $R$. Esta topologia é a estrutura canônica para a modelagem de sistemas de alocação bidirecional.
@@ -859,7 +957,7 @@ Consequentemente, a restrição de capacidade unitária nos arcos conectados à 
 \end{scope}
 \end{tikzpicture}
 \caption{Redução do Emparelhamento Bipartido a Fluxo Máximo. (a) Grafo bipartido original com $L = \{l_1,l_2,l_3\}$ e $R = \{r_1,r_2,r_3\}$. (b) Rede de fluxo $D'$: arcos de $s$ para $L$ e de $R$ para $t$ com capacidade~1; arcos de $L$ para $R$ herdados do grafo original. Arcos azuis grossos indicam o emparelhamento máximo obtido pelo fluxo máximo $|f^*|=3$.}
-\label{fig:bipartite_flow}
+\label{fig:fluxo_bipartido}
 \end{figure}
 
 \subsubsection{Cobertura de Vértices Mínima e o Teorema de König}
@@ -878,7 +976,7 @@ Em qualquer grafo bipartido $G = (V, E)$, a cardinalidade de um emparelhamento m
 \intuicao{Geométrica e a Barreira Bipartida} Em um grafo geral, encontrar uma cobertura mínima de vértices é notoriamente $\mathcal{NP}$-difícil, pois os vértices podem cobrir arestas em múltiplos ciclos ímpares de maneira intrincada e conflitante. No entanto, em um grafo bipartido, a ausência de ciclos ímpares cria uma barreira perfeitamente orientável entre as duas partições $L$ e $R$. Se interpretarmos o emparelhamento como a seleção de caminhos disjuntos de comprimento 1 entre $L$ e $R$, qualquer cobertura de vértices deve interceptar obrigatoriamente cada uma dessas arestas independentes, impondo que $|C| \ge |M|$. A elegância de König consiste em provar que, no mundo bipartido, essa desigualdade atinge a igualdade estrita: não há ``desperdício combinatório''. O conjunto de vértices de gargalo que estrangula o fluxo entre $L$ e $R$ em um corte mínimo corresponde exatamente ao menor conjunto de nós capaz de cobrir todas as arestas do grafo.
 
 \begin{demonstracao}
-Sob a ótica da teoria de redes, o Teorema de König é uma manifestação estrutural direta do Teorema do Fluxo Máximo e Corte Mínimo de Ford-Fulkerson (Teorema~\ref{teo:max_flow_min_cut}) aplicado à modelagem com superfonte e supersumidouro (veja~\cite{ahuja1993network}).
+Sob a ótica da teoria de redes, o Teorema de König é uma manifestação estrutural direta do Teorema do Fluxo Máximo e Corte Mínimo de Ford-Fulkerson (Teorema~\ref{teo:mfmc}) aplicado à modelagem com superfonte e supersumidouro (veja~\cite{ahuja1993network}).
 
 A extração computacional dos vértices que compõem a cobertura mínima exige uma análise minuciosa da rede residual $D_f$ gerada logo após a convergência do fluxo máximo. Na implementação computacional do resolvedor do problema \textit{Minimum Vertex Cover}, a recuperação do conjunto $C$ é realizada através do seguinte procedimento algorítmico baseado em cortes mínimos:
 
@@ -935,7 +1033,7 @@ A solidez desta extração reside no fato de que, pelas propriedades de conserva
   
 \end{tikzpicture}
 \caption{Teorema de König: a BFS no digrafo residual $D_f$ particiona os vértices em $S$ (verde) e $T$ (vermelho). Os arcos de $S$ para $T$ (vermelhos) definem o corte mínimo. A cobertura mínima é construída por $C = (L\cap T) \cup (R \cap S)$, correspondendo aos vértices com borda dupla. Com isso, fica provado visualmente que $|C| = |M| = 2$. Arestas azuis grossas representam o emparelhamento $M$.}
-\label{fig:konig_cut}
+\label{fig:konig_corte}
 \end{figure}
 
 \subsubsection{Conjunto Independente Máximo}
@@ -995,7 +1093,7 @@ A cardinalidade do Conjunto Independente Máximo é dada algebricamente por $|I|
   \end{scope}
 \end{tikzpicture}
 \caption{Relação de complementaridade entre a Cobertura de Vértices e o Conjunto Independente Máximo. Os nós em evidência (borda dupla) formam os respectivos conjuntos, demonstrando visualmente que $I = V \setminus C$ e que não há arcos entre nós de $I$.}
-\label{fig:independent_set}
+\label{fig:conjunto_independente}
 \end{figure}
 
 \subsubsection{Cobertura de Arcos Mínima}
@@ -1058,7 +1156,7 @@ As relações $|M^*| = |C_V^*|$ (König) e $|I^*| + |C_V^*| = |V|$ e $|M^*| + |F
   \draw[<->, dashed] (mis) -- node[sloped, above, font=\footnotesize, pos=0.25] {Gallai (Derivado)} node[sloped, below, font=\footnotesize, pos=0.25] {$|I| = |F|$} (mec);
 \end{tikzpicture}
 \caption{As quatro dualidades fundamentais em grafos bipartidos. Setas indicam as relações e teoremas que conectam os problemas de maximização e minimização sobre vértices e arcos.}
-\label{fig:four_dualities}
+\label{fig:quatro_dualidades}
 \end{figure}
 
 \subsubsection{O Teorema do Casamento de Hall}
@@ -1124,7 +1222,7 @@ Isso resulta em $|C| \ge |L|$, o que contradiz frontalmente o fato estabelecido 
     \node[above] at (3,3.5) {$R$};
 \end{tikzpicture}
 \caption{Emparelhamento $L$-saturante (arestas azuis) em um grafo bipartido: cada vértice de $L$ é coberto. A condição de Hall $|N(S)| \ge |S|$ é satisfeita para todo $S \subseteq L$.}
-\label{fig:hall_matching}
+\label{fig:hall_casamento}
 \end{figure}
 
 \subsubsection{Equivalência com Algoritmos Dedicados e o Colapso do Grafo Residual}
@@ -1147,7 +1245,7 @@ Essa correspondência estabelece uma equivalência algorítmica e assintótica d
     \item \textbf{Hopcroft-Karp vs. Dinic:} O Algoritmo de Hopcroft-Karp divide a execução em fases: uma BFS simultânea a partir de todos os vértices livres de $L$ determina o comprimento $k$ do menor caminho aumentante, seguida por uma DFS que extrai um conjunto maximal de caminhos disjuntos de comprimento $k$. Como o comprimento dos caminhos estritamente cresce a cada fase ($k_1 < k_2 < \dots$), o número de fases é limitado por $\mathcal{O}(\sqrt{|V|})$, garantindo a complexidade ótima de $\mathcal{O}(|A| \sqrt{|V|})$ (veja~\cite{korte2018combinatorial}). Esta dinâmica é rigorosamente idêntica ao comportamento do algoritmo de Dinic operando sobre a rede unitária $D'$.
 \end{itemize}
 
-\textbf{Extensão Ponderada e o Algoritmo Húngaro:} Quando custos ou pesos são associados aos emparelhamentos (problema de atribuição ponderada de custo mínimo), a extensão natural desta equivalência conduz ao célebre \textbf{Algoritmo Húngaro de Kuhn e Munkres} (veja~\cite{kuhn1955hungarian}). Sob a perspectiva de redes, este método corresponde formalmente ao algoritmo \textit{Successive Shortest Path} operando com potenciais nodais --- cuja formulação completa e fundamentação teórica de custos reduzidos são detalhadas adiante na Subseção~\ref{subsec:successive_shortest_path} no contexto de Fluxo de Custo Mínimo.
+\textbf{Extensão Ponderada e o Algoritmo Húngaro:} Quando custos ou pesos são associados aos emparelhamentos (problema de atribuição ponderada de custo mínimo), a extensão natural desta equivalência conduz ao célebre \textbf{Algoritmo Húngaro de Kuhn e Munkres} (veja~\cite{kuhn1955hungarian}). Sob a perspectiva de redes, este método corresponde formalmente ao algoritmo \textit{Successive Shortest Path} operando com potenciais nodais --- cuja formulação completa e fundamentação teórica de custos reduzidos são detalhadas adiante na Subseção~\ref{sec:ssp} no contexto de Fluxo de Custo Mínimo.
 
 \subsection{Conectividade e Roteamento}
 
@@ -1198,18 +1296,18 @@ Esta transformação impõe uma restrição de capacidade nos vértices: ao for�
 \end{scope}
 \end{tikzpicture}
 \caption{Vertex Splitting: cada vértice intermediário $v$ é dividido em $v_{in}$ e $v_{out}$, conectados por um arco interno de capacidade~1 (vermelho). Isso limita o fluxo passando por $v$ a no máximo 1 unidade, modelando caminhos disjuntos por vértices.}
-\label{fig:vertex_splitting}
+\label{fig:divisao_vertices}
 \end{figure}
 
 \subsubsection{O Teorema de Menger e as Dualidades da Conectividade}
 
 A determinação empírica do número de rotas independentes resolve o aspecto operacional do roteamento, mas a análise de vulnerabilidade estrutural da rede exige a identificação precisa de seus pontos críticos de falha. A teoria que unifica a maximização de trajetos disjuntos com a minimização de desconexões foi formulada por Karl Menger em 1927, estabelecendo um dos pilares mais elegantes da Otimização Combinatória (veja~\cite{cook1998combinatorial}).
 
-Sob a perspectiva da teoria de redes, o Teorema de Menger revela-se como uma manifestação direta do Teorema do Fluxo Máximo e Corte Mínimo de Ford-Fulkerson (Teorema~\ref{teo:max_flow_min_cut}) aplicado sobre capacidades unitárias (veja~\cite{ahuja1993network}).
+Sob a perspectiva da teoria de redes, o Teorema de Menger revela-se como uma manifestação direta do Teorema do Fluxo Máximo e Corte Mínimo de Ford-Fulkerson (Teorema~\ref{teo:mfmc}) aplicado sobre capacidades unitárias (veja~\cite{ahuja1993network}).
 
 \intuicao{de Gargalo e Conectividade Estrutural} A intuição fundamental de Menger reside na equivalência física entre largura de banda e vulnerabilidade topológica: se imaginarmos cada caminho disjunto como um canal independente capaz de conduzir uma unidade de fluxo de $s$ a $t$, a única maneira de interromper a comunicação entre esses terminais é bloquear todos os canais simultaneamente. Como os caminhos não compartilham elementos críticos (sejam arcos ou vértices intermediários), qualquer conjunto de corte capaz de desconectar a rede deve interceptar obrigatoriamente cada um desses canais independentes. A igualdade min-max assegura que o número de rotas paralelas que o grafo suporta sem interferência mútua é estritamente limitado pelo menor estrangulamento topológico da rede. O resultado desdobra-se em duas formulações complementares:
 
-\begin{teorema}[Menger --- Versão por Arcos, 1927][teo:menger_edges]
+\begin{teorema}[Menger --- Versão por Arcos, 1927][teo:menger_arcos]
 Seja $D = (V, A)$ um digrafo e sejam $s, t \in V$ dois vértices distintos e não adjacentes. O número máximo de caminhos direcionados de $s$ a $t$ disjuntos por arcos é estritamente igual ao número mínimo de arcos cuja remoção desconecta todo caminho de $s$ a $t$:
 \begin{equation}
     \max\{\text{caminhos $st$-disjuntos por arcos}\} = \min\{\text{arcos cuja remoção desconecta $s$ de $t$}\}.
@@ -1217,7 +1315,7 @@ Seja $D = (V, A)$ um digrafo e sejam $s, t \in V$ dois vértices distintos e nã
 \end{teorema}
 
 \begin{demonstracao}
-Atribui-se capacidade unitária $c(u,v) = 1$ a cada arco $(u,v) \in A$. Pelo Teorema da Integralidade (Teorema~\ref{teo:integralidade}), existe um fluxo máximo inteiro viável $f$ onde $f(u,v) \in \{0, 1\}$. Cada arco com $f(u,v) = 1$ pertence a exatamente um trajeto aumentante de $s$ a $t$, de modo que dois caminhos não podem compartilhar arcos. Logo, o fluxo máximo $|f^*|$ é rigorosamente o número de caminhos $st$-disjuntos por arcos. Pelo Teorema do Fluxo Máximo e Corte Mínimo (Teorema~\ref{teo:max_flow_min_cut}), $|f^*| = \text{cap}(S,T)$ para algum corte mínimo $(S,T)$. Como cada arco cruzando de $S$ para $T$ possui capacidade unitária, a capacidade do corte é precisamente o número mínimo de arcos cuja remoção destrói todo caminho residual de $s$ a $t$, desconectando a rede. \end{demonstracao}
+Atribui-se capacidade unitária $c(u,v) = 1$ a cada arco $(u,v) \in A$. Pelo Teorema da Integralidade (Teorema~\ref{teo:integralidade}), existe um fluxo máximo inteiro viável $f$ onde $f(u,v) \in \{0, 1\}$. Cada arco com $f(u,v) = 1$ pertence a exatamente um trajeto aumentante de $s$ a $t$, de modo que dois caminhos não podem compartilhar arcos. Logo, o fluxo máximo $|f^*|$ é rigorosamente o número de caminhos $st$-disjuntos por arcos. Pelo Teorema do Fluxo Máximo e Corte Mínimo (Teorema~\ref{teo:mfmc}), $|f^*| = \text{cap}(S,T)$ para algum corte mínimo $(S,T)$. Como cada arco cruzando de $S$ para $T$ possui capacidade unitária, a capacidade do corte é precisamente o número mínimo de arcos cuja remoção destrói todo caminho residual de $s$ a $t$, desconectando a rede. \end{demonstracao}
 
 \begin{teorema}[Menger --- Versão por Vértices, 1927][teo:menger_vertices]
 Seja $D = (V, A)$ um digrafo e sejam $s, t \in V$ dois vértices distintos e não adjacentes. O número máximo de caminhos direcionados de $s$ a $t$ disjuntos internamente por vértices é estritamente igual ao número mínimo de vértices cuja remoção desconecta todo caminho de $s$ a $t$:
@@ -1281,7 +1379,7 @@ A transformação consiste em expandir a rede $D = (V, A)$ para uma rede estendi
     \draw[->, dashed, red, line width=1.2pt] (t2) -- node[below right, font=\footnotesize] {$\infty$} (ts);
 \end{tikzpicture}
 \caption{Redução de múltiplas fontes/sumidouros: a superfonte $s^*$ e o supersumidouro $t^*$ (arcos tracejados com capacidade $\infty$) unificam a rede.}
-\label{fig:multi_source_sink}
+\label{fig:multiplas_fontes}
 \end{figure}
 
 Formalmente, $V' = V \cup \{s^*, t^*\}$ e $A' = A \cup \{(s^*, s_i) : i = 1,\ldots,k\} \cup \{(t_j, t^*) : j = 1,\ldots,m\}$. O fluxo máximo de $s^*$ a $t^*$ em $D'$ é equivalente ao fluxo máximo total que pode ser transportado das fontes originais aos sumidouros originais em $D$.
@@ -1323,7 +1421,7 @@ Na implementação desta biblioteca, esta modelagem é realizada nativamente pel
   \end{scope}
 \end{tikzpicture}
 \caption{Modelagem de uma aresta bidirecional em grafos não-direcionados através da criação de dois arcos direcionados opostos, ambos com a mesma capacidade $c$.}
-\label{fig:bidirectional}
+\label{fig:arcos_bidirecionais}
 \end{figure}
 
 \subsection{Decomposição de Fluxo}
@@ -1334,7 +1432,7 @@ O Teorema da Decomposição de Fluxo fornece a fundamentação matemática para 
 
 \subsubsection{Teorema da Decomposição de Fluxo}
 
-\begin{teorema}[Decomposição de Fluxo][teo:flow_decomp]
+\begin{teorema}[Decomposição de Fluxo][teo:decomposicao]
 Todo fluxo viável $f$ em uma rede $D = (V, A)$ pode ser decomposto em uma família de no máximo $|A|$ caminhos direcionados simples de $s$ a $t$ e ciclos direcionados simples, cada um associado a uma taxa de fluxo estritamente positiva. A soma dos fluxos dos caminhos iguala o valor total $|f|$, e o fluxo em cada arco equivale à sobreposição escalar dos caminhos e ciclos que o atravessam.
 \end{teorema}
 
@@ -1389,7 +1487,7 @@ Pela hipótese de indução, $f'$ pode ser decomposto em no máximo $|A_{f'}^+| 
   \end{scope}
 \end{tikzpicture}
 \caption{Exemplo de decomposição de fluxo. O fluxo total de 5 unidades na rede é decomposto em três caminhos distintos de $s$ a $t$.}
-\label{fig:flow_decomposition}
+\label{fig:decomposicao_fluxo}
 \end{figure}
 
 \subsubsection{Algoritmo de Extração de Caminhos (Path Recovery)}
@@ -1405,7 +1503,7 @@ Na modelagem e implementação de resolvedores para problemas práticos (como na
 
 Esta é exatamente a técnica empregada na solução do problema \textit{Distinct Routes}, onde a função \lstinline{print_disjoint_paths} implementa a decomposição sobre a rede residual convergida.
 
-\subsection{Aplicação: Segmentação de Imagens via Corte Mínimo}
+\subsection{Aplicação: Segmentação de Imagens via Corte Mínimo}\label{sec:segmentacao}
 
 Uma das aplicações mais impactantes dos algoritmos de fluxo em redes reside na área de Visão Computacional, especificamente no problema de Segmentação de Imagens (veja~\cite{ford1956maximal, cook1998combinatorial}). O objetivo é particionar uma imagem digital em duas regiões semanticamente distintas: o \textit{foreground} (objeto de interesse) e o \textit{background} (fundo), minimizando uma função de energia que penaliza simultaneamente a inconsistência com as marcações do usuário e a descontinuidade visual entre pixels adjacentes.
 
@@ -1500,7 +1598,7 @@ Seja $I$ uma imagem com $n = W \times H$ pixels. A construção da rede de segme
     
 \end{tikzpicture}
 \caption{Modelagem de uma grade $3 \times 3$ de pixels como rede de fluxo para segmentação. Em uma perspectiva 3D, as linhas sólidas no plano intermediário representam N-links bidirecionais entre pixels vizinhos. As setas tracejadas verdes descendo do plano superior representam T-links de $s$ para cada pixel (capacidade $w_s(p)$); as setas vermelhas tracejadas indo para o plano inferior representam T-links de cada pixel para $t$ (capacidade $w_t(p)$). \textbf{Todos os 9 pixels possuem ambos os T-links}, mesmo que com capacidade muito pequena (mas nunca zero, pois $\max(\dots, 1)$ garante isso).}
-\label{fig:segmentation_graph}
+\label{fig:segmentacao_grafo}
 \end{figure}
 
 \subsubsection{Segmentação via Corte Mínimo}
@@ -1553,17 +1651,20 @@ O custo total do corte é exatamente a soma dos termos de dados e de regulariza�
   \draw[red, thick, dashed] (-4.5, 1.5) -- (8.5, 1.5) node[right, font=\footnotesize, text=red, fill=white, inner sep=2pt, yshift=3mm] {Corte Mínimo};
 \end{tikzpicture}
 \caption{Geometria do corte mínimo na segmentação. Os pixels da camada superior ($p_1, p_2$) são classificados como Foreground ($S$) e os da inferior ($p_3, p_4$) como Background ($T$). O corte mínimo (linha vermelha tracejada) atua como uma guilhotina separando o conjunto $S$ do conjunto $T$. Visualmente, percebe-se que ele rompe com precisão as arestas mais fracas: os N-links verticais ($w_n$ baixo, pixels de cores distintas), e os T-links cruzados fracos ($s \to T$ e $S \to t$). Em contrapartida, os T-links com capacidade $\infty$ (sementes) protegem seus pixels contra cortes indevidos.}
-\label{fig:segmentation_cut}
+\label{fig:segmentacao_corte}
 \end{figure}
 
 \subsubsection{Implementação Computacional e Escolha do Algoritmo}
 
 Na aplicação prática de segmentação interativa de imagens, a rede construída pode conter milhões de vértices ($n = W \times H$) e milhões de arcos ($\approx 4n$ N-links $+ 2n$ T-links para imagens de alta resolução), tornando a eficiência assintótica e prática do algoritmo de fluxo máximo e corte mínimo um fator determinante para a viabilidade e interatividade do sistema.
 
-A ferramenta computacional desenvolvida neste projeto emprega o motor de fluxo \lstinline{PushRelabelImproved} do arcabouço implementado (baseado na política \textit{Highest Label} combinada com a heurística de lacunas \textit{Gap Heuristic}). Essa escolha fundamenta-se na complexidade de $\mathcal{O}(|V|^2 \sqrt{|A|})$ (conforme Tabela~\ref{tab:complexidades}), que supera o Push-Relabel FIFO ($\mathcal{O}(|V|^3)$) em redes densas, e no seu desempenho consagrado na literatura para grafos planares de grade (veja~\cite{goldberg1988new}). O código-fonte da aplicação interativa está disponibilizado no repositório público do projeto (veja Apêndice~\ref{ap:github}).
+A ferramenta computacional desenvolvida neste projeto emprega o motor de fluxo \lstinline{PushRelabelImproved} do arcabouço implementado (baseado na política \textit{Highest Label} combinada com a heurística de lacunas \textit{Gap Heuristic}). Essa escolha fundamenta-se na complexidade de $\mathcal{O}(|V|^2 \sqrt{|A|})$ (conforme Tabela~\ref{tab:max_flow}), que supera o Push-Relabel FIFO ($\mathcal{O}(|V|^3)$) em redes densas, e no seu desempenho consagrado na literatura para grafos planares de grade (veja~\cite{goldberg1988new}). O código-fonte da aplicação interativa está disponibilizado no repositório público do projeto (veja Apêndice~\ref{ap:github}).
 
-\subsection{Fluxo de Custo Mínimo: Formulação e Teoria}
-\label{subsec:mcf}
+\vspace{0.8cm}
+\noindent\textbf{\large Bloco III: Fluxo de Custo Mínimo e o Network Simplex}\par\addvspace{0.6\baselineskip}
+
+\subsection{Fluxo de Custo Mínimo: Formulação e Teoria}\label{sec:mcf_teoria}
+\label{sec:mcf}
 
 O problema do fluxo máximo, estudado exaustivamente nas seções anteriores, busca maximizar a quantidade de recurso transportada pela rede sem considerar nenhum critério de eficiência econômica. Na prática, entretanto, muitos sistemas de transporte e logística exigem que o roteamento não apenas respeite as capacidades, mas também minimize o custo total da operação. O problema do Fluxo de Custo Mínimo (\textit{Minimum Cost Flow} --- MCF) generaliza elegantemente o fluxo máximo ao incorporar esta dimensão econômica (veja~\cite{ahuja1993network}).
 
@@ -1619,7 +1720,7 @@ Esta formulação unifica diversos problemas clássicos como casos particulares:
     \draw[->] (m2) -- node[below, font=\footnotesize] {$w\!=\!3,\; c\!=\!6$} (t2);
 \end{tikzpicture}
 \caption{Rede de custo mínimo com 6 vértices. Cada arco exibe o custo unitário $w$ e a capacidade $c$. Vértices verdes são fontes ($b > 0$), amarelos são transbordo ($b = 0$) e vermelhos são sumidouros ($b < 0$). A condição de equilíbrio $\sum b(v) = 5 + 3 - 4 - 4 = 0$ é satisfeita.}
-\label{fig:mcf_network}
+\label{fig:mcf_rede}
 \end{figure}
 
 \subsubsection{Grafo Residual com Custos}
@@ -1669,14 +1770,14 @@ Para cada arco original $(u,v) \in A$ com fluxo $f(u,v)$:
 \end{scope}
 \end{tikzpicture}
 \caption{Construção do grafo residual com custos. (a)~Rede original com fluxo, custo e capacidade em cada arco. (b)~Digrafo residual $D_f$: arcos azuis (capacidade ociosa, custo original) e arcos vermelhos tracejados (fluxo cancelável, custo negativo $-w$).}
-\label{fig:residual_costs}
+\label{fig:custos_residuais}
 \end{figure}
 
 \subsubsection{Condição de Otimalidade: Ciclos de Custo Negativo}
 
 O critério fundamental de otimalidade para o problema de fluxo de custo mínimo é análogo, em espírito, ao critério de ausência de caminhos aumentantes no fluxo máximo, porém opera sobre a dimensão dos custos ao invés das capacidades (veja~\cite{ahuja1993network, cook1998combinatorial}).
 
-\begin{teorema}[Condição de Otimalidade por Ciclos Negativos --- Klein, 1967][teo:negative_cycle_opt]
+\begin{teorema}[Condição de Otimalidade por Ciclos Negativos --- Klein, 1967][teo:ciclos_negativos]
 Um fluxo viável $f$ em uma rede $D = (V, A)$ com custos é de custo mínimo se, e somente se, o digrafo residual $D_f$ não contém nenhum ciclo direcionado de custo total negativo.
 \end{teorema}
 
@@ -1709,7 +1810,7 @@ Logo, $g$ define uma circulação pura. Demonstra-se que $g$ induz uma circulaç
     \item Se $g(u,v) > 0$, então $f^*(u,v) > f(u,v)$. Como $f^*(u,v) \le c(u,v)$, segue que $0 < g(u,v) \le c(u,v) - f(u,v) = c_f(u,v)$. Logo, o fluxo $g(u,v)$ é suportado pelo arco direto $(u,v) \in A_f$, com custo unitário residual $w_f(u,v) = w(u,v)$.
     \item Se $g(u,v) < 0$, então $f(u,v) > f^*(u,v) \ge 0$. Definindo $\tilde{g}(v,u) = -g(u,v) > 0$, temos $0 < \tilde{g}(v,u) \le f(u,v) = c_f(v,u)$. Portanto, $\tilde{g}(v,u)$ é suportado pelo arco reverso $(v,u) \in A_f$, com custo unitário residual $w_f(v,u) = -w(u,v)$.
 \end{itemize}
-Pelo Teorema da Decomposição de Fluxo (Teorema~\ref{teo:flow_decomp}), a circulação viável induzida por $g$ em $D_f$ pode ser decomposta em uma família finita de ciclos direcionados simples $C_1, C_2, \dots, C_k$ em $D_f$, com taxas de fluxo $\delta_i > 0$, tais que $g = \sum_{i=1}^k \delta_i \cdot \mathbf{1}_{C_i}$. O custo da diferença entre os fluxos é expresso linearmente por:
+Pelo Teorema da Decomposição de Fluxo (Teorema~\ref{teo:decomposicao}), a circulação viável induzida por $g$ em $D_f$ pode ser decomposta em uma família finita de ciclos direcionados simples $C_1, C_2, \dots, C_k$ em $D_f$, com taxas de fluxo $\delta_i > 0$, tais que $g = \sum_{i=1}^k \delta_i \cdot \mathbf{1}_{C_i}$. O custo da diferença entre os fluxos é expresso linearmente por:
 $$\text{custo}(f^*) - \text{custo}(f) = \sum_{(u,v) \in A} w(u,v) \cdot g(u,v) = \sum_{i=1}^k \delta_i \cdot w(C_i)$$
 Como por hipótese o digrafo residual $D_f$ não possui nenhum ciclo de custo negativo, temos $w(C_i) \ge 0$ para todo $i \in \{1, \dots, k\}$. Consequentemente:
 $$\text{custo}(f^*) - \text{custo}(f) = \sum_{i=1}^k \delta_i \cdot w(C_i) \ge 0 \implies \text{custo}(f) \le \text{custo}(f^*)$$
@@ -1755,7 +1856,7 @@ A detecção explícita e repetida de ciclos negativos em $D_f$ por métodos dir
 \end{scope}
 \end{tikzpicture}
 \caption{(a)~Ciclo de custo negativo $C = a \to b \to c \to a$ no digrafo residual $D_f$ com custo total $w(C) = -1$. (b)~Após enviar $\delta$ unidades de fluxo ao longo do ciclo, o custo total do fluxo diminui em $\delta$, contradizendo a otimalidade se $f$ fosse ótimo.}
-\label{fig:negative_cycle}
+\label{fig:ciclo_negativo}
 \end{figure}
 
 \subsubsection{Custos Reduzidos e Potenciais Nodais}
@@ -1770,7 +1871,7 @@ Define-se um vetor de \textbf{potenciais nodais} $\pi: V \rightarrow \mathbb{R}$
 A interpretação é intuitiva: os potenciais agem como ``elevações topográficas'' nos vértices, e o custo reduzido desconta o desnível entre a origem e o destino. O custo total de qualquer ciclo $C$ permanece invariante sob esta transformação, pois os potenciais se cancelam telescopicamente:
 $$\sum_{(u,v) \in C} \bar{w}_\pi(u,v) = \sum_{(u,v) \in C} w(u,v) - \sum_{(u,v) \in C} [\pi(u) - \pi(v)] = \sum_{(u,v) \in C} w(u,v)$$
 
-\begin{teorema}[Equivalência dos Custos Reduzidos][teo:reduced_cost_opt]
+\begin{teorema}[Equivalência dos Custos Reduzidos][teo:custos_reduzidos]
 Um fluxo viável $f$ em uma rede com custos é de custo mínimo se, e somente se, existe um vetor de potenciais nodais $\pi: V \to \mathbb{R}$ tal que o custo reduzido seja não-negativo para todo arco no digrafo residual:
 \begin{equation}
     \bar{w}_\pi(u,v) = w_f(u,v) - \pi(u) + \pi(v) \ge 0, \quad \forall\, (u,v) \in A_f
@@ -1790,11 +1891,11 @@ Substituindo $w_f(u,v) = \bar{w}_\pi(u,v) + \pi(u) - \pi(v)$:
 $$\sum_{(u,v) \in C} w_f(u,v) = \sum_{(u,v) \in C} \bar{w}_\pi(u,v) + \sum_{(u,v) \in C} [\pi(u) - \pi(v)]$$
 Como $C$ é um ciclo fechado, cada vértice participante atua exatamente uma vez como cauda ($u$) e uma vez como cabeça ($v$) de um arco em $C$. Consequentemente, a soma telescópica dos potenciais anula-se identicamente ($\sum_{C} [\pi(u) - \pi(v)] = 0$). Segue que:
 $$w(C) = \sum_{(u,v) \in C} \bar{w}_\pi(u,v) \ge 0$$
-pois, por hipótese, cada parcela $\bar{w}_\pi(u,v)$ é não negativa. Assim, $D_f$ não contém nenhum ciclo direcionado de custo negativo. Pela Condição de Otimalidade de Klein (Teorema~\ref{teo:negative_cycle_opt}), o fluxo $f$ é necessariamente de custo mínimo.
+pois, por hipótese, cada parcela $\bar{w}_\pi(u,v)$ é não negativa. Assim, $D_f$ não contém nenhum ciclo direcionado de custo negativo. Pela Condição de Otimalidade de Klein (Teorema~\ref{teo:ciclos_negativos}), o fluxo $f$ é necessariamente de custo mínimo.
 
 \medskip
 \noindent $(\Rightarrow)$ \textbf{Necessidade (Fluxo ótimo implica existência de potenciais válidos):} \\
-Se $f$ é de custo mínimo, o Teorema~\ref{teo:negative_cycle_opt} garante que $D_f$ não possui nenhum ciclo direcionado com custo estritamente negativo.
+Se $f$ é de custo mínimo, o Teorema~\ref{teo:ciclos_negativos} garante que $D_f$ não possui nenhum ciclo direcionado com custo estritamente negativo.
 
 Introduza um supervértice virtual $s_0 \notin V$ e adicione arcos direcionados $(s_0, v)$ com custo residual $w_f(s_0, v) = 0$ para todo $v \in V$. Como nenhum arco incide em $s_0$, nenhum ciclo é criado através do novo nó, preservando a ausência de ciclos negativos. Portanto, as distâncias de caminho mais curto $\text{dist}(s_0, v)$ a partir de $s_0$ em relação aos pesos $w_f$ estão garantidamente bem-definidas e finitas para todo $v \in V$.
 
@@ -1828,14 +1929,14 @@ o que confirma a existência do vetor de potenciais nodais satisfazendo a condi�
     \draw[->] (a) -- node[right=4pt, font=\footnotesize] {$w\!=\!1$} node[left=4pt, font=\footnotesize, red, fill=white, inner sep=1.5pt] {$\bar{w}\!=\!0$} (b);
 \end{tikzpicture}
 \caption{Potenciais nodais $\pi$ (em azul) e custos reduzidos $\bar{w} = w(u,v) - \pi(u) + \pi(v)$ (em vermelho). Todos os custos reduzidos são $\ge 0$, certificando a otimalidade do fluxo segundo o Teorema de Equivalência.}
-\label{fig:reduced_costs}
+\label{fig:custos_reduzidos}
 \end{figure}
 
 \subsubsection{Complementaridade de Folgas}
 
 As condições de otimalidade podem ser refinadas através do teorema de Complementaridade de Folgas (\textit{Complementary Slackness}), que conecta a solução primal (fluxo) com a solução dual (potenciais) do programa linear subjacente (veja~\cite{ahuja1993network, schrijver2003combinatorial}).
 
-\begin{teorema}[Complementary Slackness para MCF --- Karush-Kuhn-Tucker][teo:slackness]
+\begin{teorema}[Complementary Slackness para MCF --- Karush-Kuhn-Tucker][teo:folga_complementar]
 Um fluxo viável $f$ e um vetor de potenciais nodais $\pi$ são simultaneamente ótimos (primal e dual) se, e somente se, para todo arco $(u,v) \in A$ valem as seguintes condições de folga complementar:
 \begin{enumerate}
     \item Se $\bar{w}_\pi(u,v) > 0$, então o arco está vazio: $f(u,v) = 0$.
@@ -1863,7 +1964,7 @@ Demonstra-se que as três condições de complementaridade são estrita e algebr
     $$\bar{w}_\pi(u,v) \ge 0 \quad \text{e} \quad \bar{w}_\pi(v,u) = -\bar{w}_\pi(u,v) \ge 0 \implies \bar{w}_\pi(u,v) \le 0$$
     A única solução para satisfazer ambas as desigualdades simultâneas é a igualdade estrita: $\bar{w}_\pi(u,v) = 0$.
 \end{enumerate}
-Pelo Teorema da Equivalência dos Custos Reduzidos (Teorema~\ref{teo:reduced_cost_opt}), $\bar{w}_\pi(a) \ge 0$ em $D_f$ é condição necessária e suficiente para a otimalidade global de $f$. Logo, as condições de folga complementar caracterizam com exatidão o par primal-dual ótimo $(f, \pi)$. \end{demonstracao}
+Pelo Teorema da Equivalência dos Custos Reduzidos (Teorema~\ref{teo:custos_reduzidos}), $\bar{w}_\pi(a) \ge 0$ em $D_f$ é condição necessária e suficiente para a otimalidade global de $f$. Logo, as condições de folga complementar caracterizam com exatidão o par primal-dual ótimo $(f, \pi)$. \end{demonstracao}
 
 \implicacoes{e o Critério de Pivoteamento no Network Simplex} Em termos algorítmicos, o Teorema de Folgas Complementares é o coração do algoritmo Network Simplex: toda árvore geradora viável define univocamente um vetor de potenciais nodais $\pi$. Para inspecionar se a base atual é ótima, não é preciso resolver um sistema linear: basta calcular o custo reduzido dos arcos fora da base em tempo constante $\mathcal{O}(1)$. Se algum arco violar as condições de folga complementar, ele é imediatamente selecionado como o arco de entrada na base (\textit{entering arc}), orquestrando uma troca de base combinatorial extremamente veloz.
 
@@ -1934,7 +2035,7 @@ Trata-se de um limite pseudopolinomial que pode degradar frente a custos ou capa
 A materialização em C++ da classe \lstinline{CycleCanceling} encontra-se documentada no Código~\ref{lst:cycle_canceling} (disponível no Apêndice~\ref{ap:cycle_canceling}).
 
 \subsection{O Algoritmo Successive Shortest Path}
-\label{subsec:successive_shortest_path}
+\label{sec:ssp}
 
 \paragraph{Princípio Teórico e a Invariante Dual.}
 Desenvolvido independentemente por Jewell (1958), Iri (1960) e Busacker e Gowen (1961) (veja~\cite{ahuja1993network, schrijver2003combinatorial}), o algoritmo \textit{Successive Shortest Path} (SSP) adota uma abordagem dual complementar ao \textit{Cycle Canceling}. Enquanto o \textit{Cycle Canceling} mantém a viabilidade primal do fluxo e cancela sucessivamente ciclos negativos para alcançar a otimalidade de custos, o SSP mantém a \textbf{otimalidade de custos como invariante permanente} (o grafo residual nunca contém ciclos negativos) e constrói a viabilidade do fluxo máximo incrementalmente.
@@ -1972,7 +2073,7 @@ Ambas as variantes foram implementadas no \textit{Core Framework}: a classe \lst
 
 \textbf{Equivalência com o Algoritmo Húngaro (Kuhn-Munkres).} Uma consequência teórica e histórica fundamental da formulação com potenciais nodais reside no \textbf{Problema da Atribuição Ponderada} (\textit{Weighted Bipartite Matching} ou \textit{Assignment Problem}), que busca um emparelhamento de custo mínimo em um grafo bipartido com custos nas arestas. Historicamente resolvido pelo Algoritmo Húngaro de Kuhn e Munkres (veja~\cite{kuhn1955hungarian, schrijver2003combinatorial}), este problema modela-se diretamente como um fluxo de custo mínimo com capacidades unitárias ($c=1$). Sob a ótica de redes de fluxo, as operações de ajuste de potenciais em linhas e colunas na matriz de custos do Algoritmo Húngaro correspondem exatamente à manutenção dos potenciais duais $\pi$ com custos reduzidos não negativos $\bar{w}_\pi(u,v) \ge 0$, enquanto as buscas por caminhos aumentantes de menor custo acumulado em tempo $\mathcal{O}(|V|^3)$ equivalem formalmente à execução do algoritmo \textit{Successive Shortest Path} operando com potenciais de Edmonds-Karp.
 
-\subsection{O Algoritmo Network Simplex}
+\subsection{O Algoritmo Network Simplex}\label{sec:network_simplex}
 
 O \textit{Network Simplex} é uma especialização do método Simplex clássico de programação linear (introduzido por George Dantzig em 1951, veja~\cite{dantzig1951application}) para a estrutura combinatória das redes de fluxo. Enquanto o Simplex algébrico genérico requer a manutenção e inversão explícita de matrizes de base de ordem $|V| \times |V|$ (com custo $\mathcal{O}(|V|^2)$ por pivoteamento), o \textit{Network Simplex} explora o fato de que toda base do sistema corresponde univocamente a uma \textbf{árvore geradora} (\textit{spanning tree}) da rede. Consequentemente, todas as operações matriciais de pivoteamento, determinação de variáveis básicas e atualização de potenciais duais são traduzidas em travessias puramente topológicas sobre árvores, executadas em tempo linear $\mathcal{O}(|V|)$ por iteração (veja~\cite{ahuja1993network, cook1998combinatorial}).
 
@@ -2012,7 +2113,7 @@ Fixando $\pi(r) = 0$ para um vértice raiz $r$ arbitrário, os potenciais de tod
     \draw[->,gray,dashed] (v4) -- node[right,font=\footnotesize] {$U$} (v5);
 \end{tikzpicture}
 \caption{Partição dos arcos no Network Simplex. Arcos azuis sólidos formam a árvore geradora básica $T$ (4 arcos para 5 vértices). Arcos cinza tracejados são não-básicos: $L$ (fluxo $= 0$) e $U$ (fluxo $= c$, saturado).}
-\label{fig:spanning_tree_basis}
+\label{fig:arvore_base}
 \end{figure}
 
 \subsubsection{Estrutura de Dados da Árvore e Inicialização com Raiz Artificial}
@@ -2027,7 +2128,7 @@ Para viabilizar a execução eficiente das travessias em tempo $\mathcal{O}(|V|)
 \textbf{Construção da Base Inicial:} Para garantir que uma árvore geradora viável inicial esteja sempre disponível sem necessidade de computação preliminar complexa, introduz-se um vértice raiz artificial $r = |V|$. Criam-se arcos artificiais conectando a raiz a cada vértice original com capacidade infinita e custo unitário suficientemente grande $M$ (\textit{Big-M Method}). Estes arcos formam a árvore inicial $T$. Ao longo das iterações do Simplex, os arcos originais da rede entram na base substituindo progressivamente os arcos artificiais, convergindo para uma solução puramente fundamentada nos arcos do digrafo original.
 
 \subsubsection{Total Unimodularidade e Soluções Inteiras}
-\label{subsec:tum}
+\label{sec:tum_secao}
 
 A razão algébrica pela qual o \textit{Network Simplex} sempre produz soluções inteiras (quando capacidades e demandas são inteiras) reside em uma propriedade fundamental da matriz de restrições do problema de fluxo: a \textbf{Total Unimodularidade} (TUM).
 
@@ -2147,7 +2248,7 @@ onde a polaridade do sinal depende da orientação do arco entrante em relação
 \end{scope}
 \end{tikzpicture}
 \caption{Uma iteração do Network Simplex. (a)~O arco $(3,4)$ (vermelho tracejado) é selecionado para entrar na base, criando o ciclo $1 \to 2 \to 4 \leftarrow 3 \leftarrow 1$. (b)~Após enviar $\delta$ unidades pelo ciclo, o arco $(2,4)$ atinge seu limite e sai da base, enquanto $(3,4)$ passa a integrar a árvore.}
-\label{fig:ns_pivot}
+\label{fig:simplex_pivoteamento}
 \end{figure}
 
 \paragraph{Complexidade Assintótica e Eficiência Prática.}
@@ -2156,8 +2257,8 @@ Embora o \textit{Network Simplex} não possua garantia de complexidade estritame
 \paragraph{Implementação em C++ e Apêndice.}
 A implementação C++ detalhada da classe \lstinline{NetworkSimplex} encontra-se documentada no Código~\ref{lst:network_simplex} (Apêndice~\ref{ap:network_simplex}).
 
-\subsection{Transformação Min-Cost Max-Flow e Comparação Geral}
-\label{subsec:mcmf}
+\subsection{Transformação Min-Cost Max-Flow e Comparação Geral}\label{sec:mcf_comparacao}
+\label{sec:mcmf}
 
 Uma variante comum do MCF é o problema do \textbf{Fluxo Máximo de Custo Mínimo} (\textit{Min-Cost Max-Flow}): dentre todos os fluxos máximos de $s$ a $t$, encontrar aquele com o menor custo total. Este problema pode ser reduzido ao MCF padrão com demandas através de uma construção simples (veja~\cite{ahuja1993network}).
 
@@ -2184,7 +2285,7 @@ Deste modo, a equivalência do arco de retorno artificial atesta a universalidad
 
 \subsubsection{Comparação dos Algoritmos de Fluxo de Custo Mínimo}
 
-A Tabela~\ref{tab:complexidades_mcf} sintetiza os paradigmas, invariantes mantidas e as complexidades assintóticas dos três algoritmos de fluxo de custo mínimo desenvolvidos nesta Iniciação Científica.
+A Tabela~\ref{tab:min_cost} sintetiza os paradigmas, invariantes mantidas e as complexidades assintóticas dos três algoritmos de fluxo de custo mínimo desenvolvidos nesta Iniciação Científica.
 
 \begin{table}[!ht]
 \centering
@@ -2205,10 +2306,10 @@ Network Simplex & $\mathcal{O}(|V| \cdot |A| \cdot C \cdot W)^*$ & Pivoteamento 
 \hline
 \end{tabular}
 \caption{Comparação dos algoritmos de Fluxo de Custo Mínimo ($C = \max c$, $W = \max |w|$, $F = |f^*|$). $^*$Embora o Network Simplex possua pior caso teórico exponencial, cada iteração custa apenas $\mathcal{O}(|V|)$ e seu desempenho prático supera amplamente os métodos de aumentos sucessivos em instâncias reais.}
-\label{tab:complexidades_mcf}
+\label{tab:min_cost}
 \end{table}
 
-Sob uma perspectiva unificadora, a análise da Tabela~\ref{tab:complexidades_mcf} evidencia o \textbf{papel universal dos ciclos negativos na tríade algorítmica}: a condição de inexistência de ciclos de custo negativo em $D_f$ atua como o certificado universal que rege as três abordagens sob diferentes estruturas:
+Sob uma perspectiva unificadora, a análise da Tabela~\ref{tab:min_cost} evidencia o \textbf{papel universal dos ciclos negativos na tríade algorítmica}: a condição de inexistência de ciclos de custo negativo em $D_f$ atua como o certificado universal que rege as três abordagens sob diferentes estruturas:
 \begin{itemize}
     \item \textbf{Cycle Canceling (Abordagem Primal Direta):} Mantém a viabilidade primal do fluxo e cancela iterativamente ciclos direcionados negativos detectados no digrafo residual até eliminá-los completamente;
     \item \textbf{Successive Shortest Path (Abordagem Dual Construtiva):} Mantém a otimalidade de custos como invariante permanente (assegurando que nenhum ciclo negativo seja criado ao rotear fluxo por caminhos residuais mínimos) e constrói a viabilidade do fluxo por aumentos sucessivos;
@@ -2217,9 +2318,103 @@ Sob uma perspectiva unificadora, a análise da Tabela~\ref{tab:complexidades_mcf
 
 Deste modo, a transição conceitual operada ao longo do projeto demonstra que os métodos não são isolados: enquanto o \textit{Cycle Canceling} e o \textit{Successive Shortest Path} operam diretamente sobre buscas em digrafos residuais, o \textit{Network Simplex} transcende essa abordagem ao explorar a estrutura combinatória das árvores geradoras. A correspondência unívoca entre bases do programa linear e árvores da rede permite que operações matriciais complexas sejam substituídas por travessias lineares $\mathcal{O}(|V|)$ via vetores \lstinline{parent}, \lstinline{depth} e \lstinline{tree_adj}, tornando-o o algoritmo mais robusto e escalável para aplicações práticas.
 
-\section{Conclusões}
+\vspace{0.8cm}
+\noindent\textbf{\large Bloco IV: Avaliação Experimental e Benchmarks Computacionais}\par\addvspace{0.6\baselineskip}
 
-Os resultados obtidos ao longo desta Iniciação Científica demonstram o cumprimento bem-sucedido dos objetivos centrais do projeto. A pesquisa integrou com rigor a teoria da Otimização Combinatória, a engenharia de software de alto desempenho e a resolução de problemas práticos, estruturando-se em três pilares fundamentais:
+\subsection{Avaliação Experimental e Benchmarks Computacionais}\label{sec:benchmarks}
+
+Com o intuito de confrontar as garantias assintóticas dos modelos teóricos com o comportamento prático em tempo de execução e consumo de memória, estruturou-se uma infraestrutura sistemática de avaliação experimental, documentada no módulo computacional \code{Experimentos/}. Esta subseção detalha o protocolo metodológico, os conjuntos de teste padronizados da literatura e a matriz de comparação entre os algoritmos desenvolvidos.
+
+\subsubsection{Rigor Metodológico e Ambiente de Teste}
+
+A avaliação empírica de algoritmos em grafos exige isolamento estrito de variáveis de ruído sistêmico para assegurar a reprodutibilidade dos resultados. O protocolo experimental fundamenta-se nas seguintes diretrizes:
+
+\begin{enumerate}
+    \item \textbf{Isolamento Estrito do Tempo de CPU:} A mensuração temporal é conduzida através do relógio monotônico de alta precisão \lstinline{std::chrono::high_resolution_clock} da biblioteca padrão do C++23. O intervalo cronometrado compreende exclusivamente a invocação do método \lstinline{max_flow()} ou \lstinline{min_cost_flow()}, isolando de forma estrita o tempo de leitura, conversão e parsing dos arquivos de entrada em disco ($I/O$), bem como eventuais rotinas de impressão.
+    
+    \item \textbf{Parâmetros de Compilação e Otimização:} O código-fonte é compilado utilizando o compilador GCC 13+ com suporte integral ao padrão ISO C++23, sob o nível de otimização \lstinline{-O2}. Adicionalmente, configura-se a expansão de pilha (\lstinline{-Wl,-z,stack-size=268435456}) para prevenir estouros de pilha (\textit{stack overflow}) em buscas profundas (DFS) sobre grafos patológicos.
+    
+    \item \textbf{Tratamento Estatístico e Controle de Timeout:} Cada instância é executada de forma independente por $N = 5$ repetições em regime estacionário (\textit{steady state}), descartando-se o ciclo de aquecimento de cache (\textit{warm-up}). Registram-se o tempo médio e o desvio-padrão. Fixa-se um tempo limite (\textit{timeout}) de 60 segundos por instância; métodos que excedem esse limiar são interrompidos e categorizados com \textit{Time Limit Exceeded} (TLE).
+\end{enumerate}
+
+\subsubsection{Famílias de Instâncias Padronizadas da Literatura}
+
+Para submeter os motores algorítmicos a desafios topológicos diversos, o ecossistema de testes emprega as coleções canônicas do \textit{First DIMACS International Algorithm Implementation Challenge} (veja~\cite{Jensen2022, ahuja1993network}):
+
+\begin{itemize}
+    \item \textbf{Família DIMACS Max-Flow:}
+    \begin{itemize}
+        \item \textbf{Washington (RLG e Line):} Redes em malha retangular e redes lineares com gargalos induzidos propositalmente para forçar caminhos aumentantes longos e repetitivos, desafiando a complexidade pseudopolinomial do método de Ford-Fulkerson;
+        \item \textbf{Genrmf e RMF:} Grafos tridimensionais formados por $b$ planos ou quadros bidimensionais interconectados com capacidades aleatórias, onde a fonte reside no primeiro vértice do primeiro plano e o sumidouro no último vértice do último plano. Essa família impõe gargalos severos de corte mínimo, constituindo um dos testes de estresse mais exigentes para métodos de pré-fluxo e caminhos aumentantes.
+    \end{itemize}
+    
+    \item \textbf{Família DIMACS Min-Cost Flow:}
+    \begin{itemize}
+        \item \textbf{Netgen:} Gerador amplamente adotado na literatura de Pesquisa Operacional para instâncias de transporte e transbordo com capacidades e custos distribuídos uniformemente;
+        \item \textbf{Grid (Toroidal e Planar):} Redes em grade bidimensional com conectividade espacial e custos correlacionados com distâncias euclidianas, modelando fluxos em malhas logísticas e circuitos elétricos.
+    \end{itemize}
+    
+    \item \textbf{Grafos Sintéticos e Aplicações Reais:}
+    \begin{itemize}
+        \item \textbf{Grafos Aleatórios Erdos-Rényi ($G(n, p)$):} Instâncias esparsas ($|A| \approx 4|V|$) e densas ($|A| \approx 0.1|V|^2$) para validação da sensibilidade dos algoritmos à densidade de arestas;
+        \item \textbf{Redes de Segmentação de Imagens:} Grafos derivados diretamente da modelagem descrita na Subseção~\ref{sec:segmentacao}, caracterizados por vizinhanças 4-conectadas locais com capacidades de corte ponderadas pelo gradiente de intensidade luminosa.
+    \end{itemize}
+\end{itemize}
+
+\subsubsection{Métricas Operacionais e Certificação Cruzada de Corretude}
+
+Além do tempo de execução bruto, a instrumentação dos drivers computacionais coleta métricas internas que refletem a dinâmica algorítmica de cada abordagem:
+
+\begin{enumerate}
+    \item \textbf{Contadores de Fases e Operações Elementares:}
+    \begin{itemize}
+        \item Nos métodos primais (Ford-Fulkerson e Edmonds-Karp), quantifica-se o número exato de caminhos aumentantes descobertos e o comprimento médio desses caminhos;
+        \item No algoritmo de Dinic, contabiliza-se o número de fases de construção do digrafo de níveis e a quantidade de avanços e retrocessos de ponteiro na DFS de fluxo bloqueador;
+        \item Na família Push-Relabel, monitoram-se separadamente o número de operações de empurrão (\textit{pushes}, distinguindo entre saturantes e não saturantes) e de elevação (\textit{relabels}), evidenciando empiricamente como a heurística de lacuna (\textit{Gap Heuristic}) elimina vértices desconectados do sumidouro;
+        \item No algoritmo \textit{Network Simplex}, registra-se o total de pivoteamentos de base executados e a proporção de pivôs degenerados (onde o fluxo do arco entrante é zero).
+    \end{itemize}
+    
+    \item \textbf{Verificação Automática da Invariante de Otimalidade (Cross-Validation):} Como os resolvedores implementam estratégias de exploração independentes (primal vs. dual), o driver de testes valida automaticamente se todos os algoritmos convergem rigorosamente para o mesmo valor ótimo:
+    \begin{equation}
+        |f^*_{\text{Edmonds-Karp}}| = |f^*_{\text{Dinic}}| = |f^*_{\text{Push-Relabel}}|, \quad \text{e} \quad z^*_{\text{CycleCanceling}} = z^*_{\text{SSP}} = z^*_{\text{NetworkSimplex}}
+    \end{equation}
+    Essa checagem cruzada atua como um teste de integridade automático, prevenindo desvios de implementação ou instabilidades numéricas.
+\end{enumerate}
+
+\subsubsection{Quadro-Molde de Comparação dos Motores Algorítmicos}
+
+A Tabela~\ref{tab:benchmarks} sintetiza o quadro comparativo estruturado para a consolidação dos experimentos, mapeando o comportamento operacional esperado de cada motor frente às diferentes topologias de rede.
+
+\begin{table}[!ht]
+\centering
+\small
+\setlength{\tabcolsep}{3.5pt}
+\begin{tabular}{p{2.8cm} p{3.7cm} p{3.7cm} p{3.2cm}}
+\toprule
+\textbf{Motor Algorítmico} & \textbf{Topologia de Melhor Desempenho} & \textbf{Cenário Crítico / Pior Caso} & \textbf{Complexidade Prática} \\
+\midrule
+\multicolumn{4}{l}{\textbf{Motores de Fluxo Máximo}} \\
+Ford-Fulkerson & Grafos com capacidades pequenas e caminhos curtos & Capacidades exponenciais e redes com ciclos residuais & Pseudopolinomial \\
+Edmonds-Karp & Redes esparsas com poucos caminhos aumentantes & Redes em camadas profundas (muitas BFSs) & Polinomial ($\mathcal{O}(|V||A|^2)$) \\
+Dinic & Redes unitárias, bipartidas e redes densas & Grafos com gargalos múltiplos em níveis sucessivos & Rápido ($\mathcal{O}(|V|^2|A|)$) \\
+Push-Relabel (FIFO) & Redes densas com cortes mínimos próximos à fonte & Redes com longas cadeias sem saturação imediata & $\mathcal{O}(|V|^3)$ \\
+Push-Relabel (Gap) & Grafos de visão computacional (segmentação) e DIMACS RMF & Praticamente imune a patologias (elimina rótulos mortos) & \textbf{Altamente competitivo} \\
+\addlinespace
+\multicolumn{4}{l}{\textbf{Motores de Fluxo de Custo Mínimo}} \\
+Cycle Canceling & Redes pequenas com poucos ciclos negativos & Redes com custos grandes (muitos ciclos de custo $-1$) & Lento (convergência primal) \\
+SSP (Dijkstra + $\pi$) & Redes de transbordo com fluxo total moderado & Redes com fluxos massivos e capacidades unitárias & Polinomial em $F$ \\
+Network Simplex & Grafos em grade, instâncias Netgen e redes logísticas & Degenerescência cíclica severa (controlada por Cunningham) & \textbf{Estado da arte prático} \\
+\bottomrule
+\end{tabular}
+\caption{Quadro de análise comparativa dos motores algorítmicos e sensibilidade topológica frente aos conjuntos de teste.}
+\label{tab:benchmarks}
+\end{table}
+
+A arquitetura de scripts implementada no diretório \code{Experimentos/} orquestra a execução automatizada deste protocolo, permitindo gerar a partir de comandos como \lstinline{make run} os relatórios consolidados em tabelas LaTeX e gráficos de escalabilidade.
+
+\section{Conclusões}\label{sec:conclusoes}
+
+Os resultados obtidos ao longo desta Iniciação Científica demonstram o cumprimento bem-sucedido dos objetivos centrais do projeto. A pesquisa integrou com rigor a teoria da Otimização Combinatória, a engenharia de software de alto desempenho e a resolução de problemas práticos, estruturando-se em quatro pilares fundamentais:
 
 \begin{enumerate}
     \item \textbf{Fundamentação Teórica Rigorosa:} Foram formulados e demonstrados matematicamente os teoremas basilares da teoria de fluxos, incluindo o Teorema do Fluxo Máximo e Corte Mínimo, o Teorema da Integralidade de Ford-Fulkerson, o Teorema da Decomposição de Fluxo, o Teorema de Menger (versões por arcos e por vértices), o Teorema de König e as Quatro Dualidades Fundamentais em grafos bipartidos. No domínio de custo mínimo, foram demonstradas a condição de otimalidade por ciclos negativos, o Teorema de Equivalência dos Custos Reduzidos, as condições de Complementaridade de Folgas e a Total Unimodularidade da matriz de incidência.
@@ -2231,6 +2426,8 @@ Os resultados obtidos ao longo desta Iniciação Científica demonstram o cumpri
     \end{itemize}
     
     \item \textbf{Aplicações Práticas e Reduções Combinatórias:} Demonstrou-se a versatilidade prática dos modelos de fluxo através da implementação de resolvedores para problemas clássicos (\textit{Maximum Bipartite Matching}, \textit{Minimum Vertex Cover}, \textit{Maximum Independent Set}, rotas disjuntas e desconexão de redes), culminando no desenvolvimento de uma ferramenta completa de \textbf{Segmentação Interativa de Imagens} baseada em corte mínimo via corte de grafos (\textit{Graph Cuts}).
+    
+    \item \textbf{Validação Experimental e Benchmarks:} Foi estabelecido um protocolo rigoroso de experimentação em instâncias canônicas da literatura (coleções DIMACS e grafos sintéticos), confrontando os limites assintóticos com tempos de execução de CPU e métricas internas de contagem de operações, comprovando a superioridade prática de métodos como \textit{Dinic}, \textit{Push-Relabel Gap} e \textit{Network Simplex}.
 \end{enumerate}
 
 Como perspectivas de trabalhos futuros imediatos, destacam-se a execução sistemática da bateria de testes comparativos sobre instâncias padronizadas do benchmark DIMACS, a avaliação do impacto empírico de diferentes regras de pivoteamento no \textit{Network Simplex} (como \textit{Candidate List Pricing}), e a redação do artigo científico final sintetizando as contribuições desta pesquisa.
