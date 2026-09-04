@@ -132,7 +132,7 @@
 \newcommand{\code}[1]{\lstinline{#1}}          % Código inline ergonômico
 
 % Tabelas
-\newcommand{\bannertext}[1]{\textbf{\textsf{--- #1 ---}}}
+\newcommand{\bannertext}[1]{\textbf{\textsf{#1}}}
 
 \begin{document}
 \setlength{\emergencystretch}{3em}
@@ -924,15 +924,16 @@ A intuição por trás da melhoria da complexidade de tempo de pior caso de $\ma
 \textbf{Algoritmo} & \textbf{Complexidade} & \textbf{Mecanismo / Estratégia} \\
 \midrule
 \multicolumn{3}{c}{\bannertext{Vertente Primal: Caminhos Aumentantes ($e(v)=0$)}} \\
+\midrule
 \hyperref[ap:ford_fulkerson]{Ford-Fulkerson} & $\mathcal{O}(|A| \cdot |f^*|)$ & DFS (busca caminhos aumentantes quaisquer) \\
 \hyperref[ap:edmonds_karp]{Edmonds-Karp} & $\mathcal{O}(|V| \cdot |A|^2)$ & BFS (garante menor caminho em número de arcos) \\
 \hyperref[ap:dinic]{Dinic} & $\mathcal{O}(|V|^2 \cdot |A|)$ & Grafo de níveis com saturação por fluxos bloqueadores \\
-\addlinespace[0.3em]
+\midrule
 \multicolumn{3}{c}{\bannertext{Vertente Dual: Pré-fluxo e Alturas (Otimiza Corte)}} \\
+\midrule
 \hyperref[ap:push_relabel]{Push-Relabel (FIFO)} & $\mathcal{O}(|V|^3)$ & Descarga assíncrona em fila de vértices com excesso \\
 \hyperref[ap:push_relabel_improved]{Push-Relabel (Gap)} & $\mathcal{O}(|V|^2 \sqrt{|A|})$ & Seleção por maior altura combinada à \textit{Gap Heuristic} \\
-\bottomrule
-\end{tabular}
+\bottomrule\end{tabular}
 \caption{Comparação das complexidades assintóticas e estratégias dos algoritmos de fluxo máximo implementados.}
 \label{tab:max_flow}
 \end{table}
@@ -2344,13 +2345,16 @@ A Tabela~\ref{tab:min_cost} sintetiza os paradigmas, invariantes mantidas e as c
 \textbf{Algoritmo} & \textbf{Complexidade} & \textbf{Mecanismo / Estratégia} \\
 \midrule
 \multicolumn{3}{c}{\bannertext{Abordagem Primal Direta: Cancelamento de Ciclos}} \\
+\midrule
 \hyperref[ap:cycle_canceling]{Cycle Canceling} & $\mathcal{O}(|V| \cdot |A|^2 \cdot C \cdot W)$ & Mantém viabilidade primal e cancela ciclos residuais negativos via SPFA \\
-\addlinespace[0.3em]
+\midrule
 \multicolumn{3}{c}{\bannertext{Abordagem Dual Construtiva: Caminhos de Custo Mínimo}} \\
+\midrule
 \hyperref[ap:successive_shortest]{SSP (SPFA)} & $\mathcal{O}(|V| \cdot |A| \cdot F)$ & Caminhos aumentantes mais curtos em custos residuais via Bellman-Ford/SPFA \\
 \hyperref[ap:successive_shortest_dijkstra]{SSP (Dijkstra + $\pi$)} & $\mathcal{O}(F \cdot |A| \log |V|)$ & Potenciais nodais $\pi$ ($\bar{w}_\pi \ge 0$) permitindo Dijkstra com heap binária \\
-\addlinespace[0.3em]
+\midrule
 \multicolumn{3}{c}{\bannertext{Abordagem Primal-Dual em Árvore: Estrutura de Base}} \\
+\midrule
 \hyperref[ap:network_simplex]{Network Simplex} & $\mathcal{O}(|V| \cdot |A| \cdot C \cdot W)^*$ & Pivoteamento local em árvores geradoras via ciclos fundamentais ($\mathcal{O}(|V|)$) \\
 \bottomrule
 \end{tabular}
@@ -2444,18 +2448,19 @@ A Tabela~\ref{tab:benchmarks} sintetiza o quadro comparativo estruturado para a 
 \textbf{Motor Algorítmico (C++)} & \textbf{Topologia de Melhor Desempenho} & \textbf{Cenário Crítico e Gargalo Empírico} \\
 \midrule
 \multicolumn{3}{c}{\bannertext{Motores de Fluxo Máximo (Coleções DIMACS Washington e RMF)}} \\
+\midrule
 \hyperref[ap:ford_fulkerson]{Ford-Fulkerson} & Capacidades pequenas e caminhos curtos & Capacidades exponenciais e redes com ciclos \\
 \hyperref[ap:edmonds_karp]{Edmonds-Karp} & Redes esparsas com poucos aumentos globais & Redes em camadas profundas (custo de BFSs sucessivas) \\
 \hyperref[ap:dinic]{Dinic} & Redes unitárias, grafos bipartidos e redes densas & Gargalos múltiplos em níveis sucessivos da rede \\
 \hyperref[ap:push_relabel]{Push-Relabel (FIFO)} & Redes densas com cortes mínimos próximos à fonte & Cadeias longas sem saturação imediata de excessos \\
 \hyperref[ap:push_relabel_improved]{Push-Relabel (Gap)} & Grafos de visão (grid 2D/3D) e instâncias DIMACS RMF & Praticamente imune a patologias (elimina rótulos mortos) \\
-\addlinespace[0.3em]
+\midrule
 \multicolumn{3}{c}{\bannertext{Motores de Fluxo de Custo Mínimo (Coleções DIMACS Netgen e Grid)}} \\
+\midrule
 \hyperref[ap:cycle_canceling]{Cycle Canceling} & Redes pequenas com poucos ciclos de custo negativo & Custos residuais elevados com múltiplos ciclos de $-1$ \\
 \hyperref[ap:successive_shortest_dijkstra]{SSP (Dijkstra + $\pi$)} & Redes de transbordo com fluxo total moderado & Redes com fluxos massivos e capacidades unitárias \\
 \hyperref[ap:network_simplex]{Network Simplex} & Grafos em grade, instâncias Netgen e redes logísticas & Degenerescência cíclica severa (controlada por Cunningham) \\
-\bottomrule
-\end{tabular}
+\bottomrule\end{tabular}
 \caption{Quadro de análise comparativa dos motores algorítmicos e sensibilidade topológica frente aos conjuntos de teste.}
 \label{tab:benchmarks}
 \end{table}
