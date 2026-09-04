@@ -1,4 +1,6 @@
 .POSIX:
+.SILENT:
+MAKEFLAGS += --no-print-directory
 
 SUBDIRS = "Segmentação de Imagens"
 

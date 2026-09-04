@@ -1,4 +1,6 @@
 .POSIX:
+.SILENT:
+MAKEFLAGS += --no-print-directory
 
 .PHONY: all latex apps impl exp test setup clean
 

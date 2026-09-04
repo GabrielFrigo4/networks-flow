@@ -1,4 +1,7 @@
 .POSIX:
+.SILENT:
+MAKEFLAGS += --no-print-directory
+
 CXX      = c++
 EXT      = cpp
 TARGET   = main

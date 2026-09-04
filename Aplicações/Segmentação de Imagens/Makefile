@@ -1,4 +1,6 @@
 .POSIX:
+.SILENT:
+MAKEFLAGS += --no-print-directory
 
 CXX      = c++
 CXXFLAGS = -Wl,-z,stack-size=268435456 -std=c++23 -O2
