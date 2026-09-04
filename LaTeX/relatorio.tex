@@ -1,5 +1,8 @@
 \documentclass[12pt,a4paper]{article}
 
+% =========================================================================
+% PACOTES FUNDAMENTAIS E GEOMETRIA DE PÁGINA
+% =========================================================================
 \usepackage{amssymb}
 \usepackage{amsmath}
 \usepackage{amsthm}
@@ -25,8 +28,12 @@
     margin=2cm
 }
 
+% =========================================================================
+% LISTAGENS DE CÓDIGO-FONTE C++ (LISTINGS)
+% =========================================================================
 \usepackage{listings}
 \usepackage{xcolor}
+\usepackage{colortbl}
 
 \definecolor{codegreen}{rgb}{0,0.6,0}
 \definecolor{codegray}{rgb}{0.5,0.5,0.5}
@@ -64,6 +71,9 @@
     captionpos=b
 }
 
+% =========================================================================
+% TIPOGRAFIA, HIPERLIGAÇÕES E FORMATAÇÃO DE TEXTO
+% =========================================================================
 \usepackage{helvet}
 \renewcommand{\familydefault}{\sfdefault}
 
@@ -74,33 +84,35 @@
 \usepackage{titlesec}
 \usepackage{setspace}
 
+% =========================================================================
+% ESTRUTURAS SEMÂNTICAS, TEOREMAS E DESIGN DE TABELAS
+% =========================================================================
 \newtheorem{prop}{Proposição}
 
-% =========================================================================
-% ESTRUTURAS SEMÂNTICAS REUTILIZÁVEIS: TEOREMAS, DEMONSTRAÇÕES E NOTAÇÃO
-% =========================================================================
-
-% 1. Ambiente Teorema Padronizado (com título e rótulo opcionais)
+% Teoremas e demonstrações
+\newcounter{teorema}
+\renewcommand{\theteorema}{\arabic{teorema}}
 \NewDocumentEnvironment{teorema}{o o}{%
     \par\addvspace{0.8\baselineskip}\noindent
-    \textbf{Teorema\IfValueT{#1}{ (#1)}.}%
-    \IfValueT{#2}{\label{#2}}\space\itshape
+    \refstepcounter{teorema}%
+    \IfValueT{#2}{\label{#2}}%
+    \textbf{Teorema~\theteorema\IfValueT{#1}{ (#1)}}.%
+    \space\itshape
 }{%
     \par\addvspace{0.5\baselineskip}
 }
 
-% 2. Ambiente Demonstração com finalizador QED (\blacksquare) automático
 \NewDocumentEnvironment{demonstracao}{}{%
     \par\noindent\textbf{Demonstração.}\space
 }{%
     \hfill $\blacksquare$\par\addvspace{0.5\baselineskip}
 }
 
-% 3. Macros de Camadas Conceituais
+% Macros conceituais
 \newcommand{\intuicao}[1]{\paragraph{Intuição #1.}}
 \newcommand{\implicacoes}[1]{\paragraph{Implicações Estratégicas #1.}}
 
-% 4. Paleta Centralizada de Estilos de Redes e Grafos para o TikZ
+% Estilos TikZ
 \tikzset{
     flow node/.style={circle, draw, minimum size=8mm, font=\small},
     source node/.style={flow node, fill=green!20},
@@ -112,12 +124,15 @@
     res edge/.style={->, blue, dashed}
 }
 
-% 5. Notações Matemáticas Semânticas Frequentes
+% Notação matemática
 \newcommand{\cred}[2][]{\bar{w}_{#1}(#2)}      % Custo reduzido: \cred[\pi]{u,v}
 \newcommand{\cres}[2][f]{c_{#1}(#2)}           % Capacidade residual: \cres{u,v}
 \newcommand{\Dres}[1][f]{D_{#1}}               % Digrafo residual: \Dres
 \newcommand{\ccap}{\mathrm{cap}}               % Capacidade de corte: \ccap(S,T)
 \newcommand{\code}[1]{\lstinline{#1}}          % Código inline ergonômico
+
+% Tabelas
+\newcommand{\bannertext}[1]{\textbf{\textsf{--- #1 ---}}}
 
 \begin{document}
 \setlength{\emergencystretch}{3em}
@@ -232,51 +247,53 @@ Nesta seção, apresentamos os avanços teóricos e práticos alcançados ao lon
 \begin{table}[!ht]
 \centering
 \small
-\setlength{\tabcolsep}{4pt}
-\begin{tabular}{p{3.15cm} p{4.35cm} p{3.9cm} c}
+\setlength{\tabcolsep}{4.5pt}
+\begin{tabular}{p{4.1cm} p{5.5cm} p{6.3cm}}
 \toprule
-\textbf{Macro-Bloco Temático} & \textbf{Resultados Teóricos Chave} & \textbf{Mecanismos e Algoritmos} & \textbf{Apêndices} \\
+\textbf{Macro-Bloco Temático} & \textbf{Resultados Teóricos Chave} & \textbf{Algoritmos, Reduções e Aplicações} \\
 \midrule
-\textbf{Bloco I: Teoria e Motores de Fluxo Máximo} \newline \textit{(Subseções \ref{sec:base_matematica}--\ref{sec:sintese_max_flow})} & 
-$\bullet$ Teorema MFMC (\cite{ford1956maximal}) \newline 
-$\bullet$ Teorema da Integralidade \newline 
-$\bullet$ Dualidade e Invariantes & 
-$\bullet$ Ford-Fulkerson ($\mathcal{O}(|A||f^*|)$) \newline 
-$\bullet$ Edmonds-Karp ($\mathcal{O}(|V||A|^2)$) \newline 
-$\bullet$ Dinic ($\mathcal{O}(|V|^2|A|)$) \newline 
-$\bullet$ Push-Relabel FIFO e Gap & 
-Apêndices \newline \ref{ap:flownetwork} a \ref{ap:push_relabel_improved} \\
+\textbf{\hyperref[bloco:max_flow]{Bloco I: Fluxo Máximo}} \newline 
+\textit{(Subseções \ref{sec:base_matematica}--\ref{sec:sintese_max_flow})} & 
+$\bullet$ \hyperref[teo:mfmc]{Teorema MFMC} (Teorema~\ref{teo:mfmc}) \newline 
+$\bullet$ \hyperref[teo:integralidade]{Teorema da Integralidade} (Teorema~\ref{teo:integralidade}) \newline 
+$\bullet$ \hyperref[sec:dualidade_primal_dual]{Dualidade Primal-Dual} (\S\ref{sec:dualidade_primal_dual}) & 
+$\bullet$ \hyperref[sec:ford_fulkerson]{Ford-Fulkerson} (\S\ref{sec:ford_fulkerson}) \newline 
+$\bullet$ \hyperref[sec:edmonds_karp]{Edmonds-Karp} (\S\ref{sec:edmonds_karp}) \newline 
+$\bullet$ \hyperref[sec:dinic]{Dinic} (\S\ref{sec:dinic}) \newline 
+$\bullet$ \hyperref[sec:push_relabel]{Push-Relabel (FIFO)} (\S\ref{sec:push_relabel}) \newline 
+$\bullet$ \hyperref[sec:push_relabel_gap]{Push-Relabel (Gap)} (\S\ref{sec:push_relabel_gap}) \\
 \addlinespace
-\textbf{Bloco II: Reduções e Aplicações} \newline \textit{(Subseções \ref{sec:bipartidos}--\ref{sec:segmentacao})} & 
-$\bullet$ Teoremas de König e Gallai \newline 
-$\bullet$ Casamento de Hall (\cite{hall1935representatives}) \newline 
-$\bullet$ Teorema de Menger \newline 
-$\bullet$ Decomposição em Trajetórias & 
-$\bullet$ Emparelhamento Máximo \newline 
-$\bullet$ Cobertura de Vértices e Arestas \newline 
-$\bullet$ Conjunto Independente Máximo \newline 
-$\bullet$ Segmentação de Imagens & 
-Subseção~\ref{sec:segmentacao} \newline (C++ e UI) \\
+\textbf{\hyperref[bloco:aplicacoes]{Bloco II: Reduções e Aplicações}} \newline 
+\textit{(Subseções \ref{sec:bipartidos}--\ref{sec:segmentacao})} & 
+$\bullet$ \hyperref[teo:konig]{Teorema de König} (Teorema~\ref{teo:konig}) \newline 
+$\bullet$ \hyperref[teo:gallai]{Teorema de Gallai} (Teorema~\ref{teo:gallai}) \newline 
+$\bullet$ \hyperref[teo:hall]{Casamento de Hall} (Teorema~\ref{teo:hall}) \newline 
+$\bullet$ \hyperref[teo:menger_arcos]{Teoremas de Menger} (Teoremas~\ref{teo:menger_arcos}, \ref{teo:menger_vertices}) \newline 
+$\bullet$ \hyperref[teo:decomposicao]{Decomposição de Trajetórias} (Teorema~\ref{teo:decomposicao}) & 
+$\bullet$ \hyperref[sec:emparelhamento]{Emparelhamento Bipartido} (\S\ref{sec:emparelhamento}) \newline 
+$\bullet$ \hyperref[sec:cobertura]{Coberturas e Conjunto Indep.} (\S\ref{sec:cobertura}) \newline 
+$\bullet$ \hyperref[sec:caminhos_disjuntos]{Caminhos Disjuntos} (\S\ref{sec:caminhos_disjuntos}) \newline 
+$\bullet$ \hyperref[sec:segmentacao]{Segmentação de Imagens} (\S\ref{sec:segmentacao}) \\
 \addlinespace
-\textbf{Bloco III: Fluxo de Custo Mínimo} \newline \textit{(Subseções \ref{sec:mcf_teoria}--\ref{sec:mcf_comparacao})} & 
-$\bullet$ Condição de Ciclos Negativos \newline 
-$\bullet$ Custos Reduzidos $\bar{w} \ge 0$ \newline 
-$\bullet$ Folga Complementar (KKT) \newline 
-$\bullet$ Total Unimodularidade & 
-$\bullet$ Cycle Canceling (\cite{klein1967primal}) \newline 
-$\bullet$ Successive Shortest Path (SPFA) \newline 
-$\bullet$ SSP com Dijkstra e Potenciais \newline 
-$\bullet$ Network Simplex (\cite{dantzig1951application, cunningham1976network}) & 
-Apêndices \newline \ref{ap:costnetwork} a \ref{ap:network_simplex} \\
+\textbf{\hyperref[bloco:min_cost]{Bloco III: Fluxo de Custo Mínimo}} \newline 
+\textit{(Subseções \ref{sec:mcf_teoria}--\ref{sec:mcf_comparacao})} & 
+$\bullet$ \hyperref[teo:ciclos_negativos]{Ciclos de Custo Negativo} (Teorema~\ref{teo:ciclos_negativos}) \newline 
+$\bullet$ \hyperref[teo:custos_reduzidos]{Custos Reduzidos $\bar{w} \ge 0$} (Teorema~\ref{teo:custos_reduzidos}) \newline 
+$\bullet$ \hyperref[teo:folga_complementar]{Folga Complementar / KKT} (Teorema~\ref{teo:folga_complementar}) \newline 
+$\bullet$ \hyperref[teo:tum]{Total Unimodularidade TUM} (Teorema~\ref{teo:tum}) & 
+$\bullet$ \hyperref[sec:cycle_canceling]{Cycle Canceling} (\S\ref{sec:cycle_canceling}) \newline 
+$\bullet$ \hyperref[sec:ssp]{SSP com SPFA} (\S\ref{sec:ssp}) \newline 
+$\bullet$ \hyperref[sec:ssp]{SSP com Dijkstra e $\pi$} (\S\ref{sec:ssp}) \newline 
+$\bullet$ \hyperref[sec:network_simplex]{Network Simplex} (\S\ref{sec:network_simplex}) \\
 \addlinespace
-\textbf{Bloco IV: Avaliação Experimental} \newline \textit{(Subseção \ref{sec:benchmarks})} & 
-$\bullet$ Protocolo de Medição Rigoroso \newline 
-$\bullet$ Isolamento de Ruído e I/O \newline 
-$\bullet$ Validação Cruzada de Corretude & 
-$\bullet$ Instâncias DIMACS Max-Flow \newline 
-$\bullet$ Instâncias DIMACS Min-Cost \newline 
-$\bullet$ Grafos Sintéticos e Estruturas 2D & 
-Drivers e \newline Scripts C++ \\
+\textbf{\hyperref[bloco:benchmarks]{Bloco IV: Avaliação Experimental}} \newline 
+\textit{(Subseção \ref{sec:benchmarks})} & 
+$\bullet$ \hyperref[sec:bench_metodologia]{Isolamento Rigoroso de CPU} (\S\ref{sec:bench_metodologia}) \newline 
+$\bullet$ \hyperref[sec:bench_metricas]{Contadores de Operações} (\S\ref{sec:bench_metricas}) \newline 
+$\bullet$ \hyperref[sec:bench_metricas]{Validação Cruzada Ótima} (\S\ref{sec:bench_metricas}) & 
+$\bullet$ \hyperref[sec:bench_instancias]{Coleções DIMACS Max e Min} (\S\ref{sec:bench_instancias}) \newline 
+$\bullet$ \hyperref[sec:bench_instancias]{Redes em Grade e Sintéticas} (\S\ref{sec:bench_instancias}) \newline 
+$\bullet$ \hyperref[tab:benchmarks]{Matriz Experimental} (Tabela~\ref{tab:benchmarks}) \\
 \bottomrule
 \end{tabular}
 \caption{Quadro-Síntese dos resultados, contribuições teóricas e motores computacionais desenvolvidos no projeto.}
@@ -284,6 +301,7 @@ Drivers e \newline Scripts C++ \\
 \end{table}
 \vspace{0.3cm}
 
+\phantomsection\label{bloco:max_flow}
 \noindent\textbf{\large Bloco I: Teoria e Algoritmos do Fluxo Máximo}\par\addvspace{0.6\baselineskip}
 
 \subsection{Base Matemática dos Grafos de Fluxo}\label{sec:base_matematica}
@@ -445,7 +463,7 @@ Conclui-se que o fluxo líquido através do corte $(S, T)$ é exatamente a soma 
 
 \implicacoes{e Certificado de Otimalidade} O Teorema Max-Flow Min-Cut fornece uma das propriedades computacionais mais valiosas da Otimização Combinatória: um certificado conciso e irrefutável de otimalidade (certificado de dualidade forte). Em termos de complexidade computacional, enquanto a busca exaustiva por cortes mínimos exigiria avaliar $2^{|V|-2}$ partições bipartidas, o teorema assegura que o corte mínimo pode ser extraído diretamente em tempo linear $\mathcal{O}(|V| + |A|)$ executando-se uma simples busca em largura (BFS) a partir de $s$ sobre a rede residual final produzida por qualquer algoritmo de fluxo máximo (como Edmonds-Karp ou Dinic). Além disso, este teorema serve como matriz geradora para provar uma vasta família de teoremas estruturais em teoria dos grafos, incluindo os clássicos teoremas de König, Hall e Menger.
 
-\subsubsection{A Formulação Primal-Dual em Programação Linear}
+\subsubsection{A Formulação Primal-Dual em Programação Linear}\label{sec:dualidade_primal_dual}
 
 A equivalência fundamental entre o valor do fluxo máximo e a capacidade do corte mínimo admite uma demonstração algébrica rigorosa quando examinada sob a ótica da Programação Linear (veja~\cite{cook1998combinatorial, schrijver2003combinatorial}). Longe de se restringir a uma propriedade puramente topológica da rede residual, o Teorema do Fluxo Máximo e Corte Mínimo é a manifestação direta do Teorema da Dualidade Forte de von Neumann e Dantzig.
 
@@ -586,7 +604,7 @@ A grande evolução teórica e algorítmica dentro desta vertente consistiu em d
     \item O algoritmo de \textbf{Dinic} eleva o paradigma primal ao estado da arte ao introduzir o processamento em fases estruturado pelo Digrafo de Níveis (\textit{Level Graph}), saturando múltiplos caminhos de uma só vez através de fluxos bloqueadores com custo amortizado ($\mathcal{O}(|V|^2 \cdot |A|)$).
 \end{itemize}
 
-\subsubsection{O Método Genérico de Ford-Fulkerson e a Barreira Pseudopolinomial}
+\subsubsection{O Método Genérico de Ford-Fulkerson e a Barreira Pseudopolinomial}\label{sec:ford_fulkerson}
 
 \paragraph{Princípio Teórico e Intuição.}
 A formulação pioneira do problema fundamenta-se historicamente no método iterativo proposto por Ford e Fulkerson (veja~\cite{ford1956maximal}). A premissa estrutural deste paradigma consiste na manutenção de um digrafo residual $D_f$ e na busca sistemática por caminhos aumentantes — percursos simples direcionados da fonte $s$ ao sumidouro $t$ onde todos os arcos possuem capacidade residual estritamente positiva.
@@ -602,7 +620,7 @@ Mesmo no domínio prático das redes com capacidades inteiras, uma má escolha i
 \paragraph{Implementação em C++ e Apêndice.}
 Para transpor esta barreira analítica e garantir limites de complexidade fortemente polinomiais, a literatura evoluiu disciplinando a seleção dos percursos aumentantes. A materialização em C++ do método genérico de Ford-Fulkerson no \textit{Core Framework}, utilizando busca em profundidade (DFS), encontra-se detalhada no Código~\ref{lst:ford_fulkerson} (disponível no Apêndice~\ref{ap:ford_fulkerson}).
 
-\subsubsection{O Algoritmo de Edmonds-Karp}
+\subsubsection{O Algoritmo de Edmonds-Karp}\label{sec:edmonds_karp}
 
 \paragraph{Princípio Teórico e Seleção por Caminhos Mais Curtos.}
 A superação da complexidade pseudopolinomial do método genérico de Ford-Fulkerson foi alcançada de forma independente por Edmonds e Karp (veja~\cite{edmonds1972theoretical}) e por Dinic (veja~\cite{dinic1970algorithm}). O algoritmo de Edmonds-Karp concretiza a restrição topológica mais intuitiva e elegante: a cada iteração, o percurso selecionado para o roteamento deve ser rigorosamente o caminho aumentante mais curto da fonte $s$ ao sumidouro $t$ no digrafo residual $D_f$, onde a distância entre vértices é medida em número de arcos --- isto é, cada arco recebe peso~$1$ para efeito do cálculo de distância pela BFS, ignorando as capacidades. Deste modo, o ``caminho mais curto'' é aquele com o menor número de arcos, não o de menor capacidade.
@@ -644,7 +662,7 @@ A materialização desta heurística, utilizando a herança e o encapsulamento o
 \label{fig:edmonds_karp}
 \end{figure}
 
-\subsubsection{O Algoritmo de Dinic}
+\subsubsection{O Algoritmo de Dinic}\label{sec:dinic}
 
 \paragraph{Princípio Teórico e o Digrafo de Níveis.}
 Embora o algoritmo de Edmonds-Karp apresente um comportamento fortemente polinomial, o limite assintótico de $\mathcal{O}(|V| \cdot |A|^2)$ pode se mostrar proibitivo em instâncias massivas ou em digrafos de alta densidade estrutural. O algoritmo formulado por Yefim Dinitz (veja~\cite{dinic1970algorithm}) contorna esta barreira analítica ao introduzir o processamento em fases e a estruturação de uma abstração topológica denominada Digrafo de Níveis (\textit{Level Graph}).
@@ -750,7 +768,7 @@ A terceira condição garante que o excesso não despencará em ``quedas livres'
 \label{fig:prefluxo}
 \end{figure}
 
-\subsubsection{A Família Push-Relabel}
+\subsubsection{A Família Push-Relabel}\label{sec:push_relabel}
 
 A mecânica operacional da família de algoritmos \textit{Push-Relabel}, concebida originalmente por Goldberg e Tarjan (veja~\cite{goldberg1988new}), assenta-se sobre a manipulação iterativa de vértices ativos visando o esgotamento topológico de seus excessos. A inicialização do sistema satura artificialmente todos os arcos originais adjacentes à fonte $s$, injetando um pré-fluxo maciço na rede. Simultaneamente, a altura da fonte é fixada em $h(s) = |V|$ e a dos demais vértices é inicializada em $h(v) = 0$, estabelecendo um desnível rigoroso que força o fluido a buscar o sumidouro (veja~\cite{ahuja1993network}).
 
@@ -900,19 +918,20 @@ A intuição por trás da melhoria da complexidade de tempo de pior caso de $\ma
 \begin{table}[!ht]
 \centering
 \small
-\begin{tabular}{l c l}
-\hline
+\setlength{\tabcolsep}{5pt}
+\begin{tabular}{p{4.2cm} c p{7.5cm}}
+\toprule
 \textbf{Algoritmo} & \textbf{Complexidade} & \textbf{Mecanismo / Estratégia} \\
-\hline
-\multicolumn{3}{l}{\textbf{Vertente Primal} \textit{(mantém conservação de fluxo $e(v)=0$ e busca caminhos aumentantes)}} \\
-Ford-Fulkerson & $\mathcal{O}(|A| \cdot |f^*|)$ & DFS (caminho aumentante qualquer) \\
-Edmonds-Karp & $\mathcal{O}(|V| \cdot |A|^2)$ & BFS (menor caminho em número de arcos) \\
-Dinic & $\mathcal{O}(|V|^2 \cdot |A|)$ & Grafo de níveis com fluxos bloqueadores \\
-\hline
-\multicolumn{3}{l}{\textbf{Vertente Dual} \textit{(opera com pré-fluxo e garante otimalidade de corte via alturas)}} \\
-Push-Relabel (FIFO) & $\mathcal{O}(|V|^3)$ & Descarga em fila de vértices ativos \\
-Push-Relabel (Highest Label) & $\mathcal{O}(|V|^2 \sqrt{|A|})$ & Seleção por maior altura com \textit{Gap Heuristic} \\
-\hline
+\midrule
+\multicolumn{3}{c}{\bannertext{Vertente Primal: Caminhos Aumentantes ($e(v)=0$)}} \\
+\hyperref[ap:ford_fulkerson]{Ford-Fulkerson} & $\mathcal{O}(|A| \cdot |f^*|)$ & DFS (busca caminhos aumentantes quaisquer) \\
+\hyperref[ap:edmonds_karp]{Edmonds-Karp} & $\mathcal{O}(|V| \cdot |A|^2)$ & BFS (garante menor caminho em número de arcos) \\
+\hyperref[ap:dinic]{Dinic} & $\mathcal{O}(|V|^2 \cdot |A|)$ & Grafo de níveis com saturação por fluxos bloqueadores \\
+\addlinespace[0.3em]
+\multicolumn{3}{c}{\bannertext{Vertente Dual: Pré-fluxo e Alturas (Otimiza Corte)}} \\
+\hyperref[ap:push_relabel]{Push-Relabel (FIFO)} & $\mathcal{O}(|V|^3)$ & Descarga assíncrona em fila de vértices com excesso \\
+\hyperref[ap:push_relabel_improved]{Push-Relabel (Gap)} & $\mathcal{O}(|V|^2 \sqrt{|A|})$ & Seleção por maior altura combinada à \textit{Gap Heuristic} \\
+\bottomrule
 \end{tabular}
 \caption{Comparação das complexidades assintóticas e estratégias dos algoritmos de fluxo máximo implementados.}
 \label{tab:max_flow}
@@ -929,6 +948,7 @@ A Tabela~\ref{tab:max_flow} sintetiza a simetria conceitual construída ao longo
 Essa dualidade algorítmica oferece um arcabouço robusto para a engenharia de software: enquanto o Dinic sobressai-se em redes esparsas e unitárias (como nas reduções bipartidas), o Push-Relabel com Gap Heuristic domina grafos densos e de alta capacidade (como na segmentação de imagens). Esse leque de motores fornece o ferramental exato para as reduções a problemas de otimização combinatória analisadas na sequência.
 
 \vspace{0.8cm}
+\phantomsection\label{bloco:aplicacoes}
 \noindent\textbf{\large Bloco II: Reduções Combinatórias e Aplicações}\par\addvspace{0.6\baselineskip}
 
 \subsection{Reduções e Aplicações Combinatórias em Grafos Bipartidos}\label{sec:bipartidos}
@@ -936,7 +956,7 @@ O Problema do Fluxo Máximo é frequentemente utilizado como base para resolver 
 
 Um digrafo $D = (V, A)$ é classificado como bipartido se o seu conjunto de vértices $V$ puder ser particionado em dois subconjuntos disjuntos independentes, convencionalmente denotados por $L$ (esquerdo) e $R$ (direito), de modo que todo arco $a \in A$ conecte obrigatoriamente um vértice de $L$ a um vértice de $R$. Esta topologia é a estrutura canônica para a modelagem de sistemas de alocação bidirecional.
 
-\subsubsection{Emparelhamento Máximo}
+\subsubsection{Emparelhamento Máximo}\label{sec:emparelhamento}
 
 O Problema do Emparelhamento Bipartido de Cardinalidade Máxima (\textit{Maximum Bipartite Matching}) busca encontrar o maior subconjunto de arcos $M \subseteq A$ tal que nenhum vértice do digrafo incida em mais de um arco de $M$. Em termos práticos, representa a maximização de pares exclusivos entre os conjuntos $L$ e $R$.
 
@@ -987,7 +1007,7 @@ Consequentemente, a restrição de capacidade unitária nos arcos conectados à 
 \label{fig:fluxo_bipartido}
 \end{figure}
 
-\subsubsection{Cobertura de Vértices Mínima e o Teorema de König}
+\subsubsection{Cobertura de Vértices Mínima e o Teorema de König}\label{sec:cobertura}
 
 O Problema da Cobertura de Vértices Mínima (\textit{Minimum Vertex Cover} - MVC) consiste em determinar o menor subconjunto de vértices $C \subseteq V$ tal que todo arco do digrafo incida em pelo menos um vértice pertencente a $C$. Em digrafos arbitrários, este problema é classificado como NP-Difícil. Contudo, quando a topologia do digrafo é estritamente bipartida, o problema pode ser resolvido em tempo polinomial através da sua profunda relação dual com o emparelhamento máximo.
 
@@ -1278,7 +1298,7 @@ Essa correspondência estabelece uma equivalência algorítmica e assintótica d
 
 A análise de conectividade de um digrafo é um pilar fundamental no design de redes de telecomunicações, logística e tolerância a falhas. A premissa central é determinar a resiliência estrutural de um sistema: quantas rotas independentes existem para transmitir informações ou recursos de um ponto de origem $s$ a um destino $t$ de forma que, se um componente falhar, as demais rotas permaneçam intactas? O cálculo do fluxo máximo fornece o ferramental matemático exato para responder a esta indagação sob duas perspectivas restritivas.
 
-\subsubsection{Caminhos Disjuntos por Arcos e por Vértices}
+\subsubsection{Caminhos Disjuntos por Arcos e por Vértices}\label{sec:caminhos_disjuntos}
 
 A formulação mais elementar da independência de rotas é o Problema dos Caminhos Disjuntos por Arcos (\textit{Edge-Disjoint Paths}). Dois caminhos são considerados disjuntos por arcos se não compartilharem nenhuma conexão física em suas trajetórias, embora possam cruzar-se nos mesmos vértices intermediários.
 
@@ -1688,6 +1708,7 @@ Na aplicação prática de segmentação interativa de imagens, a rede construí
 A ferramenta computacional desenvolvida neste projeto emprega o motor de fluxo \lstinline{PushRelabelImproved} do arcabouço implementado (baseado na política \textit{Highest Label} combinada com a heurística de lacunas \textit{Gap Heuristic}). Essa escolha fundamenta-se na complexidade de $\mathcal{O}(|V|^2 \sqrt{|A|})$ (conforme Tabela~\ref{tab:max_flow}), que supera o Push-Relabel FIFO ($\mathcal{O}(|V|^3)$) em redes densas, e no seu desempenho consagrado na literatura para grafos planares de grade (veja~\cite{goldberg1988new}). O código-fonte da aplicação interativa está disponibilizado no repositório público do projeto (veja Apêndice~\ref{ap:github}).
 
 \vspace{0.8cm}
+\phantomsection\label{bloco:min_cost}
 \noindent\textbf{\large Bloco III: Fluxo de Custo Mínimo e o Network Simplex}\par\addvspace{0.6\baselineskip}
 
 \subsection{Fluxo de Custo Mínimo: Formulação e Teoria}\label{sec:mcf_teoria}
@@ -2029,7 +2050,7 @@ Portanto, em \lstinline{CostNetwork}, conexões bidirecionais ponderadas devem s
 \end{itemize}
 Desta forma, cada sentido de escoamento preserva independentemente seu respectivo canal de avanço e sua trilha de cancelamento simétrico com custo oposto.
 
-\subsection{O Algoritmo Cycle Canceling}
+\subsection{O Algoritmo Cycle Canceling}\label{sec:cycle_canceling}
 
 \paragraph{Princípio Teórico e Intuição.}
 Proposto originalmente por Morton Klein em 1967 (veja~\cite{ahuja1993network, cook1998combinatorial}), o algoritmo \textit{Cycle Canceling} representa a extensão primal mais direta e intuitiva do método de Ford-Fulkerson para o problema de fluxo de custo mínimo. Sua premissa apoia-se inteiramente na condição de otimalidade por ciclos negativos: se um fluxo é viável, mas não é de custo mínimo, o digrafo residual necessariamente abriga pelo menos um ciclo direcionado de custo estritamente negativo.
@@ -2317,20 +2338,21 @@ A Tabela~\ref{tab:min_cost} sintetiza os paradigmas, invariantes mantidas e as c
 \begin{table}[!ht]
 \centering
 \small
-\begin{tabular}{l c p{6.3cm}}
-\hline
+\setlength{\tabcolsep}{5pt}
+\begin{tabular}{p{4.2cm} c p{7.5cm}}
+\toprule
 \textbf{Algoritmo} & \textbf{Complexidade} & \textbf{Mecanismo / Estratégia} \\
-\hline
-\multicolumn{3}{l}{\textbf{Abordagem Primal Direta} \textit{(mantém viabilidade e cancela ciclos negativos)}} \\
-Cycle Canceling & $\mathcal{O}(|V| \cdot |A|^2 \cdot C \cdot W)$ & Detecção global de ciclos negativos via Bellman-Ford/SPFA \\
-\hline
-\multicolumn{3}{l}{\textbf{Abordagem Dual Construtiva} \textit{(mantém otimalidade $\bar{w} \ge 0$ e constrói viabilidade)}} \\
-Successive Shortest Path (SPFA) & $\mathcal{O}(|V| \cdot |A| \cdot F)$ & Caminhos residuais mínimos via SPFA (pesos negativos) \\
-Successive Shortest Path (Dijkstra) & $\mathcal{O}(F \cdot |A| \log |V|)$ & Potenciais nodais $\pi$ ($\bar{w} \ge 0$) com Dijkstra e heap binária \\
-\hline
-\multicolumn{3}{l}{\textbf{Abordagem Primal-Dual em Árvore} \textit{(soluções estruturadas sobre bases da rede)}} \\
-Network Simplex & $\mathcal{O}(|V| \cdot |A| \cdot C \cdot W)^*$ & Pivoteamento local em árvore via ciclos fundamentais ($\mathcal{O}(|V|)$) \\
-\hline
+\midrule
+\multicolumn{3}{c}{\bannertext{Abordagem Primal Direta: Cancelamento de Ciclos}} \\
+\hyperref[ap:cycle_canceling]{Cycle Canceling} & $\mathcal{O}(|V| \cdot |A|^2 \cdot C \cdot W)$ & Mantém viabilidade primal e cancela ciclos residuais negativos via SPFA \\
+\addlinespace[0.3em]
+\multicolumn{3}{c}{\bannertext{Abordagem Dual Construtiva: Caminhos de Custo Mínimo}} \\
+\hyperref[ap:successive_shortest]{SSP (SPFA)} & $\mathcal{O}(|V| \cdot |A| \cdot F)$ & Caminhos aumentantes mais curtos em custos residuais via Bellman-Ford/SPFA \\
+\hyperref[ap:successive_shortest_dijkstra]{SSP (Dijkstra + $\pi$)} & $\mathcal{O}(F \cdot |A| \log |V|)$ & Potenciais nodais $\pi$ ($\bar{w}_\pi \ge 0$) permitindo Dijkstra com heap binária \\
+\addlinespace[0.3em]
+\multicolumn{3}{c}{\bannertext{Abordagem Primal-Dual em Árvore: Estrutura de Base}} \\
+\hyperref[ap:network_simplex]{Network Simplex} & $\mathcal{O}(|V| \cdot |A| \cdot C \cdot W)^*$ & Pivoteamento local em árvores geradoras via ciclos fundamentais ($\mathcal{O}(|V|)$) \\
+\bottomrule
 \end{tabular}
 \caption{Comparação dos algoritmos de Fluxo de Custo Mínimo ($C = \max c$, $W = \max |w|$, $F = |f^*|$). $^*$Embora o Network Simplex possua pior caso teórico exponencial, cada iteração custa apenas $\mathcal{O}(|V|)$ e seu desempenho prático supera amplamente os métodos de aumentos sucessivos em instâncias reais.}
 \label{tab:min_cost}
@@ -2346,13 +2368,14 @@ Sob uma perspectiva unificadora, a análise da Tabela~\ref{tab:min_cost} evidenc
 Deste modo, a transição conceitual operada ao longo do projeto demonstra que os métodos não são isolados: enquanto o \textit{Cycle Canceling} e o \textit{Successive Shortest Path} operam diretamente sobre buscas em digrafos residuais, o \textit{Network Simplex} transcende essa abordagem ao explorar a estrutura combinatória das árvores geradoras. A correspondência unívoca entre bases do programa linear e árvores da rede permite que operações matriciais complexas sejam substituídas por travessias lineares $\mathcal{O}(|V|)$ via vetores \lstinline{parent}, \lstinline{depth} e \lstinline{tree_adj}, tornando-o o algoritmo mais robusto e escalável para aplicações práticas.
 
 \vspace{0.8cm}
+\phantomsection\label{bloco:benchmarks}
 \noindent\textbf{\large Bloco IV: Avaliação Experimental e Benchmarks Computacionais}\par\addvspace{0.6\baselineskip}
 
 \subsection{Avaliação Experimental e Benchmarks Computacionais}\label{sec:benchmarks}
 
 Com o intuito de confrontar as garantias assintóticas dos modelos teóricos com o comportamento prático em tempo de execução e consumo de memória, estruturou-se uma infraestrutura sistemática de avaliação experimental, documentada no módulo computacional \code{Experimentos/}. Esta subseção detalha o protocolo metodológico, os conjuntos de teste padronizados da literatura e a matriz de comparação entre os algoritmos desenvolvidos.
 
-\subsubsection{Rigor Metodológico e Ambiente de Teste}
+\subsubsection{Rigor Metodológico e Ambiente de Teste}\label{sec:bench_metodologia}
 
 A avaliação empírica de algoritmos em grafos exige isolamento estrito de variáveis de ruído sistêmico para assegurar a reprodutibilidade dos resultados. O protocolo experimental fundamenta-se nas seguintes diretrizes:
 
@@ -2364,7 +2387,7 @@ A avaliação empírica de algoritmos em grafos exige isolamento estrito de vari
     \item \textbf{Tratamento Estatístico e Controle de Timeout:} Cada instância é executada de forma independente por $N = 5$ repetições em regime estacionário (\textit{steady state}), descartando-se o ciclo de aquecimento de cache (\textit{warm-up}). Registram-se o tempo médio e o desvio-padrão. Fixa-se um tempo limite (\textit{timeout}) de 60 segundos por instância; métodos que excedem esse limiar são interrompidos e categorizados com \textit{Time Limit Exceeded} (TLE).
 \end{enumerate}
 
-\subsubsection{Famílias de Instâncias Padronizadas da Literatura}
+\subsubsection{Famílias de Instâncias Padronizadas da Literatura}\label{sec:bench_instancias}
 
 Para submeter os motores algorítmicos a desafios topológicos diversos, o ecossistema de testes emprega as coleções canônicas do \textit{First DIMACS International Algorithm Implementation Challenge} (veja~\cite{Jensen2022, ahuja1993network}):
 
@@ -2388,7 +2411,7 @@ Para submeter os motores algorítmicos a desafios topológicos diversos, o ecoss
     \end{itemize}
 \end{itemize}
 
-\subsubsection{Métricas Operacionais e Certificação Cruzada de Corretude}
+\subsubsection{Métricas Operacionais e Certificação Cruzada de Corretude}\label{sec:bench_metricas}
 
 Além do tempo de execução bruto, a instrumentação dos drivers computacionais coleta métricas internas que refletem a dinâmica algorítmica de cada abordagem:
 
@@ -2415,22 +2438,22 @@ A Tabela~\ref{tab:benchmarks} sintetiza o quadro comparativo estruturado para a 
 \begin{table}[!ht]
 \centering
 \small
-\setlength{\tabcolsep}{3.5pt}
-\begin{tabular}{p{2.8cm} p{3.7cm} p{3.7cm} p{3.2cm}}
+\setlength{\tabcolsep}{4.5pt}
+\begin{tabular}{p{3.8cm} p{5.8cm} p{6.1cm}}
 \toprule
-\textbf{Motor Algorítmico} & \textbf{Topologia de Melhor Desempenho} & \textbf{Cenário Crítico / Pior Caso} & \textbf{Complexidade Prática} \\
+\textbf{Motor Algorítmico (C++)} & \textbf{Topologia de Melhor Desempenho} & \textbf{Cenário Crítico e Gargalo Empírico} \\
 \midrule
-\multicolumn{4}{l}{\textbf{Motores de Fluxo Máximo}} \\
-Ford-Fulkerson & Grafos com capacidades pequenas e caminhos curtos & Capacidades exponenciais e redes com ciclos residuais & Pseudopolinomial \\
-Edmonds-Karp & Redes esparsas com poucos caminhos aumentantes & Redes em camadas profundas (muitas BFSs) & Polinomial ($\mathcal{O}(|V||A|^2)$) \\
-Dinic & Redes unitárias, bipartidas e redes densas & Grafos com gargalos múltiplos em níveis sucessivos & Rápido ($\mathcal{O}(|V|^2|A|)$) \\
-Push-Relabel (FIFO) & Redes densas com cortes mínimos próximos à fonte & Redes com longas cadeias sem saturação imediata & $\mathcal{O}(|V|^3)$ \\
-Push-Relabel (Gap) & Grafos de visão computacional (segmentação) e DIMACS RMF & Praticamente imune a patologias (elimina rótulos mortos) & \textbf{Altamente competitivo} \\
-\addlinespace
-\multicolumn{4}{l}{\textbf{Motores de Fluxo de Custo Mínimo}} \\
-Cycle Canceling & Redes pequenas com poucos ciclos negativos & Redes com custos grandes (muitos ciclos de custo $-1$) & Lento (convergência primal) \\
-SSP (Dijkstra + $\pi$) & Redes de transbordo com fluxo total moderado & Redes com fluxos massivos e capacidades unitárias & Polinomial em $F$ \\
-Network Simplex & Grafos em grade, instâncias Netgen e redes logísticas & Degenerescência cíclica severa (controlada por Cunningham) & \textbf{Estado da arte prático} \\
+\multicolumn{3}{c}{\bannertext{Motores de Fluxo Máximo (Coleções DIMACS Washington e RMF)}} \\
+\hyperref[ap:ford_fulkerson]{Ford-Fulkerson} & Capacidades pequenas e caminhos curtos & Capacidades exponenciais e redes com ciclos \\
+\hyperref[ap:edmonds_karp]{Edmonds-Karp} & Redes esparsas com poucos aumentos globais & Redes em camadas profundas (custo de BFSs sucessivas) \\
+\hyperref[ap:dinic]{Dinic} & Redes unitárias, grafos bipartidos e redes densas & Gargalos múltiplos em níveis sucessivos da rede \\
+\hyperref[ap:push_relabel]{Push-Relabel (FIFO)} & Redes densas com cortes mínimos próximos à fonte & Cadeias longas sem saturação imediata de excessos \\
+\hyperref[ap:push_relabel_improved]{Push-Relabel (Gap)} & Grafos de visão (grid 2D/3D) e instâncias DIMACS RMF & Praticamente imune a patologias (elimina rótulos mortos) \\
+\addlinespace[0.3em]
+\multicolumn{3}{c}{\bannertext{Motores de Fluxo de Custo Mínimo (Coleções DIMACS Netgen e Grid)}} \\
+\hyperref[ap:cycle_canceling]{Cycle Canceling} & Redes pequenas com poucos ciclos de custo negativo & Custos residuais elevados com múltiplos ciclos de $-1$ \\
+\hyperref[ap:successive_shortest_dijkstra]{SSP (Dijkstra + $\pi$)} & Redes de transbordo com fluxo total moderado & Redes com fluxos massivos e capacidades unitárias \\
+\hyperref[ap:network_simplex]{Network Simplex} & Grafos em grade, instâncias Netgen e redes logísticas & Degenerescência cíclica severa (controlada por Cunningham) \\
 \bottomrule
 \end{tabular}
 \caption{Quadro de análise comparativa dos motores algorítmicos e sensibilidade topológica frente aos conjuntos de teste.}
