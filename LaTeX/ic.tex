@@ -896,13 +896,13 @@ A intuição por trás da melhoria da complexidade de tempo de pior caso de $\ma
 \toprule
 \textbf{Algoritmo} & \textbf{Complexidade} & \textbf{Mecanismo / Estratégia} \\
 \midrule
-\multicolumn{3}{c}{\bannertext{Vertente Primal: Caminhos Aumentantes ($e(v)=0$)}} \\
+\multicolumn{3}{c}{\bannertext{\hyperref[sec:fluxo_primal]{Vertente Primal: Caminhos Aumentantes ($e(v)=0$)}}} \\
 \midrule
 \hyperref[ap:ford_fulkerson]{Ford-Fulkerson} & $\mathcal{O}(|A| \cdot |f^*|)$ & DFS (busca caminhos aumentantes quaisquer) \\
 \hyperref[ap:edmonds_karp]{Edmonds-Karp} & $\mathcal{O}(|V| \cdot |A|^2)$ & BFS (garante menor caminho em número de arcos) \\
 \hyperref[ap:dinic]{Dinic} & $\mathcal{O}(|V|^2 \cdot |A|)$ & Grafo de níveis com saturação por fluxos bloqueadores \\
 \midrule
-\multicolumn{3}{c}{\bannertext{Vertente Dual: Pré-fluxo e Alturas (Otimiza Corte)}} \\
+\multicolumn{3}{c}{\bannertext{\hyperref[sec:prefluxo]{Vertente Dual: Pré-fluxo e Alturas (Otimiza Corte)}}} \\
 \midrule
 \hyperref[ap:push_relabel]{Push-Relabel (FIFO)} & $\mathcal{O}(|V|^3)$ & Descarga assíncrona em fila de vértices com excesso \\
 \hyperref[ap:push_relabel_improved]{Push-Relabel (Gap)} & $\mathcal{O}(|V|^2 \sqrt{|A|})$ & Seleção por maior altura combinada à \textit{Gap Heuristic} \\
@@ -1057,7 +1057,7 @@ A solidez desta extração reside no fato de que, pelas propriedades de conserva
 \label{fig:konig_corte}
 \end{figure}
 
-\subsubsection{Conjunto Independente Máximo}
+\subsubsection{Conjunto Independente Máximo}\label{sec:conjunto_independente}
 
 O Problema do Conjunto Independente Máximo (\textit{Maximum Independent Set} - MIS) visa identificar o maior subconjunto de vértices $I \subseteq V$ no qual nenhuma dupla de vértices seja adjacente entre si. Assim como nos casos anteriores, o problema é tratado aqui sobre um \textbf{digrafo bipartido}, contexto em que a dualidade com a Cobertura de Vértices Mínima --- resultado do Teorema de König --- permite resolvê-lo em tempo polinomial via fluxo máximo. Em outras palavras, nenhum arco do digrafo pode possuir ambas as extremidades contidas no conjunto $I$.
 
@@ -1117,7 +1117,7 @@ A cardinalidade do Conjunto Independente Máximo é dada algebricamente por $|I|
 \label{fig:conjunto_independente}
 \end{figure}
 
-\subsubsection{Cobertura de Arcos Mínima}
+\subsubsection{Cobertura de Arcos Mínima}\label{sec:cobertura_arcos}
 
 Até este ponto, estudamos três dos quatro objetos combinatórios fundamentais em grafos bipartidos. O quarto é a \textbf{Cobertura de Arcos Mínima} (\textit{Minimum Edge Cover} - MEC): o menor subconjunto de arcos $F \subseteq A$ tal que todo vértice do digrafo seja incidente a pelo menos um arco de $F$ (ou seja, $F$ ``cobre'' todos os vértices). Ao contrário dos problemas de cobertura de vértices, este problema admite solução eficiente também em grafos gerais, não apenas bipartidos.
 
@@ -1145,15 +1145,18 @@ Com as quatro grandezas combinatórias fundamentais rigorosamente formuladas sob
 
 \begin{table}[!ht]
 \centering
+\small
+\setlength{\tabcolsep}{12pt}
 \begin{tabular}{l c c}
-\hline
-\textbf{Objetivo} & \textbf{Cobre vértices} & \textbf{Cobre arcos} \\
-\hline
-\textbf{Maximizar} & Conjunto Independente Máximo ($I$) & Emparelhamento Máximo ($M$) \\
-\textbf{Minimizar} & Cobertura de Vértices Mínima ($C_V$) & Cobertura de Arcos Mínima ($F$) \\
-\hline
+\toprule
+\textbf{Objetivo} & \textbf{Domínio de Vértices ($V$)} & \textbf{Domínio de Arcos ($A$)} \\
+\midrule
+\textbf{Maximizar} & \hyperref[sec:conjunto_independente]{Conjunto Independente} $\alpha(G) = |I^*|$ & \hyperref[sec:emparelhamento]{Emparelhamento Máximo} $\nu(G) = |M^*|$ \\
+\addlinespace[0.4em]
+\textbf{Minimizar} & \hyperref[sec:cobertura]{Cobertura de Vértices} $\tau(G) = |C_V^*|$ & \hyperref[sec:cobertura_arcos]{Cobertura de Arcos} $\rho(G) = |F^*|$ \\
+\bottomrule
 \end{tabular}
-\caption{As quatro dualidades combinatórias em grafos bipartidos. Cada célula é complementar à da mesma linha ou coluna, e todas são interligadas pelos Teoremas de König e Gallai.}
+\caption{As quatro dualidades combinatórias em grafos bipartidos. As grandezas satisfazem a equivalência min-max $\nu(G) = \tau(G)$ (\hyperref[teo:konig]{Teorema~\ref{teo:konig}}) e as identidades de conservação $\alpha(G) + \tau(G) = \nu(G) + \rho(G) = |V|$ (\hyperref[teo:gallai]{Teorema~\ref{teo:gallai}}).}
 \label{tab:dualidades}
 \end{table}
 
@@ -2317,16 +2320,16 @@ A Tabela~\ref{tab:min_cost} sintetiza os paradigmas, invariantes mantidas e as c
 \toprule
 \textbf{Algoritmo} & \textbf{Complexidade} & \textbf{Mecanismo / Estratégia} \\
 \midrule
-\multicolumn{3}{c}{\bannertext{Abordagem Primal Direta: Cancelamento de Ciclos}} \\
+\multicolumn{3}{c}{\bannertext{\hyperref[sec:cycle_canceling]{Abordagem Primal Direta: Cancelamento de Ciclos}}} \\
 \midrule
 \hyperref[ap:cycle_canceling]{Cycle Canceling} & $\mathcal{O}(|V| \cdot |A|^2 \cdot C \cdot W)$ & Mantém viabilidade primal e cancela ciclos residuais negativos via SPFA \\
 \midrule
-\multicolumn{3}{c}{\bannertext{Abordagem Dual Construtiva: Caminhos de Custo Mínimo}} \\
+\multicolumn{3}{c}{\bannertext{\hyperref[sec:ssp]{Abordagem Dual Construtiva: Caminhos de Custo Mínimo}}} \\
 \midrule
 \hyperref[ap:successive_shortest]{SSP (SPFA)} & $\mathcal{O}(|V| \cdot |A| \cdot F)$ & Caminhos aumentantes mais curtos em custos residuais via Bellman-Ford/SPFA \\
 \hyperref[ap:successive_shortest_dijkstra]{SSP (Dijkstra + $\pi$)} & $\mathcal{O}(F \cdot |A| \log |V|)$ & Potenciais nodais $\pi$ ($\bar{w}_\pi \ge 0$) permitindo Dijkstra com heap binária \\
 \midrule
-\multicolumn{3}{c}{\bannertext{Abordagem Primal-Dual em Árvore: Estrutura de Base}} \\
+\multicolumn{3}{c}{\bannertext{\hyperref[sec:network_simplex]{Abordagem Primal-Dual em Árvore: Estrutura de Base}}} \\
 \midrule
 \hyperref[ap:network_simplex]{Network Simplex} & $\mathcal{O}(|V| \cdot |A| \cdot C \cdot W)^*$ & Pivoteamento local em árvores geradoras via ciclos fundamentais ($\mathcal{O}(|V|)$) \\
 \bottomrule
@@ -2420,7 +2423,7 @@ A Tabela~\ref{tab:benchmarks} sintetiza o quadro comparativo estruturado para a 
 \toprule
 \textbf{Motor Algorítmico (C++)} & \textbf{Topologia de Melhor Desempenho} & \textbf{Cenário Crítico e Gargalo Empírico} \\
 \midrule
-\multicolumn{3}{c}{\bannertext{Motores de Fluxo Máximo (Coleções DIMACS Washington e RMF)}} \\
+\multicolumn{3}{c}{\bannertext{\hyperref[sec:bench_instancias]{Motores de Fluxo Máximo (Coleções DIMACS Washington e RMF)}}} \\
 \midrule
 \hyperref[ap:ford_fulkerson]{Ford-Fulkerson} & Capacidades pequenas e caminhos curtos & Capacidades exponenciais e redes com ciclos \\
 \hyperref[ap:edmonds_karp]{Edmonds-Karp} & Redes esparsas com poucos aumentos globais & Redes em camadas profundas (custo de BFSs sucessivas) \\
@@ -2428,7 +2431,7 @@ A Tabela~\ref{tab:benchmarks} sintetiza o quadro comparativo estruturado para a 
 \hyperref[ap:push_relabel]{Push-Relabel (FIFO)} & Redes densas com cortes mínimos próximos à fonte & Cadeias longas sem saturação imediata de excessos \\
 \hyperref[ap:push_relabel_improved]{Push-Relabel (Gap)} & Grafos de visão (grid 2D/3D) e instâncias DIMACS RMF & Praticamente imune a patologias (elimina rótulos mortos) \\
 \midrule
-\multicolumn{3}{c}{\bannertext{Motores de Fluxo de Custo Mínimo (Coleções DIMACS Netgen e Grid)}} \\
+\multicolumn{3}{c}{\bannertext{\hyperref[sec:bench_instancias]{Motores de Fluxo de Custo Mínimo (Coleções DIMACS Netgen e Grid)}}} \\
 \midrule
 \hyperref[ap:cycle_canceling]{Cycle Canceling} & Redes pequenas com poucos ciclos de custo negativo & Custos residuais elevados com múltiplos ciclos de $-1$ \\
 \hyperref[ap:successive_shortest_dijkstra]{SSP (Dijkstra + $\pi$)} & Redes de transbordo com fluxo total moderado & Redes com fluxos massivos e capacidades unitárias \\
