@@ -173,13 +173,13 @@ Caso o parecerista disponha de tempo reduzido para a análise e deseje examinar 
 
 \section{Fundamentação teórica}
 O problema do $st$-fluxo máximo, onde se busca maximizar a quantidade de fluxo enviada de um vértice fonte $s$ para um vértice de destino $t$, é um dos pilares deste estudo (veja~\cite{ford1956maximal}). Foram analisados algoritmos como os de Ford-Fulkerson, Edmonds-Karp, Dinic e Push-Relabel (Goldberg-Tarjan) (veja~\cite{ford1956maximal, edmonds1972theoretical, dinic1970algorithm, goldberg1988new}).
-O projeto também contempla o problema de fluxo de custo mínimo, que busca minimizar o custo total enquanto satisfaz as demandas da rede. O algoritmo principal a ser implementado para este fim é o \textit{network simplex}, uma especialização do algoritmo simplex (veja~\cite{dantzig1951application, ahuja1993network}).
-A fundamentação teórica revisada nesta etapa reafirma que muitos problemas combinatórios, como o emparelhamento máximo em digrafos bipartidos, podem ser resolvidos via reduções para problemas de fluxo (veja~\cite{ahuja1993network}).
+O projeto também contempla o problema de fluxo de custo mínimo, que busca minimizar o custo total enquanto satisfaz as demandas da rede. Para este fim, foram desenvolvidos e analisados algoritmos clássicos como Cycle Canceling e Successive Shortest Path (com SPFA e Dijkstra acelerado por potenciais nodais), culminando na implementação do algoritmo \textit{network simplex}, uma especialização do algoritmo simplex sobre grafos (veja~\cite{dantzig1951application, ahuja1993network}).
+A fundamentação teórica revisada nesta pesquisa reafirma que muitos problemas combinatórios, como o emparelhamento máximo em digrafos bipartidos, podem ser resolvidos via reduções para problemas de fluxo (veja~\cite{ahuja1993network}).
 
 \section{Metodologia}
 \subsection{Materiais e Métodos}
-A metodologia baseia-se em ciclos de estudo bibliográfico seguidos de implementação. Os algoritmos estão sendo desenvolvidos em linguagem C++ para garantir alta performance, utilizando listas de adjacência otimizadas.
-Os experimentos serão conduzidos em instâncias padronizadas das coleções DIMACS (veja~\cite{Jensen2022}), permitindo a comparação de desempenho. A análise baseia-se em métricas de tempo de execução e corretude dos algoritmos implementados frente às soluções ótimas conhecidas (veja~\cite{ford1956maximal}).
+A metodologia baseia-se em ciclos de estudo bibliográfico seguidos de implementação. Os algoritmos foram integralmente desenvolvidos em linguagem C++23 orientada a objetos para garantir alta performance, utilizando listas de adjacência e representações residuais otimizadas.
+O protocolo de validação experimental foi estruturado sobre instâncias padronizadas das coleções DIMACS (veja~\cite{Jensen2022}), permitindo a comparação sistemática de desempenho. A análise fundamenta-se em métricas de tempo de execução de CPU e corretude dos algoritmos implementados frente às soluções ótimas conhecidas (veja~\cite{ford1956maximal}).
 
 \subsection{Etapas da pesquisa}
 As atividades do projeto foram estruturadas e encontram-se no seguinte status:
@@ -2427,7 +2427,7 @@ Os resultados obtidos ao longo desta Iniciação Científica demonstram o cumpri
     
     \item \textbf{Aplicações Práticas e Reduções Combinatórias:} Demonstrou-se a versatilidade prática dos modelos de fluxo através da implementação de resolvedores para problemas clássicos (\textit{Maximum Bipartite Matching}, \textit{Minimum Vertex Cover}, \textit{Maximum Independent Set}, rotas disjuntas e desconexão de redes), culminando no desenvolvimento de uma ferramenta completa de \textbf{Segmentação Interativa de Imagens} baseada em corte mínimo via corte de grafos (\textit{Graph Cuts}).
     
-    \item \textbf{Validação Experimental e Benchmarks:} Foi estabelecido um protocolo rigoroso de experimentação em instâncias canônicas da literatura (coleções DIMACS e grafos sintéticos), confrontando os limites assintóticos com tempos de execução de CPU e métricas internas de contagem de operações, comprovando a superioridade prática de métodos como \textit{Dinic}, \textit{Push-Relabel Gap} e \textit{Network Simplex}.
+    \item \textbf{Protocolo Experimental e Benchmarks Computacionais:} Foi concebido e estruturado um protocolo reprodutível de validação experimental em instâncias canônicas da literatura (coleções DIMACS e geradores sintéticos), projetado para confrontar os limites assintóticos teóricos com medições de tempo de CPU em alta resolução e contadores operacionais internos, estabelecendo o arcabouço para evidenciar a superioridade prática de métodos como \textit{Dinic}, \textit{Push-Relabel Gap} e \textit{Network Simplex}.
 \end{enumerate}
 
 Como perspectivas de trabalhos futuros imediatos, destacam-se a execução sistemática da bateria de testes comparativos sobre instâncias padronizadas do benchmark DIMACS, a avaliação do impacto empírico de diferentes regras de pivoteamento no \textit{Network Simplex} (como \textit{Candidate List Pricing}), e a redação do artigo científico final sintetizando as contribuições desta pesquisa.
