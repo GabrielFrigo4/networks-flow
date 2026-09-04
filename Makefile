@@ -25,7 +25,7 @@ test:
 	$(MAKE) -C Aplicações test
 
 clean:
-	$(MAKE) -C LaTeX clean
+	$(MAKE) -C LaTeX distclean
 	$(MAKE) -C Aplicações clean
 	$(MAKE) -C Implementações clean
 	$(MAKE) -C Experimentos clean

@@ -56,5 +56,5 @@ clean:
 	@if command -v $(LATEXMK) >/dev/null 2>&1; then $(LATEXMK) -c >/dev/null 2>&1 || true; fi
 
 distclean: clean
-	rm -f $(TARGETS)
+	rm -f $(TARGETS) *.pdf
 	@if command -v $(LATEXMK) >/dev/null 2>&1; then $(LATEXMK) -C >/dev/null 2>&1 || true; fi
