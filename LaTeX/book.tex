@@ -463,30 +463,61 @@
 
 \frontmatter
 
+% =========================================================================
+% FOLHA DE ROSTO INSTITUCIONAL (PÁGINA DE TÍTULO INTERNA)
+% =========================================================================
 \begin{titlepage}
     \centering
-    \vspace*{1.2cm}
+    % ---------------------------------------------------------------------
+    % Cabeçalho Institucional Superior
+    % ---------------------------------------------------------------------
+    \vspace*{0.5cm}
+    {\scshape\large UNIVERSIDADE FEDERAL DO ABC}\\[0.2cm]
+    {\fontsize{10}{13}\selectfont\textbf{\textsf{CENTRO DE MATEMÁTICA, COMPUTAÇÃO E COGNIÇÃO -- CMCC}}}\\[0.15cm]
+    {\fontsize{9}{12}\selectfont\color{darkslate!75} Bacharelado em Ciência da Computação}
     
-    {\Huge \textbf{\textsf{PROBLEMAS DE FLUXOS EM REDES}}}\\[0.6cm]
-    {\Large \textbf{\textsf{Teoria Matemática, Algoritmos Combinatórios\\ e Implementações de Alta Performance}}}\\[1.8cm]
+    \vspace{1.8cm}
     
-    \rule{\linewidth}{1.2pt}\\[1.5cm]
+    % ---------------------------------------------------------------------
+    % Título Principal e Divisor Bicolor
+    % ---------------------------------------------------------------------
+    {\fontsize{24}{30}\selectfont\textbf{\textsf{PROBLEMAS DE FLUXOS EM REDES}}}\\[0.5cm]
+    {\fontsize{12.5}{17}\selectfont\textbf{\color{darkslate!85}Teoria Matemática, Algoritmos Combinatórios\\ e Implementações de Alta Performance}}\\[0.6cm]
     
-    {\LARGE \textbf{Gabriel Frigo}}\\[0.8cm]
-    {\large Orientação Acadêmica: \textbf{Profa. Dra. Cristiane Maria Sato}}\\[2.2cm]
+    \begin{tikzpicture}
+        \draw[line width=1.5pt, darkslate] (-3, 0) -- (0, 0);
+        \draw[line width=1.8pt, accentgold] (0.3, 0) -- (3, 0);
+    \end{tikzpicture}
+    
+    \vspace{0.8cm}
+    
+    % ---------------------------------------------------------------------
+    % Identificação de Autoria e Orientação
+    % ---------------------------------------------------------------------
+    {\fontsize{14}{18}\selectfont\textbf{\textsf{Gabriel Frigo}}}\\[0.35cm]
+    {\fontsize{10.5}{14}\selectfont Orientação Acadêmica: \textbf{\textsf{Profa. Dra. Cristiane Maria Sato}}}
+    
+    \vspace{1.6cm}
+    
+    % ---------------------------------------------------------------------
+    % Card Editorial de Metadados e Escopo Monográfico
+    % ---------------------------------------------------------------------
+    \begin{tikzpicture}
+        \node[draw=cardborder, fill=cardbg, rounded corners=8pt, line width=1pt, inner sep=16pt, text width=13.0cm, align=left] {
+            {\fontsize{9.5}{14}\selectfont\textbf{\color{darkslate}ESCOPO MONOGRÁFICO:}}\\[0.2cm]
+            {\fontsize{9}{13}\selectfont\color{darkslate!90} Tratado monográfico completo dedicado ao estudo rigoroso, demonstrações formais axiomáticas e engenharia de software em C++23 de problemas clássicos e contemporâneos de fluxos em redes, dualidade primal-dual e suas aplicações em otimização combinatória e visão computacional.}\\[0.35cm]
+            {\fontsize{8.5}{12}\selectfont\color{darkslate!80} \textbf{Palavras-chave:} Fluxo Máximo $\bullet$ Corte Mínimo $\bullet$ Custo Mínimo $\bullet$ Dualidade Linear $\bullet$ Network Simplex $\bullet$ C++23}
+        };
+    \end{tikzpicture}
     
     \vfill
     
-    \begin{minipage}{0.88\linewidth}
-        \centering
-        \small\sffamily
-        Tratado monográfico completo dedicado ao estudo rigoroso, projeto algorítmico e implementação em C++23 de problemas clássicos e contemporâneos de fluxos em redes, dualidade linear e suas aplicações em otimização combinatória e visão computacional.
-    \end{minipage}
-    
-    \vspace{1.5cm}
-    
-    {\large \textbf{Santo André -- SP}}\\[0.3cm]
-    {\large \textbf{\the\year}}
+    % ---------------------------------------------------------------------
+    % Informações Editoriais do Rodapé
+    % ---------------------------------------------------------------------
+    {\fontsize{9.5}{13}\selectfont\color{darkslate!80}\textbf{1ª Edição Monográfica}}\\[0.2cm]
+    {\fontsize{10.5}{14}\selectfont\textbf{Santo André -- SP}}\\[0.15cm]
+    {\fontsize{10.5}{14}\selectfont\textbf{\the\year}}
 \end{titlepage}
 
 \chapter*{Prefácio do Autor}
