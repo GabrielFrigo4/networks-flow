@@ -7,9 +7,10 @@ MAKEFLAGS += --no-print-directory
 all: latex apps impl
 
 format:
-	@printf "%s\n" "Formatando todos os arquivos C++ (.hpp e .cpp) com clang-format..."
+	@printf "%s\n" "Formatando todos os códigos C++ (.hpp e .cpp) de todo o repositório com clang-format..."
 	find . -type f \( -name "*.hpp" -o -name "*.cpp" -o -name "*.h" -o -name "*.c" \) -not -path "*/.*/*" -exec clang-format -i {} +
-	@printf "%s\n" "Formatação do repositório concluída!"
+	@printf "%s\n" "Formatação completa de todos os códigos C++ concluída com sucesso!"
+
 
 
 setup:

@@ -4,11 +4,16 @@ MAKEFLAGS += --no-print-directory
 
 SUBDIRS = "Segmentação de Imagens"
 
-.PHONY: all test clean
+.PHONY: all test format clean
 
 all:
 	@for dir in $(SUBDIRS); do \
 		$(MAKE) -C "$$dir" all; \
+	done
+
+format:
+	@for dir in $(SUBDIRS); do \
+		$(MAKE) -C "$$dir" format; \
 	done
 
 test:

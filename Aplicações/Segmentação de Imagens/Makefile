@@ -8,9 +8,15 @@ SEG_EXE  = ./segment
 SEED_EXE = ./seeds
 PPM_EXE  = ./ppm
 
-.PHONY: all seed run test example clean clear
+.PHONY: all seed run test example format clean clear
 
 all: $(SEG_EXE) $(SEED_EXE) $(PPM_EXE) seed
+
+format:
+	@printf "%s\n" "Formatando códigos C++ da Segmentação de Imagens com clang-format..."
+	find . -type f \( -name "*.hpp" -o -name "*.cpp" \) -not -path "*/.*/*" -exec clang-format -i {} +
+	@printf "%s\n" "Formatação da Segmentação de Imagens concluída!"
+
 
 $(SEG_EXE): main.cpp
 	$(CXX) $(CXXFLAGS) main.cpp -o $(SEG_EXE)

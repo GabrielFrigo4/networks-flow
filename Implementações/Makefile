@@ -10,9 +10,10 @@ CXXFLAGS = -std=c++23 -fsyntax-only -Wall -Wextra
 all: check
 
 format:
-	@printf "%s\n" "Formatando headers em FlowNetwork e CostNetwork com clang-format..."
-	clang-format -i FlowNetwork/*.hpp CostNetwork/*.hpp
-	@printf "%s\n" "Formatação dos headers concluída!"
+	@printf "%s\n" "Formatando todos os códigos C++ (.hpp e .cpp) em Implementações com clang-format..."
+	find . -type f \( -name "*.hpp" -o -name "*.cpp" \) -not -path "*/.*/*" -exec clang-format -i {} +
+	@printf "%s\n" "Formatação completa de Implementações concluída!"
+
 
 
 check:
