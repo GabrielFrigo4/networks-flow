@@ -375,7 +375,9 @@
 
             \draw[darkslate!16, line width=0.8pt] (-6.2, 2.95) -- (6.2, 2.95);
 
-            % Rótulo da Partição S
+            % -------------------------------------------------------------
+            % Indicadores das Partições S, T e Corte Mínimo
+            % -------------------------------------------------------------
             \node[anchor=center] at (-3.5, 2.45) {
                 \begin{tikzpicture}[baseline=(P.base)]
                     \node (P) [draw=scyan!70, fill=white, text=scyan!90!black, rounded corners=3pt, font=\scriptsize\bfseries, inner sep=2.5pt] 
@@ -383,7 +385,6 @@
                 \end{tikzpicture}
             };
 
-            % Indicação do Corte Mínimo (S, T)
             \node[anchor=center] at (0, 2.45) {
                 \begin{tikzpicture}[baseline=(C.base)]
                     \node (C) [draw=cutred!80, fill=white, text=cutred!90!black, rounded corners=3pt, font=\scriptsize\bfseries, inner sep=2.5pt] 
@@ -391,7 +392,6 @@
                 \end{tikzpicture}
             };
 
-            % Rótulo da Partição T
             \node[anchor=center] at (3.5, 2.45) {
                 \begin{tikzpicture}[baseline=(Q.base)]
                     \node (Q) [draw=tgold!70, fill=white, text=tgold!95!black, rounded corners=3pt, font=\scriptsize\bfseries, inner sep=2.5pt] 
@@ -399,7 +399,9 @@
                 \end{tikzpicture}
             };
 
-            % Coordenadas dos Vértices da Rede
+            % -------------------------------------------------------------
+            % Topologia e Coordenadas Nodais da Rede
+            % -------------------------------------------------------------
             \coordinate (S)  at (-5.0, -0.20);
             \coordinate (V1) at (-2.0,  1.45);
             \coordinate (V2) at (-2.0, -1.85);
@@ -407,7 +409,9 @@
             \coordinate (V4) at ( 2.0, -1.85);
             \coordinate (T)  at ( 5.0, -0.20);
 
-            % Arestas Direcionadas da Rede
+            % -------------------------------------------------------------
+            % Arcos Direcionados e Capacidades Residuais
+            % -------------------------------------------------------------
             \draw[-{Stealth[length=3.2mm]}, line width=1.6pt, darkslate] (S) -- 
                 node[sloped, above=2.5pt, font=\scriptsize\bfseries, fill=cardbg, inner sep=1.5pt] {$8 / 10$} (V1);
 
@@ -435,16 +439,19 @@
             \draw[-{Stealth[length=3.2mm]}, line width=1.6pt, darkslate] (V4) -- 
                 node[sloped, below=2.5pt, font=\scriptsize\bfseries, fill=cardbg, inner sep=1.5pt] {$8 / 10$} (T);
 
-            % Linha Tracejada do Corte Mínimo
+            % -------------------------------------------------------------
+            % Fronteira Transversal do Corte Mínimo
+            % -------------------------------------------------------------
             \draw[line width=2.0pt, dashed, cutred] 
                 (0, 2.15) to[out=-80, in=100] (0, -2.60);
 
-            % Vértices da Partição S
+            % -------------------------------------------------------------
+            % Vértices das Partições S e T
+            % -------------------------------------------------------------
             \node (S_node)  at (S)  [circle, draw=scyan!90!black, fill=ssourcebg, line width=2.0pt, minimum size=11mm, font=\large\bfseries, text=scyan!95!black] {$s$};
             \node (V1_node) at (V1) [circle, draw=scyan!80!black, fill=scyanbg, line width=1.5pt, minimum size=10mm, font=\normalsize\bfseries, text=scyan!95!black] {$v_1$};
             \node (V2_node) at (V2) [circle, draw=scyan!80!black, fill=scyanbg, line width=1.5pt, minimum size=10mm, font=\normalsize\bfseries, text=scyan!95!black] {$v_2$};
 
-            % Vértices da Partição T
             \node (V3_node) at (V3) [circle, draw=tgold!85!black, fill=tgoldbg, line width=1.5pt, minimum size=10mm, font=\normalsize\bfseries, text=tgold!95!black] {$v_3$};
             \node (V4_node) at (V4) [circle, draw=tgold!85!black, fill=tgoldbg, line width=1.5pt, minimum size=10mm, font=\normalsize\bfseries, text=tgold!95!black] {$v_4$};
             \node (T_node)  at (T)  [circle, draw=tgold!90!black, fill=tsinkbg, line width=2.0pt, minimum size=11mm, font=\large\bfseries, text=tgold!95!black] {$t$};
