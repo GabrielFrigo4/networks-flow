@@ -10,7 +10,9 @@ class SuccessiveShortestDijkstra : public CostNetwork
 {
 public:
 	explicit SuccessiveShortestDijkstra(const Size n)
-	    : CostNetwork(n), potential(n, 0), distance(n), parent_edge(n) {}
+	    : CostNetwork(n), potential(n, 0), distance(n), parent_edge(n)
+	{
+	}
 
 	static std::unique_ptr<CostNetwork> create(const Size n)
 	{
@@ -108,7 +110,8 @@ public:
 						continue;
 
 					const Size next = edges[edge_id].to;
-					const Long reduced_cost = edges[edge_id].cost + potential[curr] - potential[next];
+					const Long reduced_cost = edges[edge_id].cost + potential[curr] -
+					                          potential[next];
 
 					if (distance[curr] + reduced_cost < distance[next])
 					{
@@ -129,12 +132,16 @@ public:
 			}
 
 			Long bottleneck = INF;
-			for (Size curr = sink; curr != source; curr = edges[parent_edge[curr]].from)
+			for (Size curr = sink; curr != source;
+			     curr = edges[parent_edge[curr]].from)
 			{
-				bottleneck = std::min(bottleneck, get_residual_capacity(parent_edge[curr]));
+				bottleneck = std::min(
+				    bottleneck, get_residual_capacity(parent_edge[curr])
+				);
 			}
 
-			for (Size curr = sink; curr != source; curr = edges[parent_edge[curr]].from)
+			for (Size curr = sink; curr != source;
+			     curr = edges[parent_edge[curr]].from)
 			{
 				push_flow(parent_edge[curr], bottleneck);
 			}

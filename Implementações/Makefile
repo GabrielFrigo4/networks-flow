@@ -5,9 +5,15 @@ MAKEFLAGS += --no-print-directory
 CXX      = c++
 CXXFLAGS = -std=c++23 -fsyntax-only -Wall -Wextra
 
-.PHONY: all check test clean
+.PHONY: all check format test clean
 
 all: check
+
+format:
+	@printf "%s\n" "Formatando headers em FlowNetwork e CostNetwork com clang-format..."
+	clang-format -i FlowNetwork/*.hpp CostNetwork/*.hpp
+	@printf "%s\n" "Formatação dos headers concluída!"
+
 
 check:
 	@printf "%s\n" "Verificando sintaxe dos headers (FlowNetwork)..."

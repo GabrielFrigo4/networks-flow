@@ -59,8 +59,8 @@ inline Image read_ppm(const std::string &filename)
 	std::string magic;
 	file >> magic;
 
-	if (magic.empty() || magic[0] != 'P' || magic.size() != 2 ||
-	    magic[1] < '1' || magic[1] > '7')
+	if (magic.empty() || magic[0] != 'P' || magic.size() != 2 || magic[1] < '1' ||
+	    magic[1] > '7')
 	{
 		std::cerr << "error: unsupported Netpbm format '" << magic << "'\n";
 		std::exit(1);
@@ -116,7 +116,8 @@ inline Image read_ppm(const std::string &filename)
 	img.data.resize(img.width * img.height);
 
 	auto scale = [max_val](int val) -> unsigned char {
-		if (max_val == 255) return static_cast<unsigned char>(val);
+		if (max_val == 255)
+			return static_cast<unsigned char>(val);
 		return static_cast<unsigned char>((val * 255) / max_val);
 	};
 
@@ -193,9 +194,7 @@ inline Image read_ppm(const std::string &filename)
 			if (depth >= 3)
 			{
 				img.data[i] = {
-				    scale(channels[0]),
-				    scale(channels[1]),
-				    scale(channels[2])
+				    scale(channels[0]), scale(channels[1]), scale(channels[2])
 				};
 			}
 			else

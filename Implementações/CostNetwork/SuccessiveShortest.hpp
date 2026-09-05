@@ -9,7 +9,9 @@ class SuccessiveShortest : public CostNetwork
 {
 public:
 	explicit SuccessiveShortest(const Size n)
-	    : CostNetwork(n), distance(n), parent_edge(n), in_queue(n) {}
+	    : CostNetwork(n), distance(n), parent_edge(n), in_queue(n)
+	{
+	}
 
 	static std::unique_ptr<CostNetwork> create(const Size n)
 	{
@@ -80,7 +82,8 @@ private:
 				const Size next = edges[edge_id].to;
 				const Long new_distance = distance[current] + edges[edge_id].cost;
 
-				if (get_residual_capacity(edge_id) <= 0 || new_distance >= distance[next])
+				if (get_residual_capacity(edge_id) <= 0 ||
+				    new_distance >= distance[next])
 					continue;
 
 				distance[next] = new_distance;

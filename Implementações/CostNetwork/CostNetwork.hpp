@@ -27,8 +27,7 @@ public:
 	virtual std::unique_ptr<CostNetwork> clone() const = 0;
 
 	virtual void add_edge(
-	    const Size from, const Size to,
-	    const Long capacity, const Long cost
+	    const Size from, const Size to, const Long capacity, const Long cost
 	)
 	{
 		adjacency[from].push_back(edges.size());

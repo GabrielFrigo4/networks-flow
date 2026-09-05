@@ -2,9 +2,15 @@
 .SILENT:
 MAKEFLAGS += --no-print-directory
 
-.PHONY: all latex book apps impl exp test setup clean
+.PHONY: all latex book apps impl exp format test setup clean
 
 all: latex apps impl
+
+format:
+	@printf "%s\n" "Formatando todos os arquivos C++ (.hpp e .cpp) com clang-format..."
+	find . -type f \( -name "*.hpp" -o -name "*.cpp" -o -name "*.h" -o -name "*.c" \) -not -path "*/.*/*" -exec clang-format -i {} +
+	@printf "%s\n" "Formatação do repositório concluída!"
+
 
 setup:
 	git config core.hooksPath .githooks

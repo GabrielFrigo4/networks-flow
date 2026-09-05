@@ -74,7 +74,8 @@ private:
 		if (current_node == sink)
 			return flow_pushed;
 
-		for (Size &ptr = next_edge_ptr[current_node]; ptr < adjacency[current_node].size();
+		for (Size &ptr = next_edge_ptr[current_node];
+		     ptr < adjacency[current_node].size();
 		     ++ptr)
 		{
 			const Size edge_id = adjacency[current_node][ptr];

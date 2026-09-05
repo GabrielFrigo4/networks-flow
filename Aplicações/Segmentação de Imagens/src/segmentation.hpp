@@ -74,8 +74,8 @@ inline SegmentationGraph build_graph(
 				const int nx = static_cast<int>(x) + dx[d];
 				const int ny = static_cast<int>(y) + dy[d];
 
-				if (nx < 0 || nx >= static_cast<int>(img.width) ||
-				    ny < 0 || ny >= static_cast<int>(img.height))
+				if (nx < 0 || nx >= static_cast<int>(img.width) || ny < 0 ||
+				    ny >= static_cast<int>(img.height))
 					continue;
 
 				const Size q = img.index(

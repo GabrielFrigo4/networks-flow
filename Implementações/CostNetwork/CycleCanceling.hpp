@@ -8,7 +8,10 @@
 class CycleCanceling : public CostNetwork
 {
 public:
-	explicit CycleCanceling(const Size n) : CostNetwork(n), distance(n), parent_edge(n) {}
+	explicit CycleCanceling(const Size n)
+	    : CostNetwork(n), distance(n), parent_edge(n)
+	{
+	}
 
 	static std::unique_ptr<CostNetwork> create(const Size n)
 	{
@@ -65,7 +68,9 @@ private:
 						continue;
 
 					parent[next] = edge_id;
-					const Long bottleneck = std::min(current_flow, get_residual_capacity(edge_id));
+					const Long bottleneck = std::min(
+					    current_flow, get_residual_capacity(edge_id)
+					);
 
 					if (next == sink)
 					{
@@ -82,7 +87,7 @@ private:
 				}
 			}
 			return;
-			next_iteration:;
+		next_iteration:;
 		}
 	}
 

@@ -8,9 +8,7 @@
 
 using FlowSolver = PushRelabelImproved;
 
-void print_minimum_vertex_cover(
-    const std::unique_ptr<FlowNetwork> &fn, const Size n
-)
+void print_minimum_vertex_cover(const std::unique_ptr<FlowNetwork> &fn, const Size n)
 {
 	const Size source = 0;
 	std::vector<bool> reachable(2 * n + 2, false);

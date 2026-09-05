@@ -5,16 +5,15 @@
 
 static void print_usage(const char *program)
 {
-	std::cout
-	    << "Usage:\n"
-	    << "  " << program << " -i <input.ppm> -o <output.ppm> [-a | -b]\n\n"
-	    << "Options:\n"
-	    << "  -i, --input   <file>   Input Netpbm image (P1–P7)\n"
-	    << "  -o, --output  <file>   Output Netpbm image\n"
-	    << "  -a, --ascii            Force output in ASCII format (P3)\n"
-	    << "                         [default: match input]\n"
-	    << "  -b, --binary           Force output in binary format (P6)\n"
-	    << "  -h, --help             Show this message\n";
+	std::cout << "Usage:\n"
+	          << "  " << program << " -i <input.ppm> -o <output.ppm> [-a | -b]\n\n"
+	          << "Options:\n"
+	          << "  -i, --input   <file>   Input Netpbm image (P1–P7)\n"
+	          << "  -o, --output  <file>   Output Netpbm image\n"
+	          << "  -a, --ascii            Force output in ASCII format (P3)\n"
+	          << "                         [default: match input]\n"
+	          << "  -b, --binary           Force output in binary format (P6)\n"
+	          << "  -h, --help             Show this message\n";
 }
 
 int main(int argc, char *argv[])
@@ -83,7 +82,7 @@ int main(int argc, char *argv[])
 
 	write_ppm(output_file, img, to_ascii);
 
-	std::cout << "Converted '" << input_file << "' -> '" << output_file
-	          << "' (" << (to_ascii ? "P3 ASCII" : "P6 binary") << ")\n";
+	std::cout << "Converted '" << input_file << "' -> '" << output_file << "' ("
+	          << (to_ascii ? "P3 ASCII" : "P6 binary") << ")\n";
 	return 0;
 }

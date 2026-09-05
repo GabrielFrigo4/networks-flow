@@ -158,7 +158,7 @@ int main(int argc, char *argv[])
 		}
 
 		Image seed_img;
-		seed_img.width  = out_width;
+		seed_img.width = out_width;
 		seed_img.height = out_height;
 		seed_img.data.resize(out_width * out_height, Pixel{0, 255, 0});
 
@@ -185,8 +185,8 @@ int main(int argc, char *argv[])
 		std::ofstream out(output_file);
 		if (!out.is_open())
 		{
-			std::cerr << "error: cannot create output file '"
-			          << output_file << "'\n";
+			std::cerr << "error: cannot create output file '" << output_file
+			          << "'\n";
 			return 1;
 		}
 

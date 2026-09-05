@@ -6,9 +6,7 @@
 
 using CostSolver = NetworkSimplex;
 
-void print_assignment(
-    const std::unique_ptr<CostNetwork> &cn, const Size n
-)
+void print_assignment(const std::unique_ptr<CostNetwork> &cn, const Size n)
 {
 	std::vector<Size> assignment(n + 1);
 

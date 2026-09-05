@@ -50,7 +50,8 @@ public:
 
 		arc_state.assign(edges.size() / 2, ArcState::LOWER);
 
-		const Long big_m = std::abs(back_cost) * static_cast<Long>(size + 2) + 100000;
+		const Long big_m = std::abs(back_cost) * static_cast<Long>(size + 2) +
+		                   100000;
 
 		depth[root] = 0;
 		potential[root] = 0;
@@ -88,7 +89,9 @@ public:
 					best_violation = rc;
 					entering = i;
 				}
-				else if (arc_state[arc_idx] == ArcState::UPPER && -rc < best_violation)
+				else if (
+				    arc_state[arc_idx] == ArcState::UPPER && -rc < best_violation
+				)
 				{
 					best_violation = -rc;
 					entering = i;
@@ -136,7 +139,8 @@ private:
 
 	[[nodiscard]] Long reduced_cost(const Size edge_id) const
 	{
-		return edges[edge_id].cost + potential[edges[edge_id].from] - potential[edges[edge_id].to];
+		return edges[edge_id].cost + potential[edges[edge_id].from] -
+		       potential[edges[edge_id].to];
 	}
 
 	Size find_lca(Size u, Size v) const
@@ -162,7 +166,9 @@ private:
 
 		const Size lca = find_lca(u, v);
 
-		Long bottleneck = is_upper ? edges[entering].flow : (edges[entering].capacity - edges[entering].flow);
+		Long bottleneck = is_upper
+		                      ? edges[entering].flow
+		                      : (edges[entering].capacity - edges[entering].flow);
 		Size leaving_edge = entering;
 		bool leaving_is_entering = true;
 
@@ -249,19 +255,23 @@ private:
 
 		if (leaving_is_entering)
 		{
-			arc_state[arc_idx] = (edges[entering].flow == edges[entering].capacity) ? ArcState::UPPER : ArcState::LOWER;
+			arc_state[arc_idx] = (edges[entering].flow == edges[entering].capacity)
+			                         ? ArcState::UPPER
+			                         : ArcState::LOWER;
 			return;
 		}
 
 		const Size leaving_arc_idx = leaving_edge / 2;
-		arc_state[leaving_arc_idx] = (edges[leaving_edge].flow == 0) ? ArcState::LOWER : ArcState::UPPER;
+		arc_state[leaving_arc_idx] = (edges[leaving_edge].flow == 0)
+		                                 ? ArcState::LOWER
+		                                 : ArcState::UPPER;
 		arc_state[arc_idx] = ArcState::TREE;
 
 		const Size lu = edges[leaving_edge].from;
 		const Size lv = edges[leaving_edge].to;
 		auto &adj_lu = tree_adj[lu];
 		adj_lu.erase(std::remove(adj_lu.begin(), adj_lu.end(), lv), adj_lu.end());
-        auto &adj_lv = tree_adj[lv];
+		auto &adj_lv = tree_adj[lv];
 		adj_lv.erase(std::remove(adj_lv.begin(), adj_lv.end(), lu), adj_lv.end());
 
 		const Size orig_u = edges[entering].from;
@@ -296,7 +306,8 @@ private:
 				Size eid = MAX;
 				for (const Size edge_id : adjacency[curr])
 				{
-					if (edges[edge_id].to == neighbor && arc_state[edge_id / 2] == ArcState::TREE)
+					if (edges[edge_id].to == neighbor &&
+					    arc_state[edge_id / 2] == ArcState::TREE)
 					{
 						eid = edge_id;
 						break;
