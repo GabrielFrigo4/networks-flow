@@ -123,6 +123,7 @@
     flow edge/.style={->, thick},
     sat edge/.style={->, line width=1.5pt, red},
     res edge/.style={->, blue, dashed},
+    rev edge/.style={->, red, dashed, line width=1.1pt},
     cut S/.style={dashed, blue, rounded corners, thick},
     cut T/.style={dashed, orange, rounded corners, thick},
     % Network Simplex e bases
@@ -148,6 +149,12 @@
     concept box/.style={draw, rounded corners=4pt, minimum height=1.4cm, align=center, font=\small},
     % Elementos auxiliares e legendas
     legend node/.style={circle, draw, minimum size=4mm, inner sep=0pt},
+    % Rotulos padronizados para arestas
+    edge lbl/.style={font=\footnotesize, fill=white, inner sep=1.2pt, pos=0.5},
+    edge lbl sloped/.style={edge lbl, sloped},
+    edge lbl above/.style={edge lbl sloped, above=2.8pt},
+    edge lbl below/.style={edge lbl sloped, below=2.8pt},
+    stage box/.style={draw=blue!80!black, fill=blue!5, rounded corners=4pt, line width=1pt, align=center, font=\footnotesize, minimum height=1.4cm, text width=2.4cm},
     % Compatibilidade
     main/.style={flow node}
 }
@@ -243,6 +250,28 @@ As atividades do projeto foram estruturadas e encontram-se no seguinte status:
     \item \textbf{Atividade 11:} Elaboração do relatório final e consolidação dos resultados. \textbf{[Concluída]}
 \end{itemize}
 
+O encadeamento estrutural deste plano de trabalho é sumarizado no pipeline metodológico da Figura~\ref{fig:pipeline_metodologico}.
+
+\begin{figure}[!ht]
+\centering
+\resizebox{\textwidth}{!}{%
+\begin{tikzpicture}[thick, node distance=0.6cm]
+  \node[stage box] (s1) at (0,0) {\textbf{1. Teoria \& Dualidade}\\Max-Flow Min-Cut\\Reduções Bipartidas\\Fluxo Custo Mínimo};
+  \node[stage box] (s2) at (3.3,0) {\textbf{2. Arquitetura C++23}\\Herança \& Polimorfismo\\\texttt{FlowNetwork}\\\texttt{CostNetwork}};
+  \node[stage box] (s3) at (6.6,0) {\textbf{3. Motores Algorítmicos}\\Edmonds-Karp, Dinic\\Push-Relabel (Heur.)\\SSP, Network Simplex};
+  \node[stage box] (s4) at (9.9,0) {\textbf{4. Certificação Cruzada}\\Invariantes de Fluxo\\Dualidade Forte\\Google Test};
+  \node[stage box] (s5) at (13.2,0) {\textbf{5. Benchmarks}\\Grades 2D, Camadas\\Grafos Aleatórios\\Segmentação Imagens};
+
+  \draw[->, line width=1.5pt, blue!80!black] (s1) -- (s2);
+  \draw[->, line width=1.5pt, blue!80!black] (s2) -- (s3);
+  \draw[->, line width=1.5pt, blue!80!black] (s3) -- (s4);
+  \draw[->, line width=1.5pt, blue!80!black] (s4) -- (s5);
+\end{tikzpicture}%
+}
+\caption{Pipeline metodológico da pesquisa: fluxo integrado conectando a fundamentação teórica em otimização, a modelagem primal-dual, a arquitetura de software orientada a objetos em C++23, os procedimentos de certificação cruzada de corretude e os testes de desempenho computacional.}
+\label{fig:pipeline_metodologico}
+\end{figure}
+
 \section{Resultados}
 
 Nesta seção, apresentamos os avanços teóricos e práticos alcançados ao longo do projeto. A exposição é estruturada em quatro grandes macro-blocos temáticos, integrando a fundamentação matemática elementar das redes de fluxo, a evolução das propriedades residuais, as implementações de algoritmos de estado da arte (\textit{Edmonds-Karp}, \textit{Dinic}, \textit{Push-Relabel} e \textit{Network Simplex}), a modelagem de problemas combinatórios clássicos com aplicações em visão computacional e o protocolo de validação experimental.
@@ -254,7 +283,7 @@ Nesta seção, apresentamos os avanços teóricos e práticos alcançados ao lon
 \setlength{\tabcolsep}{4.5pt}
 \begin{tabular}{p{4.1cm} p{5.5cm} p{6.3cm}}
 \toprule
-\textbf{Macro-Bloco Temático} & \textbf{Resultados Teóricos Chave} & \textbf{Algoritmos, Reduções e Aplicações} \\
+\multicolumn{1}{c}{\textbf{Macro-Bloco Temático}} & \multicolumn{1}{c}{\textbf{Resultados Teóricos Chave}} & \multicolumn{1}{c}{\textbf{Algoritmos, Reduções e Aplicações}} \\
 \midrule
 \textbf{\hyperref[bloco:max_flow]{Bloco I: Fluxo Máximo}} \newline 
 \textit{(Subseções \ref{sec:base_matematica}--\ref{sec:sintese_max_flow})} & 
@@ -324,11 +353,11 @@ A Figura~\ref{fig:rede_fluxo} ilustra uma rede de fluxo elementar com quatro vé
     \node[flow node] (v) at (2.6, -1.5) {$v$};
     \node[sink node] (t) at (5.2, 0) {$t$};
 
-    \draw[flow edge] (s) -- node[above left] {$10$} (u);
-    \draw[flow edge] (s) -- node[below left] {$8$} (v);
-    \draw[flow edge] (u) -- node[right] {$5$} (v);
-    \draw[flow edge] (u) -- node[above right] {$7$} (t);
-    \draw[flow edge] (v) -- node[below right] {$10$} (t);
+    \draw[flow edge] (s) -- node[edge lbl above] {$10$} (u);
+    \draw[flow edge] (s) -- node[edge lbl below] {$8$} (v);
+    \draw[flow edge] (u) -- node[edge lbl, right] {$5$} (v);
+    \draw[flow edge] (u) -- node[edge lbl above] {$7$} (t);
+    \draw[flow edge] (v) -- node[edge lbl below] {$10$} (t);
 \end{tikzpicture}
 \caption{Rede de fluxo com fonte $s$, sumidouro $t$ e capacidades nos arcos.}
 \label{fig:rede_fluxo}
@@ -374,11 +403,11 @@ A Figura~\ref{fig:rede_residual} ilustra uma rede com fluxo parcial e seu corres
   \node[flow node] (a) at (2,2.4) {$a$};
   \node[flow node] (b) at (2,0) {$b$};
   \node[sink node] (t) at (4,1.2) {$t$};
-  \draw[flow edge] (s) -- node[above left,font=\footnotesize] {$2/3$} (a);
-  \draw[flow edge] (s) -- node[below left,font=\footnotesize] {$1/2$} (b);
-  \draw[flow edge] (a) -- node[right,font=\footnotesize] {$1/1$} (b);
-  \draw[flow edge] (a) -- node[above right,font=\footnotesize] {$1/3$} (t);
-  \draw[flow edge] (b) -- node[below right,font=\footnotesize] {$2/3$} (t);
+  \draw[flow edge] (s) -- node[edge lbl above] {$2/3$} (a);
+  \draw[flow edge] (s) -- node[edge lbl below] {$1/2$} (b);
+  \draw[flow edge] (a) -- node[edge lbl, right] {$1/1$} (b);
+  \draw[flow edge] (a) -- node[edge lbl above] {$1/3$} (t);
+  \draw[flow edge] (b) -- node[edge lbl below] {$2/3$} (t);
   \node[font=\footnotesize,below] at (2,-0.7) {\textit{(a) Rede original} $f/c$};
 \end{scope}
 
@@ -389,21 +418,23 @@ A Figura~\ref{fig:rede_residual} ilustra uma rede com fluxo parcial e seu corres
   \node[flow node] (a2) at (2,2.4) {$a$};
   \node[flow node] (b2) at (2,0) {$b$};
   \node[sink node] (t2) at (4,1.2) {$t$};
-  
-  \draw[flow edge,blue] (s2) -- node[above left,font=\footnotesize] {$1$} (a2);
-  \draw[flow edge,blue] (s2) -- node[below left,font=\footnotesize] {$1$} (b2);
-  \draw[flow edge,blue] (a2) -- node[above right,font=\footnotesize] {$2$} (t2);
-  \draw[flow edge,blue] (b2) -- node[below right,font=\footnotesize] {$1$} (t2);
-  
-  \draw[res edge,bend left=20] (a2) to node[above left,font=\footnotesize] {$2$} (s2);
-  \draw[res edge,bend right=20] (b2) to node[below left,font=\footnotesize] {$1$} (s2);
-  \draw[res edge] (b2) -- node[left,font=\footnotesize] {$1$} (a2);
-  \draw[res edge,bend left=20] (t2) to node[above right,font=\footnotesize] {$1$} (a2);
-  \draw[res edge,bend right=20] (t2) to node[below right,font=\footnotesize] {$2$} (b2);
+
+  % Arcos diretos (capacidade ociosa, azul sólido)
+  \draw[flow edge,blue] (s2) -- node[edge lbl below, text=blue!80!black] {$1$} (a2);
+  \draw[flow edge,blue] (s2) -- node[edge lbl above, text=blue!80!black] {$1$} (b2);
+  \draw[flow edge,blue] (a2) -- node[edge lbl below, text=blue!80!black] {$2$} (t2);
+  \draw[flow edge,blue] (b2) -- node[edge lbl above, text=blue!80!black] {$1$} (t2);
+
+  % Arcos reversos (fluxo cancelável, vermelho tracejado com curvatura acentuada)
+  \draw[rev edge,bend right=30] (a2) to node[edge lbl above, text=red!80!black] {$2$} (s2);
+  \draw[rev edge,bend left=30] (b2) to node[edge lbl below, text=red!80!black] {$1$} (s2);
+  \draw[rev edge] (b2) -- node[edge lbl, left, text=red!80!black] {$1$} (a2);
+  \draw[rev edge,bend right=30] (t2) to node[edge lbl above, text=red!80!black] {$1$} (a2);
+  \draw[rev edge,bend left=30] (t2) to node[edge lbl below, text=red!80!black] {$2$} (b2);
   \node[font=\footnotesize,below] at (2,-0.7) {\textit{(b) Digrafo residual} $D_f$};
 \end{scope}
 \end{tikzpicture}
-\caption{Rede com fluxo parcial (esquerda, valores $f/c$) e o digrafo residual $D_f$ resultante (direita). Arcos azuis: capacidade ociosa ($c_f > 0$). Arcos vermelhos tracejados: capacidade reversa (fluxo cancelável). Observe que o arco $(a,b)$ saturado desaparece como arco direto e só aparece como reverso.}
+\caption{Rede com fluxo parcial (esquerda, valores $f/c$) e o digrafo residual $D_f$ resultante (direita). Arcos azuis sólidos: capacidade ociosa ($c_f > 0$). Arcos vermelhos tracejados: capacidade reversa (fluxo cancelável). Rótulos com fundo opaco e curvaturas generosas eliminam sobreposição entre arcos diretos e reversos.}
 \label{fig:rede_residual}
 \end{figure}
 
@@ -526,6 +557,46 @@ Pelo Teorema da Dualidade Forte da Programação Linear, o valor ótimo primal c
 \end{equation}
 o que comprova formalmente que o problema da Cobertura por Corte Mínimo é o dual exato do Problema do Fluxo Máximo.
 
+A interpretação geométrica desta bijeção dual é ilustrada na Figura~\ref{fig:primal_dual_potenciais}.
+
+\begin{figure}[!ht]
+\centering
+\begin{tikzpicture}[thick]
+  % Caixas de corte harmônicas espelhadas na Figura 4 com cabeçalhos limpos
+  \draw[cut S] (-0.8, -1.8) rectangle (2.8, 1.8);
+  \node[font=\footnotesize\bfseries, blue!80!black, anchor=north west] at (-0.6, 1.65) {$\mathbf{S} : p^*(u) = 1$};
+
+  \draw[cut T] (4.4, -1.8) rectangle (8.0, 1.8);
+  \node[font=\footnotesize\bfseries, orange!80!black, anchor=north east] at (7.8, 1.65) {$\mathbf{T} : p^*(v) = 0$};
+
+  \node[source node] (s) at (0.0, 0.0) {$s$};
+  \node[flow node, fill=green!10] (a) at (1.8, 0.8) {$a$};
+  \node[flow node, fill=green!10] (b) at (1.8, -0.8) {$b$};
+
+  \node[flow node, fill=red!10] (c) at (5.4, 0.8) {$c$};
+  \node[flow node, fill=red!10] (d) at (5.4, -0.8) {$d$};
+  \node[sink node] (t) at (7.2, 0.0) {$t$};
+
+  % Arestas internas a S (tensão d = 0)
+  \draw[flow edge] (s) -- node[edge lbl above] {$d\!=\!0$} (a);
+  \draw[flow edge] (s) -- node[edge lbl below] {$d\!=\!0$} (b);
+  \draw[flow edge] (a) -- node[edge lbl, left=3pt] {$d\!=\!0$} (b);
+
+  % Arestas internas a T (tensão d = 0)
+  \draw[flow edge] (c) -- node[edge lbl above] {$d\!=\!0$} (t);
+  \draw[flow edge] (d) -- node[edge lbl below] {$d\!=\!0$} (t);
+  \draw[flow edge] (c) -- node[edge lbl, right=3pt] {$d\!=\!0$} (d);
+
+  % Arestas cruzando o corte (tensão d = p(u) - p(v) = 1 - 0 = 1)
+  \draw[sat edge] (a) -- node[edge lbl above, text=red!80!black] {$\mathbf{d\!=\!1},\; f\!=\!c$} (c);
+  \draw[sat edge] (b) -- node[edge lbl below, text=red!80!black] {$\mathbf{d\!=\!1},\; f\!=\!c$} (d);
+
+  \node[font=\footnotesize, align=center, below=4pt] at (3.6, -2.0) {Custo dual: $\sum c(e)d(e) = c(a,c)\cdot 1 + c(b,d)\cdot 1 = \mathrm{cap}(\mathbf{S},\mathbf{T})$. Pela dualidade forte: $\max |f| = \min \mathrm{cap}(\mathbf{S},\mathbf{T})$.};
+\end{tikzpicture}
+\caption{Interpretação geométrica da solução dual no Teorema do Fluxo Máximo e Corte Mínimo: os potenciais nodais ótimos assumem valores binários $p^*(u)=1$ no bloco $\mathbf{S}$ e $p^*(v)=0$ no bloco $\mathbf{T}$. As variáveis duais de tensão $d(u,v) = \max\{0, p(u)-p(v)\}$ são ativadas ($d=1$) exclusivamente sobre os arcos saturados que cruzam de $\mathbf{S}$ para $\mathbf{T}$, anulando-se ($d=0$) nas arestas internas ou reversas.}
+\label{fig:primal_dual_potenciais}
+\end{figure}
+
 \subsubsection{O Teorema da Integralidade}
 
 Para que os problemas clássicos de Otimização Combinatória possam ser reduzidos a instâncias de fluxo, um último pilar matemático faz-se necessário: a garantia de que as soluções encontradas pertencerão ao domínio dos números inteiros ($\mathbb{Z}$).
@@ -617,7 +688,45 @@ O método estipula que, enquanto houver um caminho aumentante em $D_f$, o fluxo 
 \paragraph{Complexidade Assintótica e a Barreira Pseudopolinomial.}
 Esta abstração geométrica, embora elegante para a prova do Teorema do Fluxo Máximo e Corte Mínimo, apresenta uma vulnerabilidade computacional severa. Em instâncias teóricas onde as capacidades dos arcos assumem valores irracionais, demonstra-se matematicamente que uma escolha arbitrária ou patológica de caminhos pode levar o método a realizar infinitas iterações. Em casos extremos, a sequência de aumentos não apenas falha em terminar, como o valor do fluxo pode convergir assintoticamente para um limite estritamente inferior ao fluxo máximo real da rede (veja~\cite{cook1998combinatorial}).
 
-Mesmo no domínio prático das redes com capacidades inteiras, uma má escolha iterativa pode forçar o método a operar em tempo $\mathcal{O}(|A| \cdot |f^*|)$, onde $|f^*|$ é o valor escalar do fluxo máximo. Esta dependência direta do valor numérico restringe a abordagem a um tempo de execução pseudopolinomial, cujo desempenho degrada exponencialmente em função da magnitude das capacidades originais da rede.
+Mesmo no domínio prático das redes com capacidades inteiras, uma má escolha iterativa pode forçar o método a operar em tempo $\mathcal{O}(|A| \cdot |f^*|)$, onde $|f^*|$ é o valor escalar do fluxo máximo. Esta dependência direta do valor numérico restringe a abordagem a um tempo de execução pseudopolinomial, cujo desempenho degrada exponencialmente em função da magnitude das capacidades originais da rede. Esse comportamento patológico é ilustrado no contraexemplo clássico da Figura~\ref{fig:ford_fulkerson_patologico}.
+
+\begin{figure}[!ht]
+\centering
+\begin{tikzpicture}[scale=1.1, thick]
+\begin{scope}[xshift=0cm]
+  \tikzsubcaption{(2.5,2.6)}{(a) Rede patológica ($M = 10^6$)}
+  \node[source node] (s) at (0, 1) {$s$};
+  \node[flow node] (u) at (2.5, 2) {$u$};
+  \node[flow node] (v) at (2.5, 0) {$v$};
+  \node[sink node] (t) at (5, 1) {$t$};
+
+  \draw[flow edge] (s) -- node[edge lbl above] {$M$} (u);
+  \draw[flow edge] (s) -- node[edge lbl below] {$M$} (v);
+  \draw[sat edge] (u) -- node[edge lbl, right, text=red!80!black] {$c=1$} (v);
+  \draw[flow edge] (u) -- node[edge lbl above] {$M$} (t);
+  \draw[flow edge] (v) -- node[edge lbl below] {$M$} (t);
+\end{scope}
+
+\begin{scope}[xshift=7.5cm]
+  \tikzsubcaption{(2.5,2.6)}{(b) Zigzag da DFS: $2M$ iterações!}
+  \node[source node] (s2) at (0, 1) {$s$};
+  \node[flow node] (u2) at (2.5, 2) {$u$};
+  \node[flow node] (v2) at (2.5, 0) {$v$};
+  \node[sink node] (t2) at (5, 1) {$t$};
+
+  \draw[tree edge, line width=2pt] (s2) -- node[edge lbl above] {$+1$} (u2);
+  \draw[sat edge, line width=2pt] (u2) -- node[edge lbl, right] {$+1$} (v2);
+  \draw[tree edge, line width=2pt] (v2) -- node[edge lbl below] {$+1$} (t2);
+
+  \draw[flow edge, opacity=0.3] (s2) -- (v2);
+  \draw[flow edge, opacity=0.3] (u2) -- (t2);
+
+  \node[font=\footnotesize, align=center, below=4pt] at (2.5,-0.6) {DFS alterna $s \to u \to v \to t$ e $s \to v \to u \to t$\\Gargalo $1 \implies 2 \times 10^6$ passos! (BFS: 2 passos)};
+\end{scope}
+\end{tikzpicture}
+\caption{Contraexemplo patológico de Ford-Fulkerson com capacidades de grande magnitude $M = 10^6$ e arco central de capacidade unitária $c=1$. (a)~Topologia da rede cujo fluxo máximo ótimo é $|f^*| = 2M = 2 \times 10^6$. (b)~Pior caso com DFS ingênua: a cada iteração escolhe-se o caminho que cruza o arco central, aumentando apenas $\delta=1$ unidade de fluxo e invertendo o sentido do arco no grafo residual. O processo requer $2 \times 10^6$ aumentos, ao passo que a seleção por caminhos mais curtos do Edmonds-Karp encerra em exatamente $2$ iterações.}
+\label{fig:ford_fulkerson_patologico}
+\end{figure}
 
 \paragraph{Implementação em C++ e Apêndice.}
 Para transpor esta barreira analítica e garantir limites de complexidade fortemente polinomiais, a literatura evoluiu disciplinando a seleção dos percursos aumentantes. A materialização em C++ do método genérico de Ford-Fulkerson no \textit{Core Framework}, utilizando busca em profundidade (DFS), encontra-se detalhada no Código~\ref{lst:ford_fulkerson} (disponível no Apêndice~\ref{ap:ford_fulkerson}).
@@ -651,14 +760,14 @@ A materialização desta heurística, utilizando a herança e o encapsulamento o
   \node[flow node] (c) at (5, -1.5) {$c$ (2)};
   \node[sink node] (t) at (7, 0) {$t$ (2)};
 
-  \draw[res edge, line width=1.5pt] (s) -- node[above left, font=\footnotesize, text=black] {$c=5$} (a);
-  \draw[res edge, line width=1.5pt] (a) -- node[above right, font=\footnotesize, text=black] {$c=5$} (t);
-  
-  \draw[flow edge] (s) -- node[below left, font=\footnotesize, text=black] {$c=10$} (b);
-  \draw[flow edge] (b) -- node[below, font=\footnotesize, text=black] {$c=10$} (c);
-  \draw[flow edge] (c) -- node[below right, font=\footnotesize, text=black] {$c=10$} (t);
-  
-  \draw[flow edge] (a) -- node[right, font=\footnotesize, text=black] {$c=2$} (b);
+  \draw[res edge, line width=1.5pt] (s) -- node[edge lbl above] {$c=5$} (a);
+  \draw[res edge, line width=1.5pt] (a) -- node[edge lbl above] {$c=5$} (t);
+
+  \draw[flow edge] (s) -- node[edge lbl below] {$c=10$} (b);
+  \draw[flow edge] (b) -- node[edge lbl below] {$c=10$} (c);
+  \draw[flow edge] (c) -- node[edge lbl below] {$c=10$} (t);
+
+  \draw[flow edge] (a) -- node[edge lbl, right] {$c=2$} (b);
 \end{tikzpicture}
 \caption{O Algoritmo de Edmonds-Karp utiliza busca em largura (BFS) na rede residual para encontrar sempre o caminho aumentante mais curto (em número de arestas). Na figura, embora o caminho inferior $s \to b \to c \to t$ suporte maior fluxo gargalo ($c=10$), a BFS garante a escolha imediata do caminho superior $s \to a \to t$ (azul tracejado), por ser topologicamente mais curto (comprimento 2 versus 3). Os níveis descobertos pela BFS são indicados entre parênteses.}
 \label{fig:edmonds_karp}
@@ -813,7 +922,7 @@ A eficiência global do algoritmo é intrinsecamente dependente da política de 
 \node[font=\footnotesize,above=2pt of r2] {$h{=}3$};
 \draw[nontree edge] (r1) -- node[above,font=\footnotesize,align=center] {$c_f=2$\\inadmissível} (r2);
 
-\tikzsubcaption{(8.5,1.0)}{Depois do Relabel($u$): $h(u)\leftarrow 4$}
+\tikzsubcaption{(8.5,1.0)}{Depois do \texttt{Relabel(}$u$\texttt{)}: $h(u)\leftarrow 4$}
 \node[gap node,fill=orange!50] (r3) at (7.0,0.0) {$u$};
 \node[font=\footnotesize,above=2pt of r3] {$h{=}4,\,e{=}3$};
 \node[flow node,fill=gray!10] (r4) at (10.0,0.0) {$w$};
@@ -920,9 +1029,9 @@ A intuição por trás da melhoria da complexidade de tempo de pior caso de $\ma
 \centering
 \small
 \setlength{\tabcolsep}{5pt}
-\begin{tabular}{p{4.2cm} c p{7.5cm}}
+\begin{tabular}{p{4.2cm} l p{7.5cm}}
 \toprule
-\textbf{Algoritmo} & \textbf{Complexidade} & \textbf{Mecanismo / Estratégia} \\
+\multicolumn{1}{c}{\textbf{Algoritmo}} & \multicolumn{1}{c}{\textbf{Complexidade}} & \multicolumn{1}{c}{\textbf{Mecanismo / Estratégia}} \\
 \midrule
 \multicolumn{3}{c}{\bannertext{\hyperref[sec:fluxo_primal]{Vertente Primal: Caminhos Aumentantes ($e(v)=0$)}}} \\
 \midrule
@@ -1175,9 +1284,9 @@ Com as quatro grandezas combinatórias fundamentais rigorosamente formuladas sob
 \centering
 \small
 \setlength{\tabcolsep}{12pt}
-\begin{tabular}{l c c}
+\begin{tabular}{l l l}
 \toprule
-\textbf{Objetivo} & \textbf{Domínio de Vértices ($V$)} & \textbf{Domínio de Arcos ($A$)} \\
+\multicolumn{1}{c}{\textbf{Objetivo}} & \multicolumn{1}{c}{\textbf{Domínio de Vértices ($V$)}} & \multicolumn{1}{c}{\textbf{Domínio de Arcos ($A$)}} \\
 \midrule
 \textbf{Maximizar} & \hyperref[sec:conjunto_independente]{Conjunto Independente} $\alpha(G) = |I^*|$ & \hyperref[sec:emparelhamento]{Emparelhamento Máximo} $\nu(G) = |M^*|$ \\
 \addlinespace[0.4em]
@@ -1188,7 +1297,11 @@ Com as quatro grandezas combinatórias fundamentais rigorosamente formuladas sob
 \label{tab:dualidades}
 \end{table}
 
-As relações $|M^*| = |C_V^*|$ (König) e $|I^*| + |C_V^*| = |V|$ e $|M^*| + |F^*| = |V|$ (Gallai) mostram que conhecer qualquer um destes valores determina os demais. Neste projeto, os três primeiros ($M$, $C_V$, $I$) são resolvidos via fluxo máximo; a cobertura de arcos mínima é obtida a partir de $M^*$ por pós-processamento em $\mathcal{O}(|V|)$, sem necessidade de novo cálculo de fluxo.
+As relações $|M^*| = |C_V^*|$ (König) e $|I^*| + |C_V^*| = |M^*| + |F^*| = |V|$ (Gallai) mostram que conhecer qualquer um destes valores determina imediatamente os demais. Em particular, combinando a equivalência de König $\nu(G) = \tau(G)$ com as identidades de Gallai, obtém-se diretamente a notável dualidade min-max secundária:
+\begin{equation}
+    \alpha(G) = |V| - \tau(G) = |V| - \nu(G) = \rho(G)
+\end{equation}
+estabelecendo que a cardinalidade do Conjunto Independente Máximo $\alpha(G)$ coincide rigorosamente com a cardinalidade da Cobertura de Arcos Mínima $\rho(G)$ em qualquer grafo bipartido sem vértices isolados. Neste projeto, os três primeiros problemas ($M$, $C_V$, $I$) são resolvidos diretamente via fluxo máximo; a cobertura de arcos mínima é obtida a partir de $M^*$ por pós-processamento em $\mathcal{O}(|V|)$, sem necessidade de novo cálculo de fluxo.
 
 \begin{figure}[!ht]
 \centering
@@ -1521,11 +1634,11 @@ Pela hipótese de indução, $f'$ pode ser decomposto em no máximo $|A_{f'}^+| 
     \node[flow node, font=\footnotesize] (b) at (2, 0) {$b$};
     \node[sink node, font=\footnotesize] (t) at (4, 1) {$t$};
 
-    \draw[flow edge] (s) -- node[above left, font=\footnotesize] {3} (a);
-    \draw[flow edge] (s) -- node[below left, font=\footnotesize] {2} (b);
-    \draw[flow edge] (a) -- node[right, font=\footnotesize] {1} (b);
-    \draw[flow edge] (a) -- node[above right, font=\footnotesize] {2} (t);
-    \draw[flow edge] (b) -- node[below right, font=\footnotesize] {3} (t);
+    \draw[flow edge] (s) -- node[edge lbl above] {$3$} (a);
+    \draw[flow edge] (s) -- node[edge lbl below] {$2$} (b);
+    \draw[flow edge] (a) -- node[edge lbl, right] {$1$} (b);
+    \draw[flow edge] (a) -- node[edge lbl above] {$2$} (t);
+    \draw[flow edge] (b) -- node[edge lbl below] {$3$} (t);
   \end{scope}
 
   \begin{scope}[shift={(6,0.5)}]
@@ -1745,26 +1858,26 @@ Esta formulação unifica diversos problemas clássicos como casos particulares:
 \begin{tikzpicture}[thick]
     \node[source node] (s1) at (0, 2.0) {$v_1$};
     \node[source node] (s2) at (0, -2.0) {$v_2$};
-    \node[trans node] (m1) at (3.5, 2.0) {$v_3$};
-    \node[trans node] (m2) at (3.5, -2.0) {$v_4$};
-    \node[sink node] (t1) at (7, 2.0) {$v_5$};
-    \node[sink node] (t2) at (7, -2.0) {$v_6$};
+    \node[trans node] (m1) at (4.0, 2.0) {$v_3$};
+    \node[trans node] (m2) at (4.0, -2.0) {$v_4$};
+    \node[sink node] (t1) at (8.0, 2.0) {$v_5$};
+    \node[sink node] (t2) at (8.0, -2.0) {$v_6$};
 
-    \node[font=\footnotesize, above=2pt] at (s1.north) {$b=+5$};
-    \node[font=\footnotesize, below=2pt] at (s2.south) {$b=+3$};
-    \node[font=\footnotesize, above=2pt] at (m1.north) {$b=0$};
-    \node[font=\footnotesize, below=2pt] at (m2.south) {$b=0$};
-    \node[font=\footnotesize, above=2pt] at (t1.north) {$b=-4$};
-    \node[font=\footnotesize, below=2pt] at (t2.south) {$b=-4$};
+    \node[font=\footnotesize, above=3pt] at (s1.north) {$b=+5$};
+    \node[font=\footnotesize, below=3pt] at (s2.south) {$b=+3$};
+    \node[font=\footnotesize, above=3pt] at (m1.north) {$b=0$};
+    \node[font=\footnotesize, below=3pt] at (m2.south) {$b=0$};
+    \node[font=\footnotesize, above=3pt] at (t1.north) {$b=-4$};
+    \node[font=\footnotesize, below=3pt] at (t2.south) {$b=-4$};
 
-    \draw[flow edge] (s1) -- node[above, font=\footnotesize] {$w\!=\!2,\; c\!=\!4$} (m1);
-    \draw[flow edge] (s1) -- node[above left, font=\footnotesize, pos=0.32, fill=white, inner sep=1.5pt] {$w\!=\!5,\; c\!=\!3$} (m2);
-    \draw[flow edge] (s2) -- node[below left, font=\footnotesize, pos=0.32, fill=white, inner sep=1.5pt] {$w\!=\!3,\; c\!=\!4$} (m1);
-    \draw[flow edge] (s2) -- node[below, font=\footnotesize] {$w\!=\!1,\; c\!=\!5$} (m2);
-    \draw[flow edge] (m1) -- node[above, font=\footnotesize] {$w\!=\!4,\; c\!=\!5$} (t1);
-    \draw[flow edge] (m1) -- node[right=2pt, font=\footnotesize, pos=0.25, fill=white, inner sep=1.5pt] {$w\!=\!2,\; c\!=\!2$} (m2);
-    \draw[flow edge] (m2) -- node[below right, font=\footnotesize, pos=0.35, fill=white, inner sep=1.5pt] {$w\!=\!6,\; c\!=\!3$} (t1);
-    \draw[flow edge] (m2) -- node[below, font=\footnotesize] {$w\!=\!3,\; c\!=\!6$} (t2);
+    \draw[flow edge] (s1) -- node[edge lbl above] {$w\!=\!2, c\!=\!4$} (m1);
+    \draw[flow edge] (s1) -- node[edge lbl above, pos=0.25] {$w\!=\!5, c\!=\!3$} (m2);
+    \draw[flow edge] (s2) -- node[edge lbl below, pos=0.25] {$w\!=\!3, c\!=\!4$} (m1);
+    \draw[flow edge] (s2) -- node[edge lbl below] {$w\!=\!1, c\!=\!5$} (m2);
+    \draw[flow edge] (m1) -- node[edge lbl above] {$w\!=\!4, c\!=\!5$} (t1);
+    \draw[flow edge] (m1) -- node[edge lbl, right=3pt] {$w\!=\!2, c\!=\!2$} (m2);
+    \draw[flow edge] (m2) -- node[edge lbl below, pos=0.25] {$w\!=\!6, c\!=\!3$} (t1);
+    \draw[flow edge] (m2) -- node[edge lbl below] {$w\!=\!3, c\!=\!6$} (t2);
 \end{tikzpicture}
 \caption{Rede de custo mínimo com 6 vértices. Cada arco exibe o custo unitário $w$ e a capacidade $c$. Vértices verdes são fontes ($b > 0$), amarelos são transbordo ($b = 0$) e vermelhos são sumidouros ($b < 0$). A condição de equilíbrio $\sum b(v) = 5 + 3 - 4 - 4 = 0$ é satisfeita.}
 \label{fig:mcf_rede}
@@ -1783,37 +1896,36 @@ Para cada arco original $(u,v) \in A$ com fluxo $f(u,v)$:
 \begin{figure}[!ht]
 \centering
 \begin{tikzpicture}[thick]
-
 \begin{scope}[xshift=0cm]
-  \node[source node] (s) at (0,1.4) {$s$};
-  \node[flow node] (a) at (2.8,3.0) {$a$};
-  \node[flow node] (b) at (2.8,-0.2) {$b$};
-  \node[sink node] (t) at (5.6,1.4) {$t$};
-  \draw[flow edge] (s) -- node[above left,font=\footnotesize] {$f\!=\!2,\; w\!=\!3,\; c\!=\!4$} (a);
-  \draw[flow edge] (s) -- node[below left,font=\footnotesize] {$f\!=\!1,\; w\!=\!1,\; c\!=\!3$} (b);
-  \draw[flow edge] (a) -- node[above right,font=\footnotesize] {$f\!=\!2,\; w\!=\!2,\; c\!=\!3$} (t);
-  \draw[flow edge] (b) -- node[below right,font=\footnotesize] {$f\!=\!1,\; w\!=\!5,\; c\!=\!2$} (t);
-  \tikzsubcaption{(2.8,-1.2)}{(a) Rede original com fluxo}
+  \node[source node] (s) at (0,1.5) {$s$};
+  \node[flow node] (a) at (3.2,3.2) {$a$};
+  \node[flow node] (b) at (3.2,-0.2) {$b$};
+  \node[sink node] (t) at (6.4,1.5) {$t$};
+  \draw[flow edge] (s) -- node[edge lbl above] {$f\!=\!2, w\!=\!3, c\!=\!4$} (a);
+  \draw[flow edge] (s) -- node[edge lbl below] {$f\!=\!1, w\!=\!1, c\!=\!3$} (b);
+  \draw[flow edge] (a) -- node[edge lbl above] {$f\!=\!2, w\!=\!2, c\!=\!3$} (t);
+  \draw[flow edge] (b) -- node[edge lbl below] {$f\!=\!1, w\!=\!5, c\!=\!2$} (t);
+  \node[font=\footnotesize, below] at (3.2,-1.0) {\textit{(a) Rede original com fluxo}};
 \end{scope}
 
-\node at (7.2,1.4) {\Huge $\Rightarrow$};
+\node at (7.8,1.5) {\Huge $\Rightarrow$};
 
-\begin{scope}[xshift=9cm]
-  \node[source node] (s2) at (0,1.4) {$s$};
-  \node[flow node] (a2) at (2.8,3.0) {$a$};
-  \node[flow node] (b2) at (2.8,-0.2) {$b$};
-  \node[sink node] (t2) at (5.6,1.4) {$t$};
+\begin{scope}[xshift=9.2cm]
+  \node[source node] (s2) at (0,1.5) {$s$};
+  \node[flow node] (a2) at (3.2,3.2) {$a$};
+  \node[flow node] (b2) at (3.2,-0.2) {$b$};
+  \node[sink node] (t2) at (6.4,1.5) {$t$};
 
-  \draw[flow edge,blue] (s2) -- node[below,sloped,font=\footnotesize,fill=white,inner sep=1pt,pos=0.5] {$c_f\!=\!2,\; w\!=\!3$} (a2);
-  \draw[flow edge,blue] (s2) -- node[above,sloped,font=\footnotesize,fill=white,inner sep=1pt,pos=0.5] {$c_f\!=\!2,\; w\!=\!1$} (b2);
-  \draw[flow edge,blue] (a2) -- node[below,sloped,font=\footnotesize,fill=white,inner sep=1pt,pos=0.5] {$c_f\!=\!1,\; w\!=\!2$} (t2);
-  \draw[flow edge,blue] (b2) -- node[above,sloped,font=\footnotesize,fill=white,inner sep=1pt,pos=0.5] {$c_f\!=\!1,\; w\!=\!5$} (t2);
+  \draw[flow edge,blue] (s2) -- node[edge lbl below, text=blue!80!black] {$c_f\!=\!2, w\!=\!3$} (a2);
+  \draw[flow edge,blue] (s2) -- node[edge lbl above, text=blue!80!black] {$c_f\!=\!2, w\!=\!1$} (b2);
+  \draw[flow edge,blue] (a2) -- node[edge lbl below, text=blue!80!black] {$c_f\!=\!1, w\!=\!2$} (t2);
+  \draw[flow edge,blue] (b2) -- node[edge lbl above, text=blue!80!black] {$c_f\!=\!1, w\!=\!5$} (t2);
 
-  \draw[res edge,bend right=30] (a2) to node[above,sloped,font=\scriptsize,fill=white,inner sep=1pt,pos=0.5] {$c_f\!=\!2,\; w\!=\!{-3}$} (s2);
-  \draw[res edge,bend left=30] (b2) to node[below,sloped,font=\scriptsize,fill=white,inner sep=1pt,pos=0.5] {$c_f\!=\!1,\; w\!=\!{-1}$} (s2);
-  \draw[res edge,bend right=30] (t2) to node[above,sloped,font=\scriptsize,fill=white,inner sep=1pt,pos=0.5] {$c_f\!=\!2,\; w\!=\!{-2}$} (a2);
-  \draw[res edge,bend left=30] (t2) to node[below,sloped,font=\scriptsize,fill=white,inner sep=1pt,pos=0.5] {$c_f\!=\!1,\; w\!=\!{-5}$} (b2);
-  \tikzsubcaption{(2.8,-1.2)}{(b) Digrafo residual $D_f$ com custos}
+  \draw[rev edge,bend right=32] (a2) to node[edge lbl above, text=red!80!black] {$c_f\!=\!2, w\!=\!{-3}$} (s2);
+  \draw[rev edge,bend left=32] (b2) to node[edge lbl below, text=red!80!black] {$c_f\!=\!1, w\!=\!{-1}$} (s2);
+  \draw[rev edge,bend right=32] (t2) to node[edge lbl above, text=red!80!black] {$c_f\!=\!2, w\!=\!{-2}$} (a2);
+  \draw[rev edge,bend left=32] (t2) to node[edge lbl below, text=red!80!black] {$c_f\!=\!1, w\!=\!{-5}$} (b2);
+  \node[font=\footnotesize, below] at (3.2,-1.0) {\textit{(b) Digrafo residual $D_f$ com custos}};
 \end{scope}
 \end{tikzpicture}
 \caption{Construção do grafo residual com custos. (a)~Rede original com fluxo, custo e capacidade em cada arco. (b)~Digrafo residual $D_f$: arcos azuis (capacidade ociosa, custo original) e arcos vermelhos tracejados (fluxo cancelável, custo negativo $-w$).}
@@ -1877,29 +1989,28 @@ A detecção explícita e repetida de ciclos negativos em $D_f$ por métodos dir
 \begin{figure}[!ht]
 \centering
 \begin{tikzpicture}[thick]
-
 \begin{scope}[xshift=0cm]
-  \tikzsubcaption{(1.5,2.8)}{(a) Ciclo negativo em $D_f$}
-  \node[flow node] (a) at (0,1.5) {$a$};
-  \node[flow node] (b) at (3,1.5) {$b$};
-  \node[flow node] (c) at (1.5,0) {$c$};
-  \draw[->,red,line width=1.5pt] (a) -- node[above=2pt,font=\footnotesize,pos=0.5] {$w\!=\!2$} (b);
-  \draw[->,red,line width=1.5pt] (b) -- node[right=3pt,font=\footnotesize,pos=0.5] {$w\!=\!{-4}$} (c);
-  \draw[->,red,line width=1.5pt] (c) -- node[left=3pt,font=\footnotesize,pos=0.5] {$w\!=\!1$} (a);
-  \node[font=\footnotesize,below=2pt] at (1.5,-0.7) {$w(C) = 2 + (-4) + 1 = -1 < 0$};
+  \node[font=\footnotesize\bfseries, above] at (1.75,2.6) {(a) Ciclo negativo em $D_f$};
+  \node[flow node] (a) at (0,1.8) {$a$};
+  \node[flow node] (b) at (3.5,1.8) {$b$};
+  \node[flow node] (c) at (1.75,0) {$c$};
+  \draw[sat edge] (a) -- node[edge lbl above] {$w\!=\!2$} (b);
+  \draw[sat edge] (b) -- node[edge lbl above] {$w\!=\!{-4}$} (c);
+  \draw[sat edge] (c) -- node[edge lbl above] {$w\!=\!1$} (a);
+  \node[font=\footnotesize,below=2pt] at (1.75,-0.7) {$w(C) = 2 + (-4) + 1 = -1 < 0$};
 \end{scope}
 
-\node at (5.5,1.0) {\Huge $\Rightarrow$};
+\node at (5.75,1.0) {\Huge $\Rightarrow$};
 
 \begin{scope}[xshift=7.5cm]
-  \tikzsubcaption{(1.5,2.8)}{(b) Após cancelamento}
-  \node[flow node] (a2) at (0,1.5) {$a$};
-  \node[flow node] (b2) at (3,1.5) {$b$};
-  \node[flow node] (c2) at (1.5,0) {$c$};
-  \draw[->,blue,line width=1.5pt] (a2) -- node[above=2pt,font=\footnotesize,pos=0.5] {$+\delta$} (b2);
-  \draw[->,blue,line width=1.5pt] (b2) -- node[right=3pt,font=\footnotesize,pos=0.5] {$+\delta$} (c2);
-  \draw[->,blue,line width=1.5pt] (c2) -- node[left=3pt,font=\footnotesize,pos=0.5] {$+\delta$} (a2);
-  \node[font=\footnotesize,below=2pt] at (1.5,-0.7) {Custo reduz em $\delta \cdot |w(C)|$};
+  \node[font=\footnotesize\bfseries, above] at (1.75,2.6) {(b) Após cancelamento};
+  \node[flow node] (a2) at (0,1.8) {$a$};
+  \node[flow node] (b2) at (3.5,1.8) {$b$};
+  \node[flow node] (c2) at (1.75,0) {$c$};
+  \draw[tree edge] (a2) -- node[edge lbl above] {$+\delta$} (b2);
+  \draw[tree edge] (b2) -- node[edge lbl above] {$+\delta$} (c2);
+  \draw[tree edge] (c2) -- node[edge lbl above] {$+\delta$} (a2);
+  \node[font=\footnotesize,below=2pt] at (1.75,-0.7) {Custo reduz em $\delta \cdot |w(C)|$};
 \end{scope}
 \end{tikzpicture}
 \caption{(a)~Ciclo de custo negativo $C = a \to b \to c \to a$ no digrafo residual $D_f$ com custo total $w(C) = -1$. (b)~Após enviar $\delta$ unidades de fluxo ao longo do ciclo, o custo total do fluxo diminui em $\delta$, contradizendo a otimalidade se $f$ fosse ótimo.}
@@ -1968,11 +2079,11 @@ o que confirma a existência do vetor de potenciais nodais satisfazendo a condi�
     \node[font=\footnotesize, below=3pt, blue] at (b.south) {$\pi\!=\!1$};
     \node[font=\footnotesize, above=3pt, blue] at (t.north) {$\pi\!=\!5$};
 
-    \draw[flow edge] (s) -- node[above left, font=\footnotesize] {$w\!=\!3$} node[below right, font=\footnotesize, red, fill=white, inner sep=1.5pt] {$\bar{w}\!=\!5$} (a);
-    \draw[flow edge] (s) -- node[below left, font=\footnotesize] {$w\!=\!2$} node[above right, font=\footnotesize, red, fill=white, inner sep=1.5pt] {$\bar{w}\!=\!3$} (b);
-    \draw[flow edge] (a) -- node[above right, font=\footnotesize] {$w\!=\!4$} node[below left, font=\footnotesize, red, fill=white, inner sep=1.5pt] {$\bar{w}\!=\!7$} (t);
-    \draw[flow edge] (b) -- node[below right, font=\footnotesize] {$w\!=\!6$} node[above left, font=\footnotesize, red, fill=white, inner sep=1.5pt] {$\bar{w}\!=\!10$} (t);
-    \draw[flow edge] (a) -- node[right=4pt, font=\footnotesize] {$w\!=\!1$} node[left=4pt, font=\footnotesize, red, fill=white, inner sep=1.5pt] {$\bar{w}\!=\!0$} (b);
+    \draw[flow edge] (s) -- node[edge lbl above] {$w\!=\!3$} node[edge lbl below, text=red!80!black] {$\bar{w}\!=\!5$} (a);
+    \draw[flow edge] (s) -- node[edge lbl below] {$w\!=\!2$} node[edge lbl above, text=red!80!black] {$\bar{w}\!=\!3$} (b);
+    \draw[flow edge] (a) -- node[edge lbl above] {$w\!=\!4$} node[edge lbl below, text=red!80!black] {$\bar{w}\!=\!7$} (t);
+    \draw[flow edge] (b) -- node[edge lbl below] {$w\!=\!6$} node[edge lbl above, text=red!80!black] {$\bar{w}\!=\!10$} (t);
+    \draw[flow edge] (a) -- node[edge lbl, right] {$w\!=\!1$} node[edge lbl, left, text=red!80!black] {$\bar{w}\!=\!0$} (b);
 \end{tikzpicture}
 \caption{Potenciais nodais $\pi$ (em azul) e custos reduzidos $\bar{w} = w(u,v) - \pi(u) + \pi(v)$ (em vermelho). Todos os custos reduzidos são $\ge 0$, certificando a otimalidade do fluxo segundo o Teorema de Equivalência.}
 \label{fig:custos_reduzidos}
@@ -2070,7 +2181,49 @@ O algoritmo opera de forma determinística através de duas fases sequenciais be
 
 \textbf{Extração Segura do Ciclo Negativo em C++:} Um detalhe algorítmico crucial na implementação prática do \textit{Cycle Canceling} reside na extração precisa do ciclo a partir do vetor de predecessores (\lstinline{parent_edge}). Quando a $|V|$-ésima iteração de relaxação do Bellman-Ford (ou a detecção de contagem de visitas $\ge |V|$ no SPFA) acusa um vértice $v$ cuja distância ainda pôde ser reduzida, este vértice $v$ não necessariamente pertence ao ciclo negativo em si; ele pode residir em um caminho que é alcançável a partir do ciclo (um ``rabo'' que conduz para fora do ciclo). Para isolar com garantia matemática o ciclo fechado, a classe \lstinline{CycleCanceling} (Código~\ref{lst:cycle_canceling}, Apêndice~\ref{ap:cycle_canceling}) aplica o Princípio da Casa dos Pombos: retrocedendo $|V|$ passos ao longo dos arcos predecessores a partir de $v$ (\lstinline{for (Size i = 0; i < size; ++i) node = edges[parent_edge[node]].from;}), qualquer sequência de $|V|$ passos em um grafo com $|V|$ vértices é forçada a repetir pelo menos um nó, prendendo \lstinline{node} garantidamente dentro do ciclo negativo. A partir deste vértice garantido, rastreiam-se os predecessores até reencontrá-lo, reconstruindo com rigor o ciclo simples $C$ e computando o gargalo residual $\delta$.
 
-Cada cancelamento preserva estritamente a lei de conservação de fluxo em todos os vértices (pois $C$ é um ciclo fechado) e não altera o valor do fluxo líquido transportado ($|f|$ permanece inalterado), mas reduz o custo total da rede em exatamente $\delta \cdot |w(C)| > 0$. O processo repete-se até que o digrafo residual $D_f$ não contenha nenhum ciclo negativo, momento no qual o Teorema da Condição de Otimalidade certifica que o fluxo é de custo mínimo.
+Cada cancelamento preserva estritamente a lei de conservação de fluxo em todos os vértices (pois $C$ é um ciclo fechado) e não altera o valor do fluxo líquido transportado ($|f|$ permanece inalterado), mas reduz o custo total da rede em exatamente $\delta \cdot |w(C)| > 0$. O processo repete-se até que o digrafo residual $D_f$ não contenha nenhum ciclo negativo, momento no qual o Teorema da Condição de Otimalidade certifica que o fluxo é de custo mínimo. A dinâmica operacional dessa transição é ilustrada na Figura~\ref{fig:cycle_canceling_exec}.
+
+\begin{figure}[!ht]
+\centering
+\begin{tikzpicture}[scale=1.1, thick]
+\begin{scope}[xshift=0cm]
+  \tikzsubcaption{(2.5,2.6)}{(a) Ciclo negativo em $D_f$ detectado}
+  \node[source node] (s) at (0, 1) {$s$};
+  \node[flow node] (u) at (2.5, 2) {$u$};
+  \node[flow node] (v) at (2.5, 0) {$v$};
+  \node[sink node] (t) at (5, 1) {$t$};
+
+  \draw[flow edge] (s) -- node[edge lbl below, pos=0.55] {$f\!=\!4,\; w\!=\!4$} (u);
+  \draw[flow edge] (u) -- node[edge lbl above] {$f\!=\!4,\; w\!=\!2$} (t);
+  \draw[flow edge, opacity=0.3] (s) -- (v);
+  \draw[flow edge, opacity=0.3] (v) -- (t);
+
+  % Ciclo negativo: s -> v -> u e reverso u -> s
+  \draw[sat edge, line width=1.6pt] (s) -- node[edge lbl below] {$w\!=\!1$} (v);
+  \draw[sat edge, line width=1.6pt] (v) -- node[edge lbl, right] {$w\!=\!1$} (u);
+  \draw[rev edge, line width=1.6pt, bend right=32] (u) to node[edge lbl above, text=red!80!black] {$w_f\!=\!{-4}$} (s);
+
+  \node[font=\footnotesize, align=center, below=4pt] at (2.5,-0.6) {Ciclo $C = s \to v \to u \to s$ em $D_f$\\$w(C) = 1 + 1 + (-4) = -2 < 0$\\Gargalo $\delta=4 \implies$ cancelamento reduz custo};
+\end{scope}
+
+\begin{scope}[xshift=7.5cm]
+  \tikzsubcaption{(2.5,2.6)}{(b) Após cancelamento de $\delta=4$ unidades}
+  \node[source node] (s2) at (0, 1) {$s$};
+  \node[flow node] (u2) at (2.5, 2) {$u$};
+  \node[flow node] (v2) at (2.5, 0) {$v$};
+  \node[sink node] (t2) at (5, 1) {$t$};
+
+  \draw[flow edge, opacity=0.3] (s2) -- (u2);
+  \draw[flow edge] (u2) -- node[edge lbl above] {$f\!=\!4,\; w\!=\!2$} (t2);
+  \draw[tree edge] (s2) -- node[edge lbl below] {$f\!=\!4,\; w\!=\!1$} (v2);
+  \draw[tree edge] (v2) -- node[edge lbl, right] {$f\!=\!4,\; w\!=\!1$} (u2);
+
+  \node[font=\footnotesize, align=center, below=4pt] at (2.5,-0.6) {Fluxo líquido $|f|=4$ permanece inalterado!\\Custo total reduz de $24$ para $16$ (economia de $8$)};
+\end{scope}
+\end{tikzpicture}
+\caption{Dinâmica operacional do algoritmo Cycle-Canceling de Morton Klein. (a)~Com um fluxo viável máximo arbitrário de valor $|f|=4$, detecta-se no digrafo residual $D_f$ o ciclo direcionado negativo $C = s \to v \to u \to s$ com custo total $w(C) = 1 + 1 - 4 = -2 < 0$ e arco de retorno cancelando fluxo prévio. (b)~Ao enviar $\delta=4$ unidades ao longo do ciclo, o custo total da rede diminui estritamente de $24$ para $16$, preservando rigorosamente a conservação nodal e a magnitude do fluxo líquido transportado.}
+\label{fig:cycle_canceling_exec}
+\end{figure}
 
 \paragraph{Complexidade Assintótica.}
 Em redes com capacidades e custos inteiros, seja $C = \max_{(u,v) \in A} c(u,v)$ a capacidade máxima e $W = \max_{(u,v) \in A} |w(u,v)|$ o maior custo unitário em módulo. O custo total do fluxo inicial é limitado superiormente por $|A| \cdot C \cdot W$. Como cada cancelamento de ciclo com capacidades inteiras transporta pelo menos $\delta \ge 1$ unidade e reduz o custo por pelo menos $1$ unidade inteira, o algoritmo executa no máximo $\mathcal{O}(|A| \cdot C \cdot W)$ iterações. Multiplicando pelo custo de $\mathcal{O}(|V| \cdot |A|)$ da detecção de ciclo via Bellman-Ford por iteração, obtém-se a complexidade total de pior caso de $\mathcal{O}(|V| \cdot |A|^2 \cdot C \cdot W)$ (veja~\cite{ahuja1993network}).
@@ -2110,6 +2263,38 @@ Ao atualizar o vetor de potenciais nodais para $\pi'(v) = \pi(v) - d(v)$, o novo
     &= \bar{w}_\pi(u,v) + d(u) - d(v) \ge 0
 \end{align*}
 Para os novos arcos reversos $(v,u)$ criados no digrafo residual pelo envio de fluxo ao longo do caminho mais curto $P$, sabe-se que para todo arco $(u,v) \in P$ a desigualdade triangular é satisfeita na igualdade estrita ($d(v) = d(u) + \bar{w}_\pi(u,v)$), de modo que $\bar{w}_{\pi'}(u,v) = 0$. Consequentemente, o arco reverso recém-habilitado satisfaz $\bar{w}_{\pi'}(v,u) = -\bar{w}_{\pi'}(u,v) = 0 \ge 0$. Portanto, toda a malha de arcos residuais em $D_{f'}$ preserva custos reduzidos não negativos, viabilizando o uso do algoritmo de Dijkstra com \textit{heap} binária em $\mathcal{O}(|A| \log |V|)$ ou Fibonacci em $\mathcal{O}(|A| + |V| \log |V|)$ em todas as iterações subsequentes (veja~\cite{ahuja1993network, edmonds1972theoretical, korte2018combinatorial}).
+
+A dinâmica de uma iteração com potenciais nodais $\pi$ e a preservação da não negatividade dos custos reduzidos residuais é ilustrada na Figura~\ref{fig:ssp_iteracao}.
+
+\begin{figure}[!ht]
+\centering
+\begin{tikzpicture}[thick]
+    \node[source node] (s) at (0, 1.5) {$s$};
+    \node[flow node] (u) at (3.5, 3.0) {$u$};
+    \node[flow node] (v) at (3.5, 0.0) {$v$};
+    \node[sink node] (t) at (7.0, 1.5) {$t$};
+
+    % Potenciais nodais pi
+    \node[font=\footnotesize, blue!80!black, left=3pt] at (s.west) {$\pi(s)\!=\!0$};
+    \node[font=\footnotesize, blue!80!black, above=3pt] at (u.north) {$\pi(u)\!=\!2$};
+    \node[font=\footnotesize, blue!80!black, below=3pt] at (v.south) {$\pi(v)\!=\!1$};
+    \node[font=\footnotesize, blue!80!black, right=3pt] at (t.east) {$\pi(t)\!=\!5$};
+
+    % Caminho aumentante de menor custo destacado (azul escuro espesso, w_bar = 0)
+    \draw[tree edge] (s) -- node[edge lbl below, text=blue!80!black, pos=0.55] {$c_f\!=\!3, \;\bar{w}\!=\!0$} (u);
+    \draw[tree edge] (u) -- node[edge lbl above, text=blue!80!black, pos=0.5] {$c_f\!=\!2, \;\bar{w}\!=\!0$} (t);
+
+    % Demais arcos residuais com w_bar >= 0
+    \draw[flow edge] (s) -- node[edge lbl below, pos=0.5] {$c_f\!=\!4, \;\bar{w}\!=\!1$} (v);
+    \draw[flow edge] (v) -- node[edge lbl below, pos=0.5] {$c_f\!=\!1, \;\bar{w}\!=\!2$} (t);
+    \draw[flow edge] (u) -- node[edge lbl, right=3pt, pos=0.5] {$c_f\!=\!2, \;\bar{w}\!=\!1$} (v);
+
+    % Arco reverso criado apos o aumento de fluxo (curvado acima do trajeto direto)
+    \draw[rev edge, bend right=38] (u) to node[edge lbl above, text=red!80!black, pos=0.5] {reverso: $\bar{w}'\!=\!0$} (s);
+\end{tikzpicture}
+\caption{Iteração do algoritmo \textit{Successive Shortest Path} sob potenciais nodais $\pi$. O caminho mais curto $P = s \to u \to t$ (arcos azuis espessos) possui custo reduzido $\bar{w}_\pi = 0$ ao longo de todo o trajeto, permitindo a execução de Dijkstra. O arco reverso gerado após o envio de $\delta=2$ unidades de fluxo (vermelho tracejado) preserva $\bar{w}'(u,s) = 0 \ge 0$, mantendo a invariante de não negatividade dos custos reduzidos.}
+\label{fig:ssp_iteracao}
+\end{figure}
 
 \paragraph{Complexidade Assintótica.}
 Em redes com capacidades inteiras onde o fluxo máximo final é $F = |f^*|$, cada iteração aumenta pelo menos $\delta \ge 1$ unidade de fluxo. O número total de iterações é limitado superiormente por $F$. Empregando o SPFA com custo de pior caso $\mathcal{O}(|V| \cdot |A|)$, a complexidade global é $\mathcal{O}(|V| \cdot |A| \cdot F)$. Com o uso de potenciais nodais e Dijkstra com heap binária, a complexidade atinge $\mathcal{O}(F \cdot |A| \log |V|)$.
@@ -2319,6 +2504,36 @@ Sob esta formulação, a função objetivo do Simplex em Redes:
 \end{equation}
 minimiza o custo negativo do arco artificial, o que equivale perfeitamente a maximizar o fluxo circulante líquido que atravessa de $s$ a $t$ e retorna por $(t,s)$.
 
+A construção geométrica desta transformação em rede de circulação com arco artificial de retorno é ilustrada na Figura~\ref{fig:circulacao_retorno}.
+
+\begin{figure}[!ht]
+\centering
+\begin{tikzpicture}[thick]
+    \node[source node] (s) at (0, 1.5) {$s$};
+    \node[flow node] (u) at (3.5, 3.0) {$u$};
+    \node[flow node] (v) at (3.5, 0.0) {$v$};
+    \node[sink node] (t) at (7.0, 1.5) {$t$};
+
+    % Balanços nodais bem posicionados sem colisão
+    \node[font=\footnotesize, left=3pt] at (s.west) {$b(s)\!=\!0$};
+    \node[font=\footnotesize, above=3pt] at (u.north) {$b(u)\!=\!0$};
+    \node[font=\footnotesize, below=3pt] at (v.south) {$b(v)\!=\!0$};
+    \node[font=\footnotesize, right=3pt] at (t.east) {$b(t)\!=\!0$};
+
+    % Arcos originais com rótulos padronizados
+    \draw[flow edge] (s) -- node[edge lbl above] {$c\!=\!10, \; w\!=\!0$} (u);
+    \draw[flow edge] (s) -- node[edge lbl below] {$c\!=\!8, \; w\!=\!0$} (v);
+    \draw[flow edge] (u) -- node[edge lbl, right=3pt] {$c\!=\!5, \; w\!=\!0$} (v);
+    \draw[flow edge] (u) -- node[edge lbl above] {$c\!=\!7, \; w\!=\!0$} (t);
+    \draw[flow edge] (v) -- node[edge lbl below] {$c\!=\!10, \; w\!=\!0$} (t);
+
+    % Arco de retorno artificial
+    \draw[tree edge, red, line width=1.8pt, dashed, bend left=60, looseness=1.4] (t) to node[below=5pt, font=\footnotesize, text=red!80!black, fill=white, inner sep=2pt] {Arco de Retorno Artificial: $c(t,s)\!=\!\infty, \; w(t,s)\!=\!-1$} (s);
+\end{tikzpicture}
+\caption{Redução do Problema do Fluxo Máximo a Fluxo de Custo Mínimo através de Circulação. O arco artificial de retorno $(t,s)$ (vermelho tracejado) com custo estritamente negativo $w(t,s) = -1$ e capacidade infinita induz o motor de custo mínimo a saturar a circulação pelo ciclo $s \leadsto t \to s$, maximizando $f(t,s) = |f|$ com demandas nodais nulas ($b(v)=0$).}
+\label{fig:circulacao_retorno}
+\end{figure}
+
 \textbf{Decisão de Projeto: Por que não implementar um Network Simplex especializado em Fluxo Máximo?} 
 Na literatura clássica de Otimização Combinatória (como em Ahuja, Magnanti e Orlin~\cite{ahuja1993network}, Goldfarb e Hao~\cite{goldfarb1990primal} e Tarjan~\cite{tarjan1991efficiency}), conceitualiza-se a possibilidade teórica de um \textit{Max-Flow Network Simplex}, que operaria diretamente sobre árvores geradoras manipulando apenas capacidades e buscando trajetos de $s$ a $t$. Contudo, tanto na literatura quanto na prática de engenharia de software, este método raramente é materializado como uma classe independente. A arquitetura deste projeto optou conscientemente por não criar uma subclasse dedicada em \lstinline{FlowNetwork}, respaldada por duas razões fundamentais:
 \begin{enumerate}
@@ -2335,9 +2550,9 @@ A Tabela~\ref{tab:min_cost} sintetiza os paradigmas, invariantes mantidas e as c
 \centering
 \small
 \setlength{\tabcolsep}{5pt}
-\begin{tabular}{p{4.2cm} c p{7.5cm}}
+\begin{tabular}{p{4.2cm} l p{7.5cm}}
 \toprule
-\textbf{Algoritmo} & \textbf{Complexidade} & \textbf{Mecanismo / Estratégia} \\
+\multicolumn{1}{c}{\textbf{Algoritmo}} & \multicolumn{1}{c}{\textbf{Complexidade}} & \multicolumn{1}{c}{\textbf{Mecanismo / Estratégia}} \\
 \midrule
 \multicolumn{3}{c}{\bannertext{\hyperref[sec:cycle_canceling]{Abordagem Primal Direta: Cancelamento de Ciclos}}} \\
 \midrule
@@ -2440,7 +2655,7 @@ A Tabela~\ref{tab:benchmarks} sintetiza o quadro comparativo estruturado para a 
 \setlength{\tabcolsep}{4.5pt}
 \begin{tabular}{p{3.8cm} p{5.8cm} p{6.1cm}}
 \toprule
-\textbf{Motor Algorítmico (C++)} & \textbf{Topologia de Melhor Desempenho} & \textbf{Cenário Crítico e Gargalo Empírico} \\
+\multicolumn{1}{c}{\textbf{Motor Algorítmico (C++)}} & \multicolumn{1}{c}{\textbf{Topologia de Melhor Desempenho}} & \multicolumn{1}{c}{\textbf{Cenário Crítico e Gargalo Empírico}} \\
 \midrule
 \multicolumn{3}{c}{\bannertext{\hyperref[sec:bench_instancias]{Motores de Fluxo Máximo (Coleções DIMACS Washington e RMF)}}} \\
 \midrule
