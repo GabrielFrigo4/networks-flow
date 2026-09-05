@@ -108,6 +108,19 @@
 % =========================================================================
 \newtheorem{prop}{Proposição}
 
+% Definições formais (numeração sequencial para paridade estrita)
+\newcounter{definicao}
+\renewcommand{\thedefinicao}{\arabic{definicao}}
+\NewDocumentEnvironment{definicao}{o o}{%
+    \par\addvspace{0.8\baselineskip}\noindent
+    \refstepcounter{definicao}%
+    \IfValueT{#2}{\label{#2}}%
+    \textbf{Definição~\thedefinicao\IfValueT{#1}{ (#1)}}.%
+    \space
+}{%
+    \par\addvspace{0.5\baselineskip}
+}
+
 % Teoremas e demonstrações (numeração sequencial para paridade estrita)
 \newcounter{teorema}
 \renewcommand{\theteorema}{\arabic{teorema}}
@@ -197,7 +210,10 @@
 \newcommand{\cred}[2][]{\bar{w}_{#1}(#2)}
 \newcommand{\cres}[2][f]{c_{#1}(#2)}
 \newcommand{\Dres}[1][f]{D_{#1}}
-\newcommand{\ccap}{\mathrm{cap}}
+% Operadores matemáticos padronizados (amsmath)
+\DeclareMathOperator{\ccap}{cap}               % Capacidade de corte: \ccap(S,T)
+\DeclareMathOperator{\cost}{custo}             % Custo total de um fluxo: \cost(f)
+\DeclareMathOperator{\dist}{dist}              % Distância em caminhos mínimos: \dist(u,v)
 \newcommand{\code}[1]{\lstinline{#1}}
 
 % Tabelas
@@ -310,7 +326,7 @@ Um fluxo em $D$ é caracterizado por uma função $f: A \rightarrow \mathbb{R}_{
 
     \item \textbf{Lei de Conservação de Fluxo:} Com exceção dos vértices terminais ($s$ e $t$), nenhum vértice intermediário na rede possui a capacidade de gerar, consumir ou reter fluxo. A soma total do fluxo que ingressa em um vértice $v$ deve ser rigorosamente igual à soma do fluxo que dele emerge. Matematicamente, para todo $v \in V \setminus \{s, t\}$:
     \begin{equation}
-        \sum_{\{u \mid (u,v) \in A\}} f(u,v) = \sum_{\{w \mid (v,w) \in A\}} f(v,w)
+        \sum_{(u,v) \in A} f(u,v) = \sum_{(v,w) \in A} f(v,w)
     \end{equation}
 \end{enumerate}
 
@@ -326,12 +342,23 @@ Esta abstração matemática de rede, capacidades e restrições serve como o su
 
 \section{Redes Residuais, Caminhos Aumentantes e Dualidade}
 
-A busca sistemática pela maximização do fluxo em uma rede requer uma estrutura auxiliar que quantifique não apenas a capacidade ociosa das conexões, mas também a possibilidade de reversão de decisões de roteamento subótimas estabelecidas em iterações prévias. Para este fim, introduz-se o conceito de digrafo residual (ou rede residual) $D_f = (V, A_f)$ (veja~\cite{ahuja1993network, ford1956maximal}).
+A busca sistemática pela maximização do fluxo em uma rede requer uma estrutura auxiliar que quantifique não apenas a capacidade ociosa das conexões, mas também a possibilidade de reversão de decisões de roteamento subótimas estabelecidas em iterações prévias. Para este fim, introduz-se formalmente o conceito de rede residual (veja~\cite{ahuja1993network, ford1956maximal}).
 
-Dado um fluxo viável $f$ operando sobre a rede original $D$, a capacidade residual para qualquer par ordenado de vértices $(u,v)$ é formalmente definida pela equação:
-$$c_f(u,v) = c(u,v) - f(u,v) + f(v,u)$$.
-
-Esta formulação matemática é de suma importância estrutural, pois o termo algébrico $+ f(v,u)$ abstrai a simetria reversa do fluxo, garantindo topologicamente a viabilidade de cancelar e redirecionar um fluxo previamente enviado no sentido oposto. O conjunto de arcos residuais $A_f$ é então constituído exclusivamente pelos pares $(u,v)$ cujas capacidades residuais satisfazem rigorosamente a condição $c_f(u,v) > 0$.
+\begin{definicao}[Capacidade Residual e Digrafo Residual][def:residual]
+Dado um fluxo viável $f$ operando sobre uma rede $D = (V, A)$ com capacidades originais $c: A \to \mathbb{R}_{\ge 0}$:
+\begin{enumerate}
+    \item A \textbf{capacidade residual} de qualquer par ordenado $(u,v) \in V \times V$, denotada por $c_f(u,v)$, é definida algebricamente por:
+    \begin{equation}
+        c_f(u,v) \coloneqq c(u,v) - f(u,v) + f(v,u)
+    \end{equation}
+    convencionando-se $c(u,v) = 0$ e $f(u,v) = 0$ caso $(u,v) \notin A$.
+    \item O \textbf{digrafo residual} (ou rede residual) $D_f = (V, A_f)$ é o grafo orientado cujos arcos são constituídos exclusivamente pelas conexões com capacidade residual estritamente positiva:
+    \begin{equation}
+        A_f \coloneqq \{ (u,v) \in V \times V \mid c_f(u,v) > 0 \}
+    \end{equation}
+\end{enumerate}
+O termo $+ f(v,u)$ abstrai a simetria reversa do fluxo, viabilizando formalmente o cancelamento e o redirecionamento de decisões de roteamento prévias.
+\end{definicao}
 
 Operando sobre a topologia de $D_f$, define-se um caminho aumentante como qualquer caminho simples com origem na fonte $s$ e término no sumidouro $t$. A existência de tal caminho implica de forma direta que o fluxo global $|f|$ pode ser estritamente incrementado sem violar as restrições estruturais da rede original. O incremento máximo viável ao longo deste trajeto é delimitado pelo arco de menor capacidade residual, comumente denominado arco gargalo.
 
@@ -380,13 +407,28 @@ A Figura~\ref{fig:rede_residual} ilustra uma rede com fluxo parcial e seu corres
 \caption{Rede com fluxo parcial (esquerda, valores $f/c$) e o digrafo residual $D_f$ resultante (direita). Arcos azuis sólidos: capacidade ociosa ($c_f > 0$). Arcos vermelhos tracejados: capacidade reversa (fluxo cancelável). Rótulos com fundo opaco e curvaturas generosas eliminam sobreposição entre arcos diretos e reversos.}
 \label{fig:rede_residual}
 \end{figure}
+\FloatBarrier
 
-O critério de parada para os algoritmos de aumento iterativo, bem como o certificado matemático de otimalidade, é assegurado pelo Teorema do Fluxo Máximo e Corte Mínimo (\textit{Max-Flow Min-Cut Theorem}) (veja~\cite{ford1956maximal}). O teorema introduz a noção de um corte $s-t$, definido como uma partição do conjunto de vértices $V$ em dois subconjuntos mutuamente exclusivos $S$ e $T$, tais que $s \in S$ e $t \in T$. A capacidade deste corte é computada pela soma escalar das capacidades de todos os arcos originais direcionados de $S$ para~$T$.
+O critério de parada para os algoritmos de aumento iterativo, bem como o certificado matemático de otimalidade, é estruturado sobre o conceito de partição de corte da rede:
+
+\begin{definicao}[Corte $s-t$ e Capacidade de Corte][def:corte]
+Dada uma rede de fluxo $D = (V, A)$ com capacidades $c: A \to \mathbb{R}_{\ge 0}$, fonte $s$ e sumidouro $t$:
+\begin{enumerate}
+    \item Um \textbf{corte $s-t$} é uma partição do conjunto de vértices $V$ em dois subconjuntos disjuntos $S$ e $T = V \setminus S$ tais que $s \in S$ e $t \in T$.
+    \item A \textbf{capacidade do corte}, denotada pelo operador funcional $\ccap(S, T)$, é a soma das capacidades dos arcos direcionados com cauda em $S$ e cabeça em $T$:
+    \begin{equation}
+        \ccap(S, T) \coloneqq \sum_{(u,v) \in A, \, u \in S, \, v \in T} c(u,v)
+    \end{equation}
+\end{enumerate}
+\textbf{Observação importante:} Arcos no sentido inverso (isto é, com $u \in T$ e $v \in S$) \textbf{não} entram no cômputo de $\ccap(S, T)$, refletindo a assimetria do transporte orientado de recursos na rede.
+\end{definicao}
+
+A conexão fundamental entre fluxos factíveis e cortes induz o célebre resultado de Ford e Fulkerson:
 
 \begin{teorema}[Fluxo Máximo e Corte Mínimo --- Ford e Fulkerson, 1956][teo:mfmc]
 Em qualquer rede de fluxo $D = (V, A)$ com capacidades não negativas, fonte $s$ e sumidouro $t$, o valor do fluxo máximo é estritamente igual à capacidade do corte $s-t$ mínimo:
 \begin{equation}
-    \max_f |f| = \min_{(S,T)} \mathrm{cap}(S,T)
+    \max_f |f| = \min_{(S,T)} \ccap(S,T)
 \end{equation}
 Além disso, um fluxo viável $f$ é máximo se, e somente se, o digrafo residual $D_f$ não contém nenhum caminho aumentante de $s$ a $t$.
 \end{teorema}
@@ -451,10 +493,10 @@ Conclui-se que o fluxo líquido através do corte $(S, T)$ é exatamente a soma 
 
 A equivalência fundamental entre o valor do fluxo máximo e a capacidade do corte mínimo admite uma demonstração algébrica rigorosa quando examinada sob a ótica da Programação Linear (veja~\cite{cook1998combinatorial, schrijver2003combinatorial}). Longe de se restringir a uma propriedade puramente topológica da rede residual, o Teorema do Fluxo Máximo e Corte Mínimo é a manifestação direta do Teorema da Dualidade Forte de von Neumann e Dantzig.
 
-O Problema do Fluxo Máximo pode ser expresso canonicamente como o seguinte Programa Linear Primal:
+O Problema do Fluxo Máximo consiste em maximizar o valor do fluxo $|f|$, formulado canonicamente através do seguinte Programa Linear Primal:
 \begin{align}
-    \max \quad & |f| = \sum_{\{v \mid (s,v) \in A\}} f(s,v) - \sum_{\{u \mid (u,s) \in A\}} f(u,s) \label{eq:primal_obj} \\
-    \sa & \sum_{\{w \mid (v,w) \in A\}} f(v,w) - \sum_{\{u \mid (u,v) \in A\}} f(u,v) = 0, \quad \forall v \in V \setminus \{s, t\} \label{eq:primal_conservacao} \\
+    \max \quad & \sum_{(s,v) \in A} f(s,v) - \sum_{(u,s) \in A} f(u,s) \label{eq:primal_obj} \\[4pt]
+    \sa & \sum_{(v,w) \in A} f(v,w) - \sum_{(u,v) \in A} f(u,v) = 0, \quad \forall v \in V \setminus \{s, t\} \label{eq:primal_conservacao} \\[4pt]
     & 0 \le f(u,v) \le c(u,v), \quad \forall (u,v) \in A \label{eq:primal_capacidade}
 \end{align}
 
@@ -466,9 +508,9 @@ Para derivar o Programa Linear Dual correspondente, associamos multiplicadores d
 
 Pela teoria clássica da dualidade linear, a maximização do fluxo converte-se na minimização do produto escalar das capacidades pelas tensões dos arcos. O Programa Linear Dual resultante assume a forma:
 \begin{align}
-    \min \quad & \sum_{(u,v) \in A} c(u,v) \cdot d(u,v) \label{eq:dual_obj} \\
-    \sa & d(u,v) - p(u) + p(v) \ge 0, \quad \forall (u,v) \in A \label{eq:dual_tensao} \\
-    & d(u,v) \ge 0, \quad \forall (u,v) \in A \\
+    \min \quad & \sum_{(u,v) \in A} c(u,v) \cdot d(u,v) \label{eq:dual_obj} \\[4pt]
+    \sa & d(u,v) - p(u) + p(v) \ge 0, \quad \forall (u,v) \in A \label{eq:dual_tensao} \\[4pt]
+    & d(u,v) \ge 0, \quad \forall (u,v) \in A \\[4pt]
     & p(s) = 1, \quad p(t) = 0, \quad p(v) \in \mathbb{R}, \quad \forall v \in V
 \end{align}
 
@@ -499,12 +541,12 @@ Avaliando agora o valor das variáveis de arco $d^*(u,v) = \max\{0, \, p^*(u) - 
 \end{equation}
 Substituindo $d^*(u,v)$ diretamente na função objetivo dual~\eqref{eq:dual_obj}:
 \begin{equation}
-    \sum_{(u,v) \in A} c(u,v) \cdot d^*(u,v) = \sum_{u \in S, \, v \in T} c(u,v) = \text{cap}(S, T)
+    \sum_{(u,v) \in A} c(u,v) \cdot d^*(u,v) = \sum_{u \in S, \, v \in T} c(u,v) = \ccap(S, T)
 \end{equation}
 
 Pelo Teorema da Dualidade Forte da Programação Linear, o valor ótimo primal coincide rigorosamente com o valor ótimo dual:
 \begin{equation}
-    \max |f| = \min \sum_{(u,v) \in A} c(u,v) d(u,v) = \min_{(S,T)} \text{cap}(S,T)
+    \max |f| = \min \sum_{(u,v) \in A} c(u,v) d(u,v) = \min_{(S,T)} \ccap(S,T)
 \end{equation}
 o que comprova formalmente que o problema da Cobertura por Corte Mínimo é o dual exato do Problema do Fluxo Máximo.
 
@@ -542,7 +584,7 @@ A interpretação geométrica desta bijeção dual é ilustrada na Figura~\ref{f
   \draw[sat edge] (a) -- node[edge lbl above, text=red!80!black] {$\mathbf{d=1},\; f=c$} (c);
   \draw[sat edge] (b) -- node[edge lbl below, text=red!80!black] {$\mathbf{d=1},\; f=c$} (d);
 
-  \node[font=\footnotesize, align=center, below=4pt] at (4.1, -2.0) {Custo dual: $\sum c(e)d(e) = c(a,c)\cdot 1 + c(b,d)\cdot 1 = \mathrm{cap}(\mathbf{S},\mathbf{T})$. Pela dualidade forte: $\max |f| = \min \mathrm{cap}(\mathbf{S},\mathbf{T})$.};
+  \node[font=\footnotesize, align=center, below=4pt] at (4.1, -2.0) {Custo dual: $\sum c(e)d(e) = c(a,c)\cdot 1 + c(b,d)\cdot 1 = \ccap(S,T)$. Pela dualidade forte: $\max |f| = \min \ccap(S,T)$.};
 \end{tikzpicture}
 \caption{Interpretação geométrica da solução dual no Teorema do Fluxo Máximo e Corte Mínimo: os potenciais nodais ótimos assumem valores binários $p^*(u) = 1$ no bloco S e $p^*(v) = 0$ no bloco $\mathbf{T}$. As variáveis duais de tensão $d(u, v) = \max\{0, p(u) - p(v)\}$ são ativadas ($d = 1$) exclusivamente sobre os arcos saturados que cruzam de S para T, anulando-se ($d = 0$) nas arestas internas ou reversas.}
 \label{fig:primal_dual_potenciais}
@@ -804,7 +846,7 @@ Nesse processo, os vértices intermediários recebem temporariamente mais fluxo 
 
 Formalmente, um pré-fluxo $f$ é uma função que respeita estritamente as restrições de capacidade ($0 \le f(u,v) \le c(u,v)$), mas que permite que a quantidade total de fluxo que ingressa em um vértice $v \in V \setminus \{s, t\}$ seja maior ou igual à quantidade que dele diverge. A diferença algébrica entre o influxo e o efluxo de um vértice é denominada excesso, denotada por $e(v)$:
 \begin{equation}
-    e(v) = \sum_{\{u \mid (u,v) \in A\}} f(u,v) - \sum_{\{w \mid (v,w) \in A\}} f(v,w) \ge 0
+    e(v) = \sum_{(u,v) \in A} f(u,v) - \sum_{(v,w) \in A} f(v,w) \ge 0
 \end{equation}
 
 Um vértice intermediário que possui excesso estritamente positivo ($e(v) > 0$) é classificado como um vértice ativo. A premissa central dos algoritmos de pré-fluxo consiste em movimentar localmente este excesso pela rede até que ele alcance o sumidouro $t$ ou, quando bloqueado por falta de capacidade residual em todos os arcos de saída admissíveis (ou seja, arcos que ``descem'' em altura), seja devolvido em direção à fonte $s$ (veja~\cite{cook1998combinatorial}).
@@ -864,7 +906,7 @@ A eficiência global do algoritmo é intrinsecamente dependente da política de 
 \centering
 \begin{tikzpicture}[thick,node distance=2.2cm]
 
-\tikzsubcaption{(1.5,4.0)}{Antes do Push: arco admissível}
+\tikzsubcaption{(1.5,4.0)}{Antes de \texttt{push}: arco admissível}
 
 \node[active node] (u) at (0.0,3.0) {$u$};
 \node[font=\footnotesize,above=2pt of u] {$h{=}3,\,e{=}5$};
@@ -874,7 +916,7 @@ A eficiência global do algoritmo é intrinsecamente dependente da política de 
 
 \draw[->,line width=1.5pt,green!60!black] (u) -- node[above,font=\footnotesize] {$c_f=4$} (v);
 
-\tikzsubcaption{(1.5,1.0)}{Depois do Push($u$,$v$,$\delta$=4)}
+\tikzsubcaption{(1.5,1.0)}{Depois de \texttt{push(u, v, $\delta$=4)}}
 \node[active node] (u2) at (0.0,0.0) {$u$};
 \node[font=\footnotesize,above=2pt of u2] {$h{=}3,\,e{=}1$};
 \node[flow node,fill=blue!10] (v2) at (3.0,0.0) {$v$};
@@ -882,14 +924,14 @@ A eficiência global do algoritmo é intrinsecamente dependente da política de 
 \draw[nontree edge] (u2) -- node[above,font=\footnotesize,gray] {$c_f=0$} (v2);
 
 % === RIGHT: Relabel ===
-\tikzsubcaption{(8.5,4.0)}{Antes do Relabel: $u$ preso}
+\tikzsubcaption{(8.5,4.0)}{Antes de \texttt{relabel}: vértice $u$ preso}
 \node[gap node,fill=orange!30] (r1) at (7.0,3.0) {$u$};
 \node[font=\footnotesize,above=2pt of r1] {$h{=}2,\,e{=}3$};
 \node[flow node,fill=gray!10] (r2) at (10.0,3.0) {$w$};
 \node[font=\footnotesize,above=2pt of r2] {$h{=}3$};
 \draw[nontree edge] (r1) -- node[above,font=\footnotesize,align=center] {$c_f=2$\\inadmissível} (r2);
 
-\tikzsubcaption{(8.5,1.0)}{Depois do \texttt{Relabel(}$u$\texttt{)}: $h(u)\leftarrow 4$}
+\tikzsubcaption{(8.5,1.0)}{Depois de \texttt{relabel(u)}: $h(u)\leftarrow 4$}
 \node[gap node,fill=orange!50] (r3) at (7.0,0.0) {$u$};
 \node[font=\footnotesize,above=2pt of r3] {$h{=}4,\,e{=}3$};
 \node[flow node,fill=gray!10] (r4) at (10.0,0.0) {$w$};
@@ -1468,7 +1510,7 @@ Seja $D = (V, A)$ um digrafo e sejam $s, t \in V$ dois vértices distintos e nã
 \end{teorema}
 
 \begin{demonstracao}
-Atribui-se capacidade unitária $c(u,v) = 1$ a cada arco $(u,v) \in A$. Pelo Teorema da Integralidade (Teorema~\ref{teo:integralidade}), existe um fluxo máximo inteiro viável $f$ onde $f(u,v) \in \{0, 1\}$. Cada arco com $f(u,v) = 1$ pertence a exatamente um trajeto aumentante de $s$ a $t$, de modo que dois caminhos não podem compartilhar arcos. Logo, o fluxo máximo $|f^*|$ é rigorosamente o número de caminhos $st$-disjuntos por arcos. Pelo Teorema do Fluxo Máximo e Corte Mínimo (Teorema~\ref{teo:mfmc}), $|f^*| = \text{cap}(S,T)$ para algum corte mínimo $(S,T)$. Como cada arco cruzando de $S$ para $T$ possui capacidade unitária, a capacidade do corte é precisamente o número mínimo de arcos cuja remoção destrói todo caminho residual de $s$ a $t$, desconectando a rede. \end{demonstracao}
+Atribui-se capacidade unitária $c(u,v) = 1$ a cada arco $(u,v) \in A$. Pelo Teorema da Integralidade (Teorema~\ref{teo:integralidade}), existe um fluxo máximo inteiro viável $f$ onde $f(u,v) \in \{0, 1\}$. Cada arco com $f(u,v) = 1$ pertence a exatamente um trajeto aumentante de $s$ a $t$, de modo que dois caminhos não podem compartilhar arcos. Logo, o fluxo máximo $|f^*|$ é rigorosamente o número de caminhos $st$-disjuntos por arcos. Pelo Teorema do Fluxo Máximo e Corte Mínimo (Teorema~\ref{teo:mfmc}), $|f^*| = \ccap(S,T)$ para algum corte mínimo $(S,T)$. Como cada arco cruzando de $S$ para $T$ possui capacidade unitária, a capacidade do corte é precisamente o número mínimo de arcos cuja remoção destrói todo caminho residual de $s$ a $t$, desconectando a rede. \end{demonstracao}
 
 \begin{teorema}[Menger --- Versão por Vértices, 1927][teo:menger_vertices]
 Seja $D = (V, A)$ um digrafo e sejam $s, t \in V$ dois vértices distintos e não adjacentes. O número máximo de caminhos direcionados de $s$ a $t$ disjuntos internamente por vértices é estritamente igual ao número mínimo de vértices cuja remoção desconecta todo caminho de $s$ a $t$:
@@ -1718,7 +1760,7 @@ Seja $I$ uma imagem com $n = W \times H$ pixels. A construção da rede de segme
     
     \foreach \x in {1,2,3} {
         \foreach \y in {1,2,3} {
-            \draw[->, red!70!black, dashed, thin, draw opacity=0.4] (cp\x\y) -- (t);
+            \draw[->, red!70!black, dashed, line width=0.8pt, draw opacity=0.65] (cp\x\y) -- (t);
         }
     }
     
@@ -1728,7 +1770,7 @@ Seja $I$ uma imagem com $n = W \times H$ pixels. A construção da rede de segme
         }
     }
     
-    \begin{scope}[thick, draw opacity=0.8]
+    \begin{scope}[line width=1.4pt, draw opacity=0.9]
       \draw[-] (p11) -- (p21); \draw[-] (p21) -- (p31);
       \draw[-] (p12) -- (p22); \draw[-] (p22) -- (p32);
       \draw[-] (p13) -- (p23); \draw[-] (p23) -- (p33);
@@ -1741,19 +1783,19 @@ Seja $I$ uma imagem com $n = W \times H$ pixels. A construção da rede de segme
     
     \foreach \x in {1,2,3} {
         \foreach \y in {1,2,3} {
-            \draw[->, green!70!black, dashed, thin, draw opacity=0.4] (s) -- (p\x\y);
+            \draw[->, green!70!black, dashed, line width=0.8pt, draw opacity=0.65] (s) -- (p\x\y);
         }
     }
 
     \begin{scope}[x={(1cm,0cm)}, y={(0cm,1cm)}, z={(0cm,0cm)}]
         \node[right, font=\footnotesize, green!60!black] at (3.5, 0.5) {T-links $s \to p$};
-        \draw[->, green!70!black, dashed, thick] (2.3, 0.5) -- (3.3, 0.5);
+        \draw[->, green!70!black, dashed, line width=0.8pt] (2.3, 0.5) -- (3.3, 0.5);
         
         \node[right, font=\footnotesize, text=black] at (3.5, -0.5) {N-links (similaridade)};
-        \draw[-, thick] (2.3, -0.5) -- (3.3, -0.5);
+        \draw[-, line width=1.4pt] (2.3, -0.5) -- (3.3, -0.5);
         
         \node[right, font=\footnotesize, red!60!black] at (3.5, -1.5) {T-links $p \to t$};
-        \draw[->, red!70!black, dashed, thick] (2.3, -1.5) -- (3.3, -1.5);
+        \draw[->, red!70!black, dashed, line width=0.8pt] (2.3, -1.5) -- (3.3, -1.5);
     \end{scope}
     
 \end{tikzpicture}
@@ -1794,8 +1836,8 @@ O custo total do corte é exatamente a soma dos termos de dados e de regulariza�
   \draw[-,blue!70,line width=1.5pt] (p1) -- node[above,font=\footnotesize,text=black]{$w_n$\,alto} (p2);
   \draw[-,blue!70,line width=1.5pt] (p4) -- node[below,font=\footnotesize,text=black]{$w_n$\,alto} (p3);
   
-  \draw[-,orange,line width=1.5pt] (p1) -- node[edge lbl green, pos=0.25]{$w_n$\,baixo} (p4);
-  \draw[-,orange,line width=1.5pt] (p2) -- node[edge lbl green, pos=0.25]{$w_n$\,baixo} (p3);
+  \draw[-,orange,line width=1.5pt] (p1) -- node[edge lbl green, right=3.5pt, pos=0.25]{$w_n$\,baixo} (p4);
+  \draw[-,orange,line width=1.5pt] (p2) -- node[edge lbl green, left=3.5pt, pos=0.25]{$w_n$\,baixo} (p3);
 
   \draw[->,green!60!black,dashed] (s) -- node[above left, edge lbl green]{$w_s=\infty$} (p1);
   \draw[->,green!60!black,dashed] (s) -- node[above right, edge lbl green]{$w_s$\,alto} (p2);
@@ -1850,13 +1892,22 @@ Adicionalmente, cada vértice $v \in V$ possui uma demanda líquida $b(v) \in \m
     \item Se $b(v) = 0$: o vértice $v$ é um nó de \textbf{transbordo} (\textit{transshipment}), apenas retransmitindo fluxo.
 \end{itemize}
 
-Para que o problema seja viável, a condição de equilíbrio global $\sum_{v \in V} b(v) = 0$ deve ser satisfeita. O objetivo é determinar um fluxo viável $f$ que minimize o custo total de transporte:
+Para que o problema seja viável, a condição de equilíbrio global $\sum_{v \in V} b(v) = 0$ deve ser satisfeita.
+
+\begin{definicao}[Custo Total de um Fluxo][def:custo_fluxo]
+Dada uma rede com custos $D = (V, A, c, w)$ e um fluxo viável $f$, o \textbf{custo total do fluxo}, denotado pelo operador funcional $\cost(f)$, é definido pelo somatório ponderado dos produtos entre custos unitários e fluxos alocados:
 \begin{equation}
-    \min \sum_{(u,v) \in A} w(u,v) \cdot f(u,v)
+    \cost(f) \coloneqq \sum_{(u,v) \in A} w(u,v) \cdot f(u,v)
+\end{equation}
+\end{definicao}
+
+O objetivo central do Problema do Fluxo de Custo Mínimo consiste em determinar um fluxo viável $f$ que minimize $\cost(f)$:
+\begin{equation}
+    \min_{f} \cost(f) = \min_{f} \sum_{(u,v) \in A} w(u,v) \cdot f(u,v)
 \end{equation}
 sujeito às restrições de capacidade $0 \le f(u,v) \le c(u,v)$ para todo $(u,v) \in A$, e à lei de conservação generalizada com demandas:
 \begin{equation}
-    \sum_{\{w \mid (v,w) \in A\}} f(v,w) - \sum_{\{u \mid (u,v) \in A\}} f(u,v) = b(v), \quad \forall v \in V
+    \sum_{(v,w) \in A} f(v,w) - \sum_{(u,v) \in A} f(u,v) = b(v), \quad \forall v \in V
 \end{equation}
 
 Esta formulação unifica diversos problemas clássicos como casos particulares: o problema de transporte, o problema de atribuição (\textit{Assignment}), o problema do caminho mais curto e o próprio fluxo máximo (veja~\cite{korte2018combinatorial, cook1998combinatorial}).
@@ -1965,7 +2016,7 @@ Seja $\delta = \min_{(u,v) \in C} c_f(u,v) > 0$ a capacidade residual mínima (g
     \item Para cada arco residual reverso $(v,u) \in C$: diminuímos $f'(u,v) = f(u,v) - \delta \ge 0$.
 \end{itemize}
 Como $C$ é um ciclo fechado, cada vértice em $C$ possui exatamente um arco incidente de entrada e um de saída com taxa $\delta$, preservando rigorosamente a lei de conservação de fluxo e o atendimento às demandas $b(v)$. A viabilidade das capacidades é garantida pela escolha de $\delta$. O novo custo total é:
-$$\text{custo}(f') = \text{custo}(f) + \delta \cdot w(C) < \text{custo}(f)$$
+$$\cost(f') = \cost(f) + \delta \cdot w(C) < \cost(f)$$
 pois $\delta > 0$ e $w(C) < 0$. Isso contradiz frontalmente a hipótese de que $f$ era de custo mínimo, provando a necessidade.
 
 \medskip
@@ -1973,17 +2024,17 @@ pois $\delta > 0$ e $w(C) < 0$. Isso contradiz frontalmente a hipótese de que $
 Suponha que $D_f$ não contém ciclos direcionados de custo negativo. Seja $f^*$ um fluxo viável ótimo arbitrário (cuja existência decorre da compacidade e não-vazio do poliedro de fluxos viáveis). Considere a função diferença $g: A \to \mathbb{R}$ definida por $g(u,v) = f^*(u,v) - f(u,v)$ para todo $(u,v) \in A$.
 
 Como tanto $f^*$ quanto $f$ satisfazem as restrições de conservação com o mesmo vetor de demandas $b$, a divergência líquida de $g$ em cada vértice $v \in V$ é nula:
-$$\sum_{\{w \mid (v,w) \in A\}} g(v,w) - \sum_{\{u \mid (u,v) \in A\}} g(u,v) = b(v) - b(v) = 0$$
+$$\sum_{(v,w) \in A} g(v,w) - \sum_{(u,v) \in A} g(u,v) = b(v) - b(v) = 0$$
 Logo, $g$ define uma circulação pura. Demonstra-se que $g$ induz uma circulação viável no digrafo residual $D_f = (V, A_f)$:
 \begin{itemize}
     \item Se $g(u,v) > 0$, então $f^*(u,v) > f(u,v)$. Como $f^*(u,v) \le c(u,v)$, segue que $0 < g(u,v) \le c(u,v) - f(u,v) = c_f(u,v)$. Logo, o fluxo $g(u,v)$ é suportado pelo arco direto $(u,v) \in A_f$, com custo unitário residual $w_f(u,v) = w(u,v)$.
     \item Se $g(u,v) < 0$, então $f(u,v) > f^*(u,v) \ge 0$. Definindo $\tilde{g}(v,u) = -g(u,v) > 0$, temos $0 < \tilde{g}(v,u) \le f(u,v) = c_f(v,u)$. Portanto, $\tilde{g}(v,u)$ é suportado pelo arco reverso $(v,u) \in A_f$, com custo unitário residual $w_f(v,u) = -w(u,v)$.
 \end{itemize}
 Pelo Teorema da Decomposição de Fluxo (Teorema~\ref{teo:decomposicao}), a circulação viável induzida por $g$ em $D_f$ pode ser decomposta em uma família finita de ciclos direcionados simples $C_1, C_2, \dots, C_k$ em $D_f$, com taxas de fluxo $\delta_i > 0$, tais que $g = \sum_{i=1}^k \delta_i \cdot \mathbf{1}_{C_i}$. O custo da diferença entre os fluxos é expresso linearmente por:
-$$\text{custo}(f^*) - \text{custo}(f) = \sum_{(u,v) \in A} w(u,v) \cdot g(u,v) = \sum_{i=1}^k \delta_i \cdot w(C_i)$$
+$$\cost(f^*) - \cost(f) = \sum_{(u,v) \in A} w(u,v) \cdot g(u,v) = \sum_{i=1}^k \delta_i \cdot w(C_i)$$
 Como por hipótese o digrafo residual $D_f$ não possui nenhum ciclo de custo negativo, temos $w(C_i) \ge 0$ para todo $i \in \{1, \dots, k\}$. Consequentemente:
-$$\text{custo}(f^*) - \text{custo}(f) = \sum_{i=1}^k \delta_i \cdot w(C_i) \ge 0 \implies \text{custo}(f) \le \text{custo}(f^*)$$
-Sendo $f^*$ ótimo, conclui-se que $\text{custo}(f) = \text{custo}(f^*)$, isto é, $f$ é necessariamente um fluxo de custo mínimo. \end{demonstracao}
+$$\cost(f^*) - \cost(f) = \sum_{i=1}^k \delta_i \cdot w(C_i) \ge 0 \implies \cost(f) \le \cost(f^*)$$
+Sendo $f^*$ ótimo, conclui-se que $\cost(f) = \cost(f^*)$, isto é, $f$ é necessariamente um fluxo de custo mínimo. \end{demonstracao}
 
 \implicacoes{e o Desafio Computacional} Este teorema é o critério basilar que deu origem ao clássico algoritmo de Cancelamento de Ciclos de Klein (veja~\cite{klein1967primal}). Embora o algoritmo direto possa convergir lentamente com custos irracionais ou redes patológicas, o teorema estabelece a fundação matemática sobre a qual foram erguidos métodos modernos eficientes, como o algoritmo de \textit{Cost Scaling} de Goldberg-Tarjan e a formulação dual por potenciais nodais, que transforma a detecção global de ciclos em condições locais de verificação instantânea.
 
@@ -2066,10 +2117,10 @@ pois, por hipótese, cada parcela $\bar{w}_\pi(u,v)$ é não negativa. Assim, $D
 \noindent $(\Rightarrow)$ \textbf{Necessidade (Fluxo ótimo implica existência de potenciais válidos):} \\
 Se $f$ é de custo mínimo, o Teorema~\ref{teo:ciclos_negativos} garante que $D_f$ não possui nenhum ciclo direcionado com custo estritamente negativo.
 
-Introduza um supervértice virtual $s_0 \notin V$ e adicione arcos direcionados $(s_0, v)$ com custo residual $w_f(s_0, v) = 0$ para todo $v \in V$. Como nenhum arco incide em $s_0$, nenhum ciclo é criado através do novo nó, preservando a ausência de ciclos negativos. Portanto, as distâncias de caminho mais curto $\text{dist}(s_0, v)$ a partir de $s_0$ em relação aos pesos $w_f$ estão garantidamente bem-definidas e finitas para todo $v \in V$.
+Introduza um supervértice virtual $s_0 \notin V$ e adicione arcos direcionados $(s_0, v)$ com custo residual $w_f(s_0, v) = 0$ para todo $v \in V$. Como nenhum arco incide em $s_0$, nenhum ciclo é criado através do novo nó, preservando a ausência de ciclos negativos. Portanto, as distâncias de caminho mais curto $\dist(s_0, v)$ a partir de $s_0$ em relação aos pesos $w_f$ estão garantidamente bem-definidas e finitas para todo $v \in V$.
 
-Defina o vetor de potenciais nodais como $\pi(v) = \text{dist}(s_0, v)$ para cada $v \in V$. Pela clássica desigualdade triangular de caminhos mínimos, para qualquer arco residual $(u,v) \in A_f$:
-$$\text{dist}(s_0, v) \le \text{dist}(s_0, u) + w_f(u,v) \iff \pi(v) \le \pi(u) + w_f(u,v)$$
+Defina o vetor de potenciais nodais como $\pi(v) = \dist(s_0, v)$ para cada $v \in V$. Pela clássica desigualdade triangular de caminhos mínimos, para qualquer arco residual $(u,v) \in A_f$:
+$$\dist(s_0, v) \le \dist(s_0, u) + w_f(u,v) \iff \pi(v) \le \pi(u) + w_f(u,v)$$
 Reorganizando os termos algebricamente:
 $$\bar{w}_\pi(u,v) = w_f(u,v) - \pi(u) + \pi(v) \ge 0$$
 o que confirma a existência do vetor de potenciais nodais satisfazendo a condição para todos os arcos de $A_f$. \end{demonstracao}
