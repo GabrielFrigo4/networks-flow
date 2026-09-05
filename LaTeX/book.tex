@@ -249,10 +249,217 @@
 \newcommand{\bannertext}[1]{\textbf{\textsf{#1}}} % [MACRO] Cabeçalho destacado de tabela
 
 % =========================================================================
+% IDENTIDADE VISUAL E CORES DA CAPA
+% =========================================================================
+
+% -------------------------------------------------------------------------
+% Paleta Cromática da Capa (MIT Press Two-Tone)
+% -------------------------------------------------------------------------
+\definecolor{topbg}{RGB}{15, 23, 42}        % [COR] Fundo superior: Slate 900 profundo
+\definecolor{bottombg}{RGB}{248, 250, 252}  % [COR] Fundo inferior: Papel Neve (Slate 50)
+\definecolor{accentgold}{RGB}{226, 192, 116}% [COR] Dourado nobre metálico
+\definecolor{accentcyan}{RGB}{14, 165, 233} % [COR] Azul ciano vibrante
+\definecolor{cutred}{RGB}{225, 29, 72}      % [COR] Vermelho rubro do corte mínimo
+\definecolor{darkslate}{RGB}{30, 41, 59}    % [COR] Slate escuro para tipografia e arestas
+\definecolor{cardbg}{RGB}{224, 232, 242}    % [COR] Fundo do card do grafo (intensidade duplicada V5-1)
+\definecolor{cardborder}{RGB}{186, 202, 220}% [COR] Borda do card do grafo
+\definecolor{scyan}{RGB}{2, 132, 199}       % [COR] Ciano profundo para bordas e textos de S
+\definecolor{scyanbg}{RGB}{220, 240, 253}   % [COR] Fundo pastel para vértices v1, v2 de S
+\definecolor{ssourcebg}{RGB}{186, 230, 253} % [COR] Fundo luminoso para vértice fonte s
+\definecolor{tgold}{RGB}{180, 130, 30}      % [COR] Dourado profundo para bordas e textos de T
+\definecolor{tgoldbg}{RGB}{254, 246, 185}   % [COR] Fundo pastel para vértices v3, v4 de T
+\definecolor{tsinkbg}{RGB}{254, 235, 120}   % [COR] Fundo luminoso para vértice sumidouro t
+
+% =========================================================================
 % FIM DO PREÂMBULO — INÍCIO DO CORPO DO DOCUMENTO
 % =========================================================================
 \begin{document}
 \setlength{\emergencystretch}{3em}
+
+% =========================================================================
+% CAPA DO LIVRO (DESIGN EDITORIAL MIT PRESS TWO-TONE)
+% =========================================================================
+\begin{titlepage}
+    \thispagestyle{empty}
+    \begin{tikzpicture}[remember picture, overlay]
+        % -----------------------------------------------------------------
+        % Bloco Inferior (Papel Neve)
+        % -----------------------------------------------------------------
+        \fill[bottombg] (current page.south west) rectangle (current page.north east);
+
+        % -----------------------------------------------------------------
+        % Bloco Superior (Slate 900 com Divisória Dourada)
+        % -----------------------------------------------------------------
+        \coordinate (splitLeft) at ($(current page.south west)+(0, 16.6cm)$);
+        \coordinate (splitRight) at ($(current page.south east)+(0, 16.6cm)$);
+        \coordinate (splitMid) at ($(splitLeft)!0.5!(splitRight)$);
+
+        \fill[topbg] (splitLeft) rectangle (current page.north east);
+        \draw[line width=2.5pt, accentgold] (splitLeft) -- (splitRight);
+
+        % -----------------------------------------------------------------
+        % Constelação Geométrica Vetorial em Marca d'Água
+        % -----------------------------------------------------------------
+        \begin{scope}[opacity=0.09]
+            \coordinate (N1) at ($(current page.north west)+(3, -2)$);
+            \coordinate (N2) at ($(current page.north)+(0, -3.5)$);
+            \coordinate (N3) at ($(current page.north east)+(-3, -1.8)$);
+            \coordinate (N4) at ($(current page.north west)+(1.5, -6.5)$);
+            \coordinate (N5) at ($(current page.north)+(2, -7.5)$);
+            \coordinate (N6) at ($(current page.north east)+(-2, -5.5)$);
+            \coordinate (N7) at ($(current page.north)+(-4, -11)$);
+            \coordinate (N8) at ($(current page.north)+(3.5, -11.5)$);
+
+            \draw[white, line width=1pt] (N1)--(N2)--(N3)--(N6)--(N5)--(N4)--(N1);
+            \draw[white, line width=0.8pt] (N2)--(N5)--(N8)--(N6);
+            \draw[white, line width=0.8pt] (N4)--(N7)--(N5);
+            \foreach \pt in {N1,N2,N3,N4,N5,N6,N7,N8} {
+                \fill[white] (\pt) circle (3pt);
+            }
+        \end{scope}
+
+        % -----------------------------------------------------------------
+        % Identificação de Autoria e Filiação Institucional
+        % -----------------------------------------------------------------
+        \draw[line width=3.5pt, accentgold] ($(current page.north west)+(2.2cm, -2.1cm)$) -- ($(current page.north west)+(2.2cm, -3.45cm)$);
+
+        \node[anchor=north west, align=left] at ($(current page.north west)+(2.55cm, -2.05cm)$) {
+            {\fontsize{14.5}{18}\selectfont\textbf{\color{white}GABRIEL FRIGO}}\\[0.14cm]
+            {\fontsize{9}{12}\selectfont\color{accentgold}UNIVERSIDADE FEDERAL DO ABC \quad $\bullet$ \quad CMCC}
+        };
+
+        % -----------------------------------------------------------------
+        % Título Principal e Subtítulo Monográfico
+        % -----------------------------------------------------------------
+        \node[anchor=north west, align=left, text width=16.5cm] at ($(current page.north west)+(2.2cm, -4.75cm)$) {
+            {\fontsize{30.5}{38}\selectfont\textbf{\color{white}PROBLEMAS\hspace{0.35em}DE}}\\[0.40cm]
+            {\fontsize{34.5}{42}\selectfont\textbf{\color{white}FLUXOS\hspace{0.35em}EM\hspace{0.35em}REDES}}\\[0.80cm]
+            {\fontsize{13}{18}\selectfont\color{white!90}\textbf{Teoria Matemática, Algoritmos Combinatórios}\\[0.19cm]
+            \fontsize{13}{18}\selectfont\color{white!90}\textbf{e Implementações de Alta Performance}}
+        };
+
+        % -----------------------------------------------------------------
+        % Badges Técnicas de Especificação Editorial
+        % -----------------------------------------------------------------
+        \node[anchor=south] at ($(splitMid)+(0, 0.88cm)$) {
+            \begin{tikzpicture}[baseline=(X.base)]
+                \node (X) [draw=accentcyan, fill=topbg!95, text=accentcyan, rounded corners=3pt, font=\fontsize{7.5}{9.5}\selectfont\bfseries, inner sep=3.8pt] 
+                    {C++23 STANDARD};
+            \end{tikzpicture}
+            \hspace{0.14cm}
+            \begin{tikzpicture}[baseline=(X.base)]
+                \node (X) [draw=accentgold, fill=topbg!95, text=accentgold, rounded corners=3pt, font=\fontsize{7.5}{9.5}\selectfont\bfseries, inner sep=3.8pt] 
+                    {TEOREMAS E PROVAS};
+            \end{tikzpicture}
+            \hspace{0.14cm}
+            \begin{tikzpicture}[baseline=(X.base)]
+                \node (X) [draw=white!45, fill=topbg!95, text=white!95, rounded corners=3pt, font=\fontsize{7.5}{9.5}\selectfont\bfseries, inner sep=3.8pt] 
+                    {FLUXO MÁXIMO \& CORTE MÍNIMO};
+            \end{tikzpicture}
+            \hspace{0.14cm}
+            \begin{tikzpicture}[baseline=(X.base)]
+                \node (X) [draw=white!45, fill=topbg!95, text=white!95, rounded corners=3pt, font=\fontsize{7.5}{9.5}\selectfont\bfseries, inner sep=3.8pt] 
+                    {FLUXO DE CUSTO MÍNIMO};
+            \end{tikzpicture}
+        };
+
+        % -----------------------------------------------------------------
+        % Card do Teorema do Fluxo Máximo e Corte Mínimo
+        % -----------------------------------------------------------------
+        \begin{scope}[shift={($(current page.north)+(0, -19.6cm)$)}]
+            \draw[line width=1.3pt, cardborder, fill=cardbg, rounded corners=12pt] 
+                (-6.8, -3.95) rectangle (6.8, 3.95);
+
+            \node[font=\footnotesize\bfseries, text=darkslate, anchor=north] at (0, 3.55) 
+                {TEOREMA DO FLUXO MÁXIMO E CORTE MÍNIMO : \enspace $|f^*| = \operatorname{cap}(S, T) = 14$};
+
+            \draw[darkslate!16, line width=0.8pt] (-6.2, 2.95) -- (6.2, 2.95);
+
+            % Rótulo da Partição S
+            \node[anchor=center] at (-3.5, 2.45) {
+                \begin{tikzpicture}[baseline=(P.base)]
+                    \node (P) [draw=scyan!70, fill=white, text=scyan!90!black, rounded corners=3pt, font=\scriptsize\bfseries, inner sep=2.5pt] 
+                        {Conjunto $S$};
+                \end{tikzpicture}
+            };
+
+            % Indicação do Corte Mínimo (S, T)
+            \node[anchor=center] at (0, 2.45) {
+                \begin{tikzpicture}[baseline=(C.base)]
+                    \node (C) [draw=cutred!80, fill=white, text=cutred!90!black, rounded corners=3pt, font=\scriptsize\bfseries, inner sep=2.5pt] 
+                        {\textbf{Corte Mínimo} $(S, T)$};
+                \end{tikzpicture}
+            };
+
+            % Rótulo da Partição T
+            \node[anchor=center] at (3.5, 2.45) {
+                \begin{tikzpicture}[baseline=(Q.base)]
+                    \node (Q) [draw=tgold!70, fill=white, text=tgold!95!black, rounded corners=3pt, font=\scriptsize\bfseries, inner sep=2.5pt] 
+                        {Conjunto $T$};
+                \end{tikzpicture}
+            };
+
+            % Coordenadas dos Vértices da Rede
+            \coordinate (S)  at (-5.0, -0.20);
+            \coordinate (V1) at (-2.0,  1.45);
+            \coordinate (V2) at (-2.0, -1.85);
+            \coordinate (V3) at ( 2.0,  1.45);
+            \coordinate (V4) at ( 2.0, -1.85);
+            \coordinate (T)  at ( 5.0, -0.20);
+
+            % Arestas Direcionadas da Rede
+            \draw[-{Stealth[length=3.2mm]}, line width=1.6pt, darkslate] (S) -- 
+                node[sloped, above=2.5pt, font=\scriptsize\bfseries, fill=cardbg, inner sep=1.5pt] {$8 / 10$} (V1);
+
+            \draw[-{Stealth[length=3.2mm]}, line width=1.6pt, darkslate] (S) -- 
+                node[sloped, below=2.5pt, font=\scriptsize\bfseries, fill=cardbg, inner sep=1.5pt] {$6 / 10$} (V2);
+
+            \draw[-{Stealth[length=2.5mm]}, line width=1.3pt, darkslate] (V1) -- 
+                node[left=3pt, font=\scriptsize\bfseries, fill=cardbg, inner sep=1.5pt] {$1 / 3$} (V2);
+
+            \draw[-{Stealth[length=3.2mm]}, line width=1.6pt, darkslate] (V1) -- 
+                node[pos=0.25, sloped, above=2.5pt, font=\scriptsize\bfseries, fill=cardbg, inner sep=1.5pt] {$4 / 4$} (V3);
+
+            \draw[-{Stealth[length=3.2mm]}, line width=1.6pt, darkslate] (V1) -- 
+                node[pos=0.25, sloped, above=2.5pt, font=\scriptsize\bfseries, fill=cardbg, inner sep=1.5pt] {$3 / 3$} (V4);
+
+            \draw[-{Stealth[length=3.2mm]}, line width=1.6pt, darkslate] (V2) -- 
+                node[pos=0.25, sloped, below=2.5pt, font=\scriptsize\bfseries, fill=cardbg, inner sep=1.5pt] {$2 / 2$} (V3);
+
+            \draw[-{Stealth[length=3.2mm]}, line width=1.6pt, darkslate] (V2) -- 
+                node[pos=0.25, sloped, below=2.5pt, font=\scriptsize\bfseries, fill=cardbg, inner sep=1.5pt] {$5 / 5$} (V4);
+
+            \draw[-{Stealth[length=3.2mm]}, line width=1.6pt, darkslate] (V3) -- 
+                node[sloped, above=2.5pt, font=\scriptsize\bfseries, fill=cardbg, inner sep=1.5pt] {$6 / 9$} (T);
+
+            \draw[-{Stealth[length=3.2mm]}, line width=1.6pt, darkslate] (V4) -- 
+                node[sloped, below=2.5pt, font=\scriptsize\bfseries, fill=cardbg, inner sep=1.5pt] {$8 / 10$} (T);
+
+            % Linha Tracejada do Corte Mínimo
+            \draw[line width=2.0pt, dashed, cutred] 
+                (0, 2.15) to[out=-80, in=100] (0, -2.60);
+
+            % Vértices da Partição S
+            \node (S_node)  at (S)  [circle, draw=scyan!90!black, fill=ssourcebg, line width=2.0pt, minimum size=11mm, font=\large\bfseries, text=scyan!95!black] {$s$};
+            \node (V1_node) at (V1) [circle, draw=scyan!80!black, fill=scyanbg, line width=1.5pt, minimum size=10mm, font=\normalsize\bfseries, text=scyan!95!black] {$v_1$};
+            \node (V2_node) at (V2) [circle, draw=scyan!80!black, fill=scyanbg, line width=1.5pt, minimum size=10mm, font=\normalsize\bfseries, text=scyan!95!black] {$v_2$};
+
+            % Vértices da Partição T
+            \node (V3_node) at (V3) [circle, draw=tgold!85!black, fill=tgoldbg, line width=1.5pt, minimum size=10mm, font=\normalsize\bfseries, text=tgold!95!black] {$v_3$};
+            \node (V4_node) at (V4) [circle, draw=tgold!85!black, fill=tgoldbg, line width=1.5pt, minimum size=10mm, font=\normalsize\bfseries, text=tgold!95!black] {$v_4$};
+            \node (T_node)  at (T)  [circle, draw=tgold!90!black, fill=tsinkbg, line width=2.0pt, minimum size=11mm, font=\large\bfseries, text=tgold!95!black] {$t$};
+        \end{scope}
+
+        % -----------------------------------------------------------------
+        % Informações Editoriais e Institucionais do Rodapé
+        % -----------------------------------------------------------------
+        \node[anchor=south, align=center] at ($(current page.south)+(0, 2.0cm)$) {
+            {\fontsize{10.5}{14}\selectfont\color{darkslate} Orientação Acadêmica: \textbf{Profa. Dra. Cristiane Maria Sato}}\\[0.25cm]
+            {\fontsize{9}{12}\selectfont\color{darkslate!70} Santo André -- SP \quad $\bullet$ \quad 2026}
+        };
+    \end{tikzpicture}
+\end{titlepage}
+\clearpage
 
 \frontmatter
 
