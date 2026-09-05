@@ -1,6 +1,10 @@
 \documentclass[12pt,a4paper]{article}
 
 % =========================================================================
+% INÍCIO DO PREÂMBULO: PACOTES, CONFIGURAÇÕES E DEFINIÇÕES SEMÂNTICAS
+% =========================================================================
+
+% =========================================================================
 % PACOTES FUNDAMENTAIS E GEOMETRIA DE PÁGINA
 % =========================================================================
 \usepackage{amssymb}
@@ -35,37 +39,37 @@
 \usepackage{xcolor}
 \usepackage{colortbl}
 
+% -------------------------------------------------------------------------
+% Paleta de Cores de Sintaxe
+% -------------------------------------------------------------------------
 \definecolor{codegreen}{rgb}{0,0.6,0}
 \definecolor{codegray}{rgb}{0.5,0.5,0.5}
 \definecolor{codepurple}{rgb}{0.58,0,0.82}
 \definecolor{backcolour}{rgb}{0.9,0.9,0.9}
 
+% -------------------------------------------------------------------------
+% Configurações Globais do Listings
+% -------------------------------------------------------------------------
 \lstset{
-    % Formatação
     language=C++,
     basicstyle=\ttfamily\small,
     tabsize=4,
     keepspaces=true,
     columns=fullflexible,
     lineskip=-2pt,
-    % Cores
     backgroundcolor=\color{backcolour},
     commentstyle=\color{codegreen},
     keywordstyle=\color{blue}\bfseries,
     stringstyle=\color{codepurple},
     deletestring={[b]'},
-    % Numeração
     numbers=left,
     numberstyle=\tiny\color{codegray},
     numbersep=6pt,
-    % Quebras
     breaklines=true,
     breakatwhitespace=false,
-    % Invisíveis
     showspaces=false,
     showstringspaces=false,
     showtabs=false,
-    % Layout
     frame=single,
     rulecolor=\color{black},
     captionpos=b
@@ -78,18 +82,17 @@
 \renewcommand{\familydefault}{\sfdefault}
 
 \usepackage{hyperref}
-%\usepackage[alf]{abntex2cite}
-%\providecommand{\abntnextkey}{}
-
 \usepackage{titlesec}
 \usepackage{setspace}
 
 % =========================================================================
-% ESTRUTURAS SEMÂNTICAS, TEOREMAS E DESIGN DE TABELAS
+% ESTRUTURAS SEMÂNTICAS, TEOREMAS E DEFINIÇÕES
 % =========================================================================
 \newtheorem{prop}{Proposição}
 
-% Definições formais
+% -------------------------------------------------------------------------
+% Definições Formais
+% -------------------------------------------------------------------------
 \newcounter{definicao}
 \renewcommand{\thedefinicao}{\arabic{definicao}}
 \NewDocumentEnvironment{definicao}{o o}{%
@@ -102,7 +105,9 @@
     \par\addvspace{0.5\baselineskip}
 }
 
-% Teoremas e demonstrações
+% -------------------------------------------------------------------------
+% Teoremas e Demonstrações
+% -------------------------------------------------------------------------
 \newcounter{teorema}
 \renewcommand{\theteorema}{\arabic{teorema}}
 \NewDocumentEnvironment{teorema}{o o}{%
@@ -121,15 +126,23 @@
     \hfill $\blacksquare$\par\addvspace{0.5\baselineskip}
 }
 
-% Macros conceituais
+% -------------------------------------------------------------------------
+% Macros Conceituais e Auxiliares
+% -------------------------------------------------------------------------
 \newcommand{\intuicao}[1]{\paragraph{Intuição #1.}}
 \newcommand{\implicacoes}[1]{\paragraph{Implicações Estratégicas #1.}}
 \newcommand{\sa}{\text{s.a.}\quad}
 
-% Estilos TikZ
+% =========================================================================
+% BIBLIOTECA DE ESTILOS GRÁFICOS (TIKZ)
+% =========================================================================
+\newcommand{\tikzsubcaption}[2]{\node[font=\footnotesize\bfseries, above] at #1 {#2};}
+
 \tikzset{
     >=Stealth,
-    % Redes de fluxo e otimização (com fundo branco opaco em todos os flow node)
+    % ---------------------------------------------------------------------
+    % Redes de Fluxo e Otimização
+    % ---------------------------------------------------------------------
     flow node/.style={circle, draw, fill=white, minimum size=8.5mm, inner sep=1pt, font=\small},
     source node/.style={flow node, fill=green!20},
     sink node/.style={flow node, fill=red!20},
@@ -140,35 +153,46 @@
     rev edge/.style={->, red, dashed, line width=1.1pt},
     cut S/.style={dashed, blue, rounded corners, thick},
     cut T/.style={dashed, orange, rounded corners, thick},
-    % Rótulos de partição padronizados
+    % ---------------------------------------------------------------------
+    % Rótulos de Partição e Legendas
+    % ---------------------------------------------------------------------
     cut label S/.style={font=\footnotesize\bfseries, blue!80!black, anchor=north west},
     cut label T/.style={font=\footnotesize\bfseries, orange!80!black, anchor=north east},
     bip label L/.style={font=\large\bfseries, blue!80!black},
     bip label R/.style={font=\large\bfseries, orange!80!black},
-    % Network Simplex e bases
+    % ---------------------------------------------------------------------
+    % Network Simplex e Árvores de Base
+    % ---------------------------------------------------------------------
     tree edge/.style={->, line width=1.8pt, blue!80!black},
     nontree edge/.style={->, gray, dashed},
     pivot enter/.style={->, red, dashed, line width=1.5pt},
     pivot leave/.style={->, gray, dashed, line width=1.2pt},
-    % Grafos em camadas, distâncias e altitudes
+    % ---------------------------------------------------------------------
+    % Grafos em Camadas e Distâncias
+    % ---------------------------------------------------------------------
     active node/.style={flow node, fill=yellow!30},
     gap node/.style={flow node, fill=orange!40},
     layer line/.style={gray!40, dashed},
-    % Grafos bipartidos e reduções
+    % ---------------------------------------------------------------------
+    % Grafos Bipartidos e Emparelhamento
+    % ---------------------------------------------------------------------
     bip L/.style={circle, draw, fill=blue!15, minimum size=7.5mm, inner sep=1pt, font=\small},
     bip R/.style={circle, draw, fill=orange!15, minimum size=7.5mm, inner sep=1pt, font=\small},
     cover node/.style={double, double distance=1.2pt},
     match edge/.style={-, line width=1.8pt, blue!80!black},
     unmatch edge/.style={-, gray},
-    % Segmentação de imagens e conceitual
+    % ---------------------------------------------------------------------
+    % Segmentação de Imagens e Caixas Conceituais
+    % ---------------------------------------------------------------------
     pixel node/.style={circle, draw, fill=white, minimum size=8mm, font=\footnotesize},
     nlink/.style={-, thick},
     tlink s/.style={->, green!60!black, dashed},
     tlink t/.style={->, red!70!black, dashed},
     concept box/.style={draw, rounded corners=4pt, minimum height=1.4cm, align=center, font=\small},
-    % Elementos auxiliares e legendas
     legend node/.style={circle, draw, minimum size=4mm, inner sep=0pt},
-    % Rótulos padronizados para arestas (com proteção de sobreposição)
+    % ---------------------------------------------------------------------
+    % Rótulos Padronizados para Arestas
+    % ---------------------------------------------------------------------
     edge lbl/.style={font=\footnotesize, fill=white, inner sep=1.2pt, pos=0.5},
     edge lbl sloped/.style={edge lbl, sloped},
     edge lbl above/.style={edge lbl sloped, above=2.8pt},
@@ -177,31 +201,28 @@
     edge lbl left/.style={edge lbl, left=3pt},
     edge lbl above norm/.style={edge lbl, above=3pt},
     edge lbl below norm/.style={edge lbl, below=3pt},
-    % Rótulos integrados a partições com fundo colorido
     edge lbl green/.style={font=\footnotesize, fill=green!10, inner sep=1.2pt, pos=0.5},
     edge lbl red/.style={font=\footnotesize, fill=red!10, inner sep=1.2pt, pos=0.5},
     stage box/.style={draw=blue!80!black, fill=blue!5, rounded corners=4pt, line width=1pt, align=center, font=\footnotesize, minimum height=1.4cm, text width=2.4cm},
-    % Compatibilidade
     main/.style={flow node}
 }
 
-% Macros de diagramas
-\newcommand{\tikzsubcaption}[2]{\node[font=\footnotesize\bfseries, above] at #1 {#2};}
+% =========================================================================
+% OPERADORES MATEMÁTICOS E MACROS AUXILIARES
+% =========================================================================
+\DeclareMathOperator{\ccap}{cap}               % [OPERADOR] Capacidade de corte funcional: cap(S,T)
+\DeclareMathOperator{\cost}{custo}             % [OPERADOR] Custo total de um fluxo: custo(f)
+\DeclareMathOperator{\dist}{dist}              % [OPERADOR] Distância em caminhos mínimos: dist(u,v)
 
-% Operadores matemáticos padronizados (amsmath)
-\DeclareMathOperator{\ccap}{cap}               % Capacidade de corte: \ccap(S,T)
-\DeclareMathOperator{\cost}{custo}             % Custo total de um fluxo: \cost(f)
-\DeclareMathOperator{\dist}{dist}              % Distância em caminhos mínimos: \dist(u,v)
+\newcommand{\cred}[2][]{\bar{w}_{#1}(#2)}      % [NOTACAO] Custo reduzido: \cred[\pi]{u,v}
+\newcommand{\cres}[2][f]{c_{#1}(#2)}           % [NOTACAO] Capacidade residual: \cres{u,v}
+\newcommand{\Dres}[1][f]{D_{#1}}               % [NOTACAO] Digrafo residual: \Dres
+\newcommand{\code}[1]{\lstinline{#1}}          % [MACRO] Código inline ergonômico
+\newcommand{\bannertext}[1]{\textbf{\textsf{#1}}} % [MACRO] Cabeçalho destacado de tabela
 
-% Notação matemática
-\newcommand{\cred}[2][]{\bar{w}_{#1}(#2)}      % Custo reduzido: \cred[\pi]{u,v}
-\newcommand{\cres}[2][f]{c_{#1}(#2)}           % Capacidade residual: \cres{u,v}
-\newcommand{\Dres}[1][f]{D_{#1}}               % Digrafo residual: \Dres
-\newcommand{\code}[1]{\lstinline{#1}}          % Código inline ergonômico
-
-% Tabelas
-\newcommand{\bannertext}[1]{\textbf{\textsf{#1}}}
-
+% =========================================================================
+% FIM DO PREÂMBULO — INÍCIO DO CORPO DO DOCUMENTO
+% =========================================================================
 \begin{document}
 \setlength{\emergencystretch}{3em}
 \onehalfspacing
@@ -460,13 +481,11 @@ A Figura~\ref{fig:rede_residual} ilustra uma rede com fluxo parcial e seu corres
   \node[flow node] (b2) at (2,0) {$b$};
   \node[sink node] (t2) at (4,1.2) {$t$};
 
-  % Arcos diretos (capacidade ociosa, azul sólido)
   \draw[flow edge,blue] (s2) -- node[edge lbl below, text=blue!80!black] {$1$} (a2);
   \draw[flow edge,blue] (s2) -- node[edge lbl above, text=blue!80!black] {$1$} (b2);
   \draw[flow edge,blue] (a2) -- node[edge lbl below, text=blue!80!black] {$2$} (t2);
   \draw[flow edge,blue] (b2) -- node[edge lbl above, text=blue!80!black] {$1$} (t2);
 
-  % Arcos reversos (fluxo cancelável, vermelho tracejado com curvatura acentuada)
   \draw[rev edge,bend right=30] (a2) to node[edge lbl above, text=red!80!black] {$2$} (s2);
   \draw[rev edge,bend left=30] (b2) to node[edge lbl below, text=red!80!black] {$1$} (s2);
   \draw[rev edge] (b2) -- node[edge lbl, left, text=red!80!black] {$1$} (a2);
@@ -505,8 +524,6 @@ Além disso, um fluxo viável $f$ é máximo se, e somente se, o digrafo residua
 \end{teorema}
 
 \intuicao{Física e Topológica de Gargalo} A essência física deste teorema fundamenta-se no princípio do gargalo hidráulico: se imaginarmos uma rede de tubulações transportando fluido de $s$ para $t$, qualquer partição do sistema que separe a nascente da foz impõe um teto estrito sobre o volume total transportável, pois toda gota de fluido deve obrigatoriamente atravessar a fronteira divisória. A capacidade dessa barreira é a soma dos limites de vazão dos canais que cruzam no sentido da corrente. A genialidade da dualidade reside no fato de que o fluxo não é apenas limitado por esse obstáculo geométrico: o fluxo máximo alcançável é calibrado com exatidão cirúrgica pelo menor gargalo que a topologia da rede é capaz de formar. Quando o fluxo atinge seu ápice, os canais que formam essa barreira mais estreita ficam totalmente saturados, tornando impossível qualquer avanço adicional e certificando a otimalidade global da solução.
-
-\subsubsection{Demonstração do Teorema do Fluxo Máximo e Corte Mínimo}
 
 \begin{demonstracao}
 A demonstração deste teorema é construtiva e apoia-se diretamente na topologia do digrafo residual (veja~\cite{ford1956maximal, cook1998combinatorial}). Seja $f$ um fluxo em $D$. O valor do fluxo $|f|$ é sempre menor ou igual à capacidade de qualquer corte $s-t$ na rede, uma vez que o tráfego de recursos é fisicamente limitado pelas conexões que particionam a fonte do sumidouro. Portanto, se encontrarmos um fluxo $|f|$ cujo valor seja exata e algebricamente igual à capacidade de algum corte específico, teremos provado simultaneamente que $f$ é máximo e que o corte em questão é o mínimo.
@@ -619,7 +636,6 @@ A interpretação geométrica desta bijeção dual é ilustrada na Figura~\ref{f
 \begin{figure}[!ht]
 \centering
 \begin{tikzpicture}[thick]
-  % Caixas de corte harmônicas espelhadas na Figura 4 com cabeçalhos limpos
   \draw[cut S] (-0.8, -1.8) rectangle (2.8, 1.8);
   \node[cut label S] at (-0.6, 1.65) {$\mathbf{S} : p^*(u) = 1$};
 
@@ -634,17 +650,14 @@ A interpretação geométrica desta bijeção dual é ilustrada na Figura~\ref{f
   \node[flow node, fill=red!10] (d) at (6.2, -0.8) {$d$};
   \node[sink node] (t) at (8.2, 0.0) {$t$};
 
-  % Arestas internas a S (tensão d = 0)
   \draw[flow edge] (s) -- node[edge lbl above] {$d\!=\!0$} (a);
   \draw[flow edge] (s) -- node[edge lbl below] {$d\!=\!0$} (b);
   \draw[flow edge] (a) -- node[edge lbl left] {$d\!=\!0$} (b);
 
-  % Arestas internas a T (tensão d = 0)
   \draw[flow edge] (c) -- node[edge lbl above] {$d\!=\!0$} (t);
   \draw[flow edge] (d) -- node[edge lbl below] {$d\!=\!0$} (t);
   \draw[flow edge] (c) -- node[edge lbl right] {$d\!=\!0$} (d);
 
-  % Arestas cruzando o corte (tensão d = p(u) - p(v) = 1 - 0 = 1)
   \draw[sat edge] (a) -- node[edge lbl above, text=red!80!black] {$\mathbf{d\!=\!1},\; f\!=\!c$} (c);
   \draw[sat edge] (b) -- node[edge lbl below, text=red!80!black] {$\mathbf{d\!=\!1},\; f\!=\!c$} (d);
 
@@ -971,7 +984,6 @@ A eficiência global do algoritmo é intrinsecamente dependente da política de 
 \node[font=\footnotesize,above=2pt of v2] {$h{=}2,\,e{=}5$};
 \draw[nontree edge] (u2) -- node[above,font=\footnotesize,gray] {$c_f=0$} (v2);
 
-% === RIGHT: Relabel ===
 \tikzsubcaption{(8.5,4.0)}{Antes de \texttt{relabel}: vértice $u$ preso}
 \node[gap node,fill=orange!30] (r1) at (7.0,3.0) {$u$};
 \node[font=\footnotesize,above=2pt of r1] {$h{=}2,\,e{=}3$};
@@ -2264,7 +2276,6 @@ Cada cancelamento preserva estritamente a lei de conservação de fluxo em todos
   \draw[flow edge, opacity=0.3] (s) -- (v);
   \draw[flow edge, opacity=0.3] (v) -- (t);
 
-  % Ciclo negativo: s -> v -> u e reverso u -> s
   \draw[sat edge, line width=1.6pt] (s) -- node[edge lbl below] {$w\!=\!1$} (v);
   \draw[sat edge, line width=1.6pt] (v) -- node[edge lbl right] {$w\!=\!1$} (u);
   \draw[rev edge, line width=1.6pt, bend right=32] (u) to node[edge lbl above, text=red!80!black] {$w_f\!=\!{-4}$} (s);
@@ -2340,22 +2351,18 @@ A dinâmica de uma iteração com potenciais nodais $\pi$ e a preservação da n
     \node[flow node] (v) at (3.5, 0.0) {$v$};
     \node[sink node] (t) at (7.0, 1.5) {$t$};
 
-    % Potenciais nodais pi
     \node[font=\footnotesize, blue!80!black, left=3pt] at (s.west) {$\pi(s)\!=\!0$};
     \node[font=\footnotesize, blue!80!black, above=3pt] at (u.north) {$\pi(u)\!=\!2$};
     \node[font=\footnotesize, blue!80!black, below=3pt] at (v.south) {$\pi(v)\!=\!1$};
     \node[font=\footnotesize, blue!80!black, right=3pt] at (t.east) {$\pi(t)\!=\!5$};
 
-    % Caminho aumentante de menor custo destacado (azul escuro espesso, w_bar = 0)
     \draw[tree edge] (s) -- node[edge lbl below, text=blue!80!black, pos=0.55] {$c_f\!=\!3, \;\bar{w}\!=\!0$} (u);
     \draw[tree edge] (u) -- node[edge lbl above, text=blue!80!black, pos=0.5] {$c_f\!=\!2, \;\bar{w}\!=\!0$} (t);
 
-    % Demais arcos residuais com w_bar >= 0
     \draw[flow edge] (s) -- node[edge lbl below, pos=0.5] {$c_f\!=\!4, \;\bar{w}\!=\!1$} (v);
     \draw[flow edge] (v) -- node[edge lbl below, pos=0.5] {$c_f\!=\!1, \;\bar{w}\!=\!2$} (t);
     \draw[flow edge] (u) -- node[edge lbl, right=3pt, pos=0.5] {$c_f\!=\!2, \;\bar{w}\!=\!1$} (v);
 
-    % Arco reverso criado apos o aumento de fluxo (curvado acima do trajeto direto)
     \draw[rev edge, bend right=38] (u) to node[edge lbl above, text=red!80!black, pos=0.5] {reverso: $\bar{w}'\!=\!0$} (s);
 \end{tikzpicture}
 \caption{Iteração do algoritmo \textit{Successive Shortest Path} sob potenciais nodais $\pi$. O caminho mais curto $P = s \to u \to t$ (arcos azuis espessos) possui custo reduzido $\bar{w}_\pi = 0$ ao longo de todo o trajeto, permitindo a execução de Dijkstra. O arco reverso gerado após o envio de $\delta=2$ unidades de fluxo (vermelho tracejado) preserva $\bar{w}'(u,s) = 0 \ge 0$, mantendo a invariante de não negatividade dos custos reduzidos.}
@@ -2580,20 +2587,17 @@ A construção geométrica desta transformação em rede de circulação com arc
     \node[flow node] (v) at (3.5, 0.0) {$v$};
     \node[sink node] (t) at (7.0, 1.5) {$t$};
 
-    % Balanços nodais bem posicionados sem colisão
     \node[font=\footnotesize, left=3pt] at (s.west) {$b(s)\!=\!0$};
     \node[font=\footnotesize, above=3pt] at (u.north) {$b(u)\!=\!0$};
     \node[font=\footnotesize, below=3pt] at (v.south) {$b(v)\!=\!0$};
     \node[font=\footnotesize, right=3pt] at (t.east) {$b(t)\!=\!0$};
 
-    % Arcos originais com rótulos padronizados
     \draw[flow edge] (s) -- node[edge lbl above] {$c\!=\!10, \; w\!=\!0$} (u);
     \draw[flow edge] (s) -- node[edge lbl below] {$c\!=\!8, \; w\!=\!0$} (v);
     \draw[flow edge] (u) -- node[edge lbl, right=3pt] {$c\!=\!5, \; w\!=\!0$} (v);
     \draw[flow edge] (u) -- node[edge lbl above] {$c\!=\!7, \; w\!=\!0$} (t);
     \draw[flow edge] (v) -- node[edge lbl below] {$c\!=\!10, \; w\!=\!0$} (t);
 
-    % Arco de retorno artificial
     \draw[tree edge, red, line width=1.8pt, dashed, bend left=60, looseness=1.4] (t) to node[below=5pt, font=\footnotesize, text=red!80!black, fill=white, inner sep=2pt] {Arco de Retorno Artificial: $c(t,s)\!=\!\infty, \; w(t,s)\!=\!-1$} (s);
 \end{tikzpicture}
 \caption{Redução do Problema do Fluxo Máximo a Fluxo de Custo Mínimo através de Circulação. O arco artificial de retorno $(t,s)$ (vermelho tracejado) com custo estritamente negativo $w(t,s) = -1$ e capacidade infinita induz o motor de custo mínimo a saturar a circulação pelo ciclo $s \leadsto t \to s$, maximizando $f(t,s) = |f|$ com demandas nodais nulas ($b(v)=0$).}

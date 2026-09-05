@@ -1,6 +1,10 @@
 \documentclass[11pt,a4paper,oneside]{book}
 
 % =========================================================================
+% INÍCIO DO PREÂMBULO: PACOTES, CONFIGURAÇÕES E DEFINIÇÕES SEMÂNTICAS
+% =========================================================================
+
+% =========================================================================
 % PACOTES FUNDAMENTAIS E GEOMETRIA DE PÁGINA
 % =========================================================================
 \usepackage{amssymb}
@@ -39,11 +43,17 @@
 \usepackage{xcolor}
 \usepackage{colortbl}
 
+% -------------------------------------------------------------------------
+% Paleta de Cores de Sintaxe
+% -------------------------------------------------------------------------
 \definecolor{codegreen}{rgb}{0,0.6,0}
 \definecolor{codegray}{rgb}{0.5,0.5,0.5}
 \definecolor{codepurple}{rgb}{0.58,0,0.82}
 \definecolor{backcolour}{rgb}{0.9,0.9,0.9}
 
+% -------------------------------------------------------------------------
+% Configurações Globais do Listings
+% -------------------------------------------------------------------------
 \lstset{
     language=C++,
     basicstyle=\ttfamily\small,
@@ -104,11 +114,13 @@
 }
 
 % =========================================================================
-% ESTRUTURAS SEMÂNTICAS, TEOREMAS E DESIGN DE TABELAS
+% ESTRUTURAS SEMÂNTICAS, TEOREMAS E DEFINIÇÕES
 % =========================================================================
 \newtheorem{prop}{Proposição}
 
-% Definições formais (numeração sequencial para paridade estrita)
+% -------------------------------------------------------------------------
+% Definições Formais
+% -------------------------------------------------------------------------
 \newcounter{definicao}
 \renewcommand{\thedefinicao}{\arabic{definicao}}
 \NewDocumentEnvironment{definicao}{o o}{%
@@ -121,7 +133,9 @@
     \par\addvspace{0.5\baselineskip}
 }
 
-% Teoremas e demonstrações (numeração sequencial para paridade estrita)
+% -------------------------------------------------------------------------
+% Teoremas e Demonstrações
+% -------------------------------------------------------------------------
 \newcounter{teorema}
 \renewcommand{\theteorema}{\arabic{teorema}}
 \NewDocumentEnvironment{teorema}{o o}{%
@@ -140,15 +154,23 @@
     \hfill $\blacksquare$\par\addvspace{0.5\baselineskip}
 }
 
-% Macros conceituais
+% -------------------------------------------------------------------------
+% Macros Conceituais e Auxiliares
+% -------------------------------------------------------------------------
 \newcommand{\intuicao}[1]{\paragraph{Intuição #1.}}
 \newcommand{\implicacoes}[1]{\paragraph{Implicações Estratégicas #1.}}
 \newcommand{\sa}{\text{s.a.}\quad}
 
-% Estilos TikZ
+% =========================================================================
+% BIBLIOTECA DE ESTILOS GRÁFICOS (TIKZ)
+% =========================================================================
+\newcommand{\tikzsubcaption}[2]{\node[font=\footnotesize\bfseries, above] at #1 {#2};}
+
 \tikzset{
     >=Stealth,
-    % Redes de fluxo e otimização (com fundo branco opaco em todos os flow node)
+    % ---------------------------------------------------------------------
+    % Redes de Fluxo e Otimização
+    % ---------------------------------------------------------------------
     flow node/.style={circle, draw, fill=white, minimum size=8.5mm, inner sep=1pt, font=\small},
     source node/.style={flow node, fill=green!20},
     sink node/.style={flow node, fill=red!20},
@@ -159,35 +181,46 @@
     rev edge/.style={->, red, dashed, line width=1.1pt},
     cut S/.style={dashed, blue, rounded corners, thick},
     cut T/.style={dashed, orange, rounded corners, thick},
-    % Rótulos de partição padronizados
+    % ---------------------------------------------------------------------
+    % Rótulos de Partição e Legendas
+    % ---------------------------------------------------------------------
     cut label S/.style={font=\footnotesize\bfseries, blue!80!black, anchor=north west},
     cut label T/.style={font=\footnotesize\bfseries, orange!80!black, anchor=north east},
     bip label L/.style={font=\large\bfseries, blue!80!black},
     bip label R/.style={font=\large\bfseries, orange!80!black},
-    % Network Simplex e bases
+    % ---------------------------------------------------------------------
+    % Network Simplex e Árvores de Base
+    % ---------------------------------------------------------------------
     tree edge/.style={->, line width=1.8pt, blue!80!black},
     nontree edge/.style={->, gray, dashed},
     pivot enter/.style={->, red, dashed, line width=1.5pt},
     pivot leave/.style={->, gray, dashed, line width=1.2pt},
-    % Grafos em camadas, distâncias e altitudes
+    % ---------------------------------------------------------------------
+    % Grafos em Camadas e Distâncias
+    % ---------------------------------------------------------------------
     active node/.style={flow node, fill=yellow!30},
     gap node/.style={flow node, fill=orange!40},
     layer line/.style={gray!40, dashed},
-    % Grafos bipartidos e reduções
+    % ---------------------------------------------------------------------
+    % Grafos Bipartidos e Emparelhamento
+    % ---------------------------------------------------------------------
     bip L/.style={circle, draw, fill=blue!15, minimum size=7.5mm, inner sep=1pt, font=\small},
     bip R/.style={circle, draw, fill=orange!15, minimum size=7.5mm, inner sep=1pt, font=\small},
     cover node/.style={double, double distance=1.2pt},
     match edge/.style={-, line width=1.8pt, blue!80!black},
     unmatch edge/.style={-, gray},
-    % Segmentação de imagens e conceitual
+    % ---------------------------------------------------------------------
+    % Segmentação de Imagens e Caixas Conceituais
+    % ---------------------------------------------------------------------
     pixel node/.style={circle, draw, fill=white, minimum size=8mm, font=\footnotesize},
     nlink/.style={-, thick},
     tlink s/.style={->, green!60!black, dashed},
     tlink t/.style={->, red!70!black, dashed},
     concept box/.style={draw, rounded corners=4pt, minimum height=1.4cm, align=center, font=\small},
-    % Elementos auxiliares e legendas
     legend node/.style={circle, draw, minimum size=4mm, inner sep=0pt},
-    % Rótulos padronizados para arestas (com proteção de sobreposição)
+    % ---------------------------------------------------------------------
+    % Rótulos Padronizados para Arestas
+    % ---------------------------------------------------------------------
     edge lbl/.style={font=\footnotesize, fill=white, inner sep=1.2pt, pos=0.5},
     edge lbl sloped/.style={edge lbl, sloped},
     edge lbl above/.style={edge lbl sloped, above=2.8pt},
@@ -196,35 +229,31 @@
     edge lbl left/.style={edge lbl, left=3pt},
     edge lbl above norm/.style={edge lbl, above=3pt},
     edge lbl below norm/.style={edge lbl, below=3pt},
-    % Rótulos integrados a partições com fundo colorido
     edge lbl green/.style={font=\footnotesize, fill=green!10, inner sep=1.2pt, pos=0.5},
     edge lbl red/.style={font=\footnotesize, fill=red!10, inner sep=1.2pt, pos=0.5},
     stage box/.style={draw=blue!80!black, fill=blue!5, rounded corners=4pt, line width=1pt, align=center, font=\footnotesize, minimum height=1.4cm, text width=2.4cm},
     main/.style={flow node}
 }
 
-% Macros de diagramas
-\newcommand{\tikzsubcaption}[2]{\node[font=\footnotesize\bfseries, above] at #1 {#2};}
+% =========================================================================
+% OPERADORES MATEMÁTICOS E MACROS AUXILIARES
+% =========================================================================
+\DeclareMathOperator{\ccap}{cap}               % [OPERADOR] Capacidade de corte funcional: cap(S,T)
+\DeclareMathOperator{\cost}{custo}             % [OPERADOR] Custo total de um fluxo: custo(f)
+\DeclareMathOperator{\dist}{dist}              % [OPERADOR] Distância em caminhos mínimos: dist(u,v)
 
-% Notação matemática
-\newcommand{\cred}[2][]{\bar{w}_{#1}(#2)}
-\newcommand{\cres}[2][f]{c_{#1}(#2)}
-\newcommand{\Dres}[1][f]{D_{#1}}
-% Operadores matemáticos padronizados (amsmath)
-\DeclareMathOperator{\ccap}{cap}               % Capacidade de corte: \ccap(S,T)
-\DeclareMathOperator{\cost}{custo}             % Custo total de um fluxo: \cost(f)
-\DeclareMathOperator{\dist}{dist}              % Distância em caminhos mínimos: \dist(u,v)
-\newcommand{\code}[1]{\lstinline{#1}}
+\newcommand{\cred}[2][]{\bar{w}_{#1}(#2)}      % [NOTACAO] Custo reduzido: \cred[\pi]{u,v}
+\newcommand{\cres}[2][f]{c_{#1}(#2)}           % [NOTACAO] Capacidade residual: \cres{u,v}
+\newcommand{\Dres}[1][f]{D_{#1}}               % [NOTACAO] Digrafo residual: \Dres
+\newcommand{\code}[1]{\lstinline{#1}}          % [MACRO] Código inline ergonômico
+\newcommand{\bannertext}[1]{\textbf{\textsf{#1}}} % [MACRO] Cabeçalho destacado de tabela
 
-% Tabelas
-\newcommand{\bannertext}[1]{\textbf{\textsf{#1}}}
-
+% =========================================================================
+% FIM DO PREÂMBULO — INÍCIO DO CORPO DO DOCUMENTO
+% =========================================================================
 \begin{document}
 \setlength{\emergencystretch}{3em}
 
-% =========================================================================
-% FRONTMATTER: CAPA, FOLHA DE ROSTO E PREFÁCIO
-% =========================================================================
 \frontmatter
 
 \begin{titlepage}
@@ -280,16 +309,10 @@ Esta edição monográfica e independente liberta o texto das amarras burocráti
 \tableofcontents
 \newpage
 
-% =========================================================================
-% MAINMATTER: CORPO ANALÍTICO DO LIVRO
-% =========================================================================
 \mainmatter
 
 \part{Teoria Estrutural e Algoritmos de Fluxo Máximo}
 
-% -------------------------------------------------------------------------
-% CAPÍTULO 1
-% -------------------------------------------------------------------------
 \chapter{Fundamentos Matemáticos dos Grafos de Fluxo}\label{sec:base_matematica}
 
 Para a formulação rigorosa do problema de fluxo, baseamo-nos nas definições clássicas da Teoria dos Grafos e Otimização Combinatória (veja~\cite{ahuja1993network, bondy2008graph}). Uma rede de fluxo é formalmente definida como um digrafo (grafo direcionado) $D = (V, A)$, onde $V$ representa o conjunto de vértices e $A$ o conjunto de arcos.
@@ -335,9 +358,6 @@ O valor global do fluxo, comumente denotado por $|f|$, quantifica a rede em sua 
 Esta abstração matemática de rede, capacidades e restrições serve como o substrato exato para o encapsulamento orientado a objetos desenvolvido nas etapas práticas deste projeto. A classe-base C++ desenvolvida abstrai este formalismo garantindo, em nível de \textit{software}, que a invariante da restrição de capacidade nunca seja violada.
 
 
-% -------------------------------------------------------------------------
-% CAPÍTULO 2
-% -------------------------------------------------------------------------
 \chapter{O Teorema Fundamental do Fluxo Máximo e Corte Mínimo}\label{sec:mfmc_capitulo}
 
 \section{Redes Residuais, Caminhos Aumentantes e Dualidade}
@@ -389,13 +409,11 @@ A Figura~\ref{fig:rede_residual} ilustra uma rede com fluxo parcial e seu corres
   \node[flow node] (b2) at (2,0) {$b$};
   \node[sink node] (t2) at (4,1.2) {$t$};
 
-  % Arcos diretos (capacidade ociosa, azul sólido)
   \draw[flow edge,blue] (s2) -- node[edge lbl below, text=blue!80!black] {$1$} (a2);
   \draw[flow edge,blue] (s2) -- node[edge lbl above, text=blue!80!black] {$1$} (b2);
   \draw[flow edge,blue] (a2) -- node[edge lbl below, text=blue!80!black] {$2$} (t2);
   \draw[flow edge,blue] (b2) -- node[edge lbl above, text=blue!80!black] {$1$} (t2);
 
-  % Arcos reversos (fluxo cancelável, vermelho tracejado com curvatura acentuada)
   \draw[rev edge,bend right=30] (a2) to node[edge lbl above, text=red!80!black] {$2$} (s2);
   \draw[rev edge,bend left=30] (b2) to node[edge lbl below, text=red!80!black] {$1$} (s2);
   \draw[rev edge] (b2) -- node[edge lbl, left, text=red!80!black] {$1$} (a2);
@@ -436,8 +454,6 @@ Além disso, um fluxo viável $f$ é máximo se, e somente se, o digrafo residua
 \intuicao{Física e Topológica de Gargalo} A essência física deste teorema fundamenta-se no princípio do gargalo hidráulico: se imaginarmos uma rede de tubulações transportando fluido de $s$ para $t$, qualquer partição do sistema que separe a nascente da foz impõe um teto estrito sobre o volume total transportável, pois toda gota de fluido deve obrigatoriamente atravessar a fronteira divisória. A capacidade dessa barreira é a soma dos limites de vazão dos canais que cruzam no sentido da corrente. A genialidade da dualidade reside no fato de que o fluxo não é apenas limitado por esse obstáculo geométrico: o fluxo máximo alcançável é calibrado com exatidão cirúrgica pelo menor gargalo que a topologia da rede é capaz de formar. Quando o fluxo atinge seu ápice, os canais que formam essa barreira mais estreita ficam totalmente saturados, tornando impossível qualquer avanço adicional e certificando a otimalidade global da solução.
 
 
-\section{Demonstração do Teorema do Fluxo Máximo e Corte Mínimo}
-
 \begin{demonstracao}
 A demonstração deste teorema é construtiva e apoia-se diretamente na topologia do digrafo residual (veja~\cite{ford1956maximal, cook1998combinatorial}). Seja $f$ um fluxo em $D$. O valor do fluxo $|f|$ é sempre menor ou igual à capacidade de qualquer corte $s-t$ na rede, uma vez que o tráfego de recursos é fisicamente limitado pelas conexões que particionam a fonte do sumidouro. Portanto, se encontrarmos um fluxo $|f|$ cujo valor seja exata e algebricamente igual à capacidade de algum corte específico, teremos provado simultaneamente que $f$ é máximo e que o corte em questão é o mínimo.
 
@@ -448,29 +464,23 @@ Como não há caminho aumentante, o sumidouro $t$ é inalcançável a partir de 
 \begin{figure}[!ht]
 \centering
 \begin{tikzpicture}[thick]
-    % Caixa do conjunto S (margens perfeitamente harmônicas: 0.8cm horizontal, 1.0cm vertical)
     \draw[cut S] (-0.8, -1.8) rectangle (2.8, 1.8);
     \node[cut label S] at (-0.6, 1.65) {$\mathbf{S}$};
     
-    % Caixa do conjunto T (mesmas dimensões exatas: 3.6cm x 3.6cm, gap central de 2.6cm)
     \draw[cut T] (5.4, -1.8) rectangle (9.0, 1.8);
     \node[cut label T] at (8.8, 1.65) {$\mathbf{T}$};
 
-    % Vértices de S
     \node[source node] (s) at (0.0, 0.0) {$s$};
     \node[flow node, fill=green!10] (a) at (2.0, 0.8) {$a$};
     \node[flow node, fill=green!10] (b) at (2.0, -0.8) {$b$};
     
-    % Vértices de T
     \node[flow node, fill=red!10] (c) at (6.2, 0.8) {$c$};
     \node[flow node, fill=red!10] (d) at (6.2, -0.8) {$d$};
     \node[sink node] (t) at (8.2, 0.0) {$t$};
 
-    % Arcos cruzando o corte (saturados)
     \draw[sat edge] (a) -- node[edge lbl above, text=red!80!black] {$f=c$} (c);
     \draw[sat edge] (b) -- node[edge lbl below, text=red!80!black] {$f=c$} (d);
     
-    % Arcos internos a S e T
     \draw[flow edge] (s) -- (a);
     \draw[flow edge] (s) -- (b);
     \draw[flow edge] (c) -- (t);
@@ -555,7 +565,6 @@ A interpretação geométrica desta bijeção dual é ilustrada na Figura~\ref{f
 \begin{figure}[!ht]
 \centering
 \begin{tikzpicture}[thick]
-  % Caixas de corte harmônicas idênticas à Figura 4 (3.6cm x 3.6cm, gap central de 2.6cm)
   \draw[cut S] (-0.8, -1.8) rectangle (2.8, 1.8);
   \node[cut label S] at (-0.6, 1.65) {$\mathbf{S} : p^*(u) = 1$};
 
@@ -570,17 +579,14 @@ A interpretação geométrica desta bijeção dual é ilustrada na Figura~\ref{f
   \node[flow node, fill=red!10] (d) at (6.2, -0.8) {$d$};
   \node[sink node] (t) at (8.2, 0.0) {$t$};
 
-  % Arestas internas a S (tensão d = 0)
   \draw[flow edge] (s) -- node[edge lbl above] {$d=0$} (a);
   \draw[flow edge] (s) -- node[edge lbl below] {$d=0$} (b);
   \draw[flow edge] (a) -- node[edge lbl left] {$d=0$} (b);
 
-  % Arestas internas a T (tensão d = 0)
   \draw[flow edge] (c) -- node[edge lbl above] {$d=0$} (t);
   \draw[flow edge] (d) -- node[edge lbl below] {$d=0$} (t);
   \draw[flow edge] (c) -- node[edge lbl right] {$d=0$} (d);
 
-  % Arestas cruzando o corte (tensão d = p(u) - p(v) = 1 - 0 = 1)
   \draw[sat edge] (a) -- node[edge lbl above, text=red!80!black] {$\mathbf{d=1},\; f=c$} (c);
   \draw[sat edge] (b) -- node[edge lbl below, text=red!80!black] {$\mathbf{d=1},\; f=c$} (d);
 
@@ -632,9 +638,6 @@ Por fim, como as capacidades originais são finitas, a capacidade de qualquer co
 \textbf{Observação crítica:} Além da mera existência, todos os algoritmos implementados neste projeto --- Ford-Fulkerson, Edmonds-Karp, Dinic e Push-Relabel --- constroem \emph{exatamente} este fluxo inteiro ao longo de toda a execução, pois partem de um fluxo nulo inteiro e efetuam incrementos inteiros em cada passo. Não se trata de uma mera garantia de existência: é uma propriedade construtiva. Esta é a razão pela qual todas as reduções apresentadas nas seções seguintes (emparelhamento bipartido, caminhos disjuntos, etc.) tratam o fluxo obtido diretamente como uma solução inteira, sem necessidade de arredondamento ou pós-processamento. Vale ressaltar que, sob a perspectiva da Programação Linear e da Otimização Poliedral, a garantia algébrica fundamental de que os poliedros de fluxo possuem exclusivamente vértices inteiros decorre da \textbf{Total Unimodularidade} da matriz de incidência da rede, propriedade formalmente demonstrada na Subseção~\ref{sec:tum_secao}.
 
 
-% -------------------------------------------------------------------------
-% CAPÍTULO 3
-% -------------------------------------------------------------------------
 \chapter{Algoritmos de Caminhos Aumentantes (Abordagem Primal)}\label{sec:caminhos_aumentantes}
 
 \section{Arquitetura Orientada a Objetos e Estruturas de Dados}
@@ -832,9 +835,6 @@ A materialização destas otimizações de estado na arquitetura C++ encontra-se
 \end{figure}
 
 
-% -------------------------------------------------------------------------
-% CAPÍTULO 4
-% -------------------------------------------------------------------------
 \chapter{Algoritmos de Pré-fluxo e Alturas (Abordagem Dual)}\label{sec:prefluxo_alturas}
 \label{sec:prefluxo}
 
@@ -923,7 +923,6 @@ A eficiência global do algoritmo é intrinsecamente dependente da política de 
 \node[font=\footnotesize,above=2pt of v2] {$h{=}2,\,e{=}5$};
 \draw[nontree edge] (u2) -- node[above,font=\footnotesize,gray] {$c_f=0$} (v2);
 
-% === RIGHT: Relabel ===
 \tikzsubcaption{(8.5,4.0)}{Antes de \texttt{relabel}: vértice $u$ preso}
 \node[gap node,fill=orange!30] (r1) at (7.0,3.0) {$u$};
 \node[font=\footnotesize,above=2pt of r1] {$h{=}2,\,e{=}3$};
@@ -1073,14 +1072,8 @@ Essa dualidade algorítmica oferece um arcabouço robusto para a engenharia de s
 
 \vspace{0.8cm}
 
-% =========================================================================
-% PARTE II
-% =========================================================================
 \part{Reduções Combinatórias, Teoria Estrutural e Aplicações}
 
-% -------------------------------------------------------------------------
-% CAPÍTULO 5
-% -------------------------------------------------------------------------
 \chapter{Otimização Combinatória em Grafos Bipartidos}\label{sec:bipartidos}
 O Problema do Fluxo Máximo é frequentemente utilizado como base para resolver outros problemas de otimização combinatória via redução polinomial (veja~\cite{cook1998combinatorial}). O processo consiste em mapear a instância de um problema original para uma rede de fluxo equivalente, computar o fluxo máximo e traduzir o estado da rede residual de volta para a solução do problema original.
 
@@ -1437,9 +1430,6 @@ Essa correspondência estabelece uma equivalência algorítmica e assintótica d
 \textbf{Extensão Ponderada e o Algoritmo Húngaro:} Quando custos ou pesos são associados aos emparelhamentos (problema de atribuição ponderada de custo mínimo), a extensão natural desta equivalência conduz ao célebre \textbf{Algoritmo Húngaro de Kuhn e Munkres} (veja~\cite{kuhn1955hungarian}). Sob a perspectiva de redes, este método corresponde formalmente ao algoritmo \textit{Successive Shortest Path} operando com potenciais nodais --- cuja formulação completa e fundamentação teórica de custos reduzidos são detalhadas adiante na Subseção~\ref{sec:ssp} no contexto de Fluxo de Custo Mínimo.
 
 
-% -------------------------------------------------------------------------
-% CAPÍTULO 6
-% -------------------------------------------------------------------------
 \chapter{Conectividade, Rotas Disjuntas e Decomposição}\label{sec:conectividade_roteamento}
 
 A análise de conectividade de um digrafo é um pilar fundamental no design de redes de telecomunicações, logística e tolerância a falhas. A premissa central é determinar a resiliência estrutural de um sistema: quantas rotas independentes existem para transmitir informações ou recursos de um ponto de origem $s$ a um destino $t$ de forma que, se um componente falhar, as demais rotas permaneçam intactas? O cálculo do fluxo máximo fornece o ferramental matemático exato para responder a esta indagação sob duas perspectivas restritivas.
@@ -1703,9 +1693,6 @@ Na modelagem e implementação de resolvedores para problemas práticos (como na
 Esta é exatamente a técnica empregada na solução do problema \textit{Distinct Routes}, onde a função \lstinline{print_disjoint_paths} implementa a decomposição sobre a rede residual convergida.
 
 
-% -------------------------------------------------------------------------
-% CAPÍTULO 7
-% -------------------------------------------------------------------------
 \chapter{Aplicação Prática: Segmentação Interativa de Imagens via Cortes em Grafos}\label{sec:segmentacao}
 
 Uma das aplicações mais impactantes dos algoritmos de fluxo em redes reside na área de Visão Computacional, especificamente no problema de Segmentação de Imagens (veja~\cite{ford1956maximal, cook1998combinatorial}). O objetivo é particionar uma imagem digital em duas regiões semanticamente distintas: o \textit{foreground} (objeto de interesse) e o \textit{background} (fundo), minimizando uma função de energia que penaliza simultaneamente a inconsistência com as marcações do usuário e a descontinuidade visual entre pixels adjacentes.
@@ -1866,14 +1853,8 @@ A ferramenta computacional desenvolvida neste projeto emprega o motor de fluxo \
 
 \vspace{0.8cm}
 
-% =========================================================================
-% PARTE III
-% =========================================================================
 \part{Fluxo de Custo Mínimo e o Algoritmo Network Simplex}
 
-% -------------------------------------------------------------------------
-% CAPÍTULO 8
-% -------------------------------------------------------------------------
 \chapter{Teoria do Fluxo de Custo Mínimo e Dualidade}\label{sec:mcf_teoria}
 \label{sec:mcf}
 
@@ -2224,9 +2205,6 @@ Portanto, em \lstinline{CostNetwork}, conexões bidirecionais ponderadas devem s
 Desta forma, cada sentido de escoamento preserva independentemente seu respectivo canal de avanço e sua trilha de cancelamento simétrico com custo oposto.
 
 
-% -------------------------------------------------------------------------
-% CAPÍTULO 9
-% -------------------------------------------------------------------------
 \chapter{Algoritmos Primal-Dual de Custo Mínimo}\label{sec:algoritmos_mcf}
 
 \section{O Algoritmo Cycle Canceling}\label{sec:cycle_canceling}
@@ -2268,7 +2246,6 @@ Cada cancelamento preserva estritamente a lei de conservação de fluxo em todos
   \draw[flow edge, opacity=0.3] (s) -- (v);
   \draw[flow edge, opacity=0.3] (v) -- (t);
 
-  % Ciclo negativo: s -> v -> u e reverso u -> s
   \draw[sat edge, line width=1.6pt] (s) -- node[edge lbl below] {$w\!=\!1$} (v);
   \draw[sat edge, line width=1.6pt] (v) -- node[edge lbl right] {$w\!=\!1$} (u);
   \draw[rev edge, line width=1.6pt, bend right=32] (u) to node[edge lbl above, text=red!80!black] {$w_f\!=\!{-4}$} (s);
@@ -2344,22 +2321,18 @@ A dinâmica de uma iteração com potenciais nodais $\pi$ e a preservação da n
     \node[flow node] (v) at (3.5, 0.0) {$v$};
     \node[sink node] (t) at (7.0, 1.5) {$t$};
 
-    % Potenciais nodais pi
     \node[font=\footnotesize, blue!80!black, left=3pt] at (s.west) {$\pi(s)\!=\!0$};
     \node[font=\footnotesize, blue!80!black, above=3pt] at (u.north) {$\pi(u)\!=\!2$};
     \node[font=\footnotesize, blue!80!black, below=3pt] at (v.south) {$\pi(v)\!=\!1$};
     \node[font=\footnotesize, blue!80!black, right=3pt] at (t.east) {$\pi(t)\!=\!5$};
 
-    % Caminho aumentante de menor custo destacado (azul escuro espesso, w_bar = 0)
     \draw[tree edge] (s) -- node[edge lbl below, text=blue!80!black, pos=0.55] {$c_f\!=\!3, \;\bar{w}\!=\!0$} (u);
     \draw[tree edge] (u) -- node[edge lbl above, text=blue!80!black, pos=0.5] {$c_f\!=\!2, \;\bar{w}\!=\!0$} (t);
 
-    % Demais arcos residuais com w_bar >= 0
     \draw[flow edge] (s) -- node[edge lbl below, pos=0.5] {$c_f\!=\!4, \;\bar{w}\!=\!1$} (v);
     \draw[flow edge] (v) -- node[edge lbl below, pos=0.5] {$c_f\!=\!1, \;\bar{w}\!=\!2$} (t);
     \draw[flow edge] (u) -- node[edge lbl, right=3pt, pos=0.5] {$c_f\!=\!2, \;\bar{w}\!=\!1$} (v);
 
-    % Arco reverso criado apos o aumento de fluxo (curvado acima do trajeto direto)
     \draw[rev edge, bend right=38] (u) to node[edge lbl above, text=red!80!black, pos=0.5] {reverso: $\bar{w}'\!=\!0$} (s);
 \end{tikzpicture}
 \caption{Iteração do algoritmo \textit{Successive Shortest Path} sob potenciais nodais $\pi$. O caminho mais curto $P = s \to u \to t$ (arcos azuis espessos) possui custo reduzido $\bar{w}_\pi = 0$ ao longo de todo o trajeto, permitindo a execução de Dijkstra. O arco reverso gerado após o envio de $\delta=2$ unidades de fluxo (vermelho tracejado) preserva $\bar{w}'(u,s) = 0 \ge 0$, mantendo a invariante de não negatividade dos custos reduzidos.}
@@ -2375,9 +2348,6 @@ Ambas as variantes foram implementadas no \textit{Core Framework}: a classe \lst
 \textbf{Equivalência com o Algoritmo Húngaro (Kuhn-Munkres).} Uma consequência teórica e histórica fundamental da formulação com potenciais nodais reside no \textbf{Problema da Atribuição Ponderada} (\textit{Weighted Bipartite Matching} ou \textit{Assignment Problem}), que busca um emparelhamento de custo mínimo em um grafo bipartido com custos nas arestas. Historicamente resolvido pelo Algoritmo Húngaro de Kuhn e Munkres (veja~\cite{kuhn1955hungarian, schrijver2003combinatorial}), este problema modela-se diretamente como um fluxo de custo mínimo com capacidades unitárias ($c=1$). Sob a ótica de redes de fluxo, as operações de ajuste de potenciais em linhas e colunas na matriz de custos do Algoritmo Húngaro correspondem exatamente à manutenção dos potenciais duais $\pi$ com custos reduzidos não negativos $\bar{w}_\pi(u,v) \ge 0$, enquanto as buscas por caminhos aumentantes de menor custo acumulado em tempo $\mathcal{O}(|V|^3)$ equivalem formalmente à execução do algoritmo \textit{Successive Shortest Path} operando com potenciais de Edmonds-Karp.
 
 
-% -------------------------------------------------------------------------
-% CAPÍTULO 10
-% -------------------------------------------------------------------------
 \chapter{O Algoritmo Network Simplex}\label{sec:network_simplex}
 
 \section{Árvore Geradora Básica e Partição de Arcos}
@@ -2562,9 +2532,6 @@ Embora o \textit{Network Simplex} não possua garantia de complexidade estritame
 A implementação C++ detalhada da classe \lstinline{NetworkSimplex} encontra-se documentada no Código~\ref{lst:network_simplex} (Apêndice~\ref{ap:network_simplex}).
 
 
-% -------------------------------------------------------------------------
-% CAPÍTULO 11
-% -------------------------------------------------------------------------
 \chapter{Transformações Avançadas e Síntese de Custo Mínimo}\label{sec:mcf_comparacao}
 
 \section{A Transformação Min-Cost Max-Flow}
@@ -2595,20 +2562,17 @@ A construção geométrica desta transformação em rede de circulação com arc
     \node[flow node] (v) at (3.5, 0.0) {$v$};
     \node[sink node] (t) at (7.0, 1.5) {$t$};
 
-    % Balanços nodais bem posicionados sem colisão
     \node[font=\footnotesize, left=3pt] at (s.west) {$b(s)\!=\!0$};
     \node[font=\footnotesize, above=3pt] at (u.north) {$b(u)\!=\!0$};
     \node[font=\footnotesize, below=3pt] at (v.south) {$b(v)\!=\!0$};
     \node[font=\footnotesize, right=3pt] at (t.east) {$b(t)\!=\!0$};
 
-    % Arcos originais com rótulos padronizados
     \draw[flow edge] (s) -- node[edge lbl above] {$c\!=\!10, \; w\!=\!0$} (u);
     \draw[flow edge] (s) -- node[edge lbl below] {$c\!=\!8, \; w\!=\!0$} (v);
     \draw[flow edge] (u) -- node[edge lbl, right=3pt] {$c\!=\!5, \; w\!=\!0$} (v);
     \draw[flow edge] (u) -- node[edge lbl above] {$c\!=\!7, \; w\!=\!0$} (t);
     \draw[flow edge] (v) -- node[edge lbl below] {$c\!=\!10, \; w\!=\!0$} (t);
 
-    % Arco de retorno artificial
     \draw[tree edge, red, line width=1.8pt, dashed, bend left=60, looseness=1.4] (t) to node[below=5pt, font=\footnotesize, text=red!80!black, fill=white, inner sep=2pt] {Arco de Retorno Artificial: $c(t,s)\!=\!\infty, \; w(t,s)\!=\!-1$} (s);
 \end{tikzpicture}
 \caption{Redução do Problema do Fluxo Máximo a Fluxo de Custo Mínimo através de Circulação. O arco artificial de retorno $(t,s)$ (vermelho tracejado) com custo estritamente negativo $w(t,s) = -1$ e capacidade infinita induz o motor de custo mínimo a saturar a circulação pelo ciclo $s \leadsto t \to s$, maximizando $f(t,s) = |f|$ com demandas nodais nulas ($b(v)=0$).}
@@ -2665,14 +2629,8 @@ Deste modo, a transição conceitual operada ao longo do projeto demonstra que o
 
 \vspace{0.8cm}
 
-% =========================================================================
-% PARTE IV
-% =========================================================================
 \part{Validação Experimental e Engenharia de Desempenho}
 
-% -------------------------------------------------------------------------
-% CAPÍTULO 12
-% -------------------------------------------------------------------------
 \chapter{Protocolo Experimental e Benchmarks Computacionais}\label{sec:benchmarks}
 
 Com o intuito de confrontar as garantias assintóticas dos modelos teóricos com o comportamento prático em tempo de execução e consumo de memória, estruturou-se uma infraestrutura sistemática de avaliação experimental, documentada no módulo computacional \code{Experimentos/}. Esta subseção detalha o protocolo metodológico, os conjuntos de teste padronizados da literatura e a matriz de comparação entre os algoritmos desenvolvidos.
@@ -2770,9 +2728,6 @@ A Tabela~\ref{tab:benchmarks} sintetiza o quadro comparativo estruturado para a 
 A arquitetura de scripts implementada no diretório \code{Experimentos/} orquestra a execução automatizada deste protocolo, permitindo gerar a partir de comandos como \lstinline{make run} os relatórios consolidados em tabelas LaTeX e gráficos de escalabilidade.
 
 
-% -------------------------------------------------------------------------
-% EPÍLOGO
-% -------------------------------------------------------------------------
 \chapter*{Epílogo: Síntese e Horizontes de Pesquisa}\label{sec:conclusoes}
 \addcontentsline{toc}{chapter}{Epílogo: Síntese e Horizontes de Pesquisa}
 
@@ -2795,9 +2750,6 @@ Os estudos, formulações teóricas e implementações consolidados neste volume
 Como perspectivas de evolução contínua desta pesquisa, destacam-se a avaliação empírica em larga escala sobre grafos massivos esparsos da web e redes de transporte intercontinentais, a investigação de variantes paralelizadas em OpenMP/CUDA dos algoritmos de pré-fluxo e a exploração de regras dinâmicas de pivoteamento no \textit{Network Simplex} (como \textit{Candidate List Pricing} com filtragem adaptativa).
 
 
-% =========================================================================
-% BACKMATTER: BIBLIOGRAFIA E APÊNDICES
-% =========================================================================
 \backmatter
 
 \bibliographystyle{plain}
