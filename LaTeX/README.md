@@ -10,6 +10,7 @@ Aqui você encontra os arquivos `.tex` que geram os PDFs oficiais do repositóri
 
 | Arquivo                                   | Descrição do Documento                                                                                                                                                                                                                        |
 | :---------------------------------------- | :-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 📗 **[`book.tex`](./book.tex)**           | **Livro / Monografia Independente** sobre Fluxos em Redes. Possui 100% do conteúdo teórico e de código, estruturado em Partes e Capítulos para distribuição aberta e leitura profunda, livre das amarras e formulários burocráticos de IC da universidade. |
 | 📘 **[`projeto.tex`](./projeto.tex)**     | Proposta e plano de trabalho inicial do projeto de pesquisa, submetido para a avaliação do edital.                                                                                                                                            |
 | 📙 **[`relatorio.tex`](./relatorio.tex)** | Relatório oficial de acompanhamento da pesquisa. Contém a capa formal da universidade (UFABC) com os dados do edital e campos de assinaturas.                                                                                                 |
 | 📕 **[`ic.tex`](./ic.tex)**               | Documento completo da Iniciação Científica. **Possui exatamente o mesmo conteúdo textual do `relatorio.tex`**, diferindo apenas por **não conter a capa formal do relatório** (folha de assinaturas), utilizando uma capa limpa para leitura. |
@@ -37,7 +38,8 @@ O diretório conta com um [`Makefile`](./Makefile) compatível com POSIX que aut
 
 | Comando | Ação |
 | :--- | :--- |
-| `make` / `make all` | Compila todos os documentos (`ic.pdf`, `relatorio.pdf`, `projeto.pdf`). |
+| `make` / `make all` | Compila todos os documentos (`book.pdf`, `ic.pdf`, `relatorio.pdf`, `projeto.pdf`). |
+| `make book` | Compila o livro/monografia independente (`book.pdf`). |
 | `make ic` | Compila apenas o documento principal da IC (`ic.pdf`). |
 | `make relatorio` | Compila apenas o relatório formal com capa institucional (`relatorio.pdf`). |
 | `make projeto` | Compila apenas a proposta inicial (`projeto.pdf`). |

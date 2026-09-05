@@ -4,7 +4,7 @@
 
 <div align="center">
 
-[![Baixar PDF do Projeto][baixar_pdf_projeto_icon]][baixar_pdf_projeto] &nbsp;&nbsp;&nbsp; [![Baixar PDF do Relatório][baixar_pdf_relatorio_icon]][baixar_pdf_relatorio] &nbsp;&nbsp;&nbsp; [![Baixar PDF da IC][baixar_pdf_ic_icon]][baixar_pdf_ic]
+[![Baixar Livro (Monografia)][baixar_pdf_book_icon]][baixar_pdf_book] &nbsp;&nbsp;&nbsp; [![Baixar PDF do Projeto][baixar_pdf_projeto_icon]][baixar_pdf_projeto] &nbsp;&nbsp;&nbsp; [![Baixar PDF do Relatório][baixar_pdf_relatorio_icon]][baixar_pdf_relatorio] &nbsp;&nbsp;&nbsp; [![Baixar PDF da IC][baixar_pdf_ic_icon]][baixar_pdf_ic]
 
 </div>
 
@@ -12,6 +12,7 @@ A documentação oficial da pesquisa é gerada a partir dos códigos-fonte em La
 
 | PDF Gerado | Arquivo Fonte | Descrição e Diferenças |
 | :--- | :--- | :--- |
+| [📗&nbsp;**`book.pdf`**][baixar_pdf_book] | [`book.tex`](./LaTeX/book.tex) | **Livro e Monografia Independente.** Documento completo e denso estruturado editorialmente em Partes e Capítulos para estudo profundo e distribuição aberta, livre da formatação burocrática de Iniciação Científica. |
 | [📘&nbsp;**`projeto.pdf`**][baixar_pdf_projeto] | [`projeto.tex`](./LaTeX/projeto.tex) | Proposta e plano de trabalho inicial do projeto de pesquisa, submetido para a avaliação do edital. |
 | [📙&nbsp;**`relatorio.pdf`**][baixar_pdf_relatorio] | [`relatorio.tex`](./LaTeX/relatorio.tex) | Relatório formal de acompanhamento da pesquisa. Contém a capa oficial institucional da UFABC com identificação do edital e campos de assinaturas. |
 | [📕&nbsp;**`ic.pdf`**][baixar_pdf_ic] | [`ic.tex`](./LaTeX/ic.tex) | Documento principal compilando todo o conteúdo técnico da pesquisa. **Possui exatamente o mesmo conteúdo textual do `relatorio.tex`**, diferindo apenas por **não ter a capa formal do relatório** (folha de assinaturas), oferecendo uma formatação limpa para leitura. |
@@ -148,7 +149,8 @@ Permite orquestrar todo o projeto diretamente a partir da raiz:
 | :--- | :--- |
 | `make` / `make all` | Compila a documentação LaTeX, aplicações práticas e valida a integridade do C++. |
 | `make setup` | Configura o ambiente local e ativa os hooks do Git em [`.githooks/`](./.githooks/) para prevenção de commits de binários/artefatos. |
-| `make latex` | Compila todos os documentos LaTeX (`ic.pdf`, `relatorio.pdf`, `projeto.pdf`). |
+| `make latex` | Compila todos os documentos LaTeX (`book.pdf`, `ic.pdf`, `relatorio.pdf`, `projeto.pdf`). |
+| `make book` | Compila o livro/monografia independente (`book.pdf`). |
 | `make apps` | Compila todas as ferramentas e aplicações práticas em [`Aplicações/`](./Aplicações/). |
 | `make impl` | Valida a sintaxe C++23 de todos os motores de fluxo em [`Implementações/`](./Implementações/). |
 | `make test` | Executa a suíte de testes automatizada de todos os problemas e aplicações. |
@@ -156,7 +158,7 @@ Permite orquestrar todo o projeto diretamente a partir da raiz:
 
 ### 2. Nível 2: Orquestradores de Módulos
 Cada pasta principal possui seu próprio `Makefile` (.POSIX) encapsulado:
-* **[`LaTeX/Makefile`](./LaTeX/Makefile):** Ciclo completo multi-pass com `pdflatex` e `bibtex` (`make ic`, `make relatorio`, `make projeto`, `make clean`, `make distclean`).
+* **[`LaTeX/Makefile`](./LaTeX/Makefile):** Ciclo completo multi-pass com `pdflatex` e `bibtex` (`make book`, `make ic`, `make relatorio`, `make projeto`, `make clean`, `make distclean`).
 * **[`Aplicações/Makefile`](./Aplicações/Makefile):** Compilação e execução de testes de todas as aplicações.
 * **[`Implementações/Makefile`](./Implementações/Makefile):** `make check` (sintaxe dos headers) e `make test` (testes de soluções).
 * **[`Experimentos/Makefile`](./Experimentos/Makefile):** Automação do pipeline de benchmarks.
@@ -171,7 +173,7 @@ Cada problema em [`Implementações/Problemas/`](./Implementações/Problemas/) 
 > [!NOTE]
 > Este repositório conta com integração contínua (CI) através do **GitHub Actions** (`.github/workflows/`). A cada _push_, os PDFs são compilados automaticamente na nuvem e disponibilizados nas [Releases do GitHub](https://github.com/GabrielFrigo4/IC_Networks_Flow/releases).
 
-Caso queira gerar qualquer um dos PDFs (`ic.pdf`, `relatorio.pdf` ou `projeto.pdf`) localmente:
+Caso queira gerar qualquer um dos PDFs (`book.pdf`, `ic.pdf`, `relatorio.pdf` ou `projeto.pdf`) localmente:
 
 1. Certifique-se de ter uma distribuição LaTeX instalada (como TeX Live, MiKTeX ou MacTeX) com suporte aos pacotes requeridos (`amsmath`, `tikz`, `geometry`, etc.).
 ```bash
@@ -182,6 +184,7 @@ Ou navegando até o diretório [`LaTeX/`](./LaTeX/) para compilar documentos esp
 
 ```bash
 cd LaTeX
+make book
 make ic
 make relatorio
 make projeto
@@ -204,6 +207,8 @@ make clean
 [successive_shortest]: ./Implementações/CostNetwork/SuccessiveShortest.hpp
 [successive_shortest_dijkstra]: ./Implementações/CostNetwork/SuccessiveShortestDijkstra.hpp
 [network_simplex]: ./Implementações/CostNetwork/NetworkSimplex.hpp
+[baixar_pdf_book]: https://github.com/GabrielFrigo4/IC_Networks_Flow/releases/latest/download/book.pdf
+[baixar_pdf_book_icon]: https://img.shields.io/badge/Livro-Baixar-success?style=for-the-badge&logo=gitbook&logoColor=white
 [baixar_pdf_ic]: https://github.com/GabrielFrigo4/IC_Networks_Flow/releases/latest/download/ic.pdf
 [baixar_pdf_ic_icon]: https://img.shields.io/badge/IC-Baixar-red?style=for-the-badge&logo=adobeacrobatreader
 [baixar_pdf_projeto]: https://github.com/GabrielFrigo4/IC_Networks_Flow/releases/latest/download/projeto.pdf

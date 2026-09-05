@@ -6,9 +6,9 @@ LATEXMK  = latexmk
 PDFLATEX = pdflatex
 BIBTEX   = bibtex
 
-TARGETS  = ic.pdf relatorio.pdf projeto.pdf
+TARGETS  = ic.pdf relatorio.pdf projeto.pdf book.pdf
 
-.PHONY: all ic relatorio projeto clean distclean
+.PHONY: all ic relatorio projeto book clean distclean
 
 all: $(TARGETS)
 	@printf "\n==> Todos os documentos foram compilados com sucesso!\n"
@@ -16,6 +16,19 @@ all: $(TARGETS)
 ic: ic.pdf
 relatorio: relatorio.pdf
 projeto: projeto.pdf
+book: book.pdf
+
+book.pdf: book.tex cit.bib
+	@printf "%s" "-> Compilando book.pdf... "
+	@if command -v $(LATEXMK) >/dev/null 2>&1; then \
+		$(LATEXMK) -pdf -silent -interaction=nonstopmode book.tex >/dev/null 2>&1; \
+	else \
+		$(PDFLATEX) -interaction=batchmode book.tex >/dev/null 2>&1 || true; \
+		$(BIBTEX) book.aux >/dev/null 2>&1 || true; \
+		$(PDFLATEX) -interaction=batchmode book.tex >/dev/null 2>&1 || true; \
+		$(PDFLATEX) -interaction=batchmode book.tex >/dev/null 2>&1 || true; \
+	fi
+	@printf "%s\n" "[OK]"
 
 ic.pdf: ic.tex cit.bib
 	@printf "%s" "-> Compilando ic.pdf... "

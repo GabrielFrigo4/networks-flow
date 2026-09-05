@@ -2,7 +2,7 @@
 .SILENT:
 MAKEFLAGS += --no-print-directory
 
-.PHONY: all latex apps impl exp test setup clean
+.PHONY: all latex book apps impl exp test setup clean
 
 all: latex apps impl
 
@@ -12,6 +12,9 @@ setup:
 
 latex:
 	$(MAKE) -C LaTeX all
+
+book:
+	$(MAKE) -C LaTeX book
 
 apps:
 	$(MAKE) -C Aplicações all
