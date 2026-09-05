@@ -130,12 +130,13 @@
 % Macros conceituais
 \newcommand{\intuicao}[1]{\paragraph{Intuição #1.}}
 \newcommand{\implicacoes}[1]{\paragraph{Implicações Estratégicas #1.}}
+\newcommand{\sa}{\text{s.a.}\quad}
 
 % Estilos TikZ
 \tikzset{
     >=Stealth,
-    % Redes de fluxo e otimização
-    flow node/.style={circle, draw, minimum size=8.5mm, inner sep=1pt, font=\small},
+    % Redes de fluxo e otimização (com fundo branco opaco em todos os flow node)
+    flow node/.style={circle, draw, fill=white, minimum size=8.5mm, inner sep=1pt, font=\small},
     source node/.style={flow node, fill=green!20},
     sink node/.style={flow node, fill=red!20},
     trans node/.style={flow node, fill=yellow!15},
@@ -145,6 +146,11 @@
     rev edge/.style={->, red, dashed, line width=1.1pt},
     cut S/.style={dashed, blue, rounded corners, thick},
     cut T/.style={dashed, orange, rounded corners, thick},
+    % Rótulos de partição padronizados
+    cut label S/.style={font=\footnotesize\bfseries, blue!80!black, anchor=north west},
+    cut label T/.style={font=\footnotesize\bfseries, orange!80!black, anchor=north east},
+    bip label L/.style={font=\large\bfseries, blue!80!black},
+    bip label R/.style={font=\large\bfseries, orange!80!black},
     % Network Simplex e bases
     tree edge/.style={->, line width=1.8pt, blue!80!black},
     nontree edge/.style={->, gray, dashed},
@@ -168,10 +174,18 @@
     concept box/.style={draw, rounded corners=4pt, minimum height=1.4cm, align=center, font=\small},
     % Elementos auxiliares e legendas
     legend node/.style={circle, draw, minimum size=4mm, inner sep=0pt},
+    % Rótulos padronizados para arestas (com proteção de sobreposição)
     edge lbl/.style={font=\footnotesize, fill=white, inner sep=1.2pt, pos=0.5},
     edge lbl sloped/.style={edge lbl, sloped},
     edge lbl above/.style={edge lbl sloped, above=2.8pt},
     edge lbl below/.style={edge lbl sloped, below=2.8pt},
+    edge lbl right/.style={edge lbl, right=3pt},
+    edge lbl left/.style={edge lbl, left=3pt},
+    edge lbl above norm/.style={edge lbl, above=3pt},
+    edge lbl below norm/.style={edge lbl, below=3pt},
+    % Rótulos integrados a partições com fundo colorido
+    edge lbl green/.style={font=\footnotesize, fill=green!10, inner sep=1.2pt, pos=0.5},
+    edge lbl red/.style={font=\footnotesize, fill=red!10, inner sep=1.2pt, pos=0.5},
     stage box/.style={draw=blue!80!black, fill=blue!5, rounded corners=4pt, line width=1pt, align=center, font=\footnotesize, minimum height=1.4cm, text width=2.4cm},
     main/.style={flow node}
 }
@@ -391,30 +405,36 @@ Como não há caminho aumentante, o sumidouro $t$ é inalcançável a partir de 
 
 \begin{figure}[!ht]
 \centering
-\begin{tikzpicture}[node distance=2cm, thick]
+\begin{tikzpicture}[thick]
+    % Caixa do conjunto S (margens perfeitamente harmônicas: 0.8cm horizontal, 1.0cm vertical)
+    \draw[cut S] (-0.8, -1.8) rectangle (2.8, 1.8);
+    \node[cut label S] at (-0.6, 1.65) {$\mathbf{S}$};
     
-    \node[source node] (s) {$s$};
-    \node[flow node, fill=green!10, right=2cm of s] (a) {$a$};
-    \node[flow node, fill=green!10, above=1cm of a] (b) {$b$};
-    
-    \node[flow node, fill=red!10, right=2cm of a] (c) {$c$};
-    \node[main, fill=red!20, right=2cm of c] (t) {$t$};
-    \node[flow node, fill=red!10, above=1cm of c] (d) {$d$};
+    % Caixa do conjunto T (mesmas dimensões exatas: 3.6cm x 3.6cm, gap central de 2.6cm)
+    \draw[cut T] (5.4, -1.8) rectangle (9.0, 1.8);
+    \node[cut label T] at (8.8, 1.65) {$\mathbf{T}$};
 
+    % Vértices de S
+    \node[source node] (s) at (0.0, 0.0) {$s$};
+    \node[flow node, fill=green!10] (a) at (2.0, 0.8) {$a$};
+    \node[flow node, fill=green!10] (b) at (2.0, -0.8) {$b$};
     
-    \draw[sat edge] (a) -- node[below] {\footnotesize$f=c$} (c);
-    \draw[sat edge] (b) -- node[above] {\footnotesize$f=c$} (d);
+    % Vértices de T
+    \node[flow node, fill=red!10] (c) at (6.2, 0.8) {$c$};
+    \node[flow node, fill=red!10] (d) at (6.2, -0.8) {$d$};
+    \node[sink node] (t) at (8.2, 0.0) {$t$};
+
+    % Arcos cruzando o corte (saturados)
+    \draw[sat edge] (a) -- node[edge lbl above, text=red!80!black] {$f=c$} (c);
+    \draw[sat edge] (b) -- node[edge lbl below, text=red!80!black] {$f=c$} (d);
     
+    % Arcos internos a S e T
     \draw[flow edge] (s) -- (a);
     \draw[flow edge] (s) -- (b);
     \draw[flow edge] (c) -- (t);
     \draw[flow edge] (d) -- (t);
-    \draw[flow edge] (b) -- (a);
-    \draw[flow edge] (d) -- (c);
-
-    
-    \draw[cut S] (-0.6,-1.0) rectangle (3.4,2.6) node[above left] {$S$};
-    \draw[cut T] (4.8,-1.0) rectangle (9.2,2.6) node[above left] {$T$};
+    \draw[flow edge] (a) -- (b);
+    \draw[flow edge] (c) -- (d);
 \end{tikzpicture}
 \caption{Corte mínimo $(S,T)$: os arcos que cruzam de $S$ para $T$ (em vermelho) estão saturados ($f = c$).}
 \label{fig:corte_minimo}
@@ -434,7 +454,7 @@ A equivalência fundamental entre o valor do fluxo máximo e a capacidade do cor
 O Problema do Fluxo Máximo pode ser expresso canonicamente como o seguinte Programa Linear Primal:
 \begin{align}
     \max \quad & |f| = \sum_{\{v \mid (s,v) \in A\}} f(s,v) - \sum_{\{u \mid (u,s) \in A\}} f(u,s) \label{eq:primal_obj} \\
-    \text{sujeito a} \quad & \sum_{\{w \mid (v,w) \in A\}} f(v,w) - \sum_{\{u \mid (u,v) \in A\}} f(u,v) = 0, \quad \forall v \in V \setminus \{s, t\} \label{eq:primal_conservacao} \\
+    \sa & \sum_{\{w \mid (v,w) \in A\}} f(v,w) - \sum_{\{u \mid (u,v) \in A\}} f(u,v) = 0, \quad \forall v \in V \setminus \{s, t\} \label{eq:primal_conservacao} \\
     & 0 \le f(u,v) \le c(u,v), \quad \forall (u,v) \in A \label{eq:primal_capacidade}
 \end{align}
 
@@ -447,7 +467,7 @@ Para derivar o Programa Linear Dual correspondente, associamos multiplicadores d
 Pela teoria clássica da dualidade linear, a maximização do fluxo converte-se na minimização do produto escalar das capacidades pelas tensões dos arcos. O Programa Linear Dual resultante assume a forma:
 \begin{align}
     \min \quad & \sum_{(u,v) \in A} c(u,v) \cdot d(u,v) \label{eq:dual_obj} \\
-    \text{sujeito a} \quad & d(u,v) - p(u) + p(v) \ge 0, \quad \forall (u,v) \in A \label{eq:dual_tensao} \\
+    \sa & d(u,v) - p(u) + p(v) \ge 0, \quad \forall (u,v) \in A \label{eq:dual_tensao} \\
     & d(u,v) \ge 0, \quad \forall (u,v) \in A \\
     & p(s) = 1, \quad p(t) = 0, \quad p(v) \in \mathbb{R}, \quad \forall v \in V
 \end{align}
@@ -493,38 +513,38 @@ A interpretação geométrica desta bijeção dual é ilustrada na Figura~\ref{f
 \begin{figure}[!ht]
 \centering
 \begin{tikzpicture}[thick]
-  % Caixas de corte harmônicas espelhadas na Figura 4 com cabeçalhos limpos
+  % Caixas de corte harmônicas idênticas à Figura 4 (3.6cm x 3.6cm, gap central de 2.6cm)
   \draw[cut S] (-0.8, -1.8) rectangle (2.8, 1.8);
-  \node[font=\footnotesize\bfseries, blue!80!black, anchor=north west] at (-0.6, 1.65) {$\mathbf{S} : p^*(u) = 1$};
+  \node[cut label S] at (-0.6, 1.65) {$\mathbf{S} : p^*(u) = 1$};
 
-  \draw[cut T] (4.4, -1.8) rectangle (8.0, 1.8);
-  \node[font=\footnotesize\bfseries, orange!80!black, anchor=north east] at (7.8, 1.65) {$\mathbf{T} : p^*(v) = 0$};
+  \draw[cut T] (5.4, -1.8) rectangle (9.0, 1.8);
+  \node[cut label T] at (8.8, 1.65) {$\mathbf{T} : p^*(v) = 0$};
 
   \node[source node] (s) at (0.0, 0.0) {$s$};
-  \node[flow node, fill=green!10] (a) at (1.8, 0.8) {$a$};
-  \node[flow node, fill=green!10] (b) at (1.8, -0.8) {$b$};
+  \node[flow node, fill=green!10] (a) at (2.0, 0.8) {$a$};
+  \node[flow node, fill=green!10] (b) at (2.0, -0.8) {$b$};
 
-  \node[flow node, fill=red!10] (c) at (5.4, 0.8) {$c$};
-  \node[flow node, fill=red!10] (d) at (5.4, -0.8) {$d$};
-  \node[sink node] (t) at (7.2, 0.0) {$t$};
+  \node[flow node, fill=red!10] (c) at (6.2, 0.8) {$c$};
+  \node[flow node, fill=red!10] (d) at (6.2, -0.8) {$d$};
+  \node[sink node] (t) at (8.2, 0.0) {$t$};
 
   % Arestas internas a S (tensão d = 0)
-  \draw[flow edge] (s) -- node[edge lbl above] {$d\!=\!0$} (a);
-  \draw[flow edge] (s) -- node[edge lbl below] {$d\!=\!0$} (b);
-  \draw[flow edge] (a) -- node[edge lbl, left=3pt] {$d\!=\!0$} (b);
+  \draw[flow edge] (s) -- node[edge lbl above] {$d=0$} (a);
+  \draw[flow edge] (s) -- node[edge lbl below] {$d=0$} (b);
+  \draw[flow edge] (a) -- node[edge lbl left] {$d=0$} (b);
 
   % Arestas internas a T (tensão d = 0)
-  \draw[flow edge] (c) -- node[edge lbl above] {$d\!=\!0$} (t);
-  \draw[flow edge] (d) -- node[edge lbl below] {$d\!=\!0$} (t);
-  \draw[flow edge] (c) -- node[edge lbl, right=3pt] {$d\!=\!0$} (d);
+  \draw[flow edge] (c) -- node[edge lbl above] {$d=0$} (t);
+  \draw[flow edge] (d) -- node[edge lbl below] {$d=0$} (t);
+  \draw[flow edge] (c) -- node[edge lbl right] {$d=0$} (d);
 
   % Arestas cruzando o corte (tensão d = p(u) - p(v) = 1 - 0 = 1)
-  \draw[sat edge] (a) -- node[edge lbl above, text=red!80!black] {$\mathbf{d\!=\!1},\; f\!=\!c$} (c);
-  \draw[sat edge] (b) -- node[edge lbl below, text=red!80!black] {$\mathbf{d\!=\!1},\; f\!=\!c$} (d);
+  \draw[sat edge] (a) -- node[edge lbl above, text=red!80!black] {$\mathbf{d=1},\; f=c$} (c);
+  \draw[sat edge] (b) -- node[edge lbl below, text=red!80!black] {$\mathbf{d=1},\; f=c$} (d);
 
-  \node[font=\footnotesize, align=center, below=4pt] at (3.6, -2.0) {Custo dual: $\sum c(e)d(e) = c(a,c)\cdot 1 + c(b,d)\cdot 1 = \mathrm{cap}(\mathbf{S},\mathbf{T})$. Pela dualidade forte: $\max |f| = \min \mathrm{cap}(\mathbf{S},\mathbf{T})$.};
+  \node[font=\footnotesize, align=center, below=4pt] at (4.1, -2.0) {Custo dual: $\sum c(e)d(e) = c(a,c)\cdot 1 + c(b,d)\cdot 1 = \mathrm{cap}(\mathbf{S},\mathbf{T})$. Pela dualidade forte: $\max |f| = \min \mathrm{cap}(\mathbf{S},\mathbf{T})$.};
 \end{tikzpicture}
-\caption{Interpretação geométrica da solução dual no Teorema do Fluxo Máximo e Corte Mínimo: os potenciais nodais ótimos assumem valores binários $p^*(u)=1$ no bloco $\mathbf{S}$ e $p^*(v)=0$ no bloco $\mathbf{T}$. As variáveis duais de tensão $d(u,v) = \max\{0, p(u)-p(v)\}$ são ativadas ($d=1$) exclusivamente sobre os arcos saturados que cruzam de $\mathbf{S}$ para $\mathbf{T}$, anulando-se ($d=0$) nas arestas internas ou reversas.}
+\caption{Interpretação geométrica da solução dual no Teorema do Fluxo Máximo e Corte Mínimo: os potenciais nodais ótimos assumem valores binários $p^*(u) = 1$ no bloco S e $p^*(v) = 0$ no bloco $\mathbf{T}$. As variáveis duais de tensão $d(u, v) = \max\{0, p(u) - p(v)\}$ são ativadas ($d = 1$) exclusivamente sobre os arcos saturados que cruzam de S para T, anulando-se ($d = 0$) nas arestas internas ou reversas.}
 \label{fig:primal_dual_potenciais}
 \end{figure}
 
@@ -642,7 +662,7 @@ Mesmo no domínio prático das redes com capacidades inteiras, uma má escolha i
 
   \draw[flow edge] (s) -- node[edge lbl above] {$M$} (u);
   \draw[flow edge] (s) -- node[edge lbl below] {$M$} (v);
-  \draw[sat edge] (u) -- node[edge lbl, right, text=red!80!black] {$c=1$} (v);
+  \draw[sat edge] (u) -- node[edge lbl right, text=red!80!black] {$c=1$} (v);
   \draw[flow edge] (u) -- node[edge lbl above] {$M$} (t);
   \draw[flow edge] (v) -- node[edge lbl below] {$M$} (t);
 \end{scope}
@@ -655,7 +675,7 @@ Mesmo no domínio prático das redes com capacidades inteiras, uma má escolha i
   \node[sink node] (t2) at (5, 1) {$t$};
 
   \draw[tree edge, line width=2pt] (s2) -- node[edge lbl above] {$+1$} (u2);
-  \draw[sat edge, line width=2pt] (u2) -- node[edge lbl, right] {$+1$} (v2);
+  \draw[sat edge, line width=2pt] (u2) -- node[edge lbl right] {$+1$} (v2);
   \draw[tree edge, line width=2pt] (v2) -- node[edge lbl below] {$+1$} (t2);
 
   \draw[flow edge, opacity=0.3] (s2) -- (v2);
@@ -708,7 +728,7 @@ A materialização desta heurística, utilizando a herança e o encapsulamento o
   \draw[flow edge] (b) -- node[edge lbl below] {$c=10$} (c);
   \draw[flow edge] (c) -- node[edge lbl below] {$c=10$} (t);
 
-  \draw[flow edge] (a) -- node[edge lbl, right] {$c=2$} (b);
+  \draw[flow edge] (a) -- node[edge lbl right] {$c=2$} (b);
 \end{tikzpicture}
 \caption{O Algoritmo de Edmonds-Karp utiliza busca em largura (BFS) na rede residual para encontrar sempre o caminho aumentante mais curto (em número de arestas). Na figura, embora o caminho inferior $s \to b \to c \to t$ suporte maior fluxo gargalo ($c=10$), a BFS garante a escolha imediata do caminho superior $s \to a \to t$ (azul tracejado), por ser topologicamente mais curto (comprimento 2 versus 3). Os níveis descobertos pela BFS são indicados entre parênteses.}
 \label{fig:edmonds_karp}
@@ -1110,8 +1130,8 @@ A solidez desta extração reside no fato de que, pelas propriedades de conserva
 \begin{figure}[!ht]
 \centering
 \begin{tikzpicture}[thick]
-  \node[font=\large] at (2,4.5) {$\mathbf{L}$};
-  \node[font=\large] at (4,4.5) {$\mathbf{R}$};
+  \node[bip label L] at (2,4.5) {$\mathbf{L}$};
+  \node[bip label R] at (4,4.5) {$\mathbf{R}$};
   
   \node[source node] (s) at (0,2) {$s$};
   \node[sink node] (t) at (6,2) {$t$};
@@ -1344,8 +1364,8 @@ Isso resulta em $|C| \ge |L|$, o que contradiz frontalmente o fato estabelecido 
     \draw[unmatch edge] (l2) -- (r3);
     \draw[unmatch edge] (l3) -- (r1);
     
-    \node[above] at (0,3.5) {$L$};
-    \node[above] at (3,3.5) {$R$};
+    \node[bip label L] at (0,3.7) {$\mathbf{L}$};
+    \node[bip label R] at (3,3.7) {$\mathbf{R}$};
 \end{tikzpicture}
 \caption{Emparelhamento $L$-saturante (arestas azuis) em um grafo bipartido: cada vértice de $L$ é coberto. A condição de Hall $|N(S)| \ge |S|$ é satisfeita para todo $S \subseteq L$.}
 \label{fig:hall_casamento}
@@ -1610,7 +1630,7 @@ Pela hipótese de indução, $f'$ pode ser decomposto em no máximo $|A_{f'}^+| 
 
     \draw[flow edge] (s) -- node[edge lbl above] {$3$} (a);
     \draw[flow edge] (s) -- node[edge lbl below] {$2$} (b);
-    \draw[flow edge] (a) -- node[edge lbl, right] {$1$} (b);
+    \draw[flow edge] (a) -- node[edge lbl right] {$1$} (b);
     \draw[flow edge] (a) -- node[edge lbl above] {$2$} (t);
     \draw[flow edge] (b) -- node[edge lbl below] {$3$} (t);
   \end{scope}
@@ -1727,13 +1747,13 @@ Seja $I$ uma imagem com $n = W \times H$ pixels. A construção da rede de segme
 
     \begin{scope}[x={(1cm,0cm)}, y={(0cm,1cm)}, z={(0cm,0cm)}]
         \node[right, font=\footnotesize, green!60!black] at (3.5, 0.5) {T-links $s \to p$};
-        \draw[->, green!70!black, dashed, thick] (2.7, 0.5) -- (3.3, 0.5);
+        \draw[->, green!70!black, dashed, thick] (2.3, 0.5) -- (3.3, 0.5);
         
         \node[right, font=\footnotesize, text=black] at (3.5, -0.5) {N-links (similaridade)};
-        \draw[-, thick] (2.7, -0.5) -- (3.3, -0.5);
+        \draw[-, thick] (2.3, -0.5) -- (3.3, -0.5);
         
         \node[right, font=\footnotesize, red!60!black] at (3.5, -1.5) {T-links $p \to t$};
-        \draw[->, red!70!black, dashed, thick] (2.7, -1.5) -- (3.3, -1.5);
+        \draw[->, red!70!black, dashed, thick] (2.3, -1.5) -- (3.3, -1.5);
     \end{scope}
     
 \end{tikzpicture}
@@ -1758,10 +1778,10 @@ O custo total do corte é exatamente a soma dos termos de dados e de regulariza�
 \centering
 \begin{tikzpicture}[thick, transform shape]
   \fill[green!10, rounded corners=15pt] (-4.5, 1.7) rectangle (8.5, 6.8);
-  \node[green!60!black, font=\footnotesize] at (-2.5, 6.3) {$S$ (Foreground)};
+  \node[cut label S, anchor=west] at (-3.8, 6.1) {$\mathbf{S}$ \textnormal{\footnotesize(Foreground)}};
   
   \fill[red!10, rounded corners=15pt] (-4.5, -3.8) rectangle (8.5, 1.3);
-  \node[red!60!black, font=\footnotesize] at (-2.5, -3.3) {$T$ (Background)};
+  \node[cut label T, anchor=west] at (-3.8, -3.0) {$\mathbf{T}$ \textnormal{\footnotesize(Background)}};
   
   \node[source node] (s) at (2, 6) {$s$};
   \node[sink node] (t) at (2, -3) {$t$};
@@ -1774,20 +1794,20 @@ O custo total do corte é exatamente a soma dos termos de dados e de regulariza�
   \draw[-,blue!70,line width=1.5pt] (p1) -- node[above,font=\footnotesize,text=black]{$w_n$\,alto} (p2);
   \draw[-,blue!70,line width=1.5pt] (p4) -- node[below,font=\footnotesize,text=black]{$w_n$\,alto} (p3);
   
-  \draw[-,orange,line width=1.5pt] (p1) -- node[fill=white,inner sep=2pt,font=\footnotesize,text=black,pos=0.25]{$w_n$\,baixo} (p4);
-  \draw[-,orange,line width=1.5pt] (p2) -- node[fill=white,inner sep=2pt,font=\footnotesize,text=black,pos=0.25]{$w_n$\,baixo} (p3);
+  \draw[-,orange,line width=1.5pt] (p1) -- node[edge lbl green, pos=0.25]{$w_n$\,baixo} (p4);
+  \draw[-,orange,line width=1.5pt] (p2) -- node[edge lbl green, pos=0.25]{$w_n$\,baixo} (p3);
 
-  \draw[->,green!60!black,dashed] (s) -- node[above left,font=\footnotesize,fill=white,inner sep=2pt]{$w_s=\infty$} (p1);
-  \draw[->,green!60!black,dashed] (s) -- node[above right,font=\footnotesize,fill=white,inner sep=2pt]{$w_s$\,alto} (p2);
+  \draw[->,green!60!black,dashed] (s) -- node[above left, edge lbl green]{$w_s=\infty$} (p1);
+  \draw[->,green!60!black,dashed] (s) -- node[above right, edge lbl green]{$w_s$\,alto} (p2);
   
-  \draw[->,green!60!black,dashed] (s) to[out=180, in=135] node[left,font=\footnotesize,fill=white,inner sep=2pt,pos=0.5]{$w_s$\,baixo} (p4);
-  \draw[->,green!60!black,dashed] (s) to[out=0, in=45] node[right,font=\footnotesize,fill=white,inner sep=2pt,pos=0.5]{$w_s$\,baixo} (p3);
+  \draw[->,green!60!black,dashed] (s) to[out=180, in=135] node[left, edge lbl green, pos=0.5]{$w_s$\,baixo} (p4);
+  \draw[->,green!60!black,dashed] (s) to[out=0, in=45] node[right, edge lbl green, pos=0.5]{$w_s$\,baixo} (p3);
   
-  \draw[->,red!60!black,dashed] (p4) -- node[below left,font=\footnotesize,fill=white,inner sep=2pt]{$w_t=\infty$} (t);
-  \draw[->,red!60!black,dashed] (p3) -- node[below right,font=\footnotesize,fill=white,inner sep=2pt]{$w_t$\,alto} (t);
+  \draw[->,red!60!black,dashed] (p4) -- node[below left, edge lbl red]{$w_t=\infty$} (t);
+  \draw[->,red!60!black,dashed] (p3) -- node[below right, edge lbl red]{$w_t$\,alto} (t);
 
-  \draw[->,red!60!black,dashed] (p1) to[out=225, in=180] node[left,font=\footnotesize,fill=white,inner sep=2pt,pos=0.5]{$w_t$\,baixo} (t);
-  \draw[->,red!60!black,dashed] (p2) to[out=315, in=0] node[right,font=\footnotesize,fill=white,inner sep=2pt,pos=0.5]{$w_t$\,baixo} (t);
+  \draw[->,red!60!black,dashed] (p1) to[out=225, in=180] node[left, edge lbl red, pos=0.5]{$w_t$\,baixo} (t);
+  \draw[->,red!60!black,dashed] (p2) to[out=315, in=0] node[right, edge lbl red, pos=0.5]{$w_t$\,baixo} (t);
 
   \draw[red, thick, dashed] (-4.5, 1.5) -- (8.5, 1.5) node[right, font=\footnotesize, text=red, fill=white, inner sep=2pt, yshift=3mm] {Corte Mínimo};
 \end{tikzpicture}
@@ -1980,7 +2000,7 @@ A detecção explícita e repetida de ciclos negativos em $D_f$ por métodos dir
 \centering
 \begin{tikzpicture}[thick]
 \begin{scope}[xshift=0cm]
-  \node[font=\footnotesize\bfseries, above] at (1.75,2.6) {(a) Ciclo negativo em $D_f$};
+  \tikzsubcaption{(1.75,2.6)}{(a) Ciclo negativo em $D_f$}
   \node[flow node] (a) at (0,1.8) {$a$};
   \node[flow node] (b) at (3.5,1.8) {$b$};
   \node[flow node] (c) at (1.75,0) {$c$};
@@ -1993,7 +2013,7 @@ A detecção explícita e repetida de ciclos negativos em $D_f$ por métodos dir
 \node at (5.75,1.0) {\Huge $\Rightarrow$};
 
 \begin{scope}[xshift=7.5cm]
-  \node[font=\footnotesize\bfseries, above] at (1.75,2.6) {(b) Após cancelamento};
+  \tikzsubcaption{(1.75,2.6)}{(b) Após cancelamento}
   \node[flow node] (a2) at (0,1.8) {$a$};
   \node[flow node] (b2) at (3.5,1.8) {$b$};
   \node[flow node] (c2) at (1.75,0) {$c$};
@@ -2074,7 +2094,7 @@ o que confirma a existência do vetor de potenciais nodais satisfazendo a condi�
     \draw[flow edge] (s) -- node[edge lbl below] {$w\!=\!2$} node[edge lbl above, text=red!80!black] {$\bar{w}\!=\!3$} (b);
     \draw[flow edge] (a) -- node[edge lbl above] {$w\!=\!4$} node[edge lbl below, text=red!80!black] {$\bar{w}\!=\!7$} (t);
     \draw[flow edge] (b) -- node[edge lbl below] {$w\!=\!6$} node[edge lbl above, text=red!80!black] {$\bar{w}\!=\!10$} (t);
-    \draw[flow edge] (a) -- node[edge lbl, right] {$w\!=\!1$} node[edge lbl, left, text=red!80!black] {$\bar{w}\!=\!0$} (b);
+    \draw[flow edge] (a) -- node[edge lbl right] {$w\!=\!1$} node[edge lbl left, text=red!80!black] {$\bar{w}\!=\!0$} (b);
 \end{tikzpicture}
 \caption{Potenciais nodais $\pi$ (em azul) e custos reduzidos $\bar{w} = w(u,v) - \pi(u) + \pi(v)$ (em vermelho). Todos os custos reduzidos são $\ge 0$, certificando a otimalidade do fluxo segundo o Teorema de Equivalência.}
 \label{fig:custos_reduzidos}
@@ -2199,7 +2219,7 @@ Cada cancelamento preserva estritamente a lei de conservação de fluxo em todos
 
   % Ciclo negativo: s -> v -> u e reverso u -> s
   \draw[sat edge, line width=1.6pt] (s) -- node[edge lbl below] {$w\!=\!1$} (v);
-  \draw[sat edge, line width=1.6pt] (v) -- node[edge lbl, right] {$w\!=\!1$} (u);
+  \draw[sat edge, line width=1.6pt] (v) -- node[edge lbl right] {$w\!=\!1$} (u);
   \draw[rev edge, line width=1.6pt, bend right=32] (u) to node[edge lbl above, text=red!80!black] {$w_f\!=\!{-4}$} (s);
 
   \node[font=\footnotesize, align=center, below=4pt] at (2.5,-0.6) {Ciclo $C = s \to v \to u \to s$ em $D_f$\\$w(C) = 1 + 1 + (-4) = -2 < 0$\\Gargalo $\delta=4 \implies$ cancelamento reduz custo};
@@ -2215,7 +2235,7 @@ Cada cancelamento preserva estritamente a lei de conservação de fluxo em todos
   \draw[flow edge, opacity=0.3] (s2) -- (u2);
   \draw[flow edge] (u2) -- node[edge lbl above] {$f\!=\!4,\; w\!=\!2$} (t2);
   \draw[tree edge] (s2) -- node[edge lbl below] {$f\!=\!4,\; w\!=\!1$} (v2);
-  \draw[tree edge] (v2) -- node[edge lbl, right] {$f\!=\!4,\; w\!=\!1$} (u2);
+  \draw[tree edge] (v2) -- node[edge lbl right] {$f\!=\!4,\; w\!=\!1$} (u2);
 
   \node[font=\footnotesize, align=center, below=4pt] at (2.5,-0.6) {Fluxo líquido $|f|=4$ permanece inalterado!\\Custo total reduz de $24$ para $16$ (economia de $8$)};
 \end{scope}
@@ -2340,8 +2360,8 @@ Fixando $\pi(r) = 0$ para um vértice raiz $r$ arbitrário, os potenciais de tod
     \draw[tree edge] (v2) -- node[above,font=\footnotesize] {$T$} (v4);
     \draw[tree edge] (v3) -- node[below,font=\footnotesize] {$T$} (v5);
 
-    \draw[nontree edge] (v2) -- node[right,font=\footnotesize] {$L$} (v3);
-    \draw[nontree edge] (v4) -- node[right,font=\footnotesize] {$U$} (v5);
+    \draw[nontree edge] (v2) -- node[edge lbl right] {$L$} (v3);
+    \draw[nontree edge] (v4) -- node[edge lbl right] {$U$} (v5);
 \end{tikzpicture}
 \caption{Partição dos arcos no Network Simplex. Arcos azuis sólidos formam a árvore geradora básica $T$ (4 arcos para 5 vértices). Arcos cinza tracejados são não-básicos: $L$ (fluxo $= 0$) e $U$ (fluxo $= c$, saturado).}
 \label{fig:arvore_base}
@@ -2462,7 +2482,7 @@ onde a polaridade do sinal depende da orientação do arco entrante em relação
   \draw[tree edge] (a1) -- (a2);
   \draw[tree edge] (a2) -- (a4);
   \draw[tree edge] (a1) -- (a3);
-  \draw[pivot enter] (a3) -- node[below,sloped,font=\footnotesize,fill=white,inner sep=1pt] {entra} (a4);
+  \draw[pivot enter] (a3) -- node[below=3.8pt,sloped,font=\footnotesize,text=red!80!black] {entra} (a4);
 \end{scope}
 
 \node at (5.5,1.5) {\Large $\Rightarrow$};
@@ -2475,7 +2495,7 @@ onde a polaridade do sinal depende da orientação do arco entrante em relação
   \node[sink node] (b4) at (4, 1.5) {$4$};
 
   \draw[tree edge] (b1) -- (b2);
-  \draw[pivot leave] (b2) -- node[above,sloped,font=\footnotesize,fill=white,inner sep=1pt] {sai} (b4);
+  \draw[pivot leave] (b2) -- node[above=3.8pt,sloped,font=\footnotesize,text=gray!80!black] {sai} (b4);
   \draw[tree edge] (b1) -- (b3);
   \draw[tree edge] (b3) -- (b4);
 \end{scope}
