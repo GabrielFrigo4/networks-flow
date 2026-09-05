@@ -888,7 +888,7 @@ A terceira condição garante que o excesso não despencará em ``quedas livres'
 \end{figure}
 
 
-\section{A Família Push-Relabel e as Funções de Altura}\label{sec:push_relabel}
+\section{Invariantes de Altura e Mecânica de Push-Relabel}\label{sec:push_relabel}
 
 A mecânica operacional da família de algoritmos \textit{Push-Relabel}, concebida originalmente por Goldberg e Tarjan (veja~\cite{goldberg1988new}), assenta-se sobre a manipulação iterativa de vértices ativos visando o esgotamento topológico de seus excessos. A inicialização do sistema satura artificialmente todos os arcos originais adjacentes à fonte $s$, injetando um pré-fluxo maciço na rede. Simultaneamente, a altura da fonte é fixada em $h(s) = |V|$ e a dos demais vértices é inicializada em $h(v) = 0$, estabelecendo um desnível rigoroso que força o fluido a buscar o sumidouro (veja~\cite{ahuja1993network}).
 
@@ -1515,7 +1515,7 @@ A formulação por vértices é elegantemente reduzida à versão por arcos apli
 \implicacoes{e Tolerância a Falhas em Redes} O Teorema de Menger fornece os fundamentos teóricos para a engenharia de redes resilientes e sistemas tolerantes a falhas. Saber que a conectividade por rotas disjuntas espelha diretamente cortes estruturais permite que algoritmos eficientes de fluxo máximo determinem em tempo polinomial o grau exato de redundância operacional de uma topologia de rede, bem como identifiquem os nós e enlaces críticos que constituem pontos únicos de falha (\textit{single points of failure}).
 
 
-\section{Transformações Estruturais de Rede}
+\section{Transformações Estruturais de Redes de Fluxo}
 
 As reduções anteriores assumem a existência de uma única fonte e um único sumidouro. Na prática, muitos problemas reais envolvem generalizações da topologia de rede que exigem transformações prévias para adequar-se ao modelo canônico $s$-$t$.
 
@@ -1612,13 +1612,13 @@ Na implementação desta biblioteca, esta modelagem é realizada nativamente pel
 \end{figure}
 
 
-\section{Teorema da Decomposição de Fluxo}\label{sec:decomposicao_cap}
+\section{Decomposição de Fluxo}\label{sec:decomposicao_cap}
 
 Após o cômputo do fluxo máximo, a solução obtida é representada como um vetor de fluxos individuais sobre os arcos da rede. Contudo, muitas aplicações práticas exigem uma descrição mais estruturada da solução: quais são os caminhos individuais de $s$ a $t$ que compõem o fluxo total, e quanto fluxo transita em cada um?
 
 O Teorema da Decomposição de Fluxo fornece a fundamentação matemática para esta extração (veja~\cite{ahuja1993network, schrijver2003combinatorial}).
 
-\subsubsection{Teorema da Decomposição de Fluxo}
+\subsection{Decomposição Canônica em Caminhos e Ciclos}
 
 \begin{teorema}[Decomposição de Fluxo][teo:decomposicao]
 Todo fluxo viável $f$ em uma rede $D = (V, A)$ pode ser decomposto em uma família de no máximo $|A|$ caminhos direcionados simples de $s$ a $t$ e ciclos direcionados simples, cada um associado a uma taxa de fluxo estritamente positiva. A soma dos fluxos dos caminhos iguala o valor total $|f|$, e o fluxo em cada arco equivale à sobreposição escalar dos caminhos e ciclos que o atravessam.
@@ -1679,7 +1679,7 @@ Pela hipótese de indução, $f'$ pode ser decomposto em no máximo $|A_{f'}^+| 
 \end{figure}
 
 
-\section{Algoritmo de Extração de Caminhos (Path Recovery)}
+\subsection{Reconstrução e Extração de Caminhos (Path Recovery)}
 
 Na modelagem e implementação de resolvedores para problemas práticos (como na determinação de caminhos disjuntos no problema \textit{Distinct Routes}), o algoritmo de recuperação de caminhos (\textit{Path Recovery}) percorre a rede após o cômputo do fluxo máximo para reconstruir os caminhos individuais. Em redes com capacidades unitárias (como nos problemas de caminhos disjuntos), o procedimento é particularmente elegante:
 
@@ -2207,7 +2207,7 @@ Desta forma, cada sentido de escoamento preserva independentemente seu respectiv
 
 \chapter{Algoritmos Primal-Dual de Custo Mínimo}\label{sec:algoritmos_mcf}
 
-\section{O Algoritmo Cycle Canceling}\label{sec:cycle_canceling}
+\section{A Abordagem Primal: Cancelamento de Ciclos Negativos (Cycle Canceling)}\label{sec:cycle_canceling}
 
 \paragraph{Princípio Teórico e Intuição.}
 Proposto originalmente por Morton Klein em 1967 (veja~\cite{ahuja1993network, cook1998combinatorial}), o algoritmo \textit{Cycle Canceling} representa a extensão primal mais direta e intuitiva do método de Ford-Fulkerson para o problema de fluxo de custo mínimo. Sua premissa apoia-se inteiramente na condição de otimalidade por ciclos negativos: se um fluxo é viável, mas não é de custo mínimo, o digrafo residual necessariamente abriga pelo menos um ciclo direcionado de custo estritamente negativo.
@@ -2281,24 +2281,93 @@ Trata-se de um limite pseudopolinomial que pode degradar frente a custos ou capa
 A materialização em C++ da classe \lstinline{CycleCanceling} encontra-se documentada no Código~\ref{lst:cycle_canceling} (disponível no Apêndice~\ref{ap:cycle_canceling}).
 
 
-\section{O Algoritmo Successive Shortest Path}\label{sec:ssp}
+\section{A Abordagem Dual: Caminhos de Custo Mínimo (Successive Shortest Path)}\label{sec:ssp}
 
-\paragraph{Princípio Teórico e a Invariante Dual.}
-Desenvolvido independentemente por Jewell (1958), Iri (1960) e Busacker e Gowen (1961) (veja~\cite{ahuja1993network, schrijver2003combinatorial}), o algoritmo \textit{Successive Shortest Path} (SSP) adota uma abordagem dual complementar ao \textit{Cycle Canceling}. Enquanto o \textit{Cycle Canceling} mantém a viabilidade primal do fluxo e cancela sucessivamente ciclos negativos para alcançar a otimalidade de custos, o SSP mantém a \textbf{otimalidade de custos como invariante permanente} (o grafo residual nunca contém ciclos negativos) e constrói a viabilidade do fluxo máximo incrementalmente.
+Desenvolvido independentemente por Jewell (1958), Iri (1960) e Busacker e Gowen (1961) (veja~\cite{ahuja1993network, schrijver2003combinatorial}), o algoritmo \textit{Successive Shortest Path} (SSP) adota uma abordagem dual complementar ao \textit{Cycle Canceling}. Enquanto o \textit{Cycle Canceling} mantém a viabilidade primal do fluxo ($f$ viável) e cancela iterativamente ciclos negativos em $D_f$ para atingir a otimalidade de custos, o SSP mantém a \textbf{otimalidade dual de custos como invariante permanente} (o grafo residual nunca abriga ciclos direcionados de custo negativo) e constrói a viabilidade do fluxo líquido passo a passo por aumentos sucessivos.
 
-\paragraph{Dinâmica Operacional por Aumentos Sucessivos.}
-O algoritmo inicia com fluxo nulo em todos os arcos ($f \equiv 0$), estado que satisfaz trivialmente a condição de otimalidade por não introduzir nenhum ciclo residual negativo. A cada iteração:
+\subsection{Invariante Dual de Otimalidade e Aumentos Sucessivos}
+
+O algoritmo inicia com fluxo nulo em todos os arcos da rede ($f \equiv 0$). Como nenhum arco transporta fluxo, o digrafo residual $D_0$ coincide exatamente com o digrafo original $D$ (onde supõe-se, sem perda de generalidade, que não existem ciclos de custo estritamente negativo na rede inicial). Logo, $f \equiv 0$ satisfaz trivialmente a condição de otimalidade por ciclos negativos de Klein (Teorema~\ref{teo:ciclos_negativos}).
+
+A cada iteração da dinâmica de aumentos sucessivos:
 \begin{enumerate}
     \item Localiza-se o caminho aumentante de menor custo total $P$ da fonte $s$ ao sumidouro $t$ no digrafo residual $D_f$.
-    \item Computa-se a capacidade residual gargalo $\delta = \min_{(u,v) \in P} c_f(u,v)$ ao longo deste caminho.
-    \item Roteiam-se $\delta$ unidades de fluxo através de $P$, atualizando o fluxo e o custo acumulado em $\delta \cdot d(t)$, onde $d(t)$ é a distância mínima de $s$ a $t$ sob os custos residuais.
+    \item Computa-se a capacidade residual gargalo $\delta = \min_{(u,v) \in P} c_f(u,v) > 0$ ao longo de $P$.
+    \item Roteiam-se $\delta$ unidades de fluxo através de $P$, atualizando os fluxos diretos ($f(u,v) \leftarrow f(u,v) + \delta$) e os respectivos arcos reversos ($f(v,u) \leftarrow f(v,u) - \delta$) via \lstinline{push_flow}.
 \end{enumerate}
 
-Demonstra-se indutivamente que o aumento de fluxo ao longo do caminho de menor custo nunca cria ciclos negativos no grafo residual resultante (veja~\cite{ahuja1993network}). Portanto, quando não existirem mais caminhos residuais de $s$ a $t$, o fluxo obtido é simultaneamente máximo e de custo mínimo.
+\paragraph{Demonstração da Preservação da Invariante Dual.}
+A validade matemática do método apoia-se no seguinte princípio fundamental: \textit{aumentar fluxo ao longo do caminho de custo mínimo residual nunca introduz ciclos de custo negativo em $D_f$}.
 
-\textbf{Otimização com SPFA e Potenciais Nodais.} Como os arcos reversos no digrafo residual carregam custos negativos ($w_f(v,u) = -w(u,v)$), o algoritmo clássico de Dijkstra não pode ser aplicado diretamente sobre $w_f$. Na implementação base do projeto (\lstinline{SuccessiveShortest}, Código~\ref{lst:successive_shortest}, Apêndice~\ref{ap:successive_shortest}), a busca pelo caminho mais curto é realizada pelo \textit{SPFA} (\textit{Shortest Path Faster Algorithm}), uma especialização de Bellman-Ford baseada em fila que opera com alto desempenho prático.
+Procedemos por indução e contradição: suponha que antes da iteração o digrafo residual $D_f$ não contenha nenhum ciclo negativo, e que $P$ seja o caminho mais curto de $s$ para $t$ em $D_f$. Seja $f'$ o fluxo resultante do aumento de $\delta$ unidades ao longo de $P$. Se o novo digrafo residual $D_{f'}$ contivesse um ciclo negativo $C$, este ciclo deveria obrigatoriamente utilizar pelo menos um arco reverso $(v,u)$ recém-habilitado pelo envio de fluxo, com $(u,v) \in P$. Portanto, o arco reverso tem custo residual $w_{f'}(v,u) = -w_f(u,v)$.
 
-Alternativamente, a fundamentação teórica de potenciais nodais ($\pi$) permite transformar os custos dos arcos para custos reduzidos $\bar{w}_\pi(u,v) = w(u,v) - \pi(u) + \pi(v) \ge 0$, técnica pioneiramente explorada por Edmonds e Karp (veja~\cite{edmonds1972theoretical}). A preservação da não negatividade dos custos reduzidos a cada iteração apoia-se diretamente na desigualdade triangular de caminhos mínimos: suponha que na iteração corrente tenhamos $\bar{w}_\pi(u,v) \ge 0$ para todo $(u,v) \in A_f$. Seja $d(v)$ a distância mínima da fonte $s$ a cada vértice $v$ em $D_f$ calculada sob os custos reduzidos $\bar{w}_\pi$. Pela condição de otimalidade de caminhos mais curtos, para todo arco residual viável $(u,v) \in A_f$:
+Sejam $d(x)$ as distâncias mínimas a partir de $s$ em $D_f$. Como $P$ é o caminho mais curto de $s$ para $t$, para todo arco $(u,v) \in P$ vale a igualdade estrita da desigualdade triangular: $d(v) = d(u) + w_f(u,v)$, donde $-w_f(u,v) = d(u) - d(v)$. Consequentemente, para qualquer arco reverso $(v,u)$ gerado por $P$, temos $w_{f'}(v,u) = d(u) - d(v)$.
+
+Para os demais arcos $(x,y) \in C$ que já existiam em $D_f$, a desigualdade triangular impõe $d(y) \le d(x) + w_f(x,y)$, ou equivalentemente, $w_f(x,y) \ge d(y) - d(x)$. Somando os custos de todos os arcos ao longo do ciclo fechado $C$:
+\begin{equation}
+    w_{f'}(C) = \sum_{(x,y) \in C} w_{f'}(x,y) \ge \sum_{(x,y) \in C} [d(y) - d(x)] = 0
+\end{equation}
+pois a soma das diferenças de distância em qualquer circuito fechado cancela-se telescopicamente. Obtemos $w_{f'}(C) \ge 0$, o que contradiz frontalmente a hipótese de que $C$ fosse um ciclo de custo estritamente negativo ($w_{f'}(C) < 0$). Conclui-se que $D_{f'}$ permanece livre de ciclos negativos. Quando não existirem mais caminhos residuais de $s$ a $t$, o fluxo obtido é simultaneamente máximo e de custo globalmente mínimo.
+
+\subsection{Variante Canônica com SPFA (Aumentos em Custos Residuais)}\label{sec:ssp_spfa}
+
+Na concretização computacional clássica do método de aumentos sucessivos, a busca pelo caminho mais curto $s \leadsto t$ é realizada diretamente sobre os custos residuais $w_f$. Contudo, tão logo a primeira iteração é executada, os arcos reversos habilitados pelo envio de fluxo passam a carregar custos unitários negativos:
+\begin{equation}
+    w_f(v,u) = -w(u,v) < 0
+\end{equation}
+A presença de arestas com pesos negativos inviabiliza sumariamente o algoritmo guloso de Dijkstra, cuja hipótese de corretude exige que todos os arcos possuam pesos não negativos (veja~\cite{cormen2022introduction}). Se Dijkstra fosse aplicado diretamente sobre $w_f$, a extração de vértices da fila de prioridade cometeria erros irreversíveis de subestrutura ótima.
+
+Para superar essa restrição preservando a simplicidade estrutural, a classe \lstinline{SuccessiveShortest} (Código~\ref{lst:successive_shortest}, Apêndice~\ref{ap:successive_shortest}) emprega o algoritmo \textit{SPFA} (\textit{Shortest Path Faster Algorithm}), uma especialização de Bellman-Ford controlada por fila FIFO (veja~\cite{cook1998combinatorial}). Em vez de realizar $|V|-1$ varreduras completas e cegas sobre todo o conjunto de arcos, o SPFA mantém uma fila de vértices ativos cujas distâncias foram recentemente relaxadas. Quando a relaxação de um arco residual $(u,v)$ com $w_f(u,v) < 0$ reduz a distância estimada de $v$, o nó $v$ é reinserido na fila para propagar a melhoria aos seus vizinhos, conforme ilustrado na Figura~\ref{fig:spfa_mcf}.
+
+A complexidade de cada busca de caminho aumentante via SPFA é $\mathcal{O}(|V| \cdot |A|)$ no pior caso. Em redes com capacidades inteiras e fluxo máximo $F = |f^*|$, o número total de iterações de aumento é no máximo $F$ (pois cada aumento transfere $\delta \ge 1$). Multiplicando os fatores, a complexidade assintótica da classe \lstinline{SuccessiveShortest} atinge:
+\begin{equation}
+    \mathcal{O}(|V| \cdot |A| \cdot F)
+\end{equation}
+Trata-se de uma variante altamente intuitiva e robusta para redes de pequeno e médio porte, mas que pode apresentar degradação empírica em grafos densos devido ao retrabalho de relaxações sucessivas provocadas pelos arcos negativos.
+
+\begin{figure}[!ht]
+\centering
+\begin{tikzpicture}[scale=1.05, thick]
+\begin{scope}[xshift=0cm]
+  \tikzsubcaption{(2.5,2.8)}{(a) Grafo residual com arco reverso negativo}
+  \node[source node] (s) at (0, 1.0) {$s$};
+  \node[flow node] (u) at (2.5, 2.0) {$u$};
+  \node[flow node] (v) at (2.5, 0.0) {$v$};
+  \node[sink node] (t) at (5.0, 1.0) {$t$};
+
+  \draw[flow edge] (s) -- node[edge lbl below, pos=0.45] {$w_f\!=\!1$} (v);
+  \draw[flow edge] (v) -- node[edge lbl below] {$w_f\!=\!2$} (t);
+  \draw[flow edge] (u) -- node[edge lbl right] {$w_f\!=\!3$} (t);
+  \draw[rev edge, line width=1.4pt] (u) -- node[edge lbl left, text=red!80!black] {$w_f\!=\!{-4}$} (v);
+  \draw[flow edge, dashed, gray] (s) -- (u);
+
+  \node[font=\footnotesize, align=center, below=5pt] at (2.5,-0.7) {Arco reverso $u \to v$ tem $w_f = -4 < 0$\\Dijkstra clássico falha (pesos negativos!)};
+\end{scope}
+
+\begin{scope}[xshift=7.5cm]
+  \tikzsubcaption{(2.5,2.8)}{(b) Dinâmica da fila de relaxação SPFA}
+  \node[source node] (s2) at (0, 1.0) {$s$};
+  \node[active node] (u2) at (2.5, 2.0) {$u$};
+  \node[active node] (v2) at (2.5, 0.0) {$v$};
+  \node[sink node] (t2) at (5.0, 1.0) {$t$};
+
+  \draw[tree edge] (s2) -- node[edge lbl above, pos=0.45, text=blue!80!black] {$d(u)\!=\!2$} (u2);
+  \draw[flow edge] (s2) -- node[edge lbl below, pos=0.45] {$d(v)\!=\!1$} (v2);
+  \draw[sat edge, line width=1.5pt] (u2) -- node[edge lbl left, text=red!80!black] {$w_f\!=\!{-4}$} (v2);
+  \draw[flow edge] (v2) -- node[edge lbl below] {$d(t)\!=\!1$} (t2);
+
+  \node[font=\footnotesize, align=center, below=5pt] at (2.5,-0.7) {Relaxação: $d(v)$ reduz de $1$ para $2 - 4 = -2$\\Vértice $v$ é reinserido na fila FIFO do SPFA};
+\end{scope}
+\end{tikzpicture}
+\caption{Mecânica operacional do algoritmo SPFA na variante canônica do \textit{Successive Shortest Path}. (a)~O envio prévio de fluxo introduz arcos residuais reversos com custos negativos ($w_f = -4 < 0$), inviabilizando a seleção gulosa do algoritmo de Dijkstra. (b)~O SPFA contorna a limitação gerenciando uma fila ativa: quando a relaxação do arco reverso $(u,v)$ melhora a distância $d(v)$, o vértice $v$ é reincorporado à fila para propagar a redução topológica pela rede.}
+\label{fig:spfa_mcf}
+\end{figure}
+
+\subsection{Variante Acelerada com Potenciais Nodais e Dijkstra ($\bar{w}_\pi \ge 0$)}\label{sec:ssp_dijkstra}
+
+Para destravar a alta eficiência assintótica e a monotonicidade da busca por caminhos mais curtos, a fundamentação teórica de potenciais nodais ($\pi$) permite transformar os custos dos arcos para custos reduzidos não negativos $\bar{w}_\pi(u,v) = w(u,v) - \pi(u) + \pi(v) \ge 0$, técnica pioneiramente explorada por Edmonds e Karp em 1972 (veja~\cite{edmonds1972theoretical}).
+
+A preservação da não negatividade dos custos reduzidos a cada iteração apoia-se diretamente na desigualdade triangular de caminhos mínimos: suponha que na iteração corrente tenhamos $\bar{w}_\pi(u,v) \ge 0$ para todo $(u,v) \in A_f$. Seja $d(v)$ a distância mínima da fonte $s$ a cada vértice $v$ em $D_f$ calculada sob os custos reduzidos $\bar{w}_\pi$. Pela condição de otimalidade de caminhos mais curtos, para todo arco residual viável $(u,v) \in A_f$:
 \begin{equation}
     d(v) \le d(u) + \bar{w}_\pi(u,v) \iff \bar{w}_\pi(u,v) + d(u) - d(v) \ge 0
 \end{equation}
@@ -2309,9 +2378,11 @@ Ao atualizar o vetor de potenciais nodais para $\pi'(v) = \pi(v) - d(v)$, o novo
     &= [w(u,v) - \pi(u) + \pi(v)] + d(u) - d(v) \\
     &= \bar{w}_\pi(u,v) + d(u) - d(v) \ge 0
 \end{align*}
-Para os novos arcos reversos $(v,u)$ criados no digrafo residual pelo envio de fluxo ao longo do caminho mais curto $P$, sabe-se que para todo arco $(u,v) \in P$ a desigualdade triangular é satisfeita na igualdade estrita ($d(v) = d(u) + \bar{w}_\pi(u,v)$), de modo que $\bar{w}_{\pi'}(u,v) = 0$. Consequentemente, o arco reverso recém-habilitado satisfaz $\bar{w}_{\pi'}(v,u) = -\bar{w}_{\pi'}(u,v) = 0 \ge 0$. Portanto, toda a malha de arcos residuais em $D_{f'}$ preserva custos reduzidos não negativos, viabilizando o uso do algoritmo de Dijkstra com \textit{heap} binária em $\mathcal{O}(|A| \log |V|)$ ou Fibonacci em $\mathcal{O}(|A| + |V| \log |V|)$ em todas as iterações subsequentes (veja~\cite{ahuja1993network, edmonds1972theoretical, korte2018combinatorial}).
-
-A dinâmica de uma iteração com potenciais nodais $\pi$ e a preservação da não negatividade dos custos reduzidos residuais é ilustrada na Figura~\ref{fig:ssp_iteracao}.
+Para os novos arcos reversos $(v,u)$ habilitados no digrafo residual pelo envio de fluxo ao longo do caminho mais curto $P$, sabe-se que para todo arco $(u,v) \in P$ a desigualdade triangular é satisfeita na igualdade estrita ($d(v) = d(u) + \bar{w}_\pi(u,v)$), de modo que $\bar{w}_{\pi'}(u,v) = 0$. Consequentemente, o arco reverso recém-habilitado satisfaz:
+\begin{equation}
+    \bar{w}_{\pi'}(v,u) = -\bar{w}_{\pi'}(u,v) = 0 \ge 0
+\end{equation}
+Portanto, toda a malha de arcos residuais em $D_{f'}$ preserva custos reduzidos garantidamente não negativos ($\bar{w}_{\pi'} \ge 0$), viabilizando o uso do algoritmo guloso de Dijkstra com \textit{heap} binária em $\mathcal{O}(|A| \log |V|)$ ou Fibonacci em $\mathcal{O}(|A| + |V| \log |V|)$ em todas as iterações subsequentes (veja~\cite{ahuja1993network, edmonds1972theoretical, korte2018combinatorial}). A dinâmica de uma iteração com potenciais nodais $\pi$ e a conservação de $\bar{w}' = 0$ nos arcos reversos é ilustrada na Figura~\ref{fig:ssp_iteracao}.
 
 \begin{figure}[!ht]
 \centering
@@ -2339,16 +2410,27 @@ A dinâmica de uma iteração com potenciais nodais $\pi$ e a preservação da n
 \label{fig:ssp_iteracao}
 \end{figure}
 
-\paragraph{Complexidade Assintótica.}
-Em redes com capacidades inteiras onde o fluxo máximo final é $F = |f^*|$, cada iteração aumenta pelo menos $\delta \ge 1$ unidade de fluxo. O número total de iterações é limitado superiormente por $F$. Empregando o SPFA com custo de pior caso $\mathcal{O}(|V| \cdot |A|)$, a complexidade global é $\mathcal{O}(|V| \cdot |A| \cdot F)$. Com o uso de potenciais nodais e Dijkstra com heap binária, a complexidade atinge $\mathcal{O}(F \cdot |A| \log |V|)$.
+A classe \lstinline{SuccessiveShortestDijkstra} (Código~\ref{lst:successive_shortest_dijkstra}, Apêndice~\ref{ap:successive_shortest_dijkstra}) concretiza essa arquitetura, atingindo a complexidade fortemente otimizada de:
+\begin{equation}
+    \mathcal{O}(F \cdot |A| \log |V|)
+\end{equation}
 
-\paragraph{Implementação em C++ e Apêndices.}
-Ambas as variantes foram implementadas no \textit{Core Framework}: a classe \lstinline{SuccessiveShortest} (Código~\ref{lst:successive_shortest}, Apêndice~\ref{ap:successive_shortest}) concretiza a versão base com SPFA, enquanto a classe \lstinline{SuccessiveShortestDijkstra} (Código~\ref{lst:successive_shortest_dijkstra}, Apêndice~\ref{ap:successive_shortest_dijkstra}) concretiza a versão otimizada com potenciais e Dijkstra.
+\subsection{Equivalência com o Algoritmo Húngaro (Kuhn-Munkres)}
 
-\textbf{Equivalência com o Algoritmo Húngaro (Kuhn-Munkres).} Uma consequência teórica e histórica fundamental da formulação com potenciais nodais reside no \textbf{Problema da Atribuição Ponderada} (\textit{Weighted Bipartite Matching} ou \textit{Assignment Problem}), que busca um emparelhamento de custo mínimo em um grafo bipartido com custos nas arestas. Historicamente resolvido pelo Algoritmo Húngaro de Kuhn e Munkres (veja~\cite{kuhn1955hungarian, schrijver2003combinatorial}), este problema modela-se diretamente como um fluxo de custo mínimo com capacidades unitárias ($c=1$). Sob a ótica de redes de fluxo, as operações de ajuste de potenciais em linhas e colunas na matriz de custos do Algoritmo Húngaro correspondem exatamente à manutenção dos potenciais duais $\pi$ com custos reduzidos não negativos $\bar{w}_\pi(u,v) \ge 0$, enquanto as buscas por caminhos aumentantes de menor custo acumulado em tempo $\mathcal{O}(|V|^3)$ equivalem formalmente à execução do algoritmo \textit{Successive Shortest Path} operando com potenciais de Edmonds-Karp.
+Uma consequência teórica e histórica basilar da formulação com potenciais nodais reside no \textbf{Problema da Atribuição Ponderada} (\textit{Weighted Bipartite Matching} ou \textit{Assignment Problem}), que busca um emparelhamento de peso mínimo em um grafo bipartido completo com custos nas arestas. Historicamente resolvido pelo Algoritmo Húngaro de Harold Kuhn e James Munkres (veja~\cite{kuhn1955hungarian, munkres1957algorithms, schrijver2003combinatorial}), este problema clássico modela-se diretamente como um fluxo de custo mínimo com capacidades unitárias ($c(u,v) = 1$) e demandas de suprimento balanceadas $b(v) \in \{+1, -1\}$.
 
+Sob a ótica de redes de fluxo, as tradicionais operações de ajuste de potenciais em linhas e colunas na matriz de custos do Algoritmo Húngaro correspondem com exatidão à manutenção dos potenciais nodais duais $\pi$ com custos reduzidos não negativos $\bar{w}_\pi(u,v) \ge 0$. Por sua vez, as etapas de identificação de caminhos aumentantes de menor custo acumulado em tempo cúbico $\mathcal{O}(|V|^3)$ equivalem formalmente à execução do algoritmo \textit{Successive Shortest Path} operando com potenciais nodais de Edmonds-Karp sobre uma rede unitária. Essa correspondência demonstra que o algoritmo Húngaro nada mais é do que a especialização dual do SSP para o domínio bipartido unitário.
 
-\chapter{O Algoritmo Network Simplex}\label{sec:network_simplex}
+\subsection{Análise Comparativa de Complexidade e Trade-offs Operacionais}
+
+A dualidade entre a variante canônica (\lstinline{SuccessiveShortest}) e a variante com potenciais (\lstinline{SuccessiveShortestDijkstra}) reflete um clássico compromisso da Engenharia de Software e da Teoria dos Algoritmos:
+\begin{itemize}
+    \item O algoritmo com \textbf{SPFA} opera com menor sobrecarga de memória (dispensa o vetor de potenciais nodais $\pi$ e a atualização telescópica de custos reduzidos a cada aumento), sendo a opção de código mais compacto e direto quando a rede possui poucos aumentos globais ou quando custos unitários já são naturalmente esparsos;
+    \item O algoritmo com \textbf{Dijkstra e Potenciais} introduz uma estrutura dual de suporte mais sofisticada, mas recompensa a implementação com previsibilidade monotônica e tempo de execução ordens de magnitude inferior em redes com grande volume de tráfego, eliminando o risco de oscilações na fila FIFO.
+\end{itemize}
+Essa divisão é formalmente confrontada na Tabela~\ref{tab:min_cost} e avaliada empiricamente frente aos conjuntos de teste DIMACS na Tabela~\ref{tab:benchmarks}.
+
+\chapter{A Abordagem Primal-Dual em Árvore: O Algoritmo Network Simplex}\label{sec:network_simplex}
 
 \section{Árvore Geradora Básica e Partição de Arcos}
 
@@ -2588,7 +2670,7 @@ Na literatura clássica de Otimização Combinatória (como em Ahuja, Magnanti e
 Deste modo, a equivalência do arco de retorno artificial atesta a universalidade matemática do \textit{Network Simplex}, consolidando-o como a infraestrutura canônica que unifica os domínios de fluxo máximo e de fluxo com custos.
 
 
-\section{Comparação Geral dos Algoritmos de Fluxo de Custo Mínimo}
+\section{Síntese Comparativa dos Três Paradigmas de Custo Mínimo}
 
 A Tabela~\ref{tab:min_cost} sintetiza os paradigmas, invariantes mantidas e as complexidades assintóticas dos três algoritmos de fluxo de custo mínimo desenvolvidos nesta Iniciação Científica.
 
@@ -2755,7 +2837,6 @@ Como perspectivas de evolução contínua desta pesquisa, destacam-se a avaliaç
 \bibliographystyle{plain}
 \bibliography{cit}
 
-\appendix
 \appendix
 
 \chapter{Implementação da Interface Base ``Flow-Network''}
