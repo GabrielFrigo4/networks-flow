@@ -1,0 +1,164 @@
+% =========================================================================
+% SEGMENTAÇÃO INTERATIVA DE IMAGENS VIA GRAPH CUTS
+% =========================================================================
+\chapter{Aplicação Prática: Segmentação Interativa de Imagens via Cortes em Grafos}\label{sec:segmentacao}
+
+Uma das aplicações mais impactantes dos algoritmos de fluxo em redes reside na área de Visão Computacional, especificamente no problema de Segmentação de Imagens (veja~\cite{ford1956maximal, cook1998combinatorial}). O objetivo é particionar uma imagem digital em duas regiões semanticamente distintas: o \textit{foreground} (objeto de interesse) e o \textit{background} (fundo), minimizando uma função de energia que penaliza simultaneamente a inconsistência com as marcações do usuário e a descontinuidade visual entre pixels adjacentes.
+
+
+\section{Modelagem Energética e Formulação de Rede de Fluxo}
+
+Seja $I$ uma imagem com $n = W \times H$ pixels. A construção da rede de segmentação $D = (V, A)$ procede como:
+
+\begin{enumerate}
+    \item \textbf{Vértices:} Cada pixel $p_i$ da imagem corresponde a um vértice. Adicionam-se dois terminais: a superfonte $s$ (representando o rótulo \textit{foreground}) e o supersumidouro $t$ (representando o \textit{background}). Total: $|V| = n + 2$.
+
+    \item \textbf{N-links (Neighborhood Links):} Para cada par de pixels adjacentes $(p, q)$ sob 4-conectividade (vizinhos horizontais e verticais), cria-se um arco bidirecional com peso proporcional à similaridade de cor:
+    \begin{equation}
+        w_{n}(p, q) = K \cdot \exp\left(-\frac{\|I_p - I_q\|^2}{2\sigma^2}\right)
+    \end{equation}
+    onde $\|I_p - I_q\|$ é a distância euclidiana no espaço RGB, $\sigma$ é um parâmetro de sensibilidade e $K$ é um fator de escala para conversão a inteiros. Pixels similares recebem peso alto (difíceis de separar); pixels com cores muito diferentes recebem peso baixo (fronteiras naturais).
+
+    \item \textbf{T-links (Terminal Links):} Para cada pixel $p$, criam-se dois arcos conectando-o aos terminais: $(s, p)$ com capacidade $w_s(p)$ e $(p, t)$ com capacidade $w_t(p)$. 
+    
+    Para os pixels explicitamente marcados como sementes pelo usuário, as capacidades são atribuídas de forma absoluta para garantir sua classificação:
+    \begin{itemize}
+        \item Se $p \in \mathcal{S}_{\text{fg}}$ (semente de \textit{foreground}): $w_s(p) = \infty$ e $w_t(p) = 0$.
+        \item Se $p \in \mathcal{S}_{\text{bg}}$ (semente de \textit{background}): $w_s(p) = 0$ e $w_t(p) = \infty$.
+    \end{itemize}
+    
+    Para os pixels não marcados, as capacidades são definidas usando a distância de cor mínima (heurística de vizinho mais próximo no espaço RGB) em relação a qualquer semente da respectiva classe:
+    \begin{equation}
+        w_s(p) = \max\left( K \cdot \exp\left(-\frac{\min_{s_j \in \mathcal{S}_{\text{fg}}} \|I_p - I_{s_j}\|^2}{2\sigma^2}\right), 1 \right)
+    \end{equation}
+    \begin{equation}
+        w_t(p) = \max\left( K \cdot \exp\left(-\frac{\min_{s_j \in \mathcal{S}_{\text{bg}}} \|I_p - I_{s_j}\|^2}{2\sigma^2}\right), 1 \right)
+    \end{equation}
+    onde $\|I_p - I_{s_j}\|$ representa a distância euclidiana tridimensional no espaço de cores RGB e o limite inferior $\max(\dots, 1)$ impede instabilidades numéricas.
+\end{enumerate}
+
+\begin{figure}[!ht]
+\centering
+\begin{tikzpicture}[
+    x={(-1.2cm, -0.6cm)}, 
+    y={(1.2cm, -0.6cm)}, 
+    z={(0cm, 1.5cm)}
+]
+
+    \node[sink node] (t) at (2,2,-3.5) {$t$};
+    
+    \foreach \x in {1,2,3} {
+        \foreach \y in {1,2,3} {
+            \coordinate (cp\x\y) at (\x,\y,0);
+        }
+    }
+    
+    \foreach \x in {1,2,3} {
+        \foreach \y in {1,2,3} {
+            \draw[->, red!70!black, dashed, line width=0.8pt, draw opacity=0.65] (cp\x\y) -- (t);
+        }
+    }
+    
+    \foreach \x in {1,2,3} {
+        \foreach \y in {1,2,3} {
+            \node[pixel node] (p\x\y) at (\x,\y,0) {$p_{\x\y}$};
+        }
+    }
+    
+    \begin{scope}[line width=1.4pt, draw opacity=0.9]
+      \draw[-] (p11) -- (p21); \draw[-] (p21) -- (p31);
+      \draw[-] (p12) -- (p22); \draw[-] (p22) -- (p32);
+      \draw[-] (p13) -- (p23); \draw[-] (p23) -- (p33);
+      \draw[-] (p11) -- (p12); \draw[-] (p12) -- (p13);
+      \draw[-] (p21) -- (p22); \draw[-] (p22) -- (p23);
+      \draw[-] (p31) -- (p32); \draw[-] (p32) -- (p33);
+    \end{scope}
+    
+    \node[source node] (s) at (2,2,3.5) {$s$};
+    
+    \foreach \x in {1,2,3} {
+        \foreach \y in {1,2,3} {
+            \draw[->, green!70!black, dashed, line width=0.8pt, draw opacity=0.65] (s) -- (p\x\y);
+        }
+    }
+
+    \begin{scope}[x={(1cm,0cm)}, y={(0cm,1cm)}, z={(0cm,0cm)}]
+        \node[right, font=\footnotesize, green!60!black] at (3.5, 0.5) {T-links $s \to p$};
+        \draw[->, green!70!black, dashed, line width=0.8pt] (2.3, 0.5) -- (3.3, 0.5);
+        
+        \node[right, font=\footnotesize, text=black] at (3.5, -0.5) {N-links (similaridade)};
+        \draw[-, line width=1.4pt] (2.3, -0.5) -- (3.3, -0.5);
+        
+        \node[right, font=\footnotesize, red!60!black] at (3.5, -1.5) {T-links $p \to t$};
+        \draw[->, red!70!black, dashed, line width=0.8pt] (2.3, -1.5) -- (3.3, -1.5);
+    \end{scope}
+    
+\end{tikzpicture}
+\caption{Modelagem de uma grade $3 \times 3$ de pixels como rede de fluxo para segmentação. Em uma perspectiva 3D, as linhas sólidas no plano intermediário representam N-links bidirecionais entre pixels vizinhos. As setas tracejadas verdes descendo do plano superior representam T-links de $s$ para cada pixel (capacidade $w_s(p)$); as setas vermelhas tracejadas indo para o plano inferior representam T-links de cada pixel para $t$ (capacidade $w_t(p)$). \textbf{Todos os 9 pixels possuem ambos os T-links}, mesmo que com capacidade muito pequena (mas nunca zero, pois $\max(\dots, 1)$ garante isso).}
+\label{fig:segmentacao_grafo}
+\end{figure}
+
+
+\section{Segmentação via Corte Mínimo e Otimização Global}
+
+O corte mínimo $(S, T)$ na rede construída induz naturalmente a partição da imagem, minimizando a energia da segmentação. Os pixels no conjunto $S$ (alcançáveis a partir de $s$ na rede residual) pertencem ao \textit{foreground}; os pixels no conjunto complementar $T = V \setminus S$ (inalcançáveis a partir de $s$) pertencem ao \textit{background}.
+
+A geometria desse corte divide os arcos cortados em \textbf{duas categorias} principais de penalidades (Regionais e de Fronteira):
+\begin{itemize}
+    \item \textbf{Penalidade Regional (T-links):} incorrida ao contrariar a preferência natural de um pixel por uma das partições. Secciona-se o arco $s \to p$ (pagando a capacidade $w_s(p)$) caso o pixel $p$ seja alocado ao \textit{background} ($T$); simetricamente, secciona-se $p \to t$ (pagando a capacidade $w_t(p)$) se for alocado ao \textit{foreground} ($S$), punindo a atribuição de pixels a partições incompatíveis com suas características de cor/intensidade.
+    \item \textbf{Penalidade de Fronteira (N-links):} incorrida ao introduzir uma descontinuidade espacial entre regiões vizinhas. Secciona-se o arco $p - q$ (pagando a capacidade de similaridade $w_n(p, q)$) sempre que pixels adjacentes $p$ e $q$ forem atribuídos a partições distintas ($p \in S$ e $q \in T$), punindo o surgimento de fronteiras entre regiões visualmente homogêneas da imagem.
+\end{itemize}
+
+O custo total do corte é exatamente a soma dos termos de dados e de regularização da energia.
+
+\begin{figure}[!ht]
+\centering
+\begin{tikzpicture}[thick, transform shape]
+  \draw[cut S, rounded corners=15pt] (-4.5, 1.7) rectangle (8.5, 6.8);
+  \node[cut label S, anchor=west] at (-3.8, 6.1) {$\mathbf{S}$ \textnormal{\footnotesize(Foreground)}};
+  
+  \draw[cut T, rounded corners=15pt] (-4.5, -3.8) rectangle (8.5, 1.3);
+  \node[cut label T, anchor=west] at (-3.8, -3.0) {$\mathbf{T}$ \textnormal{\footnotesize(Background)}};
+  
+  \node[source node] (s) at (2, 6) {$s$};
+  \node[sink node] (t) at (2, -3) {$t$};
+  
+  \node[flow node, fill=blue!10] (p1) at (0, 3) {$p_1$};
+  \node[flow node, fill=blue!30] (p2) at (4, 3) {$p_2$};
+  \node[flow node, fill=orange!20] (p4) at (0, 0) {$p_4$};
+  \node[flow node, fill=orange!40] (p3) at (4, 0) {$p_3$};
+
+  \draw[-, line width=1.4pt] (p1) -- node[above, font=\footnotesize, fill=white, inner sep=1.2pt]{$w_n$\,alto} (p2);
+  \draw[-, line width=1.4pt] (p4) -- node[below, font=\footnotesize, fill=white, inner sep=1.2pt]{$w_n$\,alto} (p3);
+  
+  \draw[-, line width=1.4pt] (p1) -- node[edge lbl, right=3.5pt, pos=0.25]{$w_n$\,baixo} (p4);
+  \draw[-, line width=1.4pt] (p2) -- node[edge lbl, left=3.5pt, pos=0.25]{$w_n$\,baixo} (p3);
+
+  \draw[->,green!60!black,dashed] (s) -- node[above left, edge lbl green]{$w_s=\infty$} (p1);
+  \draw[->,green!60!black,dashed] (s) -- node[above right, edge lbl green]{$w_s$\,alto} (p2);
+  
+  \draw[->,green!60!black,dashed] (s) to[out=180, in=135] node[left, edge lbl green, pos=0.5]{$w_s$\,baixo} (p4);
+  \draw[->,green!60!black,dashed] (s) to[out=0, in=45] node[right, edge lbl green, pos=0.5]{$w_s$\,baixo} (p3);
+  
+  \draw[->,red!60!black,dashed] (p4) -- node[below left, edge lbl red]{$w_t=\infty$} (t);
+  \draw[->,red!60!black,dashed] (p3) -- node[below right, edge lbl red]{$w_t$\,alto} (t);
+
+  \draw[->,red!60!black,dashed] (p1) to[out=225, in=180] node[left, edge lbl red, pos=0.5]{$w_t$\,baixo} (t);
+  \draw[->,red!60!black,dashed] (p2) to[out=315, in=0] node[right, edge lbl red, pos=0.5]{$w_t$\,baixo} (t);
+
+  \draw[cutviolet, line width=1.8pt, dashed] (-4.5, 1.5) -- (8.5, 1.5) 
+      node[right, font=\footnotesize\bfseries, text=cutviolet, fill=white, inner sep=2.5pt, yshift=3mm] {Corte Mínimo};
+\end{tikzpicture}
+\caption{Geometria do corte mínimo na segmentação. Os pixels da camada superior ($p_1, p_2$) são classificados como Foreground ($S$) e os da inferior ($p_3, p_4$) como Background ($T$). O corte mínimo (linha violeta tracejada) atua como uma guilhotina separando o conjunto $S$ do conjunto $T$. Visualmente, percebe-se que ele rompe com precisão as arestas mais fracas: os N-links verticais ($w_n$ baixo, pixels de cores distintas), e os T-links cruzados fracos ($s \to T$ e $S \to t$). Em contrapartida, os T-links com capacidade $\infty$ (sementes) protegem seus pixels contra cortes indevidos.}
+\label{fig:segmentacao_corte}
+\end{figure}
+
+
+\section{Implementação Computacional e Análise de Eficiência}
+
+Na aplicação prática de segmentação interativa de imagens, a rede construída pode conter milhões de vértices ($n = W \times H$) e milhões de arcos ($\approx 4n$ N-links $+ 2n$ T-links para imagens de alta resolução), tornando a eficiência assintótica e prática do algoritmo de fluxo máximo e corte mínimo um fator determinante para a viabilidade e interatividade do sistema.
+
+A ferramenta computacional desenvolvida neste projeto emprega o motor de fluxo \lstinline{PushRelabelImproved} do arcabouço implementado (baseado na política \textit{Highest Label} combinada com a heurística de lacunas \textit{Gap Heuristic}). Essa escolha fundamenta-se na complexidade de $\mathcal{O}(|V|^2 \sqrt{|A|})$ (conforme Tabela~\ref{tab:max_flow}), que supera o Push-Relabel FIFO ($\mathcal{O}(|V|^3)$) em redes densas, e no seu desempenho consagrado na literatura para grafos planares de grade (veja~\cite{goldberg1988new}). O código-fonte da aplicação interativa está disponibilizado no repositório público do projeto (veja Apêndice~\ref{ap:github}).
+
+\vspace{0.8cm}
+

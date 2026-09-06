@@ -1,0 +1,22 @@
+% =========================================================================
+% CONCLUSÕES DA INICIAÇÃO CIENTÍFICA
+% =========================================================================
+Os resultados obtidos ao longo desta Iniciação Científica demonstram o cumprimento bem-sucedido dos objetivos centrais do projeto. A pesquisa integrou com rigor a teoria da Otimização Combinatória, a engenharia de software de alto desempenho e a resolução de problemas práticos, estruturando-se em quatro pilares fundamentais:
+
+\begin{enumerate}
+    \item \textbf{Fundamentação Teórica Rigorosa:} Foram formulados e demonstrados matematicamente os teoremas basilares da teoria de fluxos, incluindo o Teorema do Fluxo Máximo e Corte Mínimo, o Teorema da Integralidade de Ford-Fulkerson, o Teorema da Decomposição de Fluxo, o Teorema de Menger (versões por arcos e por vértices), o Teorema de König e as Quatro Dualidades Fundamentais em grafos bipartidos. No domínio de custo mínimo, foram demonstradas a condição de otimalidade por ciclos negativos, o Teorema de Equivalência dos Custos Reduzidos, as condições de Complementaridade de Folgas e a Total Unimodularidade da matriz de incidência.
+    
+    \item \textbf{Arquitetura Orientada a Objetos em C++ Moderno:} Foi desenvolvido um arcabouço robusto e reutilizável composto por duas famílias polimórficas de classes:
+    \begin{itemize}
+        \item \textbf{Família \lstinline{FlowNetwork} (Fluxo Máximo):} Centralizada na classe base abstrata \lstinline{FlowNetwork} e concretizada pelos motores \lstinline{FordFulkerson}, \lstinline{EdmondsKarp}, \lstinline{Dinic}, \lstinline{PushRelabel} (FIFO) e \lstinline{PushRelabelImproved} (Gap Heuristic), documentados nos Apêndices~\ref{ap:flownetwork} a~\ref{ap:push_relabel_improved}.
+        \item \textbf{Família \lstinline{CostNetwork} (Custo Mínimo):} Centralizada na classe base abstrata \lstinline{CostNetwork} e concretizada pelos algoritmos \lstinline{CycleCanceling}, \lstinline{SuccessiveShortest} (SPFA), \lstinline{SuccessiveShortestDijkstra} (Potenciais) e \lstinline{NetworkSimplex}, documentados nos Apêndices~\ref{ap:costnetwork} a~\ref{ap:network_simplex}.
+    \end{itemize}
+    
+    \item \textbf{Aplicações Práticas e Reduções Combinatórias:} Demonstrou-se a versatilidade prática dos modelos de fluxo através da implementação de resolvedores para problemas clássicos (\textit{Maximum Bipartite Matching}, \textit{Minimum Vertex Cover}, \textit{Maximum Independent Set}, rotas disjuntas e desconexão de redes), culminando no desenvolvimento de uma ferramenta completa de \textbf{Segmentação Interativa de Imagens} baseada em corte mínimo via corte de grafos (\textit{Graph Cuts}).
+    
+    \item \textbf{Protocolo Experimental e Benchmarks Computacionais:} Foi concebido e estruturado um protocolo reprodutível de validação experimental em instâncias canônicas da literatura (coleções DIMACS e geradores sintéticos), projetado para confrontar os limites assintóticos teóricos com medições de tempo de CPU em alta resolução e contadores operacionais internos, estabelecendo o arcabouço para evidenciar a superioridade prática de métodos como \textit{Dinic}, \textit{Push-Relabel Gap} e \textit{Network Simplex}.
+\end{enumerate}
+
+Como perspectivas de trabalhos futuros imediatos, destacam-se a execução sistemática da bateria de testes comparativos sobre instâncias padronizadas do benchmark DIMACS, a avaliação do impacto empírico de diferentes regras de pivoteamento no \textit{Network Simplex} (como \textit{Candidate List Pricing}), e a redação do artigo científico final sintetizando as contribuições desta pesquisa.
+
+

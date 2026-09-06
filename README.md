@@ -10,12 +10,12 @@
 
 A documentação oficial da pesquisa é gerada a partir dos códigos-fonte em LaTeX disponíveis na pasta [`LaTeX/`](./LaTeX/). A tabela a seguir detalha a finalidade de cada documento e as diferenças entre eles:
 
-| PDF Gerado | Arquivo Fonte | Descrição e Diferenças |
-| :--- | :--- | :--- |
-| [📗&nbsp;**`book.pdf`**][baixar_pdf_book] | [`book.tex`](./LaTeX/book.tex) | **Livro e Monografia Independente.** Documento completo e denso estruturado editorialmente em Partes e Capítulos para estudo profundo e distribuição aberta, livre da formatação burocrática de Iniciação Científica. |
-| [📘&nbsp;**`projeto.pdf`**][baixar_pdf_projeto] | [`projeto.tex`](./LaTeX/projeto.tex) | Proposta e plano de trabalho inicial do projeto de pesquisa, submetido para a avaliação do edital. |
-| [📙&nbsp;**`relatorio.pdf`**][baixar_pdf_relatorio] | [`relatorio.tex`](./LaTeX/relatorio.tex) | Relatório formal de acompanhamento da pesquisa. Contém a capa oficial institucional da UFABC com identificação do edital e campos de assinaturas. |
-| [📕&nbsp;**`ic.pdf`**][baixar_pdf_ic] | [`ic.tex`](./LaTeX/ic.tex) | Documento principal compilando todo o conteúdo técnico da pesquisa. **Possui exatamente o mesmo conteúdo textual do `relatorio.tex`**, diferindo apenas por **não ter a capa formal do relatório** (folha de assinaturas), oferecendo uma formatação limpa para leitura. |
+| PDF Gerado                                          | Arquivo Fonte                            | Descrição e Diferenças                                                                                                                                                                                                                                                   |
+| :-------------------------------------------------- | :--------------------------------------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [📗&nbsp;**`book.pdf`**][baixar_pdf_book]           | [`book.tex`](./LaTeX/book.tex)           | **Livro e Monografia Independente.** Documento completo e denso estruturado editorialmente em Partes e Capítulos para estudo profundo e distribuição aberta, livre da formatação burocrática de Iniciação Científica.                                                    |
+| [📘&nbsp;**`projeto.pdf`**][baixar_pdf_projeto]     | [`projeto.tex`](./LaTeX/projeto.tex)     | Proposta e plano de trabalho inicial do projeto de pesquisa, submetido para a avaliação do edital.                                                                                                                                                                       |
+| [📙&nbsp;**`relatorio.pdf`**][baixar_pdf_relatorio] | [`relatorio.tex`](./LaTeX/relatorio.tex) | Relatório formal de acompanhamento da pesquisa. Contém a capa oficial institucional da UFABC com identificação do edital e campos de assinaturas.                                                                                                                        |
+| [📕&nbsp;**`ic.pdf`**][baixar_pdf_ic]               | [`ic.tex`](./LaTeX/ic.tex)               | Documento principal compilando todo o conteúdo técnico da pesquisa. **Possui exatamente o mesmo conteúdo textual do `relatorio.tex`**, diferindo apenas por **não ter a capa formal do relatório** (folha de assinaturas), oferecendo uma formatação limpa para leitura. |
 
 ---
 
@@ -113,7 +113,7 @@ Abaixo estão listados os problemas clássicos que foram modelados e resolvidos:
 
 > [!TIP]
 > Todos os códigos-fonte C++ com as reduções e modelagens para resolver os problemas acima estão disponíveis no diretório **[Implementações/Problemas](./Implementações/Problemas/)**.
-> Para submissões em juízes online (*Codeforces, CSES, Beecrowd*), cada pasta de problema conta com um `Makefile` com o comando **`make clip`**, que utiliza o utilitário [`bundle.py`](./Implementações/bundle.py) para empacotar automaticamente todos os headers locais em um único código C++ autocontido e copiá-lo direto para o Clipboard (`wl-copy`).
+> Para submissões em juízes online (_Codeforces, CSES, Beecrowd_), cada pasta de problema conta com um `Makefile` com o comando **`make clip`**, que utiliza o utilitário [`bundle.py`](./Implementações/bundle.py) para empacotar automaticamente todos os headers locais em um único código C++ autocontido e copiá-lo direto para o Clipboard (`wl-copy`).
 
 ---
 
@@ -143,27 +143,32 @@ Módulo dedicado ao benchmarking computacional e avaliação empírica de desemp
 O repositório adota um sistema de automação padronizado baseado em **Makefiles compatíveis com a especificação POSIX (`.POSIX:`)**, organizados em uma hierarquia de 3 níveis:
 
 ### 1. Nível 1: Maestro Global ([`./Makefile`](./Makefile))
+
 Permite orquestrar todo o projeto diretamente a partir da raiz:
 
-| Comando | Ação |
-| :--- | :--- |
-| `make` / `make all` | Compila a documentação LaTeX, aplicações práticas e valida a integridade do C++. |
-| `make setup` | Configura o ambiente local e ativa os hooks do Git em [`.githooks/`](./.githooks/) para prevenção de commits de binários/artefatos. |
-| `make latex` | Compila todos os documentos LaTeX (`book.pdf`, `ic.pdf`, `relatorio.pdf`, `projeto.pdf`). |
-| `make book` | Compila o livro/monografia independente (`book.pdf`). |
-| `make apps` | Compila todas as ferramentas e aplicações práticas em [`Aplicações/`](./Aplicações/). |
-| `make impl` | Valida a sintaxe C++23 de todos os motores de fluxo em [`Implementações/`](./Implementações/). |
-| `make test` | Executa a suíte de testes automatizada de todos os problemas e aplicações. |
-| `make clean` | Limpa arquivos e binários temporários em todos os módulos do repositório. |
+| Comando             | Ação                                                                                                                                |
+| :------------------ | :---------------------------------------------------------------------------------------------------------------------------------- |
+| `make` / `make all` | Compila a documentação LaTeX, aplicações práticas e valida a integridade do C++.                                                    |
+| `make setup`        | Configura o ambiente local e ativa os hooks do Git em [`.githooks/`](./.githooks/) para prevenção de commits de binários/artefatos. |
+| `make latex`        | Compila todos os documentos LaTeX (`book.pdf`, `ic.pdf`, `relatorio.pdf`, `projeto.pdf`).                                           |
+| `make book`         | Compila o livro/monografia independente (`book.pdf`).                                                                               |
+| `make apps`         | Compila todas as ferramentas e aplicações práticas em [`Aplicações/`](./Aplicações/).                                               |
+| `make impl`         | Valida a sintaxe C++23 de todos os motores de fluxo em [`Implementações/`](./Implementações/).                                      |
+| `make test`         | Executa a suíte de testes automatizada de todos os problemas e aplicações.                                                          |
+| `make sync-code`    | Sincroniza automaticamente os códigos-fonte C++ com os apêndices LaTeX.                                                             |
+| `make clean`        | Limpa arquivos e binários temporários em todos os módulos do repositório.                                                           |
 
 ### 2. Nível 2: Orquestradores de Módulos
+
 Cada pasta principal possui seu próprio `Makefile` (.POSIX) encapsulado:
-* **[`LaTeX/Makefile`](./LaTeX/Makefile):** Ciclo completo multi-pass com `pdflatex` e `bibtex` (`make book`, `make ic`, `make relatorio`, `make projeto`, `make clean`, `make distclean`).
-* **[`Aplicações/Makefile`](./Aplicações/Makefile):** Compilação e execução de testes de todas as aplicações.
-* **[`Implementações/Makefile`](./Implementações/Makefile):** `make check` (sintaxe dos headers) e `make test` (testes de soluções).
-* **[`Experimentos/Makefile`](./Experimentos/Makefile):** Automação do pipeline de benchmarks.
+
+- **[`LaTeX/Makefile`](./LaTeX/Makefile):** Ciclo completo multi-pass com `pdflatex` e `bibtex` (`make book`, `make ic`, `make relatorio`, `make projeto`, `make clean`, `make distclean`).
+- **[`Aplicações/Makefile`](./Aplicações/Makefile):** Compilação e execução de testes de todas as aplicações.
+- **[`Implementações/Makefile`](./Implementações/Makefile):** `make check` (sintaxe dos headers) e `make test` (testes de soluções).
+- **[`Experimentos/Makefile`](./Experimentos/Makefile):** Automação do pipeline de benchmarks.
 
 ### 3. Nível 3: Problemas e Folhas
+
 Cada problema em [`Implementações/Problemas/`](./Implementações/Problemas/) e aplicação em [`Aplicações/`](./Aplicações/) possui um `Makefile` padronizado (.POSIX) com suporte a `make run`, `make clean`, `make bundle` e `make clip`.
 
 ---
@@ -176,6 +181,7 @@ Cada problema em [`Implementações/Problemas/`](./Implementações/Problemas/) 
 Caso queira gerar qualquer um dos PDFs (`book.pdf`, `ic.pdf`, `relatorio.pdf` ou `projeto.pdf`) localmente:
 
 1. Certifique-se de ter uma distribuição LaTeX instalada (como TeX Live, MiKTeX ou MacTeX) com suporte aos pacotes requeridos (`amsmath`, `tikz`, `geometry`, etc.).
+
 ```bash
 make latex
 ```

@@ -1,0 +1,353 @@
+% =========================================================================
+% TEORIA DO FLUXO DE CUSTO MÍNIMO E DUALIDADE
+% =========================================================================
+\chapter{Teoria do Fluxo de Custo Mínimo e Dualidade}\label{sec:mcf_teoria}
+\label{sec:mcf}
+
+O problema do fluxo máximo, estudado exaustivamente nas seções anteriores, busca maximizar a quantidade de recurso transportada pela rede sem considerar nenhum critério de eficiência econômica. Na prática, entretanto, muitos sistemas de transporte e logística exigem que o roteamento não apenas respeite as capacidades, mas também minimize o custo total da operação. O problema do Fluxo de Custo Mínimo (\textit{Minimum Cost Flow} --- MCF) generaliza elegantemente o fluxo máximo ao incorporar esta dimensão econômica (veja~\cite{ahuja1993network}).
+
+Formalmente, uma rede de custo mínimo é definida sobre um digrafo $D = (V, A)$ onde cada arco $(u,v) \in A$ possui dois atributos numéricos:
+\begin{itemize}
+    \item \textbf{Capacidade:} $c(u,v) \ge 0$, o limite superior do fluxo transportável (idêntico ao problema de fluxo máximo).
+    \item \textbf{Custo unitário:} $w(u,v) \in \mathbb{R}$, o preço cobrado por cada unidade de fluxo que transita pelo arco.
+\end{itemize}
+
+Adicionalmente, cada vértice $v \in V$ possui uma demanda líquida $b(v) \in \mathbb{R}$ que classifica o seu papel na rede:
+\begin{itemize}
+    \item Se $b(v) > 0$: o vértice $v$ é uma \textbf{fonte} (fornecedor), gerando $b(v)$ unidades de recurso.
+    \item Se $b(v) < 0$: o vértice $v$ é um \textbf{sumidouro} (consumidor), absorvendo $|b(v)|$ unidades.
+    \item Se $b(v) = 0$: o vértice $v$ é um nó de \textbf{transbordo} (\textit{transshipment}), apenas retransmitindo fluxo.
+\end{itemize}
+
+Para que o problema seja viável, a condição de equilíbrio global $\sum_{v \in V} b(v) = 0$ deve ser satisfeita.
+
+\begin{definicao}[Custo Total de um Fluxo][def:custo_fluxo]
+Dada uma rede com custos $D = (V, A, c, w)$ e um fluxo viável $f$, o \textbf{custo total do fluxo}, denotado pelo operador funcional $\cost(f)$, é definido pelo somatório ponderado dos produtos entre custos unitários e fluxos alocados:
+\begin{equation}
+    \cost(f) \coloneqq \sum_{(u,v) \in A} w(u,v) \cdot f(u,v)
+\end{equation}
+\end{definicao}
+
+O objetivo central do Problema do Fluxo de Custo Mínimo consiste em determinar um fluxo viável $f$ que minimize $\cost(f)$:
+\begin{equation}
+    \min_{f} \cost(f) = \min_{f} \sum_{(u,v) \in A} w(u,v) \cdot f(u,v)
+\end{equation}
+sujeito às restrições de capacidade $0 \le f(u,v) \le c(u,v)$ para todo $(u,v) \in A$, e à lei de conservação generalizada com demandas:
+\begin{equation}
+    \sum_{(v,w) \in A} f(v,w) - \sum_{(u,v) \in A} f(u,v) = b(v), \quad \forall v \in V
+\end{equation}
+
+Esta formulação unifica diversos problemas clássicos como casos particulares: o problema de transporte, o problema de atribuição (\textit{Assignment}), o problema do caminho mais curto e o próprio fluxo máximo (veja~\cite{korte2018combinatorial, cook1998combinatorial}).
+
+\begin{figure}[!ht]
+\centering
+\begin{tikzpicture}[thick]
+    \node[source node] (s1) at (0, 2.0) {$v_1$};
+    \node[source node] (s2) at (0, -2.0) {$v_2$};
+    \node[trans node] (m1) at (4.0, 2.0) {$v_3$};
+    \node[trans node] (m2) at (4.0, -2.0) {$v_4$};
+    \node[sink node] (t1) at (8.0, 2.0) {$v_5$};
+    \node[sink node] (t2) at (8.0, -2.0) {$v_6$};
+
+    \node[font=\footnotesize, above=3pt] at (s1.north) {$b=+5$};
+    \node[font=\footnotesize, below=3pt] at (s2.south) {$b=+3$};
+    \node[font=\footnotesize, above=3pt] at (m1.north) {$b=0$};
+    \node[font=\footnotesize, below=3pt] at (m2.south) {$b=0$};
+    \node[font=\footnotesize, above=3pt] at (t1.north) {$b=-4$};
+    \node[font=\footnotesize, below=3pt] at (t2.south) {$b=-4$};
+
+    \draw[flow edge] (s1) -- node[edge lbl above] {$w\!=\!2, c\!=\!4$} (m1);
+    \draw[flow edge] (s1) -- node[edge lbl above, pos=0.25] {$w\!=\!5, c\!=\!3$} (m2);
+    \draw[flow edge] (s2) -- node[edge lbl below, pos=0.25] {$w\!=\!3, c\!=\!4$} (m1);
+    \draw[flow edge] (s2) -- node[edge lbl below] {$w\!=\!1, c\!=\!5$} (m2);
+    \draw[flow edge] (m1) -- node[edge lbl above] {$w\!=\!4, c\!=\!5$} (t1);
+    \draw[flow edge] (m1) -- node[edge lbl, right=3pt] {$w\!=\!2, c\!=\!2$} (m2);
+    \draw[flow edge] (m2) -- node[edge lbl below, pos=0.25] {$w\!=\!6, c\!=\!3$} (t1);
+    \draw[flow edge] (m2) -- node[edge lbl below] {$w\!=\!3, c\!=\!6$} (t2);
+\end{tikzpicture}
+\caption{Rede de custo mínimo com 6 vértices. Cada arco exibe o custo unitário $w$ e a capacidade $c$. Vértices verdes são fontes ($b > 0$), amarelos são transbordo ($b = 0$) e vermelhos são sumidouros ($b < 0$). A condição de equilíbrio $\sum b(v) = 5 + 3 - 4 - 4 = 0$ é satisfeita.}
+\label{fig:mcf_rede}
+\end{figure}
+
+
+\section{Grafo Residual com Custos}
+
+A extensão do conceito de grafo residual para redes com custos é fundamental para a análise de otimalidade do MCF. Dado um fluxo viável $f$ em uma rede com custos, o digrafo residual $D_f = (V, A_f)$ é construído de forma análoga ao caso do fluxo máximo, porém cada arco residual carrega também um custo associado (veja~\cite{ahuja1993network}).
+
+Para cada arco original $(u,v) \in A$ com fluxo $f(u,v)$:
+\begin{itemize}
+    \item Se $f(u,v) < c(u,v)$: existe um \textbf{arco direto} $(u,v)$ em $A_f$ com capacidade residual $c_f(u,v) = c(u,v) - f(u,v)$ e custo $w_f(u,v) = w(u,v)$. Enviar mais fluxo por este arco custa $w(u,v)$ por unidade adicional.
+    \item Se $f(u,v) > 0$: existe um \textbf{arco reverso} $(v,u)$ em $A_f$ com capacidade residual $c_f(v,u) = f(u,v)$ e custo $w_f(v,u) = -w(u,v)$. Cancelar fluxo previamente enviado economiza $w(u,v)$ por unidade cancelada, justificando o custo negativo.
+\end{itemize}
+
+\begin{figure}[!ht]
+\centering
+\begin{tikzpicture}[thick]
+\begin{scope}[xshift=0cm]
+  \node[source node] (s) at (0,1.5) {$s$};
+  \node[flow node] (a) at (3.2,3.2) {$a$};
+  \node[flow node] (b) at (3.2,-0.2) {$b$};
+  \node[sink node] (t) at (6.4,1.5) {$t$};
+  \draw[flow edge] (s) -- node[edge lbl above] {$f\!=\!2, w\!=\!3, c\!=\!4$} (a);
+  \draw[flow edge] (s) -- node[edge lbl below] {$f\!=\!1, w\!=\!1, c\!=\!3$} (b);
+  \draw[flow edge] (a) -- node[edge lbl above] {$f\!=\!2, w\!=\!2, c\!=\!3$} (t);
+  \draw[flow edge] (b) -- node[edge lbl below] {$f\!=\!1, w\!=\!5, c\!=\!2$} (t);
+  \node[font=\footnotesize, below] at (3.2,-1.0) {\textit{(a) Rede original com fluxo}};
+\end{scope}
+
+\node at (7.8,1.5) {\Huge $\Rightarrow$};
+
+\begin{scope}[xshift=9.2cm]
+  \node[source node] (s2) at (0,1.5) {$s$};
+  \node[flow node] (a2) at (3.2,3.2) {$a$};
+  \node[flow node] (b2) at (3.2,-0.2) {$b$};
+  \node[sink node] (t2) at (6.4,1.5) {$t$};
+
+  \draw[flow edge,blue] (s2) -- node[edge lbl below, text=blue!80!black] {$c_f\!=\!2, w\!=\!3$} (a2);
+  \draw[flow edge,blue] (s2) -- node[edge lbl above, text=blue!80!black] {$c_f\!=\!2, w\!=\!1$} (b2);
+  \draw[flow edge,blue] (a2) -- node[edge lbl below, text=blue!80!black] {$c_f\!=\!1, w\!=\!2$} (t2);
+  \draw[flow edge,blue] (b2) -- node[edge lbl above, text=blue!80!black] {$c_f\!=\!1, w\!=\!5$} (t2);
+
+  \draw[rev edge,bend right=32] (a2) to node[edge lbl above, text=red!80!black] {$c_f\!=\!2, w\!=\!{-3}$} (s2);
+  \draw[rev edge,bend left=32] (b2) to node[edge lbl below, text=red!80!black] {$c_f\!=\!1, w\!=\!{-1}$} (s2);
+  \draw[rev edge,bend right=32] (t2) to node[edge lbl above, text=red!80!black] {$c_f\!=\!2, w\!=\!{-2}$} (a2);
+  \draw[rev edge,bend left=32] (t2) to node[edge lbl below, text=red!80!black] {$c_f\!=\!1, w\!=\!{-5}$} (b2);
+  \node[font=\footnotesize, below] at (3.2,-1.0) {\textit{(b) Digrafo residual $D_f$ com custos}};
+\end{scope}
+\end{tikzpicture}
+\caption{Construção do grafo residual com custos. (a)~Rede original com fluxo, custo e capacidade em cada arco. (b)~Digrafo residual $D_f$: arcos azuis (capacidade ociosa, custo original) e arcos vermelhos tracejados (fluxo cancelável, custo negativo $-w$).}
+\label{fig:custos_residuais}
+\end{figure}
+
+
+\section{Condição de Otimalidade: Ciclos de Custo Negativo}\label{sec:condicao_klein}
+
+O critério fundamental de otimalidade para o problema de fluxo de custo mínimo é análogo, em espírito, ao critério de ausência de caminhos aumentantes no fluxo máximo, porém opera sobre a dimensão dos custos ao invés das capacidades (veja~\cite{ahuja1993network, cook1998combinatorial}).
+
+\begin{teorema}[Condição de Otimalidade por Ciclos Negativos --- Klein, 1967][teo:ciclos_negativos]
+Um fluxo viável $f$ em uma rede $D = (V, A)$ com custos é de custo mínimo se, e somente se, o digrafo residual $D_f$ não contém nenhum ciclo direcionado de custo total negativo.
+\end{teorema}
+
+\intuicao{Geométrica: A Diferença de Fluxos como Circulação} Antes de examinar os detalhes algébricos da demonstração, a essência do teorema pode ser compreendida através de uma elegante perspectiva geométrica: como tanto o fluxo atual $f$ quanto uma solução alternativa hipoteticamente ótima $f^*$ satisfazem rigorosamente as mesmas demandas nodais $b(v)$, a diferença $g = f^* - f$ possui divergência nula em todos os nós ($b(v) - b(v) = 0$). Isso significa que a transição de $f$ para $f^*$ não envolve criação ou destruição de recursos, mas puramente uma recirculação fechada. Se no digrafo residual $D_f$ existir um ciclo fechado com custo líquido negativo, circular recursos por ele reduz o custo total instantaneamente. Por outro lado, se não existir nenhum ciclo negativo no digrafo residual, qualquer alteração possível no fluxo só poderá encarecer a operação, atestando que $f$ já ocupa o ponto mais baixo de um poço de potencial convexo global.
+
+\begin{demonstracao}
+A demonstração requer a verificação rigorosa das duas vias da equivalência:
+
+\medskip
+\noindent $(\Rightarrow)$ \textbf{Necessidade (Se $f$ é ótimo, então $D_f$ não contém ciclos negativos):} \\
+Suponha por contradição que $f$ é um fluxo de custo mínimo, mas existe um ciclo direcionado simples $C$ em $D_f$ com custo total estritamente negativo:
+$$w(C) = \sum_{(u,v) \in C} w_f(u,v) < 0$$
+Seja $\delta = \min_{(u,v) \in C} c_f(u,v) > 0$ a capacidade residual mínima (gargalo) ao longo de $C$. Definimos um novo fluxo viável $f'$ enviando $\delta$ unidades ao longo do ciclo $C$:
+\begin{itemize}
+    \item Para cada arco residual direto $(u,v) \in C$: aumentamos $f'(u,v) = f(u,v) + \delta \le c(u,v)$;
+    \item Para cada arco residual reverso $(v,u) \in C$: diminuímos $f'(u,v) = f(u,v) - \delta \ge 0$.
+\end{itemize}
+Como $C$ é um ciclo fechado, cada vértice em $C$ possui exatamente um arco incidente de entrada e um de saída com taxa $\delta$, preservando rigorosamente a lei de conservação de fluxo e o atendimento às demandas $b(v)$. A viabilidade das capacidades é garantida pela escolha de $\delta$. O novo custo total é:
+$$\cost(f') = \cost(f) + \delta \cdot w(C) < \cost(f)$$
+pois $\delta > 0$ e $w(C) < 0$. Isso contradiz frontalmente a hipótese de que $f$ era de custo mínimo, provando a necessidade.
+
+\medskip
+\noindent $(\Leftarrow)$ \textbf{Suficiência (Se $D_f$ não contém ciclos negativos, então $f$ é ótimo):} \\
+Suponha que $D_f$ não contém ciclos direcionados de custo negativo. Seja $f^*$ um fluxo viável ótimo arbitrário (cuja existência decorre da compacidade e não-vazio do poliedro de fluxos viáveis). Considere a função diferença $g: A \to \mathbb{R}$ definida por $g(u,v) = f^*(u,v) - f(u,v)$ para todo $(u,v) \in A$.
+
+Como tanto $f^*$ quanto $f$ satisfazem as restrições de conservação com o mesmo vetor de demandas $b$, a divergência líquida de $g$ em cada vértice $v \in V$ é nula:
+$$\sum_{(v,w) \in A} g(v,w) - \sum_{(u,v) \in A} g(u,v) = b(v) - b(v) = 0$$
+Logo, $g$ define uma circulação pura. Demonstra-se que $g$ induz uma circulação viável no digrafo residual $D_f = (V, A_f)$:
+\begin{itemize}
+    \item Se $g(u,v) > 0$, então $f^*(u,v) > f(u,v)$. Como $f^*(u,v) \le c(u,v)$, segue que $0 < g(u,v) \le c(u,v) - f(u,v) = c_f(u,v)$. Logo, o fluxo $g(u,v)$ é suportado pelo arco direto $(u,v) \in A_f$, com custo unitário residual $w_f(u,v) = w(u,v)$.
+    \item Se $g(u,v) < 0$, então $f(u,v) > f^*(u,v) \ge 0$. Definindo $\tilde{g}(v,u) = -g(u,v) > 0$, temos $0 < \tilde{g}(v,u) \le f(u,v) = c_f(v,u)$. Portanto, $\tilde{g}(v,u)$ é suportado pelo arco reverso $(v,u) \in A_f$, com custo unitário residual $w_f(v,u) = -w(u,v)$.
+\end{itemize}
+Pelo Teorema da Decomposição de Fluxo (Teorema~\ref{teo:decomposicao}), a circulação viável induzida por $g$ em $D_f$ pode ser decomposta em uma família finita de ciclos direcionados simples $C_1, C_2, \dots, C_k$ em $D_f$, com taxas de fluxo $\delta_i > 0$, tais que $g = \sum_{i=1}^k \delta_i \cdot \mathbf{1}_{C_i}$. O custo da diferença entre os fluxos é expresso linearmente por:
+$$\cost(f^*) - \cost(f) = \sum_{(u,v) \in A} w(u,v) \cdot g(u,v) = \sum_{i=1}^k \delta_i \cdot w(C_i)$$
+Como por hipótese o digrafo residual $D_f$ não possui nenhum ciclo de custo negativo, temos $w(C_i) \ge 0$ para todo $i \in \{1, \dots, k\}$. Consequentemente:
+$$\cost(f^*) - \cost(f) = \sum_{i=1}^k \delta_i \cdot w(C_i) \ge 0 \implies \cost(f) \le \cost(f^*)$$
+Sendo $f^*$ ótimo, conclui-se que $\cost(f) = \cost(f^*)$, isto é, $f$ é necessariamente um fluxo de custo mínimo. \end{demonstracao}
+
+\implicacoes{e o Desafio Computacional} Este teorema é o critério basilar que deu origem ao clássico algoritmo de Cancelamento de Ciclos de Klein (veja~\cite{klein1967primal}). Embora o algoritmo direto possa convergir lentamente com custos irracionais ou redes patológicas, o teorema estabelece a fundação matemática sobre a qual foram erguidos métodos modernos eficientes, como o algoritmo de \textit{Cost Scaling} de Goldberg-Tarjan e a formulação dual por potenciais nodais, que transforma a detecção global de ciclos em condições locais de verificação instantânea.
+
+\paragraph{Implicações Estratégicas da Condição de Otimalidade.}
+O Teorema da Condição de Otimalidade por Ciclos Negativos estabelece o princípio teórico norteador para a resolução do problema: alcançar o fluxo de custo mínimo equivale estritamente a eliminar todos os ciclos negativos do digrafo residual $D_f$. Sob a perspectiva de projeto algorítmico, esse resultado desdobra-se em duas filosofias fundamentais:
+\begin{itemize}
+    \item \textbf{Abordagem Primal (Corretiva):} Parte de um fluxo viável qualquer e ataca a otimalidade de custos, identificando e cancelando iterativamente ciclos direcionados negativos em $D_f$ até eliminá-los completamente;
+    \item \textbf{Abordagem Dual (Preventiva):} Parte de um fluxo nulo (que é trivialmente ótimo em custos, pois não abriga ciclos negativos em $D_f$) e constrói a viabilidade do fluxo gradativamente, assegurando que nenhuma operação crie ciclos de custo negativo.
+\end{itemize}
+
+A detecção explícita e repetida de ciclos negativos em $D_f$ por métodos diretos de caminhos mínimos (como o Bellman-Ford) pode, contudo, tornar-se computacionalmente custosa. Isso motiva a busca por critérios de verificação local mais eficientes — baseados em potenciais nodais e custos reduzidos —, formalizados a seguir.
+
+\begin{figure}[!ht]
+\centering
+\begin{tikzpicture}[thick]
+\begin{scope}[xshift=0cm]
+  \tikzsubcaption{(1.75,2.6)}{(a) Ciclo negativo em $D_f$}
+  \node[flow node] (a) at (0,1.8) {$a$};
+  \node[flow node] (b) at (3.5,1.8) {$b$};
+  \node[flow node] (c) at (1.75,0) {$c$};
+  \draw[sat edge] (a) -- node[edge lbl above] {$w\!=\!2$} (b);
+  \draw[sat edge] (b) -- node[edge lbl above] {$w\!=\!{-4}$} (c);
+  \draw[sat edge] (c) -- node[edge lbl above] {$w\!=\!1$} (a);
+  \node[font=\footnotesize,below=2pt] at (1.75,-0.7) {$w(C) = 2 + (-4) + 1 = -1 < 0$};
+\end{scope}
+
+\node at (5.75,1.0) {\Huge $\Rightarrow$};
+
+\begin{scope}[xshift=7.5cm]
+  \tikzsubcaption{(1.75,2.6)}{(b) Após cancelamento}
+  \node[flow node] (a2) at (0,1.8) {$a$};
+  \node[flow node] (b2) at (3.5,1.8) {$b$};
+  \node[flow node] (c2) at (1.75,0) {$c$};
+  \draw[tree edge] (a2) -- node[edge lbl above] {$+\delta$} (b2);
+  \draw[tree edge] (b2) -- node[edge lbl above] {$+\delta$} (c2);
+  \draw[tree edge] (c2) -- node[edge lbl above] {$+\delta$} (a2);
+  \node[font=\footnotesize,below=2pt] at (1.75,-0.7) {Custo reduz em $\delta \cdot |w(C)|$};
+\end{scope}
+\end{tikzpicture}
+\caption{(a)~Ciclo de custo negativo $C = a \to b \to c \to a$ no digrafo residual $D_f$ com custo total $w(C) = -1$. (b)~Após enviar $\delta$ unidades de fluxo ao longo do ciclo, o custo total do fluxo diminui em $\delta$, contradizendo a otimalidade se $f$ fosse ótimo.}
+\label{fig:ciclo_negativo}
+\end{figure}
+
+
+\section{Custos Reduzidos e Potenciais Nodais}
+
+A verificação direta da inexistência de ciclos negativos em $D_f$ exigiria, por exemplo, a execução do algoritmo de Bellman-Ford, com complexidade $\mathcal{O}(|V| \cdot |A|)$. Uma formulação dual equivalente, baseada em potenciais nodais, oferece um critério de verificação local mais eficiente e constitui a base teórica do algoritmo \textit{Network Simplex} (veja~\cite{ahuja1993network, korte2018combinatorial}).
+
+Define-se um vetor de \textbf{potenciais nodais} $\pi: V \rightarrow \mathbb{R}$, que atribui a cada vértice $v$ um valor escalar $\pi(v)$. O \textbf{custo reduzido} de um arco $(u,v)$ sob os potenciais $\pi$ é definido como:
+\begin{equation}
+    \bar{w}_\pi(u,v) = w(u,v) - \pi(u) + \pi(v)
+\end{equation}
+
+A interpretação é intuitiva: os potenciais agem como ``elevações topográficas'' nos vértices, e o custo reduzido desconta o desnível entre a origem e o destino. O custo total de qualquer ciclo $C$ permanece invariante sob esta transformação, pois os potenciais se cancelam telescopicamente:
+$$\sum_{(u,v) \in C} \bar{w}_\pi(u,v) = \sum_{(u,v) \in C} w(u,v) - \sum_{(u,v) \in C} [\pi(u) - \pi(v)] = \sum_{(u,v) \in C} w(u,v)$$
+
+\begin{teorema}[Equivalência dos Custos Reduzidos][teo:custos_reduzidos]
+Um fluxo viável $f$ em uma rede com custos é de custo mínimo se, e somente se, existe um vetor de potenciais nodais $\pi: V \to \mathbb{R}$ tal que o custo reduzido seja não-negativo para todo arco no digrafo residual:
+\begin{equation}
+    \bar{w}_\pi(u,v) = w_f(u,v) - \pi(u) + \pi(v) \ge 0, \quad \forall\, (u,v) \in A_f
+\end{equation}
+\end{teorema}
+
+\intuicao{Topográfica: Potenciais como Altitudes e Relevo Compensado} A interpretação mais vívida dos custos reduzidos provém da analogia do relevo topográfico: se associarmos a cada vértice $v$ uma altitude $\pi(v)$, o termo $\pi(u) - \pi(v)$ representa o desnível vertical descido ao transitar de $u$ para $v$. O custo reduzido $\bar{w}_\pi(u,v) = w(u,v) - [\pi(u) - \pi(v)]$ representa o custo de travessia compensado pela gravidade. Ao longo de qualquer circuito fechado, a soma das diferenças de altitude cancela-se telescopicamente, pois o trajeto inevitavelmente retorna à altitude inicial. Deste modo, o custo total de qualquer ciclo é estritamente invariante sob potenciais. O teorema demonstra que a inexistência de ciclos negativos equivale a conseguir esculpir uma topografia de potenciais tão harmoniosa que todos os arcos do digrafo residual passem a apontar para cima ou fiquem nivelados ($\bar{w}_\pi \ge 0$), tornando fisicamente impossível descer infinitamente em um tobogã de custos negativos.
+
+\begin{demonstracao}
+A demonstração estabelece a equivalência lógica entre as condições primal e dual:
+
+\medskip
+\noindent $(\Leftarrow)$ \textbf{Suficiência (Custos reduzidos não-negativos implicam otimalidade):} \\
+Suponha que exista um vetor de potenciais nodais $\pi: V \to \mathbb{R}$ tal que $\bar{w}_\pi(u,v) \ge 0$ para todo arco residual $(u,v) \in A_f$. Seja $C$ um ciclo direcionado simples qualquer no digrafo residual $D_f$. O custo residual total do ciclo sob os pesos originais é:
+$$w(C) = \sum_{(u,v) \in C} w_f(u,v)$$
+Substituindo $w_f(u,v) = \bar{w}_\pi(u,v) + \pi(u) - \pi(v)$:
+$$\sum_{(u,v) \in C} w_f(u,v) = \sum_{(u,v) \in C} \bar{w}_\pi(u,v) + \sum_{(u,v) \in C} [\pi(u) - \pi(v)]$$
+Como $C$ é um ciclo fechado, cada vértice participante atua exatamente uma vez como cauda ($u$) e uma vez como cabeça ($v$) de um arco em $C$. Consequentemente, a soma telescópica dos potenciais anula-se identicamente ($\sum_{C} [\pi(u) - \pi(v)] = 0$). Segue que:
+$$w(C) = \sum_{(u,v) \in C} \bar{w}_\pi(u,v) \ge 0$$
+pois, por hipótese, cada parcela $\bar{w}_\pi(u,v)$ é não negativa. Assim, $D_f$ não contém nenhum ciclo direcionado de custo negativo. Pela Condição de Otimalidade de Klein (Teorema~\ref{teo:ciclos_negativos}), o fluxo $f$ é necessariamente de custo mínimo.
+
+\medskip
+\noindent $(\Rightarrow)$ \textbf{Necessidade (Fluxo ótimo implica existência de potenciais válidos):} \\
+Se $f$ é de custo mínimo, o Teorema~\ref{teo:ciclos_negativos} garante que $D_f$ não possui nenhum ciclo direcionado com custo estritamente negativo.
+
+Introduza um supervértice virtual $s_0 \notin V$ e adicione arcos direcionados $(s_0, v)$ com custo residual $w_f(s_0, v) = 0$ para todo $v \in V$. Como nenhum arco incide em $s_0$, nenhum ciclo é criado através do novo nó, preservando a ausência de ciclos negativos. Portanto, as distâncias de caminho mais curto $\dist(s_0, v)$ a partir de $s_0$ em relação aos pesos $w_f$ estão garantidamente bem-definidas e finitas para todo $v \in V$.
+
+Defina o vetor de potenciais nodais como $\pi(v) = \dist(s_0, v)$ para cada $v \in V$. Pela clássica desigualdade triangular de caminhos mínimos, para qualquer arco residual $(u,v) \in A_f$:
+$$\dist(s_0, v) \le \dist(s_0, u) + w_f(u,v) \iff \pi(v) \le \pi(u) + w_f(u,v)$$
+Reorganizando os termos algebricamente:
+$$\bar{w}_\pi(u,v) = w_f(u,v) - \pi(u) + \pi(v) \ge 0$$
+o que confirma a existência do vetor de potenciais nodais satisfazendo a condição para todos os arcos de $A_f$. \end{demonstracao}
+
+\implicacoes{e Aceleração Computacional via Dijkstra} Do ponto de vista algorítmico, a não-negatividade dos custos reduzidos ($\bar{w}_\pi \ge 0$) é uma propriedade transformadora: ela viabiliza a aplicação do algoritmo de Dijkstra com \textit{Fibonacci Heaps} ($\mathcal{O}(|A| + |V|\log |V|)$) no lugar do oneroso Bellman-Ford ($\mathcal{O}(|V| \cdot |A|)$) dentro do algoritmo de Caminhos Aumentantes Sucessivos. Essa aceleração reduz o tempo de resolução de fluxos de custo mínimo em ordens de magnitude na biblioteca C++, além de fornecer o alicerce dual do algoritmo Network Simplex.
+
+\begin{figure}[!ht]
+\centering
+\begin{tikzpicture}[thick]
+
+    \node[source node] (s) at (0, 0) {$s$};
+    \node[flow node] (a) at (3.5, 2.0) {$a$};
+    \node[flow node] (b) at (3.5, -2.0) {$b$};
+    \node[sink node] (t) at (7, 0) {$t$};
+
+    \node[font=\footnotesize, above=3pt, blue] at (s.north) {$\pi\!=\!0$};
+    \node[font=\footnotesize, above=3pt, blue] at (a.north) {$\pi\!=\!2$};
+    \node[font=\footnotesize, below=3pt, blue] at (b.south) {$\pi\!=\!1$};
+    \node[font=\footnotesize, above=3pt, blue] at (t.north) {$\pi\!=\!5$};
+
+    \draw[flow edge] (s) -- node[edge lbl above] {$w\!=\!3$} node[edge lbl below, text=red!80!black] {$\bar{w}\!=\!5$} (a);
+    \draw[flow edge] (s) -- node[edge lbl below] {$w\!=\!2$} node[edge lbl above, text=red!80!black] {$\bar{w}\!=\!3$} (b);
+    \draw[flow edge] (a) -- node[edge lbl above] {$w\!=\!4$} node[edge lbl below, text=red!80!black] {$\bar{w}\!=\!7$} (t);
+    \draw[flow edge] (b) -- node[edge lbl below] {$w\!=\!6$} node[edge lbl above, text=red!80!black] {$\bar{w}\!=\!10$} (t);
+    \draw[flow edge] (a) -- node[edge lbl right] {$w\!=\!1$} node[edge lbl left, text=red!80!black] {$\bar{w}\!=\!0$} (b);
+\end{tikzpicture}
+\caption{Potenciais nodais $\pi$ (em azul) e custos reduzidos $\bar{w} = w(u,v) - \pi(u) + \pi(v)$ (em vermelho). Todos os custos reduzidos são $\ge 0$, certificando a otimalidade do fluxo segundo o Teorema de Equivalência.}
+\label{fig:custos_reduzidos}
+\end{figure}
+
+
+\section{Complementaridade de Folgas}
+
+As condições de otimalidade podem ser refinadas através do teorema de Complementaridade de Folgas (\textit{Complementary Slackness}), que conecta a solução primal (fluxo) com a solução dual (potenciais) do programa linear subjacente (veja~\cite{ahuja1993network, schrijver2003combinatorial}).
+
+\begin{teorema}[Complementary Slackness para MCF --- Karush-Kuhn-Tucker][teo:folga_complementar]
+Um fluxo viável $f$ e um vetor de potenciais nodais $\pi$ são simultaneamente ótimos (primal e dual) se, e somente se, para todo arco $(u,v) \in A$ valem as seguintes condições de folga complementar:
+\begin{enumerate}
+    \item Se $\bar{w}_\pi(u,v) > 0$, então o arco está vazio: $f(u,v) = 0$.
+    \item Se $\bar{w}_\pi(u,v) < 0$, então o arco está completamente saturado: $f(u,v) = c(u,v)$.
+    \item Se $0 < f(u,v) < c(u,v)$, então o custo reduzido é nulo: $\bar{w}_\pi(u,v) = 0$.
+\end{enumerate}
+\end{teorema}
+
+\intuicao{Econômica: Equilíbrio de Mercado e Preços-Sombra} As condições de folga complementar descrevem o equilíbrio perfeito de um mercado de transporte econômico: os potenciais nodais $\pi(v)$ atuam como os preços-sombra (\textit{shadow prices}) ou valores marginais do recurso em cada localização geográfica. O custo reduzido $\bar{w}_\pi(u,v) = w(u,v) - \pi(u) + \pi(v)$ mede a lucratividade líquida de transportar o recurso de $u$ para $v$. Se o custo de frete superar a diferença de preço entre as localidades ($\bar{w}_\pi > 0$), transportar mercadorias por aquela rota geraria prejuízo; logo, o fluxo ótimo deve ser rigorosamente zero ($f = 0$). Se a valorização no destino superar amplamente os custos operacionais ($\bar{w}_\pi < 0$), há um incentivo econômico irresistível para esgotar toda a capacidade do canal, saturando-o ($f = c$). Por fim, arcos que operam em regime intermediário ($0 < f < c$) são rotas marginais de indiferença econômica, onde o custo de transporte empata com o diferencial de preços ($\bar{w}_\pi = 0$).
+
+\begin{demonstracao}
+Demonstra-se que as três condições de complementaridade são estrita e algebricamente equivalentes à exigência de que $\bar{w}_\pi(a) \ge 0$ para todos os arcos $a \in A_f$ do digrafo residual:
+
+\begin{enumerate}
+    \item \textbf{Caso de fluxo vazio ($f(u,v) = 0$):} \\
+    Como a capacidade residual reversa é nula ($c_f(v,u) = f(u,v) = 0$), apenas o arco direto $(u,v)$ existe no digrafo residual $D_f$, com capacidade $c_f(u,v) = c(u,v) > 0$. Para que o digrafo residual não admita custos reduzidos negativos, exige-se unicamente $\bar{w}_\pi(u,v) \ge 0$. Não há restrição superior sobre $\bar{w}_\pi(u,v)$, admitindo perfeitamente $\bar{w}_\pi(u,v) > 0$.
+    
+    \item \textbf{Caso de saturação máxima ($f(u,v) = c(u,v)$):} \\
+    O arco direto está esgotado ($c_f(u,v) = 0$), não existindo em $D_f$. O arco reverso $(v,u)$ está plenamente habilitado com capacidade $c_f(v,u) = c(u,v) > 0$ e custo unitário residual $w_f(v,u) = -w(u,v)$. A condição de viabilidade dual exige:
+    $$\bar{w}_\pi(v,u) = w_f(v,u) - \pi(v) + \pi(u) = -w(u,v) + \pi(u) - \pi(v) = -\bar{w}_\pi(u,v) \ge 0$$
+    Multiplicando por $-1$, obtemos $\bar{w}_\pi(u,v) \le 0$, admitindo naturalmente $\bar{w}_\pi(u,v) < 0$.
+    
+    \item \textbf{Caso de fluxo intermediário ($0 < f(u,v) < c(u,v)$):} \\
+    Tanto o arco direto $(u,v)$ quanto o reverso $(v,u)$ possuem capacidade residual positiva em $D_f$. Portanto, a viabilidade dual impõe simultaneamente:
+    $$\bar{w}_\pi(u,v) \ge 0 \quad \text{e} \quad \bar{w}_\pi(v,u) = -\bar{w}_\pi(u,v) \ge 0 \implies \bar{w}_\pi(u,v) \le 0$$
+    A única solução para satisfazer ambas as desigualdades simultâneas é a igualdade estrita: $\bar{w}_\pi(u,v) = 0$.
+\end{enumerate}
+Pelo Teorema da Equivalência dos Custos Reduzidos (Teorema~\ref{teo:custos_reduzidos}), $\bar{w}_\pi(a) \ge 0$ em $D_f$ é condição necessária e suficiente para a otimalidade global de $f$. Logo, as condições de folga complementar caracterizam com exatidão o par primal-dual ótimo $(f, \pi)$. \end{demonstracao}
+
+\implicacoes{e o Critério de Pivoteamento no Network Simplex} Em termos algorítmicos, o Teorema de Folgas Complementares é o coração do algoritmo Network Simplex: toda árvore geradora viável define univocamente um vetor de potenciais nodais $\pi$. Para inspecionar se a base atual é ótima, não é preciso resolver um sistema linear: basta calcular o custo reduzido dos arcos fora da base em tempo constante $\mathcal{O}(1)$. Se algum arco violar as condições de folga complementar, ele é imediatamente selecionado como o arco de entrada na base (\textit{entering arc}), orquestrando uma troca de base combinatorial extremamente veloz.
+
+
+\section{Arquitetura Orientada a Objetos da Família CostNetwork}
+
+De forma análoga à família \lstinline{FlowNetwork} concebida para o fluxo máximo, os resolvedores de fluxo de custo mínimo foram estruturados sob uma arquitetura orientada a objetos polimórfica e extensível, centralizada na classe-base abstrata \lstinline{CostNetwork} (Código~\ref{lst:costnetwork}, Apêndice~\ref{ap:costnetwork}).
+
+A modelagem de dados estende a estrutura de conexões com o atributo de custo unitário $w(u,v)$:
+\begin{lstlisting}[language=C++, numbers=none, basicstyle=\ttfamily\footnotesize, frame=none, backgroundcolor=\color{white}]
+struct Edge {
+    Size from, to;
+    Long capacity, cost, flow;
+};
+\end{lstlisting}
+
+O método de inserção de conexões \lstinline{add_edge(from, to, capacity, cost)} constrói em par o arco direto e o arco reverso correspondente:
+\begin{itemize}
+    \item Um \textbf{arco direto} $(u,v)$ com capacidade $c$, custo $w$ e fluxo inicial $0$, alocado no índice par $2k$.
+    \item Um \textbf{arco reverso} $(v,u)$ com capacidade residual inicial $0$, custo simétrico $-w$ e fluxo inicial $0$, alocado no índice ímpar subsequente $2k+1$.
+\end{itemize}
+
+Esta disposição contígua em memória permite que o método \lstinline{push_flow(edge_id, flow_amount)} acesse o arco complementar em tempo $\mathcal{O}(1)$ via Ou Exclusivo (\lstinline{id ^ 1ULL}), somando o fluxo no arco direto e subtraindo-o no reverso em uma única operação. A interface pública estabelece o contrato polimórfico fundamental por meio do método virtual puro \lstinline{compute_min_cost_max_flow(Size source, Size sink)}, além dos métodos virtuais \lstinline{make} e \lstinline{clone} para instanciação e clonagem profunda em tempo de execução (padrões \textit{Factory Method} e \textit{Prototype}, veja~\cite{gamma1994design}).
+
+\textbf{Antissimetria de Custos e o Tratamento de Arestas Bidirecionais.} Uma distinção arquitetural basilar entre as classes \lstinline{FlowNetwork} e \lstinline{CostNetwork} reside na assinatura do método \lstinline{add_edge}. Na família \lstinline{FlowNetwork}, a sobrecarga \lstinline{add_edge(from, to, capacity, reverse_capacity = 0)} permite instanciar canais bidirecionais não direcionados diretamente em uma única chamada, atribuindo capacidade positiva ao arco reverso. No domínio de fluxo com custos (\lstinline{CostNetwork}), tal simplificação é matematicamente vedada devido ao \textbf{Princípio da Antissimetria de Custos} (veja~\cite{ahuja1993network}):
+\begin{equation}
+    w_f(v, u) = -w_f(u, v) \quad \forall (u, v) \in A
+\end{equation}
+
+Em redes com custos, o arco reverso no digrafo residual possui o propósito semântico estrito de representar a \textit{devolução de custo} associada ao cancelamento de fluxo previamente despachado ($c_f(v, u) = f(u, v)$ com custo $-w$). Se um parâmetro \lstinline{reverse_capacity > 0} fosse injetado no mesmo registro de arco, ocorreria uma ambiguidade insolúvel: o arco reverso deveria custar simultaneamente $+w$ (caso estivesse injetando novo fluxo de $v$ para $u$) e $-w$ (caso estivesse cancelando fluxo vindo de $u$ para $v$). Além disso, atribuir capacidade inicial positiva a um arco com custo residual $-w$ introduziria ciclos negativos espúrios no grafo residual antes mesmo do início da otimização, violando a invariante de otimalidade inicial $f \equiv 0$.
+
+Portanto, em \lstinline{CostNetwork}, conexões bidirecionais ponderadas devem ser modeladas obrigatoriamente através da inserção de \textbf{dois pares direcionados independentes}:
+\begin{itemize}
+    \item \lstinline{add_edge(u, v, c, w)}: cria o canal $u \to v$ com capacidade $c$, custo $+w$ e reverso com capacidade $0$, custo $-w$.
+    \item \lstinline{add_edge(v, u, c, w)}: cria o canal $v \to u$ com capacidade $c$, custo $+w$ e reverso com capacidade $0$, custo $-w$.
+\end{itemize}
+Desta forma, cada sentido de escoamento preserva independentemente seu respectivo canal de avanço e sua trilha de cancelamento simétrico com custo oposto.
+
+

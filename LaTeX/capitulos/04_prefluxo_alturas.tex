@@ -1,0 +1,240 @@
+% =========================================================================
+% ALGORITMOS DE PRÉ-FLUXO E ALTURAS (PUSH-RELABEL)
+% =========================================================================
+\chapter{Algoritmos de Pré-fluxo e Alturas (Abordagem Dual)}\label{sec:prefluxo_alturas}
+\label{sec:prefluxo}
+
+Em contraposição direta à abordagem primal de caminhos aumentantes detalhada na subseção anterior, a família de algoritmos concebida por Andrew Goldberg e Robert Tarjan em 1988 (veja~\cite{goldberg1988new}) estabelece a \textbf{vertente dual} por excelência na resolução do Fluxo Máximo.
+
+O método opera invertendo radicalmente a invariante clássica de execução: em vez de preservar a viabilidade de fluxo e buscar iterativamente a otimalidade de corte, a \textbf{otimalidade de corte é mantida desde a inicialização como invariante permanente}, enquanto a viabilidade primal de conservação de fluxo é temporariamente relaxada. Para isolar a fonte do sumidouro logo no primeiro instante, a fonte satura todos os arcos de saída incidentes a ela, e atribui-se a ela uma altura topológica $h(s) = |V|$, enquanto o sumidouro permanece em $h(t) = 0$. Sob a condição de que nenhum arco residual possa descer mais de uma unidade de altura ($h(u) \le h(v) + 1$), torna-se matematicamente impossível a existência de qualquer caminho aumentante de $s$ a $t$ na rede residual $D_f$ --- ou seja, a barreira do corte residual já é intransponível desde o início.
+
+Nesse processo, os vértices intermediários recebem temporariamente mais fluxo do que conseguem escoar, suspendendo a lei de conservação e acumulando fluidos denominados \textbf{pré-fluxos} (\textit{preflows}) (veja~\cite{ahuja1993network}). A dinâmica do algoritmo consiste em atuar de forma estritamente local, operando como um sistema gravitacional que drena esses excessos ladeira abaixo através de operações de empurrar (\textit{Push}) e elevação de potencial (\textit{Relabel}), até que todos os excessos sejam descarregados no sumidouro $t$ ou devolvidos à fonte $s$. No momento exato em que todos os nós intermediários têm seus excessos zerados, a viabilidade primal é restabelecida e, pela preservação contínua da otimalidade dual de corte, o fluxo resultante é comprovadamente máximo.
+
+Formalmente, um pré-fluxo $f$ é uma função que respeita estritamente as restrições de capacidade ($0 \le f(u,v) \le c(u,v)$), mas que permite que a quantidade total de fluxo que ingressa em um vértice $v \in V \setminus \{s, t\}$ seja maior ou igual à quantidade que dele diverge. A diferença algébrica entre o influxo e o efluxo de um vértice é denominada excesso, denotada por $e(v)$:
+\begin{equation}
+    e(v) = \sum_{(u,v) \in A} f(u,v) - \sum_{(v,w) \in A} f(v,w) \ge 0
+\end{equation}
+
+Um vértice intermediário que possui excesso estritamente positivo ($e(v) > 0$) é classificado como um vértice ativo. A premissa central dos algoritmos de pré-fluxo consiste em movimentar localmente este excesso pela rede até que ele alcance o sumidouro $t$ ou, quando bloqueado por falta de capacidade residual em todos os arcos de saída admissíveis (ou seja, arcos que ``descem'' em altura), seja devolvido em direção à fonte $s$ (veja~\cite{cook1998combinatorial}).
+
+\textbf{Como o excesso retorna à fonte?} A lógica é a seguinte: quando um vértice ativo $u$ com $h(u) < h(s)$ não possui nenhum arco admissível para ``descer'', a operação de \textit{Relabel} eleva sua altura. Eventualmente, se $u$ não puder mais empurrar fluxo em direção ao sumidouro, sua altura pode subir até ultrapassar $|V|$. Nesse caso, a invariante de altura $h(u) \le h(v) + 1$ para arcos residuais garante que o único arco admissível disponível seja o arco reverso em direção à fonte --- devolvendo o excesso de volta. Matematicamente, a fonte possui $h(s) = |V|$, de modo que qualquer vértice com $h(u) = |V| - 1$ ou maior pode, via arcos residuais inversos (resultantes do fluxo saturado na inicialização), empurrar o excesso de volta para $s$.
+
+Para garantir que o excesso não circule infinitamente em ciclos residuais e que convirja para os terminais, introduz-se uma função de rótulos de distância, classicamente interpretada como uma função de altura (\textit{height function}) $h: V \rightarrow \mathbb{N}$. A mecânica do algoritmo é frequentemente comparada a uma malha topográfica de fluidos sujeita à gravidade: o fluxo só pode ser roteado de um vértice $u$ para um vértice $v$ se o arco possuir capacidade residual ($c_f(u,v) > 0$) e se a origem estiver topologicamente posicionada acima do destino, caracterizando um aclive descendente.
+
+Uma função de altura é considerada matematicamente válida para um pré-fluxo se satisfizer três condições obrigatórias (\textit{peremptórias}, no sentido de que violá-las invalida imediatamente a correção do algoritmo) (veja~\cite{korte2018combinatorial}):
+\begin{enumerate}
+    \item A altura do sumidouro é nula: $h(t) = 0$.
+    \item A altura da fonte é fixada na cardinalidade do digrafo para atestar o isolamento: $h(s) = |V|$.
+    \item Para todo arco residual viável $(u,v) \in A_f$, a inclinação é controlada: $h(u) \le h(v) + 1$.
+\end{enumerate}
+
+A terceira condição garante que o excesso não despencará em ``quedas livres'' descontroladas e, principalmente, que não existe nenhum caminho direcionado viável de $s$ para $t$ na rede residual, atestando a otimalidade topológica do sistema a todo instante. O algoritmo termina quando o conjunto de vértices ativos torna-se vazio ($e(v) = 0, \forall v \in V \setminus \{s, t\}$). Neste ponto exato, o pré-fluxo converte-se em um fluxo viável e, pela ausência de caminhos da fonte ao sumidouro, o Teorema do Fluxo Máximo e Corte Mínimo certifica que este fluxo é máximo.
+
+\begin{figure}[!ht]
+\centering
+\begin{tikzpicture}[thick]
+  \node[source node] (s) at (0, 0) {$s$};
+  \node[active node] (a) at (2, 1) {$a$};
+  \node[flow node] (b) at (2, -1) {$b$};
+  \node[active node] (c) at (4, 0) {$c$};
+  \node[sink node] (t) at (6, 0) {$t$};
+
+  \node[above, font=\footnotesize] at (a.north) {$e(a) = 3$};
+  \node[below, font=\footnotesize] at (b.south) {$e(b) = 0$};
+  \node[above, font=\footnotesize] at (c.north) {$e(c) = 1$};
+  
+  \draw[flow edge] (s) -- node[above left, font=\footnotesize] {5} (a);
+  \draw[flow edge] (s) -- node[below left, font=\footnotesize] {2} (b);
+  \draw[flow edge] (a) -- node[above, font=\footnotesize, pos=0.35] {2} (c);
+  \draw[flow edge] (b) -- node[below, font=\footnotesize, pos=0.35] {2} (c);
+  \draw[flow edge] (c) -- node[above, font=\footnotesize] {3} (t);
+\end{tikzpicture}
+\caption{Exemplo de um pré-fluxo em que a conservação de fluxo é relaxada. Vértices intermediários como $a$ e $c$ podem possuir excesso positivo ($e(u) > 0$), tornando-os ativos (destacados em amarelo).}
+\label{fig:prefluxo}
+\end{figure}
+
+
+\section{Invariantes de Altura e Mecânica de Push-Relabel}\label{sec:push_relabel}
+
+A mecânica operacional da família de algoritmos \textit{Push-Relabel}, concebida originalmente por Goldberg e Tarjan (veja~\cite{goldberg1988new}), assenta-se sobre a manipulação iterativa de vértices ativos visando o esgotamento topológico de seus excessos. A inicialização do sistema satura artificialmente todos os arcos originais adjacentes à fonte $s$, injetando um pré-fluxo maciço na rede. Simultaneamente, a altura da fonte é fixada em $h(s) = |V|$ e a dos demais vértices é inicializada em $h(v) = 0$, estabelecendo um desnível rigoroso que força o fluido a buscar o sumidouro (veja~\cite{ahuja1993network}).
+
+Durante o ciclo de resolução principal, o algoritmo inspeciona vértices ativos ($e(u) > 0$) e aplica fundamentalmente duas operações elementares para movimentar o pré-fluxo pela rede residual:
+
+\begin{itemize}
+    \item \textbf{Operação de Empurrar (\textit{Push}):} Esta ação é executada se, e somente se, o vértice ativo $u$ possuir um arco residual $(u,v)$ estritamente admissível. Um arco é considerado admissível quando apresenta capacidade residual não nula ($c_f(u,v) > 0$) e um declive topológico unitário perfeito em direção ao destino ($h(u) = h(v) + 1$). A quantidade de fluxo transferida é algebricamente delimitada por $\delta = \min(e(u), c_f(u,v))$. Caso o empurrão transfira exatamente $c_f(u,v)$, o arco é plenamente saturado e removido temporariamente de $D_f$; caso contrário, trata-se de um empurrão não saturante, cujo efeito primário e imediato é zerar o excesso do vértice $u$ (veja~\cite{cook1998combinatorial}).
+
+    \item \textbf{Operação de Rerrotular (\textit{Relabel}):} Quando um vértice ativo $u$ encontra-se topologicamente ``preso'' — isto é, possui excesso de recursos, mas nenhuma de suas conexões com capacidade residual aponta para um vizinho em um nível estritamente inferior —, a operação de \textit{Push} torna-se inviável. Para romper este impasse estrutural, o algoritmo atualiza a altura do vértice para $h(u) = 1 + \min \{h(v) \mid c_f(u,v) > 0\}$. Esta elevação pontual garante a recriação de um declive geométrico válido, permitindo que o excesso retome sua movimentação iterativa (veja~\cite{cook1998combinatorial}).
+\end{itemize}
+
+A eficiência global do algoritmo é intrinsecamente dependente da política de seleção: qual vértice ativo deve ser processado primeiro? A implementação canônica emprega uma estrutura de dados de fila (\textit{Queue}) para gerenciar estes vértices sob uma política \textit{First-In, First-Out} (FIFO). Demonstra-se matematicamente que a ordem de processamento FIFO amortece severamente o número de empurrões não saturantes necessários para a convergência. Graças a esta amortização estrutural, o limite assintótico de tempo de pior caso para o algoritmo Push-Relabel padrão é cravado analiticamente em $\mathcal{O}(|V|^3)$ (veja~\cite{goldberg1988new}). A materialização em C++ deste algoritmo no \textit{Core Framework} encontra-se detalhada no Código~\ref{lst:push_relabel} (disponível no Apêndice~\ref{ap:push_relabel}).
+
+\begin{figure}[!ht]
+\centering
+\begin{tikzpicture}[thick,node distance=2.2cm]
+
+\tikzsubcaption{(1.5,4.0)}{Antes de \texttt{push}: arco admissível}
+
+\node[active node] (u) at (0.0,3.0) {$u$};
+\node[font=\footnotesize,above=2pt of u] {$h{=}3,\,e{=}5$};
+
+\node[flow node,fill=blue!10] (v) at (3.0,3.0) {$v$};
+\node[font=\footnotesize,above=2pt of v] {$h{=}2,\,e{=}1$};
+
+\draw[->,line width=1.5pt,green!60!black] (u) -- node[above,font=\footnotesize] {$c_f=4$} (v);
+
+\tikzsubcaption{(1.5,1.0)}{Depois de \texttt{push(u, v, $\delta$=4)}}
+\node[active node] (u2) at (0.0,0.0) {$u$};
+\node[font=\footnotesize,above=2pt of u2] {$h{=}3,\,e{=}1$};
+\node[flow node,fill=blue!10] (v2) at (3.0,0.0) {$v$};
+\node[font=\footnotesize,above=2pt of v2] {$h{=}2,\,e{=}5$};
+\draw[nontree edge] (u2) -- node[above,font=\footnotesize,gray] {$c_f=0$} (v2);
+
+\tikzsubcaption{(8.5,4.0)}{Antes de \texttt{relabel}: vértice $u$ preso}
+\node[gap node,fill=orange!30] (r1) at (7.0,3.0) {$u$};
+\node[font=\footnotesize,above=2pt of r1] {$h{=}2,\,e{=}3$};
+\node[flow node,fill=gray!10] (r2) at (10.0,3.0) {$w$};
+\node[font=\footnotesize,above=2pt of r2] {$h{=}3$};
+\draw[nontree edge] (r1) -- node[above,font=\footnotesize,align=center] {$c_f=2$\\inadmissível} (r2);
+
+\tikzsubcaption{(8.5,1.0)}{Depois de \texttt{relabel(u)}: $h(u)\leftarrow 4$}
+\node[gap node,fill=orange!50] (r3) at (7.0,0.0) {$u$};
+\node[font=\footnotesize,above=2pt of r3] {$h{=}4,\,e{=}3$};
+\node[flow node,fill=gray!10] (r4) at (10.0,0.0) {$w$};
+\node[font=\footnotesize,above=2pt of r4] {$h{=}3$};
+\draw[->,green!60!black,line width=1.5pt] (r3) -- node[above,font=\footnotesize] {admissível!} (r4);
+\end{tikzpicture}
+\caption{Operações elementares do Push-Relabel. Esquerda: Push admissível de $u$ para $v$ (arco com $c_f > 0$ e $h(u)=h(v)+1$), transferindo $\delta = \min(e(u),c_f)$ de fluxo. Direita: Relabel de $u$ quando não há arco admissível --- a altura é ajustada para criar um novo declive.}
+\label{fig:push_relabel}
+\end{figure}
+
+
+\section{Cuidados na Inicialização e Aritmética de Infinitos}
+Durante a inicialização do pré-fluxo, é vital saturar os arcos adjacentes à fonte sem restringi-los por uma variável artificial de ``excesso'' da fonte. Diferente dos nós intermediários, a fonte não obedece à conservação de fluxo e representa um gerador de recursos inesgotável. 
+
+Em implementações ingênuas, é comum atribuir à fonte um excesso infinito estático (\lstinline{excess[source] = INF}) e reaproveitar a operação de empurrar genérica. No entanto, em domínios matemáticos como Segmentação de Imagens (onde restrições rígidas são modeladas com arcos de capacidade literalmente igual a \lstinline{INF}), essa abordagem colapsa por limites aritméticos da arquitetura computacional. Como \lstinline{INF} em C++ é uma constante discreta em limite de representação inteira, empurrar \lstinline{INF} de fluxo subtrai integralmente o estoque em uma única iteração (\lstinline{INF - INF = 0}), esgotando artificialmente a fonte e causando paralisação prematura do pré-fluxo. Para evitar este problema e garantir o funcionamento seguro em qualquer domínio de rede, a inicialização correta injeta diretamente o valor integral da capacidade do arco (\lstinline{push_flow(edge_id, cap)}) abstendo-se completamente de rastrear ou subtrair recursos do vértice de origem.
+
+
+\section{Otimização Empírica: A Heurística de Lacuna (\textit{Gap Heuristic})}\label{sec:push_relabel_gap}
+
+O gargalo crítico a ser suprimido é o elevado número de operações de \textit{Relabel} redundantes: sem nenhuma heurística, um vértice ativo pode ser rerrotulado $\mathcal{O}(|V|)$ vezes, e com $|V|$ vértices, isto pode gerar $\mathcal{O}(|V|^2)$ relabels por saturação de arco. A literatura moderna incorpora uma modificação estrutural conhecida como Heurística de Lacuna (\textit{Gap Heuristic}) para atenuar este custo. A arquitetura do sistema é expandida para manter um histograma dinâmico (\textit{array} de frequências) que registra em tempo constante o número exato de vértices presentes em cada estrato de altura da rede.
+
+A fundamentação desta heurística baseia-se na observação de descontinuidades no histograma de alturas. Se, após uma operação de \textit{relabel}, um determinado nível topológico $k$ (onde $0 < k < |V|$) esvaziar-se completamente, forma-se uma lacuna (\textit{gap}). A existência desta lacuna implica que o sumidouro $t$ tornou-se inalcançável para todo vértice com altura estritamente superior a $k$.
+
+A validade matemática desta dedução reside na invariante de altura do \textit{Push-Relabel}. Em qualquer rede residual válida, a diferença de altura em uma aresta $(u,v)$ obedece rigorosamente à regra $h(u) \le h(v) + 1$. Isso significa que o fluxo pode descer, no máximo, um único nível topológico por passo (um ``degrau'' de cada vez). Portanto, para que exista um caminho residual de um vértice acima da lacuna (ex: $h(u) = 4$) até o sumidouro ($h(t) = 0$), a rota \textbf{necessariamente} precisaria visitar pelo menos um vértice no nível $k$. Se o nível $k$ está vazio (lacuna), é matematicamente impossível ``pular'' o degrau. O caminho é fisicamente quebrado, provando que $t$ é inalcançável. A Figura~\ref{fig:gap_prova} ilustra esta propriedade visualmente.
+
+\begin{figure}[!ht]
+\centering
+\begin{tikzpicture}[thick]
+  \draw[layer line] (-2, 0) -- (6, 0) node[right,black,font=\footnotesize] {$h=0$ (sumidouro $t$)};
+  \foreach \y/\h in {1.5/1, 3.0/2, 6.0/4} {
+    \draw[layer line] (-2, \y) -- (6, \y) node[right,black,font=\footnotesize] {$h=\h$};
+  }
+  \draw[red!40,dashed,line width=1.5pt] (-2, 4.5) -- (6, 4.5) node[right,red!80!black,font=\footnotesize] {$h=3$ (\textbf{LACUNA})};
+
+  \node[source node,font=\footnotesize] (t) at (2, 0) {$t$};
+  \node[flow node,fill=yellow!20,font=\footnotesize] (a) at (2, 1.5) {$a$};
+  \node[flow node,fill=yellow!20,font=\footnotesize] (b) at (0.5, 3.0) {$b$};
+  \node[flow node,fill=yellow!20,font=\footnotesize] (c) at (3.5, 3.0) {$c$};
+  
+  \node[gap node,fill=red!20,font=\footnotesize] (u) at (2, 6.0) {$u$};
+  
+  \draw[->,blue!80!black] (b) -- (a);
+  \draw[->,blue!80!black] (c) -- (a);
+  \draw[->,blue!80!black] (a) -- (t);
+  
+  \draw[->,red,line width=1.5pt] (u) -- node[left,pos=0.25,font=\footnotesize,text=black,align=center,xshift=-2mm,fill=white,inner sep=2pt] {Queda de 2 níveis\\(proibido)} (b);
+  \draw[->,red,line width=1.5pt] (u) -- node[right,pos=0.25,font=\footnotesize,text=black,align=center,xshift=2mm,fill=white,inner sep=2pt] {$h(u) \not\le h(c) + 1$\\(proibido)} (c);
+  
+\end{tikzpicture}
+\caption{Prova visual de inalcançabilidade na Heurística de Lacuna. A invariante de altura ($h(u) \le h(v) + 1$) obriga que caminhos residuais desçam no máximo 1 nível por aresta. A inexistência de vértices no nível $h=3$ quebra qualquer possibilidade de formação de ``degraus'' caindo de $h=4$ para os níveis inferiores, separando o grafo residual.}
+\label{fig:gap_prova}
+\end{figure}
+
+A heurística intervém na rede ao detectar a lacuna, elevando a altura de todos os vértices acima de $k$ para o patamar de isolamento ($|V| + 1$) (veja~\cite{korte2018combinatorial}). Esta operação reduz o número de operações de \textit{relabel} redundantes, otimizando a convergência do algoritmo em grafos densos (veja~\cite{goldberg1988new}).
+
+\begin{figure}[!ht]
+\centering
+\begin{tikzpicture}[thick]
+
+\begin{scope}[xshift=0cm]
+\tikzsubcaption{(1.5,6.8)}{(a) Lacuna detectada no nível $k=3$}
+\foreach \h/\label/\fill in {
+  0/h=0/green!20, 1.2/h=1/yellow!20, 2.4/h=2/yellow!20,
+  4.8/h=4/red!20, 6.0/h=5/red!20} {
+  \node[circle,draw,fill=\fill,minimum size=8mm,font=\footnotesize] at (1.5,\h) {\label};
+}
+\node[font=\footnotesize,red!60!black] at (1.5,3.6) {\textbf{lacuna!}};
+\draw[<->,red,dashed] (0.2,4.2) -- node[left,font=\footnotesize] {nív. 3 vazio} (0.2,3.0);
+\end{scope}
+
+\node at (5.0,3.0) {\Huge $\Rightarrow$};
+
+\begin{scope}[xshift=7cm]
+\tikzsubcaption{(1.5,6.8)}{(b) Vértices $h>k$ sobem para $|V|+1$}
+\foreach \h/\label/\fill in {
+  0/h=0/green!20, 1.2/h=1/yellow!20, 2.4/h=2/yellow!20} {
+  \node[circle,draw,fill=\fill,minimum size=8mm,font=\footnotesize] at (1.5,\h) {\label};
+}
+\node[gap node,font=\footnotesize] (top) at (1.5,6.0) {$|V|{+}1$};
+\draw[->,orange!80!black,line width=1.5pt] (1.5,3.3) -- node[right,font=\footnotesize,orange!80!black] {todos sobem} (1.5,5.05);
+\end{scope}
+\end{tikzpicture}
+\caption{Gap Heuristic: (a) após um relabel, o nível $k=3$ esvazia-se (lacuna formada). (b) Todos os vértices com $h > k$ têm suas alturas definidas para $|V|+1$, isolando-os da rede e evitando relabels redundantes.}
+\label{fig:gap_heuristica}
+\end{figure}
+
+
+\section{Política de Seleção: FIFO vs. Highest Label}
+
+A implementação base do Push-Relabel (Código~\ref{lst:push_relabel}, Apêndice~\ref{ap:push_relabel}) utiliza uma política de seleção FIFO (\textit{First In, First Out}), processando os vértices ativos na ordem em que se tornaram ativos. Esta variante possui complexidade $\mathcal{O}(|V|^3)$.
+
+A versão otimizada (Código~\ref{lst:push_relabel_improved}, Apêndice~\ref{ap:push_relabel_improved}) implementa a política \textit{Highest Label}: em cada iteração, o vértice ativo com a \textbf{maior altura} é selecionado para processamento.
+
+\textbf{Como funcionam os \textit{buckets}?} A estrutura de dados é um vetor \lstinline{active_buckets} de listas, indexado por altura: \lstinline{active_buckets[h]} contém todos os vértices ativos com altura exatamente $h$. Além disso, mantém-se uma variável \lstinline{highest_active} que registra o maior índice $h$ tal que \lstinline{active_buckets[h]} não está vazio.
+
+\begin{itemize}
+    \item \textbf{Inserção:} Quando um vértice $v$ torna-se ativo (e.g., após receber fluxo de um \textit{push}), ele é inserido em \lstinline{active_buckets[h(v)]}, e a variável \lstinline{highest_active} é atualizada se $h(v)$ for maior que seu valor atual. Custo: $\mathcal{O}(1)$.
+    \item \textbf{Extração:} Retira-se um vértice de \lstinline{active_buckets[highest_active]}. Se o bucket esvaziar, decrementa-se \lstinline{highest_active}. Custo amortizado: $\mathcal{O}(1)$.
+    \item \textbf{Relabel:} Quando a altura de $u$ é aumentada para $h'$, $u$ é removido de \lstinline{active_buckets[h(u)]} e reinserido em \lstinline{active_buckets[h']}. As alturas vão de $0$ até $2|V|-1$ (limite teórico), portanto o vetor tem tamanho $2|V|$.
+\end{itemize}
+
+A intuição por trás da melhoria da complexidade de tempo de pior caso de $\mathcal{O}(|V|^3)$ (política FIFO) para $\mathcal{O}(|V|^2\sqrt{|A|})$ (política \textit{Highest Label}) é analítica: ao sempre processar o vértice mais ``alto'', o algoritmo tende a devolver excessos para a fonte mais rapidamente (pois vértices de altura $\ge |V|$ só podem fazer push de volta), evitando longas cadeias de pushes não saturantes. Esta política, combinada com a Gap Heuristic, reduz a complexidade para $\mathcal{O}(|V|^2 \sqrt{|A|})$ (veja~\cite{goldberg1988new}).
+
+\textbf{Implementação eficiente da Gap Heuristic:} O \textit{array} de frequências \lstinline{height_count[h]} (com \lstinline{height_count[h]++} a cada inserção e \lstinline{height_count[h]--} a cada remoção/relabel) é atualizado em $\mathcal{O}(1)$ por operação. Após cada \textit{relabel} de $u$ de $h$ para $h'$, basta verificar se \lstinline{height_count[h] == 0}: se sim, a lacuna $h$ foi formada, e todos os vértices com $h(v) > h$ (exceto $s$) têm sua altura definida para $|V|+1$ em uma varredura linear única por \lstinline{active_buckets}. Esta varredura custa $\mathcal{O}(|V|)$ no pior caso, mas acontece no máximo $|V|$ vezes, resultando em custo amortizado $\mathcal{O}(1)$ por operação.
+
+\begin{table}[!ht]
+\centering
+\small
+\setlength{\tabcolsep}{5pt}
+\begin{tabular}{p{4.2cm} l p{7.5cm}}
+\toprule
+\multicolumn{1}{c}{\textbf{Algoritmo}} & \multicolumn{1}{c}{\textbf{Complexidade}} & \multicolumn{1}{c}{\textbf{Mecanismo / Estratégia}} \\
+\midrule
+\multicolumn{3}{c}{\bannertext{\hyperref[sec:fluxo_primal]{Vertente Primal: Caminhos Aumentantes ($e(v)=0$)}}} \\
+\midrule
+\hyperref[ap:ford_fulkerson]{Ford-Fulkerson} & $\mathcal{O}(|A| \cdot |f^*|)$ & DFS (busca caminhos aumentantes quaisquer) \\
+\hyperref[ap:edmonds_karp]{Edmonds-Karp} & $\mathcal{O}(|V| \cdot |A|^2)$ & BFS (garante menor caminho em número de arcos) \\
+\hyperref[ap:dinic]{Dinic} & $\mathcal{O}(|V|^2 \cdot |A|)$ & Grafo de níveis com saturação por fluxos bloqueadores \\
+\midrule
+\multicolumn{3}{c}{\bannertext{\hyperref[sec:prefluxo]{Vertente Dual: Pré-fluxo e Alturas (Otimiza Corte)}}} \\
+\midrule
+\hyperref[ap:push_relabel]{Push-Relabel (FIFO)} & $\mathcal{O}(|V|^3)$ & Descarga assíncrona em fila de vértices com excesso \\
+\hyperref[ap:push_relabel_improved]{Push-Relabel (Gap)} & $\mathcal{O}(|V|^2 \sqrt{|A|})$ & Seleção por maior altura combinada à \textit{Gap Heuristic} \\
+\bottomrule\end{tabular}
+\caption{Comparação das complexidades assintóticas e estratégias dos algoritmos de fluxo máximo implementados.}
+\label{tab:max_flow}
+\end{table}
+
+
+\section{Síntese Comparativa: Primalidade versus Dualidade no Fluxo Máximo}\label{sec:sintese_max_flow}
+
+A Tabela~\ref{tab:max_flow} sintetiza a simetria conceitual construída ao longo do estudo do Fluxo Máximo. O problema revela-se não como um agregado disperso de heurísticas computacionais, mas como um campo estruturado por duas forças matemáticas complementares que convergem para a mesma fronteira ótima garantida pelo Teorema de Ford-Fulkerson:
+\begin{itemize}
+    \item \textbf{A Vertente Primal (Caminhos Aumentantes):} Ancora-se estritamente no espaço das soluções viáveis físicas. O fluxo é roteado por percursos globais $s \leadsto t$, aumentando o valor da função objetivo passo a passo até que a capacidade do corte mínimo seja atingida. Nesta categoria, o algoritmo de Dinic destaca-se como o motor de maior eficiência, reduzindo drasticamente o trabalho assintótico ao consolidar múltiplos aumentos por fase através de fluxos bloqueadores no Digrafo de Níveis.
+    \item \textbf{A Vertente Dual (Alturas e Pré-fluxo):} Inicia o processo na fronteira de corte ótimo e atua no espaço das soluções infezíveis (pré-fluxos com excessos nodais). Suas decisões são puramente locais e assíncronas, dispensando buscas globais de caminhos pela rede e propagando o fluido por gradientes topológicos induzidos pelas alturas $h(v)$. A variante \textit{Highest Label} combinada com a heurística de lacunas (\textit{Gap Heuristic}) atinge o limite de $\mathcal{O}(|V|^2 \sqrt{|A|})$, consagrando-se como a implementação de melhor desempenho empírico e assintótico em grafos densos dentre os resolvedores desenvolvidos.
+\end{itemize}
+
+Essa dualidade algorítmica oferece um arcabouço robusto para a engenharia de software: enquanto o Dinic sobressai-se em redes esparsas e unitárias (como nas reduções bipartidas), o Push-Relabel com Gap Heuristic domina grafos densos e de alta capacidade (como na segmentação de imagens). Esse leque de motores fornece o ferramental exato para as reduções a problemas de otimização combinatória analisadas na sequência.
+
+\vspace{0.8cm}
+

@@ -1,0 +1,48 @@
+% =========================================================================
+% FUNDAMENTOS MATEMÁTICOS DOS GRAFOS DE FLUXO
+% =========================================================================
+\chapter{Fundamentos Matemáticos dos Grafos de Fluxo}\label{sec:base_matematica}
+
+Para a formulação rigorosa do problema de fluxo, baseamo-nos nas definições clássicas da Teoria dos Grafos e Otimização Combinatória (veja~\cite{ahuja1993network, bondy2008graph}). Uma rede de fluxo é formalmente definida como um digrafo (grafo direcionado) $D = (V, A)$, onde $V$ representa o conjunto de vértices e $A$ o conjunto de arcos.
+
+A topologia desta rede é dotada de dois vértices terminais distintos: uma origem $s \in V$ (fonte ou \textit{source}) e um destino $t \in V$ (sumidouro ou \textit{sink}). Cada arco $a \in A$, que conecta um vértice $u$ a um vizinho $v$, é representado pelo par ordenado $(u,v)$ e possui associada uma capacidade não negativa estipulada por uma função $c: A \rightarrow \mathbb{R}_{\ge 0}$. Esta capacidade $c(u,v)$ dita o limite superior do recurso (físico ou informacional) que pode transitar diretamente através desta conexão.
+
+A Figura~\ref{fig:rede_fluxo} ilustra uma rede de fluxo elementar com quatro vértices, onde as capacidades estão indicadas sobre os arcos.
+
+\begin{figure}[!ht]
+\centering
+\begin{tikzpicture}[node distance=2.5cm, thick]
+    \node[source node] (s) at (0, 0) {$s$};
+    \node[flow node] (u) at (2.6, 1.5) {$u$};
+    \node[flow node] (v) at (2.6, -1.5) {$v$};
+    \node[sink node] (t) at (5.2, 0) {$t$};
+
+    \draw[flow edge] (s) -- node[edge lbl above] {$10$} (u);
+    \draw[flow edge] (s) -- node[edge lbl below] {$8$} (v);
+    \draw[flow edge] (u) -- node[edge lbl, right] {$5$} (v);
+    \draw[flow edge] (u) -- node[edge lbl above] {$7$} (t);
+    \draw[flow edge] (v) -- node[edge lbl below] {$10$} (t);
+\end{tikzpicture}
+\caption{Rede de fluxo com fonte $s$, sumidouro $t$ e capacidades nos arcos.}
+\label{fig:rede_fluxo}
+\end{figure}
+
+Um fluxo em $D$ é caracterizado por uma função $f: A \rightarrow \mathbb{R}_{\ge 0}$ que atribui a cada arco $(u,v)$ um valor de tráfego $f(u,v)$. Para que este roteamento seja classificado como um fluxo factível (ou viável) do ponto de vista matemático, a função $f$ deve satisfazer estritamente dois axiomas fundamentais (veja~\cite{ford1956maximal, cook1998combinatorial}):
+
+\begin{enumerate}
+    \item \textbf{Restrição de Capacidade:} O fluxo roteado em qualquer arco não pode exceder a sua capacidade estrutural intrínseca, tampouco assumir valores negativos. Formalmente:
+    \begin{equation}
+        0 \le f(u,v) \le c(u,v), \quad \forall (u,v) \in A
+    \end{equation}
+
+    \item \textbf{Lei de Conservação de Fluxo:} Com exceção dos vértices terminais ($s$ e $t$), nenhum vértice intermediário na rede possui a capacidade de gerar, consumir ou reter fluxo. A soma total do fluxo que ingressa em um vértice $v$ deve ser rigorosamente igual à soma do fluxo que dele emerge. Matematicamente, para todo $v \in V \setminus \{s, t\}$:
+    \begin{equation}
+        \sum_{(u,v) \in A} f(u,v) = \sum_{(v,w) \in A} f(v,w)
+    \end{equation}
+\end{enumerate}
+
+O valor global do fluxo, comumente denotado por $|f|$, quantifica a rede em sua totalidade, representando a quantidade líquida de recurso que efetivamente deixa a fonte $s$ e, por consequência direta da lei de conservação, ingressa no sumidouro $t$. O objetivo central do clássico Problema do Fluxo Máximo consiste justamente em determinar uma função factível $f$ que maximize o escalar $|f|$.
+
+Esta abstração matemática de rede, capacidades e restrições serve como o substrato exato para o encapsulamento orientado a objetos desenvolvido nas etapas práticas deste projeto. A classe-base C++ desenvolvida abstrai este formalismo garantindo, em nível de \textit{software}, que a invariante da restrição de capacidade nunca seja violada.
+
+

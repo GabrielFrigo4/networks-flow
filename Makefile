@@ -2,7 +2,7 @@
 .SILENT:
 MAKEFLAGS += --no-print-directory
 
-.PHONY: all latex book apps impl exp format test setup clean
+.PHONY: all latex book apps impl exp format test setup clean sync-code
 
 all: latex apps impl
 
@@ -20,6 +20,9 @@ latex:
 
 book:
 	$(MAKE) -C LaTeX book
+
+sync-code:
+	python3 Scripts/sync_listings.py
 
 apps:
 	$(MAKE) -C Aplicações all

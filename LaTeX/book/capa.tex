@@ -1,0 +1,196 @@
+% =========================================================================
+% CAPA EDITORIAL MIT PRESS E PREFÁCIO DO AUTOR
+% =========================================================================
+\begin{titlepage}
+    \thispagestyle{empty}
+    \begin{tikzpicture}[remember picture, overlay]
+        \fill[bottombg] (current page.south west) rectangle (current page.north east);
+
+        \coordinate (splitLeft) at ($(current page.south west)+(0, 16.6cm)$);
+        \coordinate (splitRight) at ($(current page.south east)+(0, 16.6cm)$);
+        \coordinate (splitMid) at ($(splitLeft)!0.5!(splitRight)$);
+
+        \fill[topbg] (splitLeft) rectangle (current page.north east);
+        \draw[line width=2.5pt, accentgold] (splitLeft) -- (splitRight);
+
+        \begin{scope}[opacity=0.09]
+            \coordinate (N1) at ($(current page.north west)+(3, -2)$);
+            \coordinate (N2) at ($(current page.north)+(0, -3.5)$);
+            \coordinate (N3) at ($(current page.north east)+(-3, -1.8)$);
+            \coordinate (N4) at ($(current page.north west)+(1.5, -6.5)$);
+            \coordinate (N5) at ($(current page.north)+(2, -7.5)$);
+            \coordinate (N6) at ($(current page.north east)+(-2, -5.5)$);
+            \coordinate (N7) at ($(current page.north)+(-4, -11)$);
+            \coordinate (N8) at ($(current page.north)+(3.5, -11.5)$);
+
+            \draw[white, line width=1pt] (N1)--(N2)--(N3)--(N6)--(N5)--(N4)--(N1);
+            \draw[white, line width=0.8pt] (N2)--(N5)--(N8)--(N6);
+            \draw[white, line width=0.8pt] (N4)--(N7)--(N5);
+            \foreach \pt in {N1,N2,N3,N4,N5,N6,N7,N8} {
+                \fill[white] (\pt) circle (3pt);
+            }
+        \end{scope}
+
+        \draw[line width=3.5pt, accentgold] ($(current page.north west)+(2.2cm, -2.1cm)$) -- ($(current page.north west)+(2.2cm, -3.45cm)$);
+
+        \node[anchor=north west, align=left] at ($(current page.north west)+(2.55cm, -2.05cm)$) {
+            {\fontsize{14.5}{18}\selectfont\textbf{\color{white}GABRIEL FRIGO}}\\[0.14cm]
+            {\fontsize{9}{12}\selectfont\color{accentgold}UNIVERSIDADE FEDERAL DO ABC \quad $\bullet$ \quad CMCC}
+        };
+
+        \node[anchor=north west, align=left, text width=16.5cm] at ($(current page.north west)+(2.2cm, -4.75cm)$) {
+            {\fontsize{30.5}{38}\selectfont\textbf{\color{white}PROBLEMAS\hspace{0.35em}DE}}\\[0.40cm]
+            {\fontsize{34.5}{42}\selectfont\textbf{\color{white}FLUXOS\hspace{0.35em}EM\hspace{0.35em}REDES}}\\[0.80cm]
+            {\fontsize{13}{18}\selectfont\color{white!90}\textbf{Teoria Matemática, Algoritmos Combinatórios}\\[0.19cm]
+            \fontsize{13}{18}\selectfont\color{white!90}\textbf{e Implementações de Alta Performance}}
+        };
+
+        \node[anchor=south] at ($(splitMid)+(0, 0.88cm)$) {
+            \begin{tikzpicture}
+                \node (B1) [cover badge, draw=accentcyan, text=accentcyan] {C++23 STANDARD};
+                \node (B2) [cover badge, draw=accentgold, text=accentgold, right=0.14cm of B1] {TEOREMAS E PROVAS};
+                \node (B3) [cover badge, draw=white!45, text=white!95, right=0.14cm of B2] {FLUXO MÁXIMO \& CORTE MÍNIMO};
+                \node (B4) [cover badge, draw=white!45, text=white!95, right=0.14cm of B3] {FLUXO DE CUSTO MÍNIMO};
+            \end{tikzpicture}
+        };
+
+        \begin{scope}[shift={($(current page.north)+(0, -19.6cm)$)}]
+            \draw[line width=1.3pt, cardborder, fill=cardbg, rounded corners=12pt] 
+                (-6.8, -3.95) rectangle (6.8, 3.95);
+
+            \node[font=\footnotesize\bfseries, text=darkslate, anchor=north] at (0, 3.55) 
+                {TEOREMA DO FLUXO MÁXIMO E CORTE MÍNIMO : \enspace $|f^*| = \operatorname{cap}(S, T) = 14$};
+
+            \draw[darkslate!16, line width=0.8pt] (-6.2, 2.95) -- (6.2, 2.95);
+
+            \node[card badge, draw=setSborder!80, text=setStext] at (-3.5, 2.45) 
+                {Conjunto $S$};
+
+            \node[card badge, draw=cutviolet!80, text=cutviolet!90!black] at (0, 2.45) 
+                {\textbf{Corte Mínimo} $(S, T)$};
+
+            \node[card badge, draw=setTborder!80, text=setTtext] at (3.5, 2.45) 
+                {Conjunto $T$};
+
+            \coordinate (S)  at (-5.0, -0.20);
+            \coordinate (V1) at (-2.0,  1.45);
+            \coordinate (V2) at (-2.0, -1.85);
+            \coordinate (V3) at ( 2.0,  1.45);
+            \coordinate (V4) at ( 2.0, -1.85);
+            \coordinate (T)  at ( 5.0, -0.20);
+
+            \draw[-{Stealth[length=3.2mm]}, line width=1.6pt, darkslate] (S) -- 
+                node[sloped, above=2.5pt, font=\scriptsize\bfseries, fill=cardbg, inner sep=1.5pt] {$8 / 10$} (V1);
+
+            \draw[-{Stealth[length=3.2mm]}, line width=1.6pt, darkslate] (S) -- 
+                node[sloped, below=2.5pt, font=\scriptsize\bfseries, fill=cardbg, inner sep=1.5pt] {$6 / 10$} (V2);
+
+            \draw[-{Stealth[length=3.2mm]}, line width=1.6pt, darkslate] (V1) -- 
+                node[left=3pt, font=\scriptsize\bfseries, fill=cardbg, inner sep=1.5pt] {$1 / 3$} (V2);
+
+            \draw[-{Stealth[length=3.2mm]}, line width=1.6pt, darkslate] (V1) -- 
+                node[pos=0.25, sloped, above=2.5pt, font=\scriptsize\bfseries, fill=cardbg, inner sep=1.5pt] {$4 / 4$} (V3);
+
+            \draw[-{Stealth[length=3.2mm]}, line width=1.6pt, darkslate] (V1) -- 
+                node[pos=0.25, sloped, above=2.5pt, font=\scriptsize\bfseries, fill=cardbg, inner sep=1.5pt] {$3 / 3$} (V4);
+
+            \draw[-{Stealth[length=3.2mm]}, line width=1.6pt, darkslate] (V2) -- 
+                node[pos=0.25, sloped, below=2.5pt, font=\scriptsize\bfseries, fill=cardbg, inner sep=1.5pt] {$2 / 2$} (V3);
+
+            \draw[-{Stealth[length=3.2mm]}, line width=1.6pt, darkslate] (V2) -- 
+                node[pos=0.25, sloped, below=2.5pt, font=\scriptsize\bfseries, fill=cardbg, inner sep=1.5pt] {$5 / 5$} (V4);
+
+            \draw[-{Stealth[length=3.2mm]}, line width=1.6pt, darkslate] (V3) -- 
+                node[sloped, above=2.5pt, font=\scriptsize\bfseries, fill=cardbg, inner sep=1.5pt] {$6 / 9$} (T);
+
+            \draw[-{Stealth[length=3.2mm]}, line width=1.6pt, darkslate] (V4) -- 
+                node[sloped, below=2.5pt, font=\scriptsize\bfseries, fill=cardbg, inner sep=1.5pt] {$8 / 10$} (T);
+
+            \draw[line width=2.0pt, dashed, cutviolet] 
+                (0, 2.15) to[out=-80, in=100] (0, -2.60);
+
+            \node (S_node)  at (S)  [circle, draw=setSborder, fill=setSsource, line width=2.0pt, minimum size=11mm, font=\large\bfseries, text=setStext] {$s$};
+            \node (V1_node) at (V1) [circle, draw=setSborder!80, fill=setSnode, line width=1.5pt, minimum size=10mm, font=\normalsize\bfseries, text=setStext] {$v_1$};
+            \node (V2_node) at (V2) [circle, draw=setSborder!80, fill=setSnode, line width=1.5pt, minimum size=10mm, font=\normalsize\bfseries, text=setStext] {$v_2$};
+
+            \node (V3_node) at (V3) [circle, draw=setTborder!80, fill=setTnode, line width=1.5pt, minimum size=10mm, font=\normalsize\bfseries, text=setTtext] {$v_3$};
+            \node (V4_node) at (V4) [circle, draw=setTborder!80, fill=setTnode, line width=1.5pt, minimum size=10mm, font=\normalsize\bfseries, text=setTtext] {$v_4$};
+            \node (T_node)  at (T)  [circle, draw=setTborder, fill=setTsink, line width=2.0pt, minimum size=11mm, font=\large\bfseries, text=setTtext] {$t$};
+        \end{scope}
+
+        \node[anchor=south, align=center] at ($(current page.south)+(0, 2.0cm)$) {
+            {\fontsize{10.5}{14}\selectfont\color{darkslate} Orientação Acadêmica: \textbf{Profa. Dra. Cristiane Maria Sato}}\\[0.25cm]
+            {\fontsize{9}{12}\selectfont\color{darkslate!70} Santo André -- SP \quad $\bullet$ \quad 2026}
+        };
+    \end{tikzpicture}
+\end{titlepage}
+\clearpage
+
+\frontmatter
+
+\begin{titlepage}
+    \centering
+    \vspace*{0.5cm}
+    {\scshape\large UNIVERSIDADE FEDERAL DO ABC}\\[0.2cm]
+    {\fontsize{10}{13}\selectfont\textbf{\textsf{CENTRO DE MATEMÁTICA, COMPUTAÇÃO E COGNIÇÃO -- CMCC}}}\\[0.15cm]
+    {\fontsize{9}{12}\selectfont\color{darkslate!75} Bacharelado em Ciência da Computação}
+    
+    \vspace{1.8cm}
+    
+    {\fontsize{24}{30}\selectfont\textbf{\textsf{PROBLEMAS DE FLUXOS EM REDES}}}\\[0.5cm]
+    {\fontsize{12.5}{17}\selectfont\textbf{\color{darkslate!85}Teoria Matemática, Algoritmos Combinatórios\\ e Implementações de Alta Performance}}\\[0.6cm]
+    
+    \begin{tikzpicture}
+        \draw[line width=1.5pt, darkslate] (-3, 0) -- (0, 0);
+        \draw[line width=1.8pt, accentgold] (0.3, 0) -- (3, 0);
+    \end{tikzpicture}
+    
+    \vspace{0.8cm}
+    
+    {\fontsize{14}{18}\selectfont\textbf{\textsf{Gabriel Frigo}}}\\[0.35cm]
+    {\fontsize{10.5}{14}\selectfont Orientação Acadêmica: \textbf{\textsf{Profa. Dra. Cristiane Maria Sato}}}
+    
+    \vspace{1.6cm}
+    
+    \begin{tikzpicture}
+        \node[draw=cardborder, fill=cardbg, rounded corners=8pt, line width=1pt, inner sep=16pt, text width=13.0cm, align=left] {
+            {\fontsize{9.5}{14}\selectfont\textbf{\color{darkslate}ESCOPO MONOGRÁFICO:}}\\[0.2cm]
+            {\fontsize{9}{13}\selectfont\color{darkslate!90} Tratado monográfico completo dedicado ao estudo rigoroso, demonstrações formais axiomáticas e engenharia de software em C++23 de problemas clássicos e contemporâneos de fluxos em redes, dualidade primal-dual e suas aplicações em otimização combinatória e visão computacional.}\\[0.35cm]
+            {\fontsize{8.5}{12}\selectfont\color{darkslate!80} \textbf{Palavras-chave:} Fluxo Máximo $\bullet$ Corte Mínimo $\bullet$ Custo Mínimo $\bullet$ Dualidade Linear $\bullet$ Network Simplex $\bullet$ C++23}
+        };
+    \end{tikzpicture}
+    
+    \vfill
+    
+    {\fontsize{9.5}{13}\selectfont\color{darkslate!80}\textbf{1ª Edição Monográfica}}\\[0.2cm]
+    {\fontsize{10.5}{14}\selectfont\textbf{Santo André -- SP}}\\[0.15cm]
+    {\fontsize{10.5}{14}\selectfont\textbf{\the\year}}
+\end{titlepage}
+
+\chapter*{Prefácio do Autor}
+\addcontentsline{toc}{chapter}{Prefácio do Autor}
+
+A teoria de fluxos em digrafos ocupa um território privilegiado na ciência moderna, situado na encruzilhada exata entre a Matemática Discreta, a Geometria Poliedral e a Ciência da Computação Teórica. Desde as formulações seminais de L. R. Ford Jr. e D. R. Fulkerson na década de 1950, a modelagem de fluxos revelou-se não apenas um modelo elegante para transporte físico ou alocação de recursos, mas uma poderosa linguagem conceitual capaz de unificar teoremas estruturais aparentemente díspares --- como as dualidades de König, Gallai, Hall e Menger.
+
+Este volume foi concebido para preencher uma lacuna frequente na literatura técnica: a dissociação entre a matemática axiomática rigorosa e a engenharia de software de baixa latência. Frequentemente, manuais teóricos abstêm-se dos desafios concretos de representação em memória e amortização assintótica, enquanto textos práticos negligenciam as demonstrações formais de corretude e otimalidade que justificam as escolhas de projeto. 
+
+Neste livro, ambas as vertentes operam em simbiose incondicional:
+\begin{enumerate}[leftmargin=1.5em, itemsep=0.4em]
+    \item \textbf{Rigor Teórico Sem Atalhos:} Apresentamos as deduções e demonstrações formais integrais de todos os teoremas estruturais fundamentais que regem a teoria de fluxos (desde o Teorema do Fluxo Máximo e Corte Mínimo de Ford-Fulkerson até a Total Unimodularidade de Poincaré), articulando enunciado formal, intuição geométrica/física, prova construtiva e implicações algorítmicas;
+    \item \textbf{Ecossistema de Software C++23:} Desenvolvemos uma arquitetura orientada a objetos moderna baseada em polimorfismo limpo, representações residuais simétricas compactas e estruturas de dados de alta localidade de cache;
+    \item \textbf{Reduções Práticas e Aplicações Reais:} Exploramos desde as transformações de conectividade em grafos bipartidos até a formulação energética de corte mínimo aplicada à Segmentação Interativa de Imagens em visão computacional;
+    \item \textbf{Metodologia Experimental e Benchmarks:} Estruturamos um protocolo de medição empírica sob isolamento de CPU contra instâncias padronizadas da literatura (coleções DIMACS).
+\end{enumerate}
+
+Esta edição monográfica e independente liberta o texto das amarras burocráticas de formulários institucionais de iniciação científica, oferecendo aos leitores, pesquisadores e engenheiros de software um percurso contínuo, profundo e intelectualmente desafiador sobre a arte dos fluxos em redes.
+
+\vspace{1cm}
+\begin{flushright}
+    \textbf{Gabriel Frigo}\\
+    \textit{Santo André, SP}
+\end{flushright}
+
+\newpage
+\tableofcontents
+\newpage
+

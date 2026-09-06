@@ -1,0 +1,157 @@
+% =========================================================================
+% ELEMENTOS PRÉ-TEXTUAIS E METODOLÓGICOS DA INICIAÇÃO CIENTÍFICA
+% =========================================================================
+\section{Resumo}
+
+O presente trabalho de Iniciação Científica investiga de maneira integrada a teoria matemática, a modelagem combinatória e a engenharia de software de alto desempenho aplicadas aos problemas fundamentais de Fluxos em Redes. A pesquisa estrutura-se em quatro eixos complementares:
+
+\begin{itemize}[leftmargin=1.5em, itemsep=0.05em, topsep=0.1em, parsep=0em]
+    \item \textbf{Fundamentação Teórica e Dualidade:} Foram formalizados e demonstrados todos os teoremas estruturais fundamentais que regem a teoria de fluxos e otimização combinatória (desde o Teorema do Fluxo Máximo e Corte Mínimo de Ford-Fulkerson até a Total Unimodularidade de Poincaré, passando pelas Dualidades de König, Gallai, Hall e Menger, a Decomposição Canônica de Fluxo, a Condição de Otimalidade por Ciclos Negativos de Klein, os Custos Reduzidos e a Folga Complementar de Karush-Kuhn-Tucker). Todos os teoremas são apresentados sob uma estrutura pedagógica em quatro dimensões: enunciado formal, intuição física/geométrica, demonstração matemática rigorosa e implicações algorítmicas computacionais.
+    
+    \item \textbf{Arquitetura Orientada a Objetos em C++23:} Desenvolveu-se um ecossistema modular de classes polimórficas fundamentado nos padrões de projeto \textit{Strategy} e \textit{Template Method}. A arquitetura organiza-se em duas famílias principais: a família \code{FlowNetwork}, composta por cinco motores de Fluxo Máximo (\textit{Ford-Fulkerson}, \textit{Edmonds-Karp}, \textit{Dinic}, \textit{Push-Relabel FIFO} e \textit{Push-Relabel Improved} com a heurística de lacuna \textit{Gap Heuristic}); e a família \code{CostNetwork}, composta por quatro motores de Fluxo de Custo Mínimo (\textit{Cycle Canceling}, \textit{Successive Shortest Path} com SPFA, \textit{Successive Shortest Path} acelerado via Dijkstra e potenciais nodais de Edmonds-Karp, e o \textit{Network Simplex} com manutenção direta de bases em árvores geradoras).
+
+    \item \textbf{Reduções Combinatórias e Aplicações Práticas:} Demonstrou-se a versatilidade dos modelos de fluxo na resolução de problemas clássicos em grafos bipartidos (emparelhamento máximo, cobertura mínima de vértices e arestas, conjunto independente máximo e caminhos disjuntos), culminando na concepção e implementação de um software autônomo de \textbf{Segmentação Interativa de Imagens} baseado no algoritmo de corte mínimo ($s$-$t$ \textit{cut} / \textit{Graph Cuts}) aplicado à visão computacional.
+
+    \item \textbf{Protocolo Experimental e Benchmarks:} Estruturou-se uma metodologia rigorosa de avaliação de desempenho e escalabilidade em instâncias padronizadas da literatura acadêmica (coleções DIMACS \textit{Washington}, \textit{Genrmf}, \textit{Netgen} e \textit{Grid}), contemplando o isolamento estrito de tempo de CPU, contadores operacionais internos e validação cruzada automática de soluções ótimas.
+\end{itemize}
+
+\vspace{0.2cm}
+\noindent \textbf{Nota sobre a Estrutura e Volumetria do Documento:} Visando constituir uma monografia abrangente e autossuficiente para o grupo de pesquisa, o relatório organiza-se em duas partes complementares: o corpo analítico de fundamentação teórica, deduções e algoritmos (Seções~\ref{sec:introducao} a~\ref{sec:conclusoes}), seguido pelos Apêndices~\ref{ap:flownetwork} a~\ref{ap:github}, dedicados à documentação integral do código-fonte C++ desenvolvido (consulte o Guia de Leitura na Subseção~\ref{sec:leitura}).
+
+\vspace{0.2cm}
+\noindent \textbf{Palavras-chave:} Otimização Combinatória, Teoria dos Grafos, Fluxo Máximo, Fluxo de Custo Mínimo, Dualidade Primal-Dual, Network Simplex, Total Unimodularidade, Benchmarks DIMACS, C++ Moderno.
+
+\section{Introdução}\label{sec:introducao}
+A Otimização Combinatória é uma área de pesquisa situada na interseção entre Matemática e Ciência da Computação (veja~\cite{korte2018combinatorial}). Do ponto de vista matemático, a área mantém forte influência com a Teoria dos Grafos, uma vez que digrafos constituem objetos combinatórios com amplo poder de modelagem (veja~\cite{bondy2008graph, diestel2017graph}).
+Sob a perspectiva computacional, o foco reside na obtenção de algoritmos eficientes que produzam soluções garantidamente ótimas (veja~\cite{schrijver2003combinatorial, cook1998combinatorial}). Dentre os tópicos de destaque, os problemas de fluxos em digrafos ocupam posição central, tratando de redes onde recursos devem ser transportados respeitando restrições de capacidade (veja~\cite{ahuja1993network}).
+O objetivo deste projeto é proporcionar uma formação sólida na área, integrando teoria e prática, desde as estruturas fundamentais de fluxo máximo até os modelos avançados de fluxo de custo mínimo e suas validações experimentais.
+
+\subsection{Estrutura do Documento e Guia de Leitura para Avaliação}\label{sec:leitura}
+
+Com a finalidade de facilitar a leitura crítica e proporcionar um roteiro claro de navegação aos avaliadores deste relatório, detalhamos a organização macroscópica do volume:
+
+\begin{enumerate}[leftmargin=1.5em, itemsep=0.15em, topsep=0.2em, parsep=0em]
+    \item \textbf{Corpo Analítico Principal (Seções~\ref{sec:introducao} a~\ref{sec:conclusoes}, páginas~\pageref{sec:introducao} a~\pageref{sec:conclusoes}):} Constrói o percurso teórico-matemático, formaliza as demonstrações de todos os teoremas estruturais fundamentais, detalha o funcionamento dos algoritmos de fluxo máximo e custo mínimo, apresenta as reduções combinatórias, a modelagem de segmentação de imagens e a metodologia experimental.
+    \item \textbf{Apêndices Computacionais (Apêndices~\ref{ap:flownetwork} a~\ref{ap:github}, páginas~\pageref{ap:flownetwork} a~\pageref{ap:github}):} Documentam o código-fonte integral desenvolvido em linguagem C++23, evidenciando o encapsulamento orientado a objetos, a robustez das estruturas de dados e a implementação dos motores algorítmicos.
+\end{enumerate}
+
+\noindent \textbf{Roteiro de Leitura Rápida (\textit{Fast Track} para o Avaliador):}
+Caso o parecerista disponha de tempo reduzido para a análise e deseje examinar pontualmente as contribuições mais expressivas do projeto, recomenda-se a consulta prioritária aos seguintes núcleos:
+\begin{itemize}[leftmargin=1.5em, itemsep=0.15em, topsep=0.2em, parsep=0em]
+    \item \textbf{Subseção~\ref{sec:push_relabel_gap} (página~\pageref{sec:push_relabel_gap}):} Aceleração prática de convergência por meio da heurística de lacuna (\textit{Gap Heuristic}) no algoritmo Push-Relabel;
+    \item \textbf{Subseção~\ref{sec:segmentacao} (página~\pageref{sec:segmentacao}):} Modelagem e implementação prática de Segmentação Interativa de Imagens via corte mínimo em grafos;
+    \item \textbf{Subseção~\ref{sec:ssp_dijkstra} (página~\pageref{sec:ssp_dijkstra}):} Paradigma Dual de Custo Mínimo via \textit{Successive Shortest Path}, potenciais nodais de Edmonds-Karp e invariante de não-negatividade ($\bar{w}_\pi \ge 0$) com Dijkstra;
+    \item \textbf{Subseção~\ref{sec:network_simplex} (página~\pageref{sec:network_simplex}):} Teoria da Total Unimodularidade e mecânica computacional do algoritmo \textit{Network Simplex} sobre árvores geradoras;
+    \item \textbf{Subseção~\ref{sec:benchmarks} (página~\pageref{sec:benchmarks}):} Metodologia de validação empírica e protocolo experimental em instâncias padronizadas DIMACS;
+    \item \textbf{Seção~\ref{sec:conclusoes} (página~\pageref{sec:conclusoes}):} Síntese conclusiva das metas alcançadas e das diretrizes de pesquisa futura.
+\end{itemize}
+
+\section{Fundamentação teórica}
+O problema do $st$-fluxo máximo, onde se busca maximizar a quantidade de fluxo enviada de um vértice fonte $s$ para um vértice de destino $t$, é um dos pilares deste estudo (veja~\cite{ford1956maximal}). Foram analisados algoritmos como os de Ford-Fulkerson, Edmonds-Karp, Dinic e Push-Relabel (Goldberg-Tarjan) (veja~\cite{ford1956maximal, edmonds1972theoretical, dinic1970algorithm, goldberg1988new}).
+O projeto também contempla o problema de fluxo de custo mínimo, que busca minimizar o custo total enquanto satisfaz as demandas da rede. Para este fim, foram desenvolvidos e analisados algoritmos clássicos como Cycle Canceling e Successive Shortest Path (com SPFA e Dijkstra acelerado por potenciais nodais), culminando na implementação do algoritmo \textit{network simplex}, uma especialização do algoritmo simplex sobre grafos (veja~\cite{dantzig1951application, ahuja1993network}).
+A fundamentação teórica revisada nesta pesquisa reafirma que muitos problemas combinatórios, como o emparelhamento máximo em digrafos bipartidos, podem ser resolvidos via reduções para problemas de fluxo (veja~\cite{ahuja1993network}).
+
+\section{Metodologia}
+\subsection{Materiais e Métodos}
+A metodologia baseia-se em ciclos de estudo bibliográfico seguidos de implementação. Os algoritmos foram integralmente desenvolvidos em linguagem C++23 orientada a objetos para garantir alta performance, utilizando listas de adjacência e representações residuais otimizadas.
+O protocolo de validação experimental foi estruturado sobre instâncias padronizadas das coleções DIMACS (veja~\cite{Jensen2022}), permitindo a comparação sistemática de desempenho. A análise fundamenta-se em métricas de tempo de execução de CPU e corretude dos algoritmos implementados frente às soluções ótimas conhecidas (veja~\cite{ford1956maximal}).
+
+\subsection{Etapas da pesquisa}
+As atividades do projeto foram estruturadas e encontram-se no seguinte status:
+\begin{itemize}
+    \item \textbf{Atividade 1:} Estudo dos fundamentos de Otimização Combinatória e Teoria dos Grafos (veja~\cite{cook1998combinatorial}). \textbf{[Concluída]}
+    \item \textbf{Atividade 2:} Estudo teórico do problema de fluxo máximo e algoritmos clássicos (veja~\cite{ford1956maximal, edmonds1972theoretical, dinic1970algorithm, goldberg1988new}). \textbf{[Concluída]}
+    \item \textbf{Atividade 3:} Implementação em C++ dos algoritmos de fluxo máximo. \textbf{[Concluída]}
+    \item \textbf{Atividade 4:} Estudo de técnicas de modelagem e redução de problemas. \textbf{[Concluída]}
+    \item \textbf{Atividade 5:} Implementação de problemas modelados (Emparelhamento e Caminhos Disjuntos). \textbf{[Concluída]}
+    \item \textbf{Atividade 6:} Elaboração do relatório final (este documento). \textbf{[Concluída]}
+    \item \textbf{Atividade 7:} Estudo teórico do problema de fluxo de custo mínimo (veja~\cite{cook1998combinatorial}). \textbf{[Concluída]}
+    \item \textbf{Atividade 8:} Implementação em C++ do algoritmo \textit{network simplex}. \textbf{[Concluída]}
+    \item \textbf{Atividade 9:} Testes experimentais em instâncias de larga escala (DIMACS). \textbf{[Estruturada]}
+    \item \textbf{Atividade 10:} Análise comparativa de desempenho dos algoritmos. \textbf{[Estruturada]}
+    \item \textbf{Atividade 11:} Elaboração do relatório final e consolidação dos resultados. \textbf{[Concluída]}
+\end{itemize}
+
+O encadeamento estrutural deste plano de trabalho é sumarizado no pipeline metodológico da Figura~\ref{fig:pipeline_metodologico}.
+
+\begin{figure}[!ht]
+\centering
+\resizebox{\textwidth}{!}{%
+\begin{tikzpicture}[thick, node distance=0.6cm]
+  \node[stage box] (s1) at (0,0) {\textbf{1. Teoria \& Dualidade}\\Max-Flow Min-Cut\\Reduções Bipartidas\\Fluxo Custo Mínimo};
+  \node[stage box] (s2) at (3.3,0) {\textbf{2. Arquitetura C++23}\\Herança \& Polimorfismo\\\texttt{FlowNetwork}\\\texttt{CostNetwork}};
+  \node[stage box] (s3) at (6.6,0) {\textbf{3. Motores Algorítmicos}\\Edmonds-Karp, Dinic\\Push-Relabel (Heur.)\\SSP, Network Simplex};
+  \node[stage box] (s4) at (9.9,0) {\textbf{4. Certificação Cruzada}\\Invariantes de Fluxo\\Dualidade Forte\\Google Test};
+  \node[stage box] (s5) at (13.2,0) {\textbf{5. Benchmarks}\\Grades 2D, Camadas\\Grafos Aleatórios\\Segmentação Imagens};
+
+  \draw[->, line width=1.5pt, blue!80!black] (s1) -- (s2);
+  \draw[->, line width=1.5pt, blue!80!black] (s2) -- (s3);
+  \draw[->, line width=1.5pt, blue!80!black] (s3) -- (s4);
+  \draw[->, line width=1.5pt, blue!80!black] (s4) -- (s5);
+\end{tikzpicture}%
+}
+\caption{Pipeline metodológico da pesquisa: fluxo integrado conectando a fundamentação teórica em otimização, a modelagem primal-dual, a arquitetura de software orientada a objetos em C++23, os procedimentos de certificação cruzada de corretude e os testes de desempenho computacional.}
+\label{fig:pipeline_metodologico}
+\end{figure}
+
+\section{Resultados}
+
+Nesta seção, apresentamos os avanços teóricos e práticos alcançados ao longo do projeto (sintetizados no Quadro-Síntese da Tabela~\ref{tab:sintese}). A exposição é estruturada em quatro grandes macro-blocos temáticos, integrando a fundamentação matemática elementar das redes de fluxo, a evolução das propriedades residuais, as implementações de algoritmos de estado da arte (\textit{Edmonds-Karp}, \textit{Dinic}, \textit{Push-Relabel}, \textit{Successive Shortest Path} e \textit{Network Simplex}), a modelagem de problemas combinatórios clássicos com aplicações em visão computacional e o protocolo de validação experimental.
+
+\vspace{0.3cm}
+\begin{table}[!ht]
+\centering
+\small
+\setlength{\tabcolsep}{4.5pt}
+\begin{tabular}{p{4.1cm} p{5.5cm} p{6.3cm}}
+\toprule
+\multicolumn{1}{c}{\textbf{Macro-Bloco Temático}} & \multicolumn{1}{c}{\textbf{Resultados Teóricos Chave}} & \multicolumn{1}{c}{\textbf{Algoritmos, Reduções e Aplicações}} \\
+\midrule
+\textbf{\hyperref[bloco:max_flow]{Bloco I: Fluxo Máximo}} \newline 
+\textit{(Subseções \ref{sec:base_matematica}--\ref{sec:sintese_max_flow})} & 
+$\bullet$ \hyperref[teo:mfmc]{Teorema MFMC} (Teorema~\ref{teo:mfmc}) \newline 
+$\bullet$ \hyperref[teo:integralidade]{Teorema da Integralidade} (Teorema~\ref{teo:integralidade}) \newline 
+$\bullet$ \hyperref[sec:dualidade_primal_dual]{Dualidade Primal-Dual} (\S\ref{sec:dualidade_primal_dual}) & 
+$\bullet$ \hyperref[sec:ford_fulkerson]{Ford-Fulkerson} (\S\ref{sec:ford_fulkerson}) \newline 
+$\bullet$ \hyperref[sec:edmonds_karp]{Edmonds-Karp} (\S\ref{sec:edmonds_karp}) \newline 
+$\bullet$ \hyperref[sec:dinic]{Dinic} (\S\ref{sec:dinic}) \newline 
+$\bullet$ \hyperref[sec:push_relabel]{Push-Relabel (FIFO)} (\S\ref{sec:push_relabel}) \newline 
+$\bullet$ \hyperref[sec:push_relabel_gap]{Push-Relabel (Gap)} (\S\ref{sec:push_relabel_gap}) \\
+\addlinespace
+\textbf{\hyperref[bloco:aplicacoes]{Bloco II: Reduções e Aplicações}} \newline 
+\textit{(Subseções \ref{sec:bipartidos}--\ref{sec:segmentacao})} & 
+$\bullet$ \hyperref[teo:konig]{Teorema de König} (Teorema~\ref{teo:konig}) \newline 
+$\bullet$ \hyperref[teo:gallai]{Teorema de Gallai} (Teorema~\ref{teo:gallai}) \newline 
+$\bullet$ \hyperref[teo:hall]{Casamento de Hall} (Teorema~\ref{teo:hall}) \newline 
+$\bullet$ \hyperref[teo:menger_arcos]{Teoremas de Menger} (Teoremas~\ref{teo:menger_arcos}, \ref{teo:menger_vertices}) \newline 
+$\bullet$ \hyperref[teo:decomposicao]{Decomposição de Trajetórias} (Teorema~\ref{teo:decomposicao}) & 
+$\bullet$ \hyperref[sec:emparelhamento]{Emparelhamento Bipartido} (\S\ref{sec:emparelhamento}) \newline 
+$\bullet$ \hyperref[sec:cobertura]{Coberturas e Conjunto Indep.} (\S\ref{sec:cobertura}) \newline 
+$\bullet$ \hyperref[sec:caminhos_disjuntos]{Caminhos Disjuntos} (\S\ref{sec:caminhos_disjuntos}) \newline 
+$\bullet$ \hyperref[sec:segmentacao]{Segmentação de Imagens} (\S\ref{sec:segmentacao}) \\
+\addlinespace
+\textbf{\hyperref[bloco:min_cost]{Bloco III: Fluxo de Custo Mínimo}} \newline 
+\textit{(Subseções \ref{sec:mcf_teoria}--\ref{sec:mcf_comparacao})} & 
+$\bullet$ \hyperref[teo:ciclos_negativos]{Ciclos de Custo Negativo} (Teorema~\ref{teo:ciclos_negativos}) \newline 
+$\bullet$ \hyperref[teo:custos_reduzidos]{Custos Reduzidos $\bar{w} \ge 0$} (Teorema~\ref{teo:custos_reduzidos}) \newline 
+$\bullet$ \hyperref[teo:folga_complementar]{Folga Complementar / KKT} (Teorema~\ref{teo:folga_complementar}) \newline 
+$\bullet$ \hyperref[teo:tum]{Total Unimodularidade TUM} (Teorema~\ref{teo:tum}) & 
+$\bullet$ \hyperref[sec:cycle_canceling]{Cycle Canceling} (\S\ref{sec:cycle_canceling}) \newline 
+$\bullet$ \hyperref[sec:ssp_spfa]{SSP com SPFA} (\S\ref{sec:ssp_spfa}) \newline 
+$\bullet$ \hyperref[sec:ssp_dijkstra]{SSP com Dijkstra e $\pi$} (\S\ref{sec:ssp_dijkstra}) \newline 
+$\bullet$ \hyperref[sec:network_simplex]{Network Simplex} (\S\ref{sec:network_simplex}) \\
+\addlinespace
+\textbf{\hyperref[bloco:benchmarks]{Bloco IV: Avaliação Experimental}} \newline 
+\textit{(Subseção \ref{sec:benchmarks})} & 
+$\bullet$ \hyperref[sec:bench_metodologia]{Isolamento Rigoroso de CPU} (\S\ref{sec:bench_metodologia}) \newline 
+$\bullet$ \hyperref[sec:bench_metricas]{Contadores de Operações} (\S\ref{sec:bench_metricas}) \newline 
+$\bullet$ \hyperref[sec:bench_metricas]{Validação Cruzada Ótima} (\S\ref{sec:bench_metricas}) & 
+$\bullet$ \hyperref[sec:bench_instancias]{Coleções DIMACS Max e Min} (\S\ref{sec:bench_instancias}) \newline 
+$\bullet$ \hyperref[sec:bench_instancias]{Redes em Grade e Sintéticas} (\S\ref{sec:bench_instancias}) \newline 
+$\bullet$ \hyperref[tab:benchmarks]{Matriz Experimental} (Tabela~\ref{tab:benchmarks}) \\
+\bottomrule
+\end{tabular}
+\caption{Quadro-Síntese dos resultados, contribuições teóricas e motores computacionais desenvolvidos no projeto.}
+\label{tab:sintese}
+\end{table}
+\vspace{0.3cm}

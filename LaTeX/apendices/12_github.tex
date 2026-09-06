@@ -1,0 +1,27 @@
+% =========================================================================
+% ACESSO AO CÓDIGO-FONTE E REPOSITÓRIO GITHUB
+% =========================================================================
+\newpage
+\apendice{Acesso ao Código-Fonte e Repositório GitHub}
+\label{ap:github}
+
+Com o objetivo de garantir a transparência, a reprodutibilidade dos experimentos e facilitar a consulta das implementações discutidas neste relatório, todo o material de desenvolvimento foi organizado em um repositório público na plataforma GitHub.
+
+O repositório \textbf{Networks Flow} está estruturado nos seguintes diretórios principais:
+\begin{itemize}
+    \item \textbf{Fluxo Máximo} (\texttt{Implementações/FlowNetwork/}): Módulos base e motores (\lstinline{FordFulkerson}, \lstinline{EdmondsKarp}, \lstinline{Dinic}, \lstinline{PushRelabel} e \lstinline{PushRelabelImproved});
+    \item \textbf{Fluxo de Custo Mínimo} (\texttt{Implementações/CostNetwork/}): Módulos base e motores (\lstinline{CycleCanceling}, \lstinline{SuccessiveShortestPath} e \lstinline{NetworkSimplex});
+    \item \textbf{Problemas} (\texttt{Implementações/Problemas/}): Resolvedores para problemas combinatórios clássicos (como \textit{Minimum Vertex Cover}, emparelhamentos e caminhos disjuntos);
+    \item \textbf{Aplicações Práticas} (\texttt{Aplicações/Segmentação de Imagens/}): Ferramenta completa de segmentação de imagens via corte mínimo em grafos (\textit{Graph Cuts});
+    \item \textbf{Experimentos} (\texttt{Experimentos/}): Scripts de automação de testes, leitura de instâncias no formato DIMACS e avaliação experimental.
+\end{itemize}
+
+O código-fonte completo pode ser consultado, clonado e executado através do endereço:
+
+\vspace{0.4cm}
+\begin{center}
+    \fbox{\url{https://github.com/GabrielFrigo4/networks-flow}}
+\end{center}
+\vspace{0.4cm}
+
+O versionamento do código segue as boas práticas de desenvolvimento de \textit{software}, permitindo o acompanhamento histórico das otimizações realizadas durante cada etapa deste projeto de Iniciação Científica.

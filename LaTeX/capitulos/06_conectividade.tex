@@ -1,0 +1,266 @@
+% =========================================================================
+% CONECTIVIDADE, ROTAS DISJUNTAS E DECOMPOSIÇÃO
+% =========================================================================
+\chapter{Conectividade, Rotas Disjuntas e Decomposição}\label{sec:conectividade_roteamento}
+
+A análise de conectividade de um digrafo é um pilar fundamental no design de redes de telecomunicações, logística e tolerância a falhas. A premissa central é determinar a resiliência estrutural de um sistema: quantas rotas independentes existem para transmitir informações ou recursos de um ponto de origem $s$ a um destino $t$ de forma que, se um componente falhar, as demais rotas permaneçam intactas? O cálculo do fluxo máximo fornece o ferramental matemático exato para responder a esta indagação sob duas perspectivas restritivas.
+
+
+\section{Caminhos Disjuntos por Arcos e por Vértices}\label{sec:caminhos_disjuntos}
+
+A formulação mais elementar da independência de rotas é o Problema dos Caminhos Disjuntos por Arcos (\textit{Edge-Disjoint Paths}). Dois caminhos são considerados disjuntos por arcos se não compartilharem nenhuma conexão física em suas trajetórias, embora possam cruzar-se nos mesmos vértices intermediários.
+
+A redução deste problema computacional para o modelo de fluxo em redes é direta. Dado um digrafo direcionado $D = (V, A)$, constrói-se uma rede de fluxo onde a restrição de capacidade de absolutamente todos os arcos é fixada em um valor unitário ($c(u,v) = 1, \forall (u,v) \in A$). Pela aplicação direta do Teorema da Integralidade (veja~\cite{cook1998combinatorial}), o algoritmo de fluxo máximo garantirá que cada arco transporte, no máximo, $1$ unidade de fluxo. Consequentemente, o valor absoluto do fluxo computado será numericamente equivalente ao número exato de caminhos disjuntos por arcos existentes entre $s$ e $t$.
+
+Uma restrição topológica consideravelmente mais severa é imposta pelo Problema dos Caminhos Disjuntos por Vértices (\textit{Vertex-Disjoint Paths}). Neste cenário, os caminhos não podem compartilhar sequer um vértice intermediário (cruzamento), garantindo isolamento total. Como os algoritmos canônicos de fluxo operam controlando as capacidades dos arcos e não dos vértices, a modelagem exige uma transformação geométrica avançada conhecida como Divisão de Vértices (\textit{Vertex Splitting}) (veja~\cite{ahuja1993network}).
+
+A técnica de \textit{Vertex Splitting} altera a topologia do digrafo original $D$ para gerar uma nova rede de fluxo estendida $D'$ através do seguinte mapeamento:
+\begin{enumerate}
+    \item Cada vértice original $v \in V \setminus \{s, t\}$ é bipartido em dois vértices artificiais distintos: um vértice de entrada ($v_{in}$) e um vértice de saída ($v_{out}$).
+    \item Um arco direcionado interno é criado conectando as duas metades, $(v_{in}, v_{out})$, e recebe uma capacidade estritamente unitária: $c(v_{in}, v_{out}) = 1$.
+    \item Todos os arcos que originalmente \textbf{convergiam} para $v$ em $D$ (i.e., que apontavam para $v$, ``divergindo'' de algum vértice vizinho) são redirecionados para apontar exclusivamente para $v_{in}$.
+    \item Todos os arcos que originalmente \textbf{divergiam} de $v$ em $D$ (i.e., saíam de $v$ e ``emergiam'' em direção a vizinhos) passam a sair exclusivamente de $v_{out}$ (com capacidade 1 ou infinita, dependendo da formulação). Os termos ``convergir'' e ``divergir'' referem-se, respectivamente, ao sentido de chegada e saída de fluxo em relação a um vértice.
+\end{enumerate}
+
+Esta transformação impõe uma restrição de capacidade nos vértices: ao forçar todo o fluxo que transita pelo nó original $v$ a atravessar um arco interno $(v_{in}, v_{out})$ de capacidade $1$, a rede garante que não mais do que $1$ unidade de fluxo possa cruzar aquele vértice. Ao submeter esta nova topologia estendida $D'$ (onde $V' = V \cup \{v_{in}, v_{out} : v \in V \setminus \{s,t\}\}$) aos algoritmos implementados, o fluxo máximo computado determina o número máximo de rotas disjuntas por vértices (veja~\cite{korte2018combinatorial}).
+
+\begin{figure}[!ht]
+\centering
+\begin{tikzpicture}[thick]
+
+\begin{scope}[xshift=0cm]
+  \tikzsubcaption{(1.5,2.8)}{(a) Original $D$}
+  \node[source node] (s) at (0,1.5) {$s$};
+  \node[flow node] (v) at (1.5,1.5) {$v$};
+  \node[sink node] (t) at (3,1.5) {$t$};
+  \draw[flow edge] (s) -- (v); \draw[flow edge] (v) -- (t);
+\end{scope}
+
+\node at (4.5,1.5) {\Huge $\Rightarrow$};
+
+\begin{scope}[xshift=6cm]
+  \tikzsubcaption{(3.0,2.8)}{(b) Vertex Splitting: $D'$}
+  \node[source node] (s2) at (0,1.5) {$s$};
+  \node[flow node,fill=blue!10] (vin) at (2.2,1.5) {$v_{in}$};
+  \node[flow node,fill=blue!20] (vout) at (4.2,1.5) {$v_{out}$};
+  \node[sink node] (t2) at (6.4,1.5) {$t$};
+  \draw[flow edge] (s2) -- node[above,font=\footnotesize]{$\infty$} (vin);
+  \draw[sat edge] (vin) -- node[above,font=\footnotesize,red]{$c=1$} (vout);
+  \draw[flow edge] (vout) -- node[above,font=\footnotesize]{$\infty$} (t2);
+  \node[font=\footnotesize,below] at (3.2,0.7) {arco interno (gargalo)};
+\end{scope}
+\end{tikzpicture}
+\caption{Vertex Splitting: cada vértice intermediário $v$ é dividido em $v_{in}$ e $v_{out}$, conectados por um arco interno de capacidade~1 (vermelho). Isso limita o fluxo passando por $v$ a no máximo 1 unidade, modelando caminhos disjuntos por vértices.}
+\label{fig:divisao_vertices}
+\end{figure}
+
+
+\section{O Teorema de Menger e as Dualidades da Conectividade}
+
+A determinação empírica do número de rotas independentes resolve o aspecto operacional do roteamento, mas a análise de vulnerabilidade estrutural da rede exige a identificação precisa de seus pontos críticos de falha. A teoria que unifica a maximização de trajetos disjuntos com a minimização de desconexões foi formulada por Karl Menger em 1927, estabelecendo um dos pilares mais elegantes da Otimização Combinatória (veja~\cite{cook1998combinatorial}).
+
+Sob a perspectiva da teoria de redes, o Teorema de Menger revela-se como uma manifestação direta do Teorema do Fluxo Máximo e Corte Mínimo de Ford-Fulkerson (Teorema~\ref{teo:mfmc}) aplicado sobre capacidades unitárias (veja~\cite{ahuja1993network}).
+
+\intuicao{de Gargalo e Conectividade Estrutural} A intuição fundamental de Menger reside na equivalência física entre largura de banda e vulnerabilidade topológica: se imaginarmos cada caminho disjunto como um canal independente capaz de conduzir uma unidade de fluxo de $s$ a $t$, a única maneira de interromper a comunicação entre esses terminais é bloquear todos os canais simultaneamente. Como os caminhos não compartilham elementos críticos (sejam arcos ou vértices intermediários), qualquer conjunto de corte capaz de desconectar a rede deve interceptar obrigatoriamente cada um desses canais independentes. A igualdade min-max assegura que o número de rotas paralelas que o grafo suporta sem interferência mútua é estritamente limitado pelo menor estrangulamento topológico da rede. O resultado desdobra-se em duas formulações complementares:
+
+\begin{teorema}[Menger --- Versão por Arcos, 1927][teo:menger_arcos]
+Seja $D = (V, A)$ um digrafo e sejam $s, t \in V$ dois vértices distintos e não adjacentes. O número máximo de caminhos direcionados de $s$ a $t$ disjuntos por arcos é estritamente igual ao número mínimo de arcos cuja remoção desconecta todo caminho de $s$ a $t$:
+\begin{equation}
+    \max\{\text{caminhos $st$-disjuntos por arcos}\} = \min\{\text{arcos cuja remoção desconecta $s$ de $t$}\}.
+\end{equation}
+\end{teorema}
+
+\begin{demonstracao}
+Atribui-se capacidade unitária $c(u,v) = 1$ a cada arco $(u,v) \in A$. Pelo Teorema da Integralidade (Teorema~\ref{teo:integralidade}), existe um fluxo máximo inteiro viável $f$ onde $f(u,v) \in \{0, 1\}$. Cada arco com $f(u,v) = 1$ pertence a exatamente um trajeto aumentante de $s$ a $t$, de modo que dois caminhos não podem compartilhar arcos. Logo, o fluxo máximo $|f^*|$ é rigorosamente o número de caminhos $st$-disjuntos por arcos. Pelo Teorema do Fluxo Máximo e Corte Mínimo (Teorema~\ref{teo:mfmc}), $|f^*| = \ccap(S,T)$ para algum corte mínimo $(S,T)$. Como cada arco cruzando de $S$ para $T$ possui capacidade unitária, a capacidade do corte é precisamente o número mínimo de arcos cuja remoção destrói todo caminho residual de $s$ a $t$, desconectando a rede. \end{demonstracao}
+
+\begin{teorema}[Menger --- Versão por Vértices, 1927][teo:menger_vertices]
+Seja $D = (V, A)$ um digrafo e sejam $s, t \in V$ dois vértices distintos e não adjacentes. O número máximo de caminhos direcionados de $s$ a $t$ disjuntos internamente por vértices é estritamente igual ao número mínimo de vértices cuja remoção desconecta todo caminho de $s$ a $t$:
+\begin{equation}
+    \max\{\text{caminhos $st$-disjuntos por vértices}\} = \min\{\text{vértices cuja remoção desconecta $s$ de $t$}\}.
+\end{equation}
+\end{teorema}
+
+\begin{demonstracao}
+A formulação por vértices é elegantemente reduzida à versão por arcos aplicando-se a transformação de \textit{Vertex Splitting} (veja~\cite{korte2018combinatorial}). Constrói-se a rede expandida $D'$ bipartindo cada nó intermediário $v \in V \setminus \{s, t\}$ em $v_{in}$ e $v_{out}$, interligados pelo arco interno direcionado $(v_{in}, v_{out})$ com capacidade unitária $c(v_{in}, v_{out}) = 1$. Os arcos convergentes originais apontam para $v_{in}$ e os divergentes emergem de $v_{out}$, ambos com capacidade infinita. A capacidade unitária no arco interno força que no máximo 1 unidade de fluxo atravesse o nó $v$, estabelecendo uma bijeção estrita entre caminhos disjuntos por arcos em $D'$ e caminhos disjuntos por vértices em $D$. Aplicando a versão por arcos sobre $D'$, o fluxo máximo equivale ao número mínimo de arcos internos no corte mínimo — os quais correspondem univocamente aos vértices originais cuja eliminação desconecta $s$ de $t$. \end{demonstracao}
+
+\implicacoes{e Tolerância a Falhas em Redes} O Teorema de Menger fornece os fundamentos teóricos para a engenharia de redes resilientes e sistemas tolerantes a falhas. Saber que a conectividade por rotas disjuntas espelha diretamente cortes estruturais permite que algoritmos eficientes de fluxo máximo determinem em tempo polinomial o grau exato de redundância operacional de uma topologia de rede, bem como identifiquem os nós e enlaces críticos que constituem pontos únicos de falha (\textit{single points of failure}).
+
+
+\section{Transformações Estruturais de Redes de Fluxo}
+
+As reduções anteriores assumem a existência de uma única fonte e um único sumidouro. Na prática, muitos problemas reais envolvem generalizações da topologia de rede que exigem transformações prévias para adequar-se ao modelo canônico $s$-$t$.
+
+
+\subsection{Múltiplas Fontes e Múltiplos Sumidouros}
+
+Em cenários logísticos e de telecomunicações, é comum que a rede possua mais de um ponto de geração de recursos (fontes $s_1, s_2, \ldots, s_k$) e mais de um ponto de consumo (sumidouros $t_1, t_2, \ldots, t_m$). Para reduzir este problema multi-terminal ao modelo $s$-$t$ padrão, emprega-se uma técnica de construção que preserva todas as propriedades de otimalidade (veja~\cite{ahuja1993network}).
+
+A transformação consiste em expandir a rede $D = (V, A)$ para uma rede estendida $D' = (V', A')$ adicionando:
+\begin{enumerate}
+    \item Uma \textbf{superfonte} $s^*$, conectada a cada fonte original $s_i$ por um arco $(s^*, s_i)$ com capacidade infinita (ou igual à capacidade total de saída de $s_i$).
+    \item Um \textbf{supersumidouro} $t^*$, conectado a partir de cada sumidouro original $t_j$ por um arco $(t_j, t^*)$ com capacidade infinita (ou igual à capacidade total de entrada de $t_j$).
+\end{enumerate}
+
+\begin{figure}[!ht]
+\centering
+\begin{tikzpicture}[thick]
+    
+    \node[source node] (ss) at (0, 0) {$s^*$};
+    \node[flow node, fill=green!10] (s1) at (2, 1.5) {$s_1$};
+    \node[flow node, fill=green!10] (s2) at (2, -1.5) {$s_2$};
+    
+    \node[flow node] (v1) at (4, 1.5) {$v_1$};
+    \node[flow node] (v2) at (4, -1.5) {$v_2$};
+    \node[flow node] (v3) at (5.5, 0) {$v_3$};
+    
+    \node[flow node, fill=red!10] (t1) at (7, 1.5) {$t_1$};
+    \node[flow node, fill=red!10] (t2) at (7, -1.5) {$t_2$};
+    
+    \node[sink node] (ts) at (9, 0) {$t^*$};
+    
+    \draw[->, dashed, blue, line width=1.2pt] (ss) -- node[above left, font=\footnotesize] {$\infty$} (s1);
+    \draw[->, dashed, blue, line width=1.2pt] (ss) -- node[below left, font=\footnotesize] {$\infty$} (s2);
+    
+    \draw[flow edge] (s1) -- (v1);
+    \draw[flow edge] (s1) -- (v3);
+    \draw[flow edge] (s2) -- (v2);
+    \draw[flow edge] (s2) -- (v3);
+    
+    \draw[flow edge] (v1) -- (t1);
+    \draw[flow edge] (v1) -- (v3);
+    \draw[flow edge] (v3) -- (t1);
+    \draw[flow edge] (v3) -- (t2);
+    \draw[flow edge] (v2) -- (t2);
+    
+    \draw[->, dashed, red, line width=1.2pt] (t1) -- node[above right, font=\footnotesize] {$\infty$} (ts);
+    \draw[->, dashed, red, line width=1.2pt] (t2) -- node[below right, font=\footnotesize] {$\infty$} (ts);
+\end{tikzpicture}
+\caption{Redução de múltiplas fontes/sumidouros: a superfonte $s^*$ e o supersumidouro $t^*$ (arcos tracejados com capacidade $\infty$) unificam a rede.}
+\label{fig:multiplas_fontes}
+\end{figure}
+
+Formalmente, $V' = V \cup \{s^*, t^*\}$ e $A' = A \cup \{(s^*, s_i) : i = 1,\ldots,k\} \cup \{(t_j, t^*) : j = 1,\ldots,m\}$. O fluxo máximo de $s^*$ a $t^*$ em $D'$ é equivalente ao fluxo máximo total que pode ser transportado das fontes originais aos sumidouros originais em $D$.
+
+A correção desta redução decorre da lei de conservação: toda unidade de fluxo que emerge de $s^*$ deve necessariamente ingressar em alguma fonte original $s_i$ e, eventualmente, alcançar algum sumidouro $t_j$ antes de convergir para $t^*$.
+
+
+\subsection{Arestas Bidirecionais e Grafos Não Direcionados}
+
+Os algoritmos de fluxo desenvolvidos neste projeto operam sobre digrafos estritamente direcionados. Quando o problema original é formulado sobre um grafo não direcionado $G = (V, E)$ (onde cada aresta $\{u,v\} \in E$ pode ser percorrida em ambos os sentidos), é necessária uma transformação de modelagem (veja~\cite{ahuja1993network}).
+
+A conversão padrão consiste em substituir cada aresta não direcionada $\{u,v\}$ com capacidade $c$ por dois arcos direcionados antiparalelos:
+\begin{itemize}
+    \item Um arco $(u,v)$ com capacidade $c$.
+    \item Um arco $(v,u)$ com capacidade $c$.
+\end{itemize}
+
+Na implementação desta biblioteca, esta modelagem é realizada nativamente pelo parâmetro \lstinline{reverse_capacity} do método \lstinline{add_edge}. Ao invocar \lstinline{add_edge(u, v, c, c)}, ambos os arcos são criados simultaneamente com as capacidades desejadas, preservando a propriedade de emparelhamento por XOR.
+
+É importante distinguir dois cenários: em problemas de corte mínimo em grafos não direcionados (como o problema \textit{Police Chase}), esta modelagem bidirecional é obrigatória; já em problemas de fluxo puro em digrafos, apenas o arco reverso com capacidade $0$ é necessário (comportamento padrão do \lstinline{add_edge}).
+
+\textbf{Observação --- \lstinline{add_edge(a,b,cap)} seguido de \lstinline{add_edge(b,a,cap)}:} Chamar \lstinline{add_edge} duas vezes para o mesmo par de vértices em sentidos opostos é seguro e correto. Cada chamada cria um par independente de arcos (direto + reverso de capacidade 0), indexados por XOR. Portanto, \lstinline{add_edge(a,b,cap)} cria os arcos de índices $2k$ e $2k+1$, e \lstinline{add_edge(b,a,cap)} cria os arcos $2k+2$ e $2k+3$, todos com seus reversos corretamente emparelhados. Esta modelagem é equivalente a \lstinline{add_edge(a,b,cap,cap)} e representa uma aresta bidirecional (grafo não direcionado). Contudo, se a intenção for modelar um arco \emph{apenas} de $a$ para $b$ em um digrafo, \lstinline{add_edge} deve ser chamado apenas uma vez, pois duas chamadas criam arcos paralelos entre $a$ e $b$ --- o que é matematicamente válido (arcos paralelos simplesmente acumulam capacidade), mas raramente é a modelagem desejada.
+
+\begin{figure}[!ht]
+\centering
+\begin{tikzpicture}[thick]
+  \begin{scope}[shift={(0,0)}]
+    \tikzsubcaption{(1.5,1.5)}{(a) Aresta Não-direcionada}
+    \node[trans node] (u) at (0, 0) {$u$};
+    \node[trans node] (v) at (3, 0) {$v$};
+    \draw[-] (u) -- node[above, font=\footnotesize] {$c$} (v);
+  \end{scope}
+  
+  \begin{scope}[shift={(6,0)}]
+    \tikzsubcaption{(1.5,1.5)}{(b) Arcos Direcionados}
+    \node[trans node] (u2) at (0, 0) {$u$};
+    \node[trans node] (v2) at (3, 0) {$v$};
+    \draw[->, transform canvas={yshift=1.5mm}] (u2) -- node[above, font=\footnotesize] {$c$} (v2);
+    \draw[<-, transform canvas={yshift=-1.5mm}] (u2) -- node[below, font=\footnotesize] {$c$} (v2);
+  \end{scope}
+\end{tikzpicture}
+\caption{Modelagem de uma aresta bidirecional em grafos não-direcionados através da criação de dois arcos direcionados opostos, ambos com a mesma capacidade $c$.}
+\label{fig:arcos_bidirecionais}
+\end{figure}
+
+
+\section{Decomposição de Fluxo}\label{sec:decomposicao_cap}
+
+Após o cômputo do fluxo máximo, a solução obtida é representada como um vetor de fluxos individuais sobre os arcos da rede. Contudo, muitas aplicações práticas exigem uma descrição mais estruturada da solução: quais são os caminhos individuais de $s$ a $t$ que compõem o fluxo total, e quanto fluxo transita em cada um?
+
+O Teorema da Decomposição de Fluxo fornece a fundamentação matemática para esta extração (veja~\cite{ahuja1993network, schrijver2003combinatorial}).
+
+\subsection{Decomposição Canônica em Caminhos e Ciclos}
+
+\begin{teorema}[Decomposição de Fluxo][teo:decomposicao]
+Todo fluxo viável $f$ em uma rede $D = (V, A)$ pode ser decomposto em uma família de no máximo $|A|$ caminhos direcionados simples de $s$ a $t$ e ciclos direcionados simples, cada um associado a uma taxa de fluxo estritamente positiva. A soma dos fluxos dos caminhos iguala o valor total $|f|$, e o fluxo em cada arco equivale à sobreposição escalar dos caminhos e ciclos que o atravessam.
+\end{teorema}
+
+\intuicao{Física: A Anatomia do Fluxo em Trajetórias Individuais} As restrições de conservação de Kirchhoff tratam o fluxo como uma substância homogênea e contínua, onde apenas as taxas de entrada e saída em cada vértice importam. O Teorema da Decomposição revela a sua verdadeira anatomia corpuscular: o fluxo macroscópico nada mais é do que a superposição de trajetórias individuais elementares. Cada partícula de fluido que emerge de $s$ percorre um caminho orientado bem definido até atingir $t$, ou circula indefinidamente em redemoinhos fechados (ciclos de recirculação). A decomposição garante que, por mais complexa que seja a malha viária e por maiores que sejam os volumes transitados, a solução inteira pode ser desmembrada em um número extremamente compacto de rotas essenciais (no máximo $|A|$), sem qualquer resíduo.
+
+\begin{demonstracao}
+Procedemos por indução no número de arcos com fluxo positivo $|A_f^+| = |\{(u,v) \in A \mid f(u,v) > 0\}|$ (veja~\cite{ahuja1993network}):
+
+\medskip
+\noindent \textit{Caso base:} Se nenhum arco transporta fluxo ($f \equiv 0$), $|A_f^+| = 0$ e a decomposição é trivialmente vazia, satisfazendo o teorema.
+
+\medskip
+\noindent \textit{Passo indutivo:} Suponha que o teorema vale para qualquer rede com menos de $|A_f^+|$ arcos positivos. Se $|A_f^+| > 0$, seleciona-se um arco inicial $(u,v)$ com $f(u,v) > 0$. Distinguem-se dois cenários fundamentais:
+
+\begin{enumerate}
+    \item \textbf{Existe fluxo líquido emitido pela fonte ($|f| > 0$):} \\
+    Partindo de $s$, avança-se recursivamente por arcos que transportam fluxo estritamente positivo ($f > 0$). Pela conservação de fluxo, qualquer vértice intermediário $v \notin \{s, t\}$ que recebe fluxo possui obrigatoriamente ao menos um arco de saída com fluxo positivo. Como o conjunto de vértices $V$ é finito, essa trajetória direcionada ou atinge o sumidouro $t$ (formando um caminho simples $P$ de $s$ a $t$), ou revisita um vértice previamente percorrido (fechando um ciclo simples $C$). Em ambos os casos, encontramos uma trajetória elementar $\mathcal{T}$ (caminho ou ciclo).
+    
+    \item \textbf{O fluxo líquido é nulo ($|f| = 0$, circulação pura):} \\
+    Partindo de qualquer arco com $f(u,v) > 0$, avança-se sucessivamente por arcos positivos. Como não há fontes nem sumidouros líquidos, a conservação vale em todos os vértices, forçando a trajetória a revisitar algum vértice e formando obrigatoriamente um ciclo direcionado simples $C$.
+\end{enumerate}
+
+Identificada a trajetória $\mathcal{T}$ (seja caminho $P$ ou ciclo $C$), calcula-se a sua capacidade de gargalo:
+$$\delta = \min_{(u,v) \in \mathcal{T}} f(u,v) > 0$$
+Subtrai-se $\delta$ de todos os arcos pertencentes a $\mathcal{T}$, gerando um novo fluxo $f'$. O fluxo residual $f'$ permanece não negativo e atende às leis de conservação. Além disso, pelo menos um arco que atingia o gargalo $\delta$ tem seu fluxo reduzido exatamente a zero em $f'$, de modo que $|A_{f'}^+| \le |A_f^+| - 1$.
+
+Pela hipótese de indução, $f'$ pode ser decomposto em no máximo $|A_{f'}^+| \le |A| - 1$ caminhos e ciclos. Adicionando a trajetória $\mathcal{T}$ com peso $\delta$ a essa família, obtemos a decomposição completa de $f$ com no máximo $|A|$ elementos. \end{demonstracao}
+
+\implicacoes{e o Vínculo com Fluxo de Custo Mínimo} A decomposição de fluxo é o alicerce indispensável para a teoria de Fluxo de Custo Mínimo: ao subtrair dois fluxos viáveis arbitrários $f^*$ e $f$, a divergência líquida anula-se e a diferença $g = f^* - f$ resulta em uma circulação pura, decomponível unicamente em ciclos. É essa propriedade que viabiliza a prova da Condição de Otimalidade por Ciclos Negativos de Klein. Além disso, em aplicações de logística e telecomunicações, o teorema permite converter matrizes de vazão agregadas em planos de roteamento físico operacionais com no máximo $|A|$ linhas de itinerário.
+
+\begin{figure}[!ht]
+\centering
+\begin{tikzpicture}[thick]
+  \begin{scope}[shift={(0,0)}]
+    \node[source node, font=\footnotesize] (s) at (0, 1) {$s$};
+    \node[flow node, font=\footnotesize] (a) at (2, 2) {$a$};
+    \node[flow node, font=\footnotesize] (b) at (2, 0) {$b$};
+    \node[sink node, font=\footnotesize] (t) at (4, 1) {$t$};
+
+    \draw[flow edge] (s) -- node[edge lbl above] {$3$} (a);
+    \draw[flow edge] (s) -- node[edge lbl below] {$2$} (b);
+    \draw[flow edge] (a) -- node[edge lbl right] {$1$} (b);
+    \draw[flow edge] (a) -- node[edge lbl above] {$2$} (t);
+    \draw[flow edge] (b) -- node[edge lbl below] {$3$} (t);
+  \end{scope}
+
+  \begin{scope}[shift={(6,0.5)}]
+    \node[right, font=\small, align=left] at (0, 1.5) {\textbf{Caminhos Decompostos}:};
+    \node[right, font=\footnotesize, align=left] at (0, 0.8) {1) $s \rightarrow a \rightarrow t$ (fluxo 2)};
+    \node[right, font=\footnotesize, align=left] at (0, 0.2) {2) $s \rightarrow b \rightarrow t$ (fluxo 2)};
+    \node[right, font=\footnotesize, align=left] at (0, -0.4) {3) $s \rightarrow a \rightarrow b \rightarrow t$ (fluxo 1)};
+  \end{scope}
+\end{tikzpicture}
+\caption{Exemplo de decomposição de fluxo. O fluxo total de 5 unidades na rede é decomposto em três caminhos distintos de $s$ a $t$.}
+\label{fig:decomposicao_fluxo}
+\end{figure}
+
+
+\subsection{Reconstrução e Extração de Caminhos (Path Recovery)}
+
+Na modelagem e implementação de resolvedores para problemas práticos (como na determinação de caminhos disjuntos no problema \textit{Distinct Routes}), o algoritmo de recuperação de caminhos (\textit{Path Recovery}) percorre a rede após o cômputo do fluxo máximo para reconstruir os caminhos individuais. Em redes com capacidades unitárias (como nos problemas de caminhos disjuntos), o procedimento é particularmente elegante:
+
+\begin{enumerate}
+    \item Partindo da fonte $s$, siga qualquer arco original (índice par) que possua $f(u,v) = 1$ e ainda não tenha sido utilizado.
+    \item Marque o arco como utilizado e avance para o próximo vértice.
+    \item Repita até alcançar o sumidouro $t$, registrando o caminho.
+    \item Itere o processo $|f|$ vezes para extrair todos os caminhos.
+\end{enumerate}
+
+Esta é exatamente a técnica empregada na solução do problema \textit{Distinct Routes}, onde a função \lstinline{print_disjoint_paths} implementa a decomposição sobre a rede residual convergida.
+
+

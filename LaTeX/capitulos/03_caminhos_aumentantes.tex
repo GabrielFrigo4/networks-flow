@@ -1,0 +1,200 @@
+% =========================================================================
+% ALGORITMOS DE CAMINHOS AUMENTANTES
+% =========================================================================
+\chapter{Algoritmos de Caminhos Aumentantes (Abordagem Primal)}\label{sec:caminhos_aumentantes}
+
+\section{Arquitetura Orientada a Objetos e Estruturas de Dados}
+
+A transição dos modelos matemáticos abstratos para implementações computacionais de alto desempenho exige decisões arquiteturais rigorosas. Para garantir a manutenibilidade, a extensibilidade e a correção empírica dos experimentos, a infraestrutura base de código (\textit{Core Framework}) desenvolvida neste projeto --- cujo código-fonte C++ completo é apresentado nos Apêndices deste relatório (Apêndices~\ref{ap:flownetwork} a~\ref{ap:push_relabel_improved}) --- foi fundamentada no paradigma da Orientação a Objetos através da linguagem C++ moderno.
+
+Antes mesmo da definição estrutural, a implementação estabelece apelidos de tipo (\textit{Type Aliases}), como \lstinline{Long} e \lstinline{Size}, para garantir a semântica e a portabilidade do código entre diferentes arquiteturas. Outro cuidado fundamental em nível de \textit{hardware} foi a definição das constantes de limite (\lstinline{INF} e \lstinline{MAX}). Em vez de utilizar o valor absoluto máximo suportado pelos tipos numéricos, aplicou-se um deslocamento de bits para a direita (\lstinline{>> 8}). Esta técnica atua como uma margem de segurança matemática, prevenindo que somas subsequentes de fluxos e capacidades resultem em comportamentos indefinidos de estouro de memória (\textit{Integer Overflow}).
+
+O núcleo do sistema é regido pela classe base abstrata \lstinline{FlowNetwork}. Esta classe encapsula a representação topológica do digrafo e o estado iterativo do fluxo, isolando a complexidade estrutural das lógicas específicas de busca de cada algoritmo. A topologia é gerenciada pelas seguintes estruturas fundamentais:
+
+\begin{itemize}
+    \item \textbf{\lstinline{Edge}:} Uma estrutura (\textit{struct}) leve que representa um arco direcionado, agregando as variáveis \lstinline{from} (origem), \lstinline{to} (destino), \lstinline{capacity} (capacidade original $c$) e \lstinline{flow} (fluxo atual $f$).
+    \item \textbf{\lstinline{size}:} Variável escalar que armazena a cardinalidade do conjunto de vértices ($|V|$), utilizada para dimensionar as estruturas auxiliares dinamicamente.
+    \item \textbf{\lstinline{edges}:} Um vetor linear que armazena todos os arcos da rede. A alocação contígua em memória favorece o \textit{cache} do processador, mitigando os custos de latência comuns em alocações dinâmicas de digrafos.
+    \item \textbf{\lstinline{adjacency}:} Uma lista de adjacências otimizada (\lstinline{std::vector<std::vector<Size>>}). Em vez de armazenar ponteiros ou cópias dos arcos, este vetor bidimensional guarda estritamente os índices numéricos que os arcos incidentes ocupam no vetor principal \lstinline{edges}, garantindo acesso em tempo constante $\mathcal{O}(1)$.
+\end{itemize}
+
+Para preservar a integridade matemática da rede residual e evitar a duplicação de código (\textit{DRY Principle - Don't Repeat Yourself}), a manipulação do fluxo foi estritamente confinada a dois métodos protegidos (\textit{protected}):
+
+\begin{itemize}
+    \item \textbf{\lstinline{get_residual_capacity(Size edge_id)}:} Função que computa em tempo real a capacidade residual $c_f(u,v)$ subtraindo o fluxo alocado da capacidade original. O uso do atributo \lstinline{[[nodiscard]]} garante em tempo de compilação que o valor computado não seja acidentalmente ignorado pelas rotinas de busca.
+    \item \textbf{\lstinline{push_flow(Size edge_id, Long flow_amount)}:} Este é o método mais crítico da arquitetura, responsável por rotear fisicamente uma quantidade de fluxo pela rede. Ele explora um truque algorítmico basilar: em vez de buscar o arco reverso em uma lista, o sistema garante no momento de inserção (\lstinline{add_edge}) que todo arco direto e seu respectivo arco reverso sejam alocados sequencialmente em pares (índices 0 e 1, 2 e 3, etc.). Consequentemente, o método utiliza a operação bit a bit Ou Exclusivo (\lstinline{id ^ 1ULL}) para acessar instantaneamente o arco complementar, somando o fluxo no arco direto e o subtraindo no arco reverso em uma única instrução de máquina.
+\end{itemize}
+
+No escopo da interface pública, para contornar as restrições de instanciação polimórfica inerentes ao C++, a arquitetura incorpora os padrões de projeto \textit{Factory Method} e \textit{Prototype} (veja~\cite{gamma1994design}) através dos métodos virtuais \lstinline{make} e \lstinline{clone}. O método \lstinline{make} atua como um construtor virtual dinâmico, permitindo a alocação de uma rede inteiramente nova e vazia que preserva a mesma classe algorítmica do objeto original (e.g., instanciar um novo \textit{Dinic} a partir de um ponteiro genérico), eliminando o acoplamento aos tipos concretos. Em complemento, o método \lstinline{clone}, de particular relevância para as aplicações deste projeto, garante a capacidade de gerar cópias profundas (\textit{deep copies}) da rede carregando todo o seu estado topológico e residual em tempo de execução. Esta funcionalidade estrutural do \lstinline{clone} é crucial para cenários algorítmicos complexos que exigem a simulação de múltiplos cortes ou roteamentos sobre a mesma topologia base, preservando o estado original intacto entre as iterações.
+
+Por fim, a classe expõe a interface polimórfica primária \lstinline{compute_max_flow(Size source, Size sink)}, um método virtual puro que atua como um contrato estrutural obrigatório para todas as subclasses. Além disso, para viabilizar a extração de resultados práticos após a convergência do fluxo (como a identificação das conexões ativas em um Emparelhamento Bipartido Máximo), a classe provê o método \lstinline{get_edges()}. O retorno da estrutura através de uma referência constante (\lstinline{const &}) permite a leitura externa de toda a malha de arcos sem comprometer o rigor e a segurança do encapsulamento orientado a objetos. A consolidação estrutural de todas estas decisões arquiteturais e a definição completa da interface C++ encontram-se detalhadas no Código~\ref{lst:flownetwork} (disponível no Apêndice~\ref{ap:flownetwork}).
+
+
+\section{O Paradigma dos Caminhos Aumentantes}
+\label{sec:fluxo_primal}
+
+A vertente primal para a resolução do Problema do Fluxo Máximo fundamenta-se na preservação irrestrita da \textbf{viabilidade das restrições de fluxo} ao longo de todas as etapas de execução. Sob esta ótica, a lei de conservação de fluxo nos nós intermediários ($\sum f_{in} = \sum f_{out}$) e os limites de capacidade nos arcos ($0 \le f \le c$) jamais são violados em nenhuma iteração.
+
+O paradigma opera partindo da solução viável inicial trivial --- o fluxo nulo $f(u,v) = 0$ para todo $(u,v) \in A$ --- e progride iterativamente em direção à fronteira ótima. A cada passo, busca-se na rede residual $D_f$ um trajeto direcionado viável da fonte $s$ ao sumidouro $t$ (o caminho aumentante). Ao localizar tal percurso, injeta-se o maior volume viável admitido pelo arco de menor capacidade residual no trajeto (o arco gargalo), incrementando o valor global $|f|$ sem romper o equilíbrio de conservação em nenhum vértice intermediário. O algoritmo atinge a otimalidade no instante em que o corte mínimo é completamente saturado, momento no qual a rede residual não abriga mais nenhum trajeto viável conectando a fonte ao sumidouro.
+
+A grande evolução teórica e algorítmica dentro desta vertente consistiu em disciplinar a seleção desses trajetos para transpor a barreira pseudopolinomial do método original de Ford e Fulkerson:
+\begin{itemize}
+    \item O método pioneiro de \textbf{Ford-Fulkerson} utiliza busca em profundidade (DFS) sem restrições de ordem, apresentando tempo de execução sensível à magnitude das capacidades ($\mathcal{O}(|A| \cdot |f^*|)$);
+    \item O algoritmo de \textbf{Edmonds-Karp} disciplina a seleção elegendo sistematicamente o caminho aumentante mais curto em número de arcos via busca em largura (BFS), conquistando a primeira garantia fortemente polinomial ($\mathcal{O}(|V| \cdot |A|^2)$);
+    \item O algoritmo de \textbf{Dinic} eleva o paradigma primal ao estado da arte ao introduzir o processamento em fases estruturado pelo Digrafo de Níveis (\textit{Level Graph}), saturando múltiplos caminhos de uma só vez através de fluxos bloqueadores com custo amortizado ($\mathcal{O}(|V|^2 \cdot |A|)$).
+\end{itemize}
+
+
+\section{O Método Genérico de Ford-Fulkerson e a Barreira Pseudopolinomial}\label{sec:ford_fulkerson}
+
+\paragraph{Princípio Teórico e Intuição.}
+A formulação pioneira do problema fundamenta-se historicamente no método iterativo proposto por Ford e Fulkerson (veja~\cite{ford1956maximal}). A premissa estrutural deste paradigma consiste na manutenção de um digrafo residual $D_f$ e na busca sistemática por caminhos aumentantes — percursos simples direcionados da fonte $s$ ao sumidouro $t$ onde todos os arcos possuem capacidade residual estritamente positiva.
+
+\paragraph{Dinâmica Operacional.}
+O método estipula que, enquanto houver um caminho aumentante em $D_f$, o fluxo global da rede deve ser incrementado pelo valor da capacidade gargalo deste caminho (a menor capacidade residual encontrada no trajeto). Contudo, a definição matemática original estabelece apenas o critério de viabilidade topológica do percurso, não impondo nenhuma diretriz algorítmica ou heurística de seleção de qual caminho processar em digrafos onde múltiplos trajetos aumentantes coexistem (veja~\cite{ahuja1993network}).
+
+\paragraph{Complexidade Assintótica e a Barreira Pseudopolinomial.}
+Esta abstração geométrica, embora elegante para a prova do Teorema do Fluxo Máximo e Corte Mínimo, apresenta uma vulnerabilidade computacional severa. Em instâncias teóricas onde as capacidades dos arcos assumem valores irracionais, demonstra-se matematicamente que uma escolha arbitrária ou patológica de caminhos pode levar o método a realizar infinitas iterações. Em casos extremos, a sequência de aumentos não apenas falha em terminar, como o valor do fluxo pode convergir assintoticamente para um limite estritamente inferior ao fluxo máximo real da rede (veja~\cite{cook1998combinatorial}).
+
+Mesmo no domínio prático das redes com capacidades inteiras, uma má escolha iterativa pode forçar o método a operar em tempo $\mathcal{O}(|A| \cdot |f^*|)$, onde $|f^*|$ é o valor escalar do fluxo máximo. Esta dependência direta do valor numérico restringe a abordagem a um tempo de execução pseudopolinomial, cujo desempenho degrada exponencialmente em função da magnitude das capacidades originais da rede. Esse comportamento patológico é ilustrado no contraexemplo clássico da Figura~\ref{fig:ford_fulkerson_patologico}.
+
+\begin{figure}[!ht]
+\centering
+\begin{tikzpicture}[scale=1.1, thick]
+\begin{scope}[xshift=0cm]
+  \tikzsubcaption{(2.5,2.6)}{(a) Rede patológica ($M = 10^6$)}
+  \node[source node] (s) at (0, 1) {$s$};
+  \node[flow node] (u) at (2.5, 2) {$u$};
+  \node[flow node] (v) at (2.5, 0) {$v$};
+  \node[sink node] (t) at (5, 1) {$t$};
+
+  \draw[flow edge] (s) -- node[edge lbl above] {$M$} (u);
+  \draw[flow edge] (s) -- node[edge lbl below] {$M$} (v);
+  \draw[sat edge] (u) -- node[edge lbl right, text=red!80!black] {$c=1$} (v);
+  \draw[flow edge] (u) -- node[edge lbl above] {$M$} (t);
+  \draw[flow edge] (v) -- node[edge lbl below] {$M$} (t);
+\end{scope}
+
+\begin{scope}[xshift=7.5cm]
+  \tikzsubcaption{(2.5,2.6)}{(b) Zigzag da DFS: $2M$ iterações!}
+  \node[source node] (s2) at (0, 1) {$s$};
+  \node[flow node] (u2) at (2.5, 2) {$u$};
+  \node[flow node] (v2) at (2.5, 0) {$v$};
+  \node[sink node] (t2) at (5, 1) {$t$};
+
+  \draw[tree edge, line width=2pt] (s2) -- node[edge lbl above] {$+1$} (u2);
+  \draw[sat edge, line width=2pt] (u2) -- node[edge lbl right] {$+1$} (v2);
+  \draw[tree edge, line width=2pt] (v2) -- node[edge lbl below] {$+1$} (t2);
+
+  \draw[flow edge, opacity=0.3] (s2) -- (v2);
+  \draw[flow edge, opacity=0.3] (u2) -- (t2);
+
+  \node[font=\footnotesize, align=center, below=4pt] at (2.5,-0.6) {DFS alterna $s \to u \to v \to t$ e $s \to v \to u \to t$\\Gargalo $1 \implies 2 \times 10^6$ passos! (BFS: 2 passos)};
+\end{scope}
+\end{tikzpicture}
+\caption{Contraexemplo patológico de Ford-Fulkerson com capacidades de grande magnitude $M = 10^6$ e arco central de capacidade unitária $c=1$. (a)~Topologia da rede cujo fluxo máximo ótimo é $|f^*| = 2M = 2 \times 10^6$. (b)~Pior caso com DFS ingênua: a cada iteração escolhe-se o caminho que cruza o arco central, aumentando apenas $\delta=1$ unidade de fluxo e invertendo o sentido do arco no grafo residual. O processo requer $2 \times 10^6$ aumentos, ao passo que a seleção por caminhos mais curtos do Edmonds-Karp encerra em exatamente $2$ iterações.}
+\label{fig:ford_fulkerson_patologico}
+\end{figure}
+
+\paragraph{Implementação em C++ e Apêndice.}
+Para transpor esta barreira analítica e garantir limites de complexidade fortemente polinomiais, a literatura evoluiu disciplinando a seleção dos percursos aumentantes. A materialização em C++ do método genérico de Ford-Fulkerson no \textit{Core Framework}, utilizando busca em profundidade (DFS), encontra-se detalhada no Código~\ref{lst:ford_fulkerson} (disponível no Apêndice~\ref{ap:ford_fulkerson}).
+
+
+\section{O Algoritmo de Edmonds-Karp}\label{sec:edmonds_karp}
+
+\paragraph{Princípio Teórico e Seleção por Caminhos Mais Curtos.}
+A superação da complexidade pseudopolinomial do método genérico de Ford-Fulkerson foi alcançada de forma independente por Edmonds e Karp (veja~\cite{edmonds1972theoretical}) e por Dinic (veja~\cite{dinic1970algorithm}). O algoritmo de Edmonds-Karp concretiza a restrição topológica mais intuitiva e elegante: a cada iteração, o percurso selecionado para o roteamento deve ser rigorosamente o caminho aumentante mais curto da fonte $s$ ao sumidouro $t$ no digrafo residual $D_f$, onde a distância entre vértices é medida em número de arcos --- isto é, cada arco recebe peso~$1$ para efeito do cálculo de distância pela BFS, ignorando as capacidades. Deste modo, o ``caminho mais curto'' é aquele com o menor número de arcos, não o de menor capacidade.
+
+\paragraph{Dinâmica Operacional via BFS.}
+A implementação desta diretriz fundamenta-se na delegação da busca a uma Busca em Largura (BFS - \textit{Breadth-First Search}). O impacto teórico desta restrição é profundo, pois assegura a propriedade da monotonicidade das distâncias: ao longo da execução do algoritmo, a distância topológica mínima (mensurada em número de arcos) da fonte $s$ a qualquer vértice $v \in V$ na rede residual nunca decresce (veja~\cite{cook1998combinatorial}).
+
+\paragraph{Complexidade Assintótica.}
+Para demonstrar a complexidade polinomial $\mathcal{O}(|V| \cdot |A|^2)$, analisa-se a frequência com que um arco pode figurar como o gargalo limitante do fluxo. Quando um arco $(u,v)$ atua como gargalo, ele é completamente saturado e removido de $D_f$. Por pertencer ao caminho mais curto, a relação de distâncias no momento da sua saturação é estritamente $d(v) = d(u) + 1$.
+
+Para que o arco $(u,v)$ retorne à rede residual em uma iteração futura, o algoritmo deverá obrigatoriamente rotear fluxo na direção reversa $(v,u)$. Isto implica topologicamente que o trecho $(v,u)$ agora pertence a um novo caminho mais curto, exigindo que a nova distância da fonte até $u$ satisfaça a equação $d'(u) = d'(v) + 1$. Pela lei da monotonicidade, sabendo que a distância do vértice $v$ não pode ter diminuído ($d'(v) \ge d(v)$), deduz-se algebricamente que $d'(u) \ge d(u) + 2$ (veja~\cite{ahuja1993network}).
+
+Conclui-se analiticamente que, entre duas saturações consecutivas de uma mesma conexão, a distância do vértice de origem em relação à fonte sofre um incremento de, no mínimo, duas unidades. Uma vez que o limite superior para a distância de um caminho simples em um digrafo é $|V| - 1$, cada arco da rede pode ser saturado no máximo $\mathcal{O}(|V|)$ vezes ao longo de toda a execução.
+
+Existindo $\mathcal{O}(|A|)$ arcos na malha geométrica, o limite superior de aumentos globais é estritamente circunscrito a $\mathcal{O}(|V| \cdot |A|)$. Multiplicando este fator de repetição pelo custo computacional intrínseco de $\mathcal{O}(|A|)$ operações de uma busca BFS, o tempo de execução de pior caso é cravado rigorosamente em $\mathcal{O}(|V| \cdot |A|^2)$ (veja~\cite{korte2018combinatorial}).
+
+\paragraph{Implementação em C++ e Apêndice.}
+A materialização desta heurística, utilizando a herança e o encapsulamento orientado a objetos da interface principal, encontra-se estruturada na classe \lstinline{EdmondsKarp} (Código~\ref{lst:edmonds_karp}, Apêndice~\ref{ap:edmonds_karp}).
+
+\begin{figure}[!ht]
+\centering
+\begin{tikzpicture}[thick]
+  \node[source node] (s) at (0, 0) {$s$ (0)};
+  \node[flow node] (a) at (3.5, 1.5) {$a$ (1)};
+  \node[flow node] (b) at (2, -1.5) {$b$ (1)};
+  \node[flow node] (c) at (5, -1.5) {$c$ (2)};
+  \node[sink node] (t) at (7, 0) {$t$ (2)};
+
+  \draw[res edge, line width=1.5pt] (s) -- node[edge lbl above] {$c=5$} (a);
+  \draw[res edge, line width=1.5pt] (a) -- node[edge lbl above] {$c=5$} (t);
+
+  \draw[flow edge] (s) -- node[edge lbl below] {$c=10$} (b);
+  \draw[flow edge] (b) -- node[edge lbl below] {$c=10$} (c);
+  \draw[flow edge] (c) -- node[edge lbl below] {$c=10$} (t);
+
+  \draw[flow edge] (a) -- node[edge lbl right] {$c=2$} (b);
+\end{tikzpicture}
+\caption{O Algoritmo de Edmonds-Karp utiliza busca em largura (BFS) na rede residual para encontrar sempre o caminho aumentante mais curto (em número de arestas). Na figura, embora o caminho inferior $s \to b \to c \to t$ suporte maior fluxo gargalo ($c=10$), a BFS garante a escolha imediata do caminho superior $s \to a \to t$ (azul tracejado), por ser topologicamente mais curto (comprimento 2 versus 3). Os níveis descobertos pela BFS são indicados entre parênteses.}
+\label{fig:edmonds_karp}
+\end{figure}
+
+
+\section{O Algoritmo de Dinic}\label{sec:dinic}
+
+\paragraph{Princípio Teórico e o Digrafo de Níveis.}
+Embora o algoritmo de Edmonds-Karp apresente um comportamento fortemente polinomial, o limite assintótico de $\mathcal{O}(|V| \cdot |A|^2)$ pode se mostrar proibitivo em instâncias massivas ou em digrafos de alta densidade estrutural. O algoritmo formulado por Yefim Dinitz (veja~\cite{dinic1970algorithm}) contorna esta barreira analítica ao introduzir o processamento em fases e a estruturação de uma abstração topológica denominada Digrafo de Níveis (\textit{Level Graph}).
+
+No início de cada fase iterativa, uma Busca em Largura (BFS) global é executada a partir da fonte $s$ para atribuir níveis topológicos $d(v)$ a todos os vértices, correspondentes às suas distâncias mínimas exatas no digrafo residual $D_f$. O Digrafo de Níveis gerado é, por definição, um subdigrafo direcionado acíclico (DAG) composto estritamente pelos arcos residuais que avançam exatamente um nível em direção ao sumidouro, satisfazendo a restrição geométrica $d(v) = d(u) + 1$ (veja~\cite{ahuja1993network}).
+
+\paragraph{Dinâmica de Fases e Fluxos Bloqueadores.}
+Uma vez validado e construído este subdigrafo acíclico, o algoritmo abandona a estratégia de incremento singular e emprega uma Busca em Profundidade (DFS - \textit{Depth-First Search}) para determinar o chamado Fluxo Bloqueador (\textit{Blocking Flow}). A DFS explora a topologia de forma ávida, saturando simultânea e exaustivamente múltiplos caminhos admissíveis presentes no Digrafo de Níveis, até que o sumidouro $t$ se torne inalcançável sob as restrições de nível vigentes (veja~\cite{cook1998combinatorial}).
+
+\paragraph{Otimização por Ponteiros Mortos.}
+Para assegurar a viabilidade temporal desta busca exaustiva, a implementação do Algoritmo de Dinic no \textit{Core Framework} integra uma estrutura imperativa de otimização de estado denominada ponteiros mortos (\textit{Dead-end Pointers}). Mantendo um vetor na memória que registra a exata posição do último arco explorado a partir de cada vértice, o algoritmo inviabiliza que caminhos sem saída (\textit{dead-ends}) ou conexões com capacidade esgotada sejam revisitados durante a mesma fase.
+
+\paragraph{Complexidade Assintótica.}
+Esta poda dramática na árvore de recursão garante uma amortização matemática rigorosa: a extração completa do fluxo bloqueador opera no limite estrito de $\mathcal{O}(|V| \cdot |A|)$ operações (veja~\cite{korte2018combinatorial}). Como a propriedade de monotonicidade garante que a distância de $s$ a $t$ aumente pelo menos uma unidade a cada novo Digrafo de Níveis construído, o sistema processa um limite superior absoluto de $|V|$ fases. Multiplicando o custo da DFS por fase pelo número máximo de fases, a complexidade assintótica global é inquestionavelmente estabelecida em $\mathcal{O}(|V|^2 \cdot |A|)$ (veja~\cite{dinic1970algorithm}).
+
+\paragraph{Implementação em C++ e Apêndice.}
+A materialização destas otimizações de estado na arquitetura C++ encontra-se encapsulada na classe \lstinline{Dinic} (Código~\ref{lst:dinic}, Apêndice~\ref{ap:dinic}).
+
+\begin{figure}[!ht]
+\centering
+\begin{tikzpicture}[thick]
+
+\foreach \x in {0,2.5,5.0,7.5} { \draw[layer line] (\x,-0.7) -- (\x,3.8); }
+
+\node[gray,font=\footnotesize] at (0,4.1) {nív. 0};
+\node[gray,font=\footnotesize] at (2.5,4.1) {nív. 1};
+\node[gray,font=\footnotesize] at (5.0,4.1) {nív. 2};
+\node[gray,font=\footnotesize] at (7.5,4.1) {nív. 3};
+
+\node[source node] (s) at (0,1.5) {$s$};
+\node[flow node] (a) at (2.5,3) {$a$};
+\node[flow node] (b) at (2.5,0) {$b$};
+\node[flow node] (c) at (5.0,3) {$c$};
+\node[flow node] (d) at (5.0,0) {$d$};
+\node[sink node] (t) at (7.5,1.5) {$t$};
+
+\draw[flow edge,blue,line width=1.5pt] (s) -- (a);
+\draw[flow edge,blue,line width=1.5pt] (s) -- (b);
+\draw[flow edge,blue,line width=1.5pt] (a) -- (c);
+\draw[flow edge,blue,line width=1.5pt] (b) -- (d);
+\draw[flow edge,blue,line width=1.5pt] (a) -- (d);
+\draw[flow edge,blue,line width=1.5pt] (b) -- (c);
+\draw[flow edge,blue,line width=1.5pt] (c) -- (t);
+\draw[flow edge,blue,line width=1.5pt] (d) -- (t);
+
+\draw[nontree edge,bend right=30] (a) to (b);
+\draw[nontree edge,bend right=20] (c) to (a);
+
+\end{tikzpicture}
+\caption{Digrafo de Níveis no Algoritmo de Dinic (organizado em colunas, onde cada coluna da esquerda para a direita representa um nível crescente). Arcos azuis são os arcos admissíveis (avançam exatamente um nível: $d(v) = d(u)+1$), que compõem o Digrafo de Níveis. Arcos cinza tracejados são excluídos por não avançarem nível. O Fluxo Bloqueador é extraído apenas sobre os arcos azuis.}
+\label{fig:grafo_niveis}
+\end{figure}
+
+

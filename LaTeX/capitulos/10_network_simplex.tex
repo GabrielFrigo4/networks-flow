@@ -1,0 +1,187 @@
+% =========================================================================
+% ALGORITMO NETWORK SIMPLEX E ÁRVORES GERADORAS
+% =========================================================================
+\chapter{A Abordagem Primal-Dual em Árvore: O Algoritmo Network Simplex}\label{sec:network_simplex}
+
+\section{Árvore Geradora Básica e Partição de Arcos}
+
+Uma solução básica viável do MCF é caracterizada por uma partição dos arcos do digrafo em três conjuntos disjuntos (veja~\cite{ahuja1993network}):
+\begin{enumerate}
+    \item \textbf{Arcos básicos} ($T$): formam uma árvore geradora do digrafo. O fluxo nestes arcos pode assumir qualquer valor entre $0$ e $c(u,v)$.
+    \item \textbf{Arcos não básicos no limite inferior} ($L$): arcos fora da árvore com fluxo fixado em $f(u,v) = 0$.
+    \item \textbf{Arcos não básicos no limite superior} ($U$): arcos fora da árvore com fluxo fixado em $f(u,v) = c(u,v)$ (saturados).
+\end{enumerate}
+
+Dada uma árvore geradora $T$, o fluxo nos arcos básicos é unicamente determinado pelas demandas dos vértices e pelos fluxos fixados nos arcos de $L$ e $U$ (através da conservação de fluxo). Da mesma forma, os potenciais nodais $\pi$ são determinados univocamente (a menos de uma constante aditiva) pela condição de que $\bar{w}_\pi(u,v) = 0$ para todo arco $(u,v) \in T$, ou seja:
+\begin{equation}
+    \pi(u) - \pi(v) = w(u,v), \quad \forall (u,v) \in T
+\end{equation}
+
+Fixando $\pi(r) = 0$ para um vértice raiz $r$ arbitrário, os potenciais de todos os demais vértices são propagados pela árvore em tempo $\mathcal{O}(|V|)$.
+
+\begin{figure}[!ht]
+\centering
+\begin{tikzpicture}[thick]
+
+    \node[source node] (v1) at (0, 0) {$v_1$};
+    \node[flow node] (v2) at (2.5, 1.5) {$v_2$};
+    \node[flow node] (v3) at (2.5, -1.5) {$v_3$};
+    \node[flow node] (v4) at (5, 1.5) {$v_4$};
+    \node[sink node] (v5) at (5, -1.5) {$v_5$};
+
+    \draw[tree edge] (v1) -- node[above left,font=\footnotesize] {$T$} (v2);
+    \draw[tree edge] (v1) -- node[below left,font=\footnotesize] {$T$} (v3);
+    \draw[tree edge] (v2) -- node[above,font=\footnotesize] {$T$} (v4);
+    \draw[tree edge] (v3) -- node[below,font=\footnotesize] {$T$} (v5);
+
+    \draw[nontree edge] (v2) -- node[edge lbl right] {$L$} (v3);
+    \draw[nontree edge] (v4) -- node[edge lbl right] {$U$} (v5);
+\end{tikzpicture}
+\caption{Partição dos arcos no Network Simplex. Arcos azuis sólidos formam a árvore geradora básica $T$ (4 arcos para 5 vértices). Arcos cinza tracejados são não-básicos: $L$ (fluxo $= 0$) e $U$ (fluxo $= c$, saturado).}
+\label{fig:arvore_base}
+\end{figure}
+
+
+\section{Estrutura de Dados da Árvore e Inicialização com Raiz Artificial}
+
+Para viabilizar a execução eficiente das travessias em tempo $\mathcal{O}(|V|)$, a implementação do \textit{Network Simplex} (Código~\ref{lst:network_simplex}, Apêndice~\ref{ap:network_simplex}) mantém a árvore geradora representada por três vetores principais:
+\begin{itemize}
+    \item \lstinline{parent[v]}: armazena o vértice predecessor direto de $v$ na árvore direcionada.
+    \item \lstinline{depth[v]}: registra a profundidade topológica do vértice em relação à raiz, facilitando a identificação do ancestral comum mais próximo (\textit{LCA - Lowest Common Ancestor}) no ciclo fundamental.
+    \item \lstinline{thread[v]}: mantém uma lista encadeada da travessia em pré-ordem da árvore, permitindo iterar sobre toda a subárvore enraizada em $v$ em tempo proporcional ao número de seus descendentes durante a atualização dos potenciais nodais.
+\end{itemize}
+
+\textbf{Construção da Base Inicial:} Para garantir que uma árvore geradora viável inicial esteja sempre disponível sem necessidade de computação preliminar complexa, introduz-se um vértice raiz artificial $r = |V|$. Criam-se arcos artificiais conectando a raiz a cada vértice original com capacidade infinita e custo unitário suficientemente grande $M$ (\textit{Big-M Method}). Estes arcos formam a árvore inicial $T$. Ao longo das iterações do Simplex, os arcos originais da rede entram na base substituindo progressivamente os arcos artificiais, convergindo para uma solução puramente fundamentada nos arcos do digrafo original.
+
+
+\section{Total Unimodularidade (TUM) e Soluções Inteiras}\label{sec:tum_secao}
+
+A razão algébrica pela qual o \textit{Network Simplex} sempre produz soluções inteiras (quando capacidades e demandas são inteiras) reside em uma propriedade fundamental da matriz de restrições do problema de fluxo: a \textbf{Total Unimodularidade} (TUM).
+
+\begin{quote}
+\textbf{Definição.} Uma matriz $M \in \mathbb{Z}^{m \times n}$ é \textit{Totalmente Unimodular} (TUM) se o determinante de toda submatriz quadrada de $M$ pertence ao conjunto $\{-1, 0, +1\}$.
+\end{quote}
+
+A matriz de restrições do problema de fluxo em redes é a \textbf{matriz de incidência} $A \in \{-1, 0, +1\}^{|V| \times |A|}$ do digrafo $D = (V, A)$, definida como:
+\begin{equation}
+    A_{v,e} = \begin{cases}
+        +1, & \text{se } v \text{ é a origem do arco } e \\
+        -1, & \text{se } v \text{ é o destino do arco } e \\
+        \phantom{+}0, & \text{caso contrário}
+    \end{cases}
+\end{equation}
+
+\begin{teorema}[Total Unimodularidade da Matriz de Incidência --- Poincaré, 1901][teo:tum]
+A matriz de incidência nó-arco $A$ de qualquer digrafo direcionado é Totalmente Unimodular (TUM), isto é, o determinante de qualquer submatriz quadrada de $A$ pertence ao conjunto $\{-1, 0, +1\}$.
+\end{teorema}
+
+\intuicao{Algébrica e Geométrica: A Origem da Integralidade sem Frações} A propriedade de Total Unimodularidade é o alicerce que conecta a Álgebra Linear à Otimização Combinatória. Pela Regra de Cramer, as soluções de qualquer sistema linear básico $B x_B = b$ são dadas por frações cujo denominador é precisamente o determinante da matriz de base: $x_j = \det(B_j) / \det(B)$. Se a matriz for TUM, o determinante de qualquer base é obrigatoriamente $\det(B) \in \{-1, +1\}$. Dividir por $\pm 1$ jamais introduz números fracionários! Consequentemente, para qualquer vetor de demandas inteiras $b \in \mathbb{Z}^{|V|}$, todos os vértices extremos do poliedro de fluxos são garantidamente vetores de coordenadas inteiras. Em termos geométricos, o politopo não possui vértices fracionários para onde o simplex possa convergir por engano: toda solução básica ótima é inerentemente inteira.
+
+\begin{demonstracao}
+Procedemos por indução na ordem $k$ da submatriz quadrada arbitrária $M \in \mathbb{R}^{k \times k}$ formada a partir de $A$:
+
+\medskip
+\noindent \textit{Base de indução ($k = 1$):} \\
+Toda submatriz de ordem $1$ consiste em uma única entrada escalar $A_{v,e}$ da matriz de incidência. Pela definição de $A$, temos $A_{v,e} \in \{-1, 0, +1\}$, logo $\det(M) \in \{-1, 0, +1\}$.
+
+\medskip
+\noindent \textit{Passo indutivo:} \\
+Assuma como hipótese de indução que o determinante de qualquer submatriz quadrada de ordem $k-1$ de $A$ pertença a $\{-1, 0, +1\}$. Seja $M$ uma submatriz quadrada de ordem $k > 1$. Como cada coluna de $A$ possui no máximo um elemento $+1$ e no máximo um elemento $-1$ (e zeros nas demais posições), cada coluna da submatriz $M$ possui no máximo dois elementos não nulos. Classificamos $M$ em três casos exaustivos:
+
+\begin{enumerate}
+    \item \textbf{Existe ao menos uma coluna identicamente nula em $M$:} \\
+    Se $M$ possui uma coluna composta exclusivamente por zeros, o determinante é nulo: $\det(M) = 0 \in \{-1, 0, +1\}$.
+    
+    \item \textbf{Existe ao menos uma coluna com exatamente um elemento não nulo:} \\
+    Seja a $j$-ésima coluna de $M$ aquela contendo apenas um elemento não nulo na linha $i$, com valor $M_{i,j} \in \{-1, +1\}$. Aplicando a expansão de Laplace pelo método dos cofatores ao longo da $j$-ésima coluna:
+    $$\det(M) = M_{i,j} \cdot (-1)^{i+j} \cdot \det(M_{i,j})$$
+    onde $M_{i,j}$ é a submatriz menor de ordem $k-1$ obtida eliminando a $i$-ésima linha e a $j$-ésima coluna de $M$. Como $M_{i,j}$ é uma submatriz de $A$, a hipótese de indução garante que $\det(M_{i,j}) \in \{-1, 0, +1\}$. Uma vez que $M_{i,j} \cdot (-1)^{i+j} \in \{-1, +1\}$, o produto resulta necessariamente em $\det(M) \in \{-1, 0, +1\}$.
+    
+    \item \textbf{Todas as colunas de $M$ possuem exatamente dois elementos não nulos:} \\
+    Por construção da matriz de incidência, cada coluna de $A$ que possui dois elementos não nulos contém obrigatoriamente um elemento $+1$ e um elemento $-1$. Portanto, cada coluna de $M$ contém exatamente um $+1$ e um $-1$. Somando todas as linhas de $M$, a soma em cada coluna anula-se:
+    $$\sum_{i=1}^k M_{i,j} = (+1) + (-1) = 0, \quad \forall\, j \in \{1, \dots, k\}$$
+    Isso estabelece que o vetor linha nulo é combinação linear das linhas de $M$ ($\mathbf{1}^T M = \mathbf{0}^T$). Consequentemente, as linhas de $M$ são linearmente dependentes, impondo $\det(M) = 0 \in \{-1, 0, +1\}$.
+\end{enumerate}
+Em todos os casos possíveis, $\det(M) \in \{-1, 0, +1\}$. Por indução matemática completa, a matriz de incidência nó-arco $A$ é Totalmente Unimodular. \end{demonstracao}
+
+\implicacoes{para a Geometria Poliedral e o Network Simplex} A TUM da matriz de incidência explica algebricamente por que os problemas de fluxo em redes ocupam um estatuto privilegiado na teoria da complexidade computacional: eles dispensam heurísticas de branch-and-bound ou planos de corte para encontrar soluções inteiras. O algoritmo Simplex convencional aplicado à formulação de fluxo de custo mínimo visitará exclusivamente vértices inteiros do poliedro e, ao convergir, entregará uma solução inteira exata sem necessitar de aritmética de ponto flutuante ou pivoteamento numérico com arredondamentos, garantindo estabilidade e exatidão absoluta.
+
+
+\section{Potenciais Nodais e Custos Reduzidos na Árvore}
+
+Uma vez determinada a árvore $T$ e fixado $\pi(r) = 0$, os potenciais são calculados por uma travessia (BFS ou DFS) na árvore, aplicando recursivamente $\pi(v) = \pi(u) - w(u,v)$ para cada arco $(u,v) \in T$ (ou $\pi(u) = \pi(v) + w(u,v)$ ao percorrer na direção inversa).
+
+Com os potenciais calculados, os custos reduzidos dos arcos não básicos determinam a condição de otimalidade. Uma solução básica é \textbf{ótima} se e somente se:
+\begin{itemize}
+    \item Para todo arco $(u,v) \in L$: $\bar{w}_\pi(u,v) \ge 0$ (aumentar o fluxo não reduz o custo).
+    \item Para todo arco $(u,v) \in U$: $\bar{w}_\pi(u,v) \le 0$ (reduzir o fluxo não reduz o custo).
+\end{itemize}
+
+Se algum arco viola estas condições, ele é candidato a entrar na base, desencadeando uma iteração do Simplex.
+
+
+\section{Iteração do Network Simplex: Pricing, Ciclo Fundamental e Pivoteamento}
+
+Cada iteração do \textit{Network Simplex} realiza quatro passos fundamentais (veja~\cite{ahuja1993network, dantzig1951application}):
+
+\textbf{Passo 1 --- Pricing (Seleção do arco entrante):}
+Examinam-se os custos reduzidos dos arcos não básicos. Um arco $(u,v) \in L$ com $\bar{w}_\pi(u,v) < 0$ ou um arco $(u,v) \in U$ com $\bar{w}_\pi(u,v) > 0$ viola as condições de otimalidade e é selecionado como arco entrante (\textit{entering arc}). Na implementação, utiliza-se a estratégia de busca por blocos (\textit{Block Search Pricing}) para acelerar a localização do arco violador em grafos densos. Se nenhum arco violador existe, a solução atual é ótima e o algoritmo termina.
+
+\textbf{Passo 2 --- Identificação do Ciclo Fundamental:}
+A inserção do arco entrante $(u,v)$ na árvore $T$ cria exatamente um ciclo $C$ (pelo fato de que uma árvore com $|V|-1$ arcos, ao receber um arco adicional, forma um único ciclo). O ciclo é percorrido a partir de $u$ e $v$ até o seu ancestral comum mais próximo (\textit{LCA}), orientado na direção que permite enviar fluxo pelo arco entrante.
+
+\textbf{Passo 3 --- Determinação do arco limitante (\textit{leaving arc}):}
+O gargalo $\delta$ é calculado como a menor folga de fluxo ao longo do ciclo $C$: para arcos percorridos na direção do fluxo, a folga é $c(u,v) - f(u,v)$; na direção contrária, é $f(u,v)$. O arco que atinge seu limite (superior ou inferior) é o arco limitante, que sairá da base. Para prevenir ciclos infinitos causados por degenerescência (quando $\delta = 0$), adota-se a regra de base fortemente viável de Cunningham (\textit{Strongly Feasible Tree}, veja~\cite{cunningham1976network, ahuja1993network}), que padroniza o desempate na escolha do arco limitante.
+
+\textbf{Caso Especial (Arco Auto-Limitante):} Um caso degenerado de particular relevância na implementação ocorre quando a capacidade do próprio arco entrante $e_{in}$ é menor ou igual à folga de todos os arcos da árvore ao longo do ciclo fundamental ($\delta = c(e_{in})$). Nesse cenário, $e_{in}$ atinge seu limite superior antes de qualquer arco básico ser bloqueado ($e_{in} = e_{out}$). A implementação (Código~\ref{lst:network_simplex}, verificação condicional \lstinline{entering == leaving}) detecta e trata esta condição de forma imediata: alterna o estado de $e_{in}$ de $L$ para $U$ (ou de $U$ para $L$), satura o fluxo e retorna sem alterar a topologia da árvore geradora $T$, dispensando qualquer reestruturação desnecessária de ponteiros ou potenciais.
+
+\textbf{Passo 4 --- Pivoteamento e Atualização Topológica em $\mathcal{O}(|V|)$:}
+O fluxo é aumentado por $\delta$ ao longo do ciclo fundamental $C$. O arco limitante $e_{out}$ é removido de $T$ e movido para $L$ ou $U$. O arco entrante $e_{in} = (u,v)$ é inserido em $T$.
+
+A remoção de $e_{out}$ desconecta temporariamente a árvore geradora em duas componentes conexas disjuntas: a componente $T_r$ (que contém a raiz $r$, onde os potenciais nodais permanecem inalterados uma vez que $\pi(r) = 0$) e a subárvore desconectada $T_s$. Para restabelecer a condição básica $\pi(p) - \pi(q) = w(p,q)$ em toda a nova árvore $T' = T \cup \{e_{in}\} \setminus \{e_{out}\}$, basta aplicar um deslocamento escalar constante a todos os vértices pertencentes a $T_s$:
+$$\pi(x) \leftarrow \pi(x) \pm \bar{w}_\pi(e_{in}), \quad \forall x \in V(T_s)$$
+onde a polaridade do sinal depende da orientação do arco entrante em relação à raiz. É neste ponto que a arquitetura dos vetores \lstinline{parent}, \lstinline{depth} e \lstinline{thread} comprova sua superioridade algorítmica: a lista encadeada da travessia em pré-ordem (\lstinline{thread}) permite iterar estritamente sobre os vértices da subárvore $T_s$ em tempo proporcional à sua cardinalidade ($|V(T_s)| \le |V|$), sem inspecionar os demais nós da rede. Em seguida, os apontadores de filiação (\lstinline{parent}) e as profundidades (\lstinline{depth}) são invertidos exclusivamente ao longo do caminho entre o nó de conexão e a raiz da subárvore, assegurando que cada pivoteamento execute em tempo linear estrito $\mathcal{O}(|V|)$.
+
+\begin{figure}[!ht]
+\centering
+\begin{tikzpicture}[thick]
+
+\begin{scope}[xshift=0cm]
+  \tikzsubcaption{(2.0,4.2)}{(a) Antes do pivot}
+  \node[source node] (a1) at (0, 1.5) {$1$};
+  \node[flow node] (a2) at (2, 3.0) {$2$};
+  \node[flow node] (a3) at (2, 0.0) {$3$};
+  \node[sink node] (a4) at (4, 1.5) {$4$};
+
+  \draw[tree edge] (a1) -- (a2);
+  \draw[tree edge] (a2) -- (a4);
+  \draw[tree edge] (a1) -- (a3);
+  \draw[pivot enter] (a3) -- node[below=3.8pt,sloped,font=\footnotesize,text=red!80!black] {entra} (a4);
+\end{scope}
+
+\node at (5.5,1.5) {\Large $\Rightarrow$};
+
+\begin{scope}[xshift=7cm]
+  \tikzsubcaption{(2.0,4.2)}{(b) Depois do pivot}
+  \node[source node] (b1) at (0, 1.5) {$1$};
+  \node[flow node] (b2) at (2, 3.0) {$2$};
+  \node[flow node] (b3) at (2, 0.0) {$3$};
+  \node[sink node] (b4) at (4, 1.5) {$4$};
+
+  \draw[tree edge] (b1) -- (b2);
+  \draw[pivot leave] (b2) -- node[above=3.8pt,sloped,font=\footnotesize,text=gray!80!black] {sai} (b4);
+  \draw[tree edge] (b1) -- (b3);
+  \draw[tree edge] (b3) -- (b4);
+\end{scope}
+\end{tikzpicture}
+\caption{Uma iteração do Network Simplex. (a)~O arco $(3,4)$ (vermelho tracejado) é selecionado para entrar na base, criando o ciclo $1 \to 2 \to 4 \leftarrow 3 \leftarrow 1$. (b)~Após enviar $\delta$ unidades pelo ciclo, o arco $(2,4)$ atinge seu limite e sai da base, enquanto $(3,4)$ passa a integrar a árvore.}
+\label{fig:simplex_pivoteamento}
+\end{figure}
+
+\paragraph{Complexidade Assintótica e Eficiência Prática.}
+Embora o \textit{Network Simplex} não possua garantia de complexidade estritamente polinomial no pior caso (assim como o Simplex clássico), sua eficiência prática é excepcional, superando consistentemente métodos genéricos de programação linear e algoritmos de aumentos iterativos como o Cycle Canceling e o Successive Shortest Path em instâncias de larga escala (veja~\cite{ahuja1993network}). Cada iteração executa em tempo linear $\mathcal{O}(|V|)$ devido às travessias elementares em árvore.
+
+\paragraph{Implementação em C++ e Apêndice.}
+A implementação C++ detalhada da classe \lstinline{NetworkSimplex} encontra-se documentada no Código~\ref{lst:network_simplex} (Apêndice~\ref{ap:network_simplex}).
+
+

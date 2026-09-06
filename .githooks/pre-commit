@@ -51,3 +51,11 @@ if [ "${has_error}" -ne 0 ]; then
 	printf "%b\n" "${YELLOW}dica:${RESET} execute 'make clean' ou 'git rm --cached <arquivo>'" >&2
 	exit 1
 fi
+
+if [ -f "Scripts/sync_listings.py" ]; then
+	if ! python3 Scripts/sync_listings.py --check > "/dev/null" 2>&1; then
+		printf "%b\n" "${RED}erro:${RESET} os apêndices LaTeX estão dessincronizados com Implementações/" >&2
+		printf "%b\n" "${YELLOW}dica:${RESET} execute 'make sync-code' para atualizar os apêndices" >&2
+		exit 1
+	fi
+fi

@@ -1,0 +1,289 @@
+% =========================================================================
+% TEOREMA DO FLUXO MÁXIMO E CORTE MÍNIMO (MFMC)
+% =========================================================================
+\chapter{O Teorema Fundamental do Fluxo Máximo e Corte Mínimo}\label{sec:mfmc_capitulo}
+
+\section{Redes Residuais, Caminhos Aumentantes e Dualidade}
+
+A busca sistemática pela maximização do fluxo em uma rede requer uma estrutura auxiliar que quantifique não apenas a capacidade ociosa das conexões, mas também a possibilidade de reversão de decisões de roteamento subótimas estabelecidas em iterações prévias. Para este fim, introduz-se formalmente o conceito de rede residual (veja~\cite{ahuja1993network, ford1956maximal}).
+
+\begin{definicao}[Capacidade Residual e Digrafo Residual][def:residual]
+Dado um fluxo viável $f$ operando sobre uma rede $D = (V, A)$ com capacidades originais $c: A \to \mathbb{R}_{\ge 0}$:
+\begin{enumerate}
+    \item A \textbf{capacidade residual} de qualquer par ordenado $(u,v) \in V \times V$, denotada por $c_f(u,v)$, é definida algebricamente por:
+    \begin{equation}
+        c_f(u,v) \coloneqq c(u,v) - f(u,v) + f(v,u)
+    \end{equation}
+    convencionando-se $c(u,v) = 0$ e $f(u,v) = 0$ caso $(u,v) \notin A$.
+    \item O \textbf{digrafo residual} (ou rede residual) $D_f = (V, A_f)$ é o grafo orientado cujos arcos são constituídos exclusivamente pelas conexões com capacidade residual estritamente positiva:
+    \begin{equation}
+        A_f \coloneqq \{ (u,v) \in V \times V \mid c_f(u,v) > 0 \}
+    \end{equation}
+\end{enumerate}
+O termo $+ f(v,u)$ abstrai a simetria reversa do fluxo, viabilizando formalmente o cancelamento e o redirecionamento de decisões de roteamento prévias.
+\end{definicao}
+
+Operando sobre a topologia de $D_f$, define-se um caminho aumentante como qualquer caminho simples com origem na fonte $s$ e término no sumidouro $t$. A existência de tal caminho implica de forma direta que o fluxo global $|f|$ pode ser estritamente incrementado sem violar as restrições estruturais da rede original. O incremento máximo viável ao longo deste trajeto é delimitado pelo arco de menor capacidade residual, comumente denominado arco gargalo.
+
+A Figura~\ref{fig:rede_residual} ilustra uma rede com fluxo parcial e seu correspondente digrafo residual $D_f$, evidenciando os arcos diretos (capacidade ociosa) e inversos (fluxo cancelável).
+
+\begin{figure}[!ht]
+\centering
+\begin{tikzpicture}[thick]
+
+\begin{scope}[xshift=0cm]
+  \node[source node] (s) at (0,1.2) {$s$};
+  \node[flow node] (a) at (2,2.4) {$a$};
+  \node[flow node] (b) at (2,0) {$b$};
+  \node[sink node] (t) at (4,1.2) {$t$};
+  \draw[flow edge] (s) -- node[edge lbl above] {$2/3$} (a);
+  \draw[flow edge] (s) -- node[edge lbl below] {$1/2$} (b);
+  \draw[flow edge] (a) -- node[edge lbl, right] {$1/1$} (b);
+  \draw[flow edge] (a) -- node[edge lbl above] {$1/3$} (t);
+  \draw[flow edge] (b) -- node[edge lbl below] {$2/3$} (t);
+  \node[font=\footnotesize,below] at (2,-0.7) {\textit{(a) Rede original} $f/c$};
+\end{scope}
+
+\node at (5.2,1.2) {\Huge $\Rightarrow$};
+
+\begin{scope}[xshift=6.5cm]
+  \node[source node] (s2) at (0,1.2) {$s$};
+  \node[flow node] (a2) at (2,2.4) {$a$};
+  \node[flow node] (b2) at (2,0) {$b$};
+  \node[sink node] (t2) at (4,1.2) {$t$};
+
+  \draw[flow edge,blue] (s2) -- node[edge lbl below, text=blue!80!black] {$1$} (a2);
+  \draw[flow edge,blue] (s2) -- node[edge lbl above, text=blue!80!black] {$1$} (b2);
+  \draw[flow edge,blue] (a2) -- node[edge lbl below, text=blue!80!black] {$2$} (t2);
+  \draw[flow edge,blue] (b2) -- node[edge lbl above, text=blue!80!black] {$1$} (t2);
+
+  \draw[rev edge,bend right=30] (a2) to node[edge lbl above, text=red!80!black] {$2$} (s2);
+  \draw[rev edge,bend left=30] (b2) to node[edge lbl below, text=red!80!black] {$1$} (s2);
+  \draw[rev edge] (b2) -- node[edge lbl, left, text=red!80!black] {$1$} (a2);
+  \draw[rev edge,bend right=30] (t2) to node[edge lbl above, text=red!80!black] {$1$} (a2);
+  \draw[rev edge,bend left=30] (t2) to node[edge lbl below, text=red!80!black] {$2$} (b2);
+  \node[font=\footnotesize,below] at (2,-0.7) {\textit{(b) Digrafo residual} $D_f$};
+\end{scope}
+\end{tikzpicture}
+\caption{Rede com fluxo parcial (esquerda, valores $f/c$) e o digrafo residual $D_f$ resultante (direita). Arcos azuis sólidos: capacidade ociosa ($c_f > 0$). Arcos vermelhos tracejados: capacidade reversa (fluxo cancelável). Rótulos com fundo opaco e curvaturas generosas eliminam sobreposição entre arcos diretos e reversos.}
+\label{fig:rede_residual}
+\end{figure}
+\FloatBarrier
+
+O critério de parada para os algoritmos de aumento iterativo, bem como o certificado matemático de otimalidade, é estruturado sobre o conceito de partição de corte da rede:
+
+\begin{definicao}[Corte $s-t$ e Capacidade de Corte][def:corte]
+Dada uma rede de fluxo $D = (V, A)$ com capacidades $c: A \to \mathbb{R}_{\ge 0}$, fonte $s$ e sumidouro $t$:
+\begin{enumerate}
+    \item Um \textbf{corte $s-t$} é uma partição do conjunto de vértices $V$ em dois subconjuntos disjuntos $S$ e $T = V \setminus S$ tais que $s \in S$ e $t \in T$.
+    \item A \textbf{capacidade do corte}, denotada pelo operador funcional $\ccap(S, T)$, é a soma das capacidades dos arcos direcionados com cauda em $S$ e cabeça em $T$:
+    \begin{equation}
+        \ccap(S, T) \coloneqq \sum_{(u,v) \in A, \, u \in S, \, v \in T} c(u,v)
+    \end{equation}
+\end{enumerate}
+\textbf{Observação importante:} Arcos no sentido inverso (isto é, com $u \in T$ e $v \in S$) \textbf{não} entram no cômputo de $\ccap(S, T)$, refletindo a assimetria do transporte orientado de recursos na rede.
+\end{definicao}
+
+A conexão fundamental entre fluxos factíveis e cortes induz o célebre resultado de Ford e Fulkerson:
+
+\begin{teorema}[Fluxo Máximo e Corte Mínimo --- Ford e Fulkerson, 1956][teo:mfmc]
+Em qualquer rede de fluxo $D = (V, A)$ com capacidades não negativas, fonte $s$ e sumidouro $t$, o valor do fluxo máximo é estritamente igual à capacidade do corte $s-t$ mínimo:
+\begin{equation}
+    \max_f |f| = \min_{(S,T)} \ccap(S,T)
+\end{equation}
+Além disso, um fluxo viável $f$ é máximo se, e somente se, o digrafo residual $D_f$ não contém nenhum caminho aumentante de $s$ a $t$.
+\end{teorema}
+
+\intuicao{Física e Topológica de Gargalo} A essência física deste teorema fundamenta-se no princípio do gargalo hidráulico: se imaginarmos uma rede de tubulações transportando fluido de $s$ para $t$, qualquer partição do sistema que separe a nascente da foz impõe um teto estrito sobre o volume total transportável, pois toda gota de fluido deve obrigatoriamente atravessar a fronteira divisória. A capacidade dessa barreira é a soma dos limites de vazão dos canais que cruzam no sentido da corrente. A genialidade da dualidade reside no fato de que o fluxo não é apenas limitado por esse obstáculo geométrico: o fluxo máximo alcançável é calibrado com exatidão cirúrgica pelo menor gargalo que a topologia da rede é capaz de formar. Quando o fluxo atinge seu ápice, os canais que formam essa barreira mais estreita ficam totalmente saturados, tornando impossível qualquer avanço adicional e certificando a otimalidade global da solução.
+
+
+\begin{demonstracao}
+A demonstração deste teorema é construtiva e apoia-se diretamente na topologia do digrafo residual (veja~\cite{ford1956maximal, cook1998combinatorial}). Seja $f$ um fluxo em $D$. O valor do fluxo $|f|$ é sempre menor ou igual à capacidade de qualquer corte $s-t$ na rede, uma vez que o tráfego de recursos é fisicamente limitado pelas conexões que particionam a fonte do sumidouro. Portanto, se encontrarmos um fluxo $|f|$ cujo valor seja exata e algebricamente igual à capacidade de algum corte específico, teremos provado simultaneamente que $f$ é máximo e que o corte em questão é o mínimo.
+
+Suponha que $f$ seja um fluxo máximo. Se existisse um caminho aumentante $P$ de $s$ a $t$ em $D_f$, poder-se-ia obter um fluxo $f'$ com $|f'| = |f| + c_f(P) > |f|$, contradizendo a maximalidade de $f$. Logo, não existe caminho aumentante em $D_f$ (veja~\cite{ahuja1993network}). Definimos o conjunto $S$ como o conjunto de todos os vértices que são alcançáveis a partir da fonte $s$ em $D_f$ através de arcos com capacidade residual estritamente positiva ($c_f > 0$). Definimos $T = V \setminus S$ como o restante dos vértices.
+
+Como não há caminho aumentante, o sumidouro $t$ é inalcançável a partir de $s$ em $D_f$, logo $t \in T$ e $s \in S$. Temos, portanto, um corte $s-t$ válido particionando a rede.
+
+\begin{figure}[!ht]
+\centering
+\begin{tikzpicture}[thick]
+    \draw[cut S] (-0.8, -1.8) rectangle (2.8, 1.8);
+    \node[cut label S] at (-0.6, 1.65) {$\mathbf{S}$};
+    
+    \draw[cut T] (5.4, -1.8) rectangle (9.0, 1.8);
+    \node[cut label T] at (8.8, 1.65) {$\mathbf{T}$};
+
+    \node[source node] (s) at (0.0, 0.0) {$s$};
+    \node[s node internal] (a) at (2.0, 0.8) {$a$};
+    \node[s node internal] (b) at (2.0, -0.8) {$b$};
+    
+    \node[t node internal] (c) at (6.2, 0.8) {$c$};
+    \node[t node internal] (d) at (6.2, -0.8) {$d$};
+    \node[sink node] (t) at (8.2, 0.0) {$t$};
+
+    \draw[line width=1.5pt, dashed, cutviolet] (4.1, -1.85) -- (4.1, 1.85)
+        node[above=2.5pt, solid, font=\scriptsize\bfseries, text=cutviolet!90!black, fill=white, inner sep=2.5pt, rounded corners=3pt, draw=cutviolet!70] {Corte Mínimo $(S,T)$};
+
+    \draw[sat edge] (a) -- node[edge lbl above, text=cutviolet!90!black] {$f=c$} (c);
+    \draw[sat edge] (b) -- node[edge lbl below, text=cutviolet!90!black] {$f=c$} (d);
+    
+    \draw[flow edge] (s) -- (a);
+    \draw[flow edge] (s) -- (b);
+    \draw[flow edge] (c) -- (t);
+    \draw[flow edge] (d) -- (t);
+    \draw[flow edge] (a) -- (b);
+    \draw[flow edge] (c) -- (d);
+\end{tikzpicture}
+\caption{Corte mínimo $(S,T)$: os arcos que cruzam de $S$ para $T$ (em violeta) estão saturados ($f = c$).}
+\label{fig:corte_minimo}
+\end{figure}
+
+Para qualquer arco original $(u,v) \in A$ tal que $u \in S$ e $v \in T$, sabemos que $v$ não é alcançável a partir de $u$ em $D_f$. Isto implica obrigatoriamente que a capacidade residual $c_f(u,v) = 0$. Pela definição de capacidade residual, isto só ocorre se o arco original estiver completamente saturado, ou seja, $f(u,v) = c(u,v)$. De forma análoga, para qualquer arco no sentido reverso, de $T$ para $S$, o fluxo deve ser nulo ($f(v,u) = 0$), caso contrário haveria capacidade residual reversa permitindo a travessia de $S$ para $T$ (veja~\cite{cook1998combinatorial}).
+
+Conclui-se que o fluxo líquido através do corte $(S, T)$ é exatamente a soma das capacidades dos arcos de $S$ para $T$, o que corresponde à capacidade total do corte. Como o fluxo da rede deve passar através deste gargalo, provamos que o valor $|f|$ iguala a capacidade deste corte, atestando a otimalidade de ambos (veja~\cite{ford1956maximal}). \end{demonstracao}
+
+\implicacoes{e Certificado de Otimalidade} O Teorema Max-Flow Min-Cut fornece uma das propriedades computacionais mais valiosas da Otimização Combinatória: um certificado conciso e irrefutável de otimalidade (certificado de dualidade forte). Em termos de complexidade computacional, enquanto a busca exaustiva por cortes mínimos exigiria avaliar $2^{|V|-2}$ partições bipartidas, o teorema assegura que o corte mínimo pode ser extraído diretamente em tempo linear $\mathcal{O}(|V| + |A|)$ executando-se uma simples busca em largura (BFS) a partir de $s$ sobre a rede residual final produzida por qualquer algoritmo de fluxo máximo (como Edmonds-Karp ou Dinic). Além disso, este teorema serve como matriz geradora para provar uma vasta família de teoremas estruturais em teoria dos grafos, incluindo os clássicos teoremas de König, Hall e Menger.
+
+
+\section{A Formulação Primal-Dual em Programação Linear}\label{sec:dualidade_primal_dual}
+
+A equivalência fundamental entre o valor do fluxo máximo e a capacidade do corte mínimo admite uma demonstração algébrica rigorosa quando examinada sob a ótica da Programação Linear (veja~\cite{cook1998combinatorial, schrijver2003combinatorial}). Longe de se restringir a uma propriedade puramente topológica da rede residual, o Teorema do Fluxo Máximo e Corte Mínimo é a manifestação direta do Teorema da Dualidade Forte de von Neumann e Dantzig.
+
+O Problema do Fluxo Máximo consiste em maximizar o valor do fluxo $|f|$, formulado canonicamente através do seguinte Programa Linear Primal:
+\begin{align}
+    \max \quad & \sum_{(s,v) \in A} f(s,v) - \sum_{(u,s) \in A} f(u,s) \label{eq:primal_obj} \\[4pt]
+    \sa & \sum_{(v,w) \in A} f(v,w) - \sum_{(u,v) \in A} f(u,v) = 0, \quad \forall v \in V \setminus \{s, t\} \label{eq:primal_conservacao} \\[4pt]
+    & 0 \le f(u,v) \le c(u,v), \quad \forall (u,v) \in A \label{eq:primal_capacidade}
+\end{align}
+
+Para derivar o Programa Linear Dual correspondente, associamos multiplicadores de Lagrange (variáveis duais) às restrições estruturais do primal:
+\begin{enumerate}
+    \item Para cada restrição de conservação de fluxo no vértice intermediário $v \in V \setminus \{s,t\}$ (Equação~\ref{eq:primal_conservacao}), introduz-se uma variável dual irrestrita em sinal $p(v) \in \mathbb{R}$, interpretável fisicamente como um \textbf{potencial nodal}. Para uniformizar a formulação em todos os vértices da rede, convencionam-se as condições de contorno nos terminais como $p(s) = 1$ e $p(t) = 0$.
+    \item Para cada restrição de capacidade superior $f(u,v) \le c(u,v)$ (Equação~\ref{eq:primal_capacidade}), introduz-se uma variável dual não negativa $d(u,v) \ge 0$, que quantifica a \textbf{tensão} ou o desnível de potencial incidente ao longo do arco direcionado $(u,v)$.
+\end{enumerate}
+
+Pela teoria clássica da dualidade linear, a maximização do fluxo converte-se na minimização do produto escalar das capacidades pelas tensões dos arcos. O Programa Linear Dual resultante assume a forma:
+\begin{align}
+    \min \quad & \sum_{(u,v) \in A} c(u,v) \cdot d(u,v) \label{eq:dual_obj} \\[4pt]
+    \sa & d(u,v) - p(u) + p(v) \ge 0, \quad \forall (u,v) \in A \label{eq:dual_tensao} \\[4pt]
+    & d(u,v) \ge 0, \quad \forall (u,v) \in A \\[4pt]
+    & p(s) = 1, \quad p(t) = 0, \quad p(v) \in \mathbb{R}, \quad \forall v \in V
+\end{align}
+
+A interpretação da inequação~\eqref{eq:dual_tensao} é intuitiva: para qualquer arco $(u,v)$, a variável $d(u,v)$ deve satisfazer $d(u,v) \ge p(u) - p(v)$. Como o objetivo de minimização~\eqref{eq:dual_obj} possui coeficientes não negativos ($c(u,v) \ge 0$), a solução ótima dual adotará o menor valor viável:
+\begin{equation}
+    d(u,v) = \max\{0, \, p(u) - p(v)\}
+\end{equation}
+
+Em um programa linear arbitrário, as variáveis duais $p(v)$ poderiam assumir valores contínuos fracionários no intervalo $[0, 1]$. Contudo, a matriz de coeficientes do sistema de restrições deste problema é a transposta da matriz de incidência do digrafo $D$. Como demonstrado formalmente adiante no Teorema da Subseção~\ref{sec:tum_secao}, a matriz de incidência de qualquer digrafo direcionado é \textbf{Totalmente Unimodular (TUM)}.
+
+Pela teoria dos Poliedros e da Programação Inteira (veja~\cite{cook1998combinatorial, korte2018combinatorial}), a total unimodularidade da matriz de restrições garante que \textbf{todos os vértices do poliedro dual são estritamente inteiros}. Consequentemente, para qualquer vetor de capacidades inteiras, existe uma solução básica ótima dual onde os potenciais nodais assumem exclusivamente valores binários:
+\begin{equation}
+    p^*(v) \in \{0, 1\}, \quad \forall v \in V
+\end{equation}
+
+Esta propriedade binária estabelece a bijeção perfeita com a partição geométrica de cortes: a solução dual ótima particiona univocamente o conjunto de vértices $V$ em dois subconjuntos disjuntos:
+\begin{equation}
+    S = \{v \in V \mid p^*(v) = 1\} \quad \text{e} \quad T = \{v \in V \mid p^*(v) = 0\}
+\end{equation}
+Como $p^*(s) = 1$ e $p^*(t) = 0$, temos garantidamente $s \in S$ e $t \in T$, definindo um legítimo \textbf{corte $s-t$}. 
+
+Avaliando agora o valor das variáveis de arco $d^*(u,v) = \max\{0, \, p^*(u) - p^*(v)\}$ sob esta partição binária:
+\begin{equation}
+    d^*(u,v) = \begin{cases}
+        1, & \text{se } u \in S \text{ e } v \in T \quad (p^*(u) = 1, \, p^*(v) = 0); \\
+        0, & \text{caso contrário (se } u,v \text{ estão no mesmo lado, ou se } u \in T, \, v \in S).
+    \end{cases}
+\end{equation}
+Substituindo $d^*(u,v)$ diretamente na função objetivo dual~\eqref{eq:dual_obj}:
+\begin{equation}
+    \sum_{(u,v) \in A} c(u,v) \cdot d^*(u,v) = \sum_{u \in S, \, v \in T} c(u,v) = \ccap(S, T)
+\end{equation}
+
+Pelo Teorema da Dualidade Forte da Programação Linear, o valor ótimo primal coincide rigorosamente com o valor ótimo dual:
+\begin{equation}
+    \max |f| = \min \sum_{(u,v) \in A} c(u,v) d(u,v) = \min_{(S,T)} \ccap(S,T)
+\end{equation}
+o que comprova formalmente que o problema da Cobertura por Corte Mínimo é o dual exato do Problema do Fluxo Máximo.
+
+A interpretação geométrica desta bijeção dual é ilustrada na Figura~\ref{fig:primal_dual_potenciais}.
+
+\begin{figure}[!ht]
+\centering
+\begin{tikzpicture}[thick]
+  \draw[cut S] (-0.8, -1.8) rectangle (2.8, 1.8);
+  \node[cut label S] at (-0.6, 1.65) {$\mathbf{S} : p^*(u) = 1$};
+
+  \draw[cut T] (5.4, -1.8) rectangle (9.0, 1.8);
+  \node[cut label T] at (8.8, 1.65) {$\mathbf{T} : p^*(v) = 0$};
+
+  \node[source node] (s) at (0.0, 0.0) {$s$};
+  \node[s node internal] (a) at (2.0, 0.8) {$a$};
+  \node[s node internal] (b) at (2.0, -0.8) {$b$};
+
+  \node[t node internal] (c) at (6.2, 0.8) {$c$};
+  \node[t node internal] (d) at (6.2, -0.8) {$d$};
+  \node[sink node] (t) at (8.2, 0.0) {$t$};
+
+  \draw[flow edge] (s) -- node[edge lbl above] {$d=0$} (a);
+  \draw[flow edge] (s) -- node[edge lbl below] {$d=0$} (b);
+  \draw[flow edge] (a) -- node[edge lbl left] {$d=0$} (b);
+
+  \draw[flow edge] (c) -- node[edge lbl above] {$d=0$} (t);
+  \draw[flow edge] (d) -- node[edge lbl below] {$d=0$} (t);
+  \draw[flow edge] (c) -- node[edge lbl right] {$d=0$} (d);
+
+  \draw[line width=1.5pt, dashed, cutviolet] (4.1, -1.85) -- (4.1, 1.85)
+      node[above=2.5pt, solid, font=\scriptsize\bfseries, text=cutviolet!90!black, fill=white, inner sep=2.5pt, rounded corners=3pt, draw=cutviolet!70] {Corte Mínimo $(S,T)$};
+
+  \draw[sat edge] (a) -- node[edge lbl above, text=cutviolet!90!black] {$\mathbf{d=1},\; f=c$} (c);
+  \draw[sat edge] (b) -- node[edge lbl below, text=cutviolet!90!black] {$\mathbf{d=1},\; f=c$} (d);
+
+  \node[font=\footnotesize, align=center, below=4pt] at (4.1, -2.0) {Custo dual: $\sum c(e)d(e) = c(a,c)\cdot 1 + c(b,d)\cdot 1 = \ccap(S,T)$. Pela dualidade forte: $\max |f| = \min \ccap(S,T)$.};
+\end{tikzpicture}
+\caption{Interpretação geométrica da solução dual no Teorema do Fluxo Máximo e Corte Mínimo: os potenciais nodais ótimos assumem valores binários $p^*(u) = 1$ no bloco S e $p^*(v) = 0$ no bloco $\mathbf{T}$. As variáveis duais de tensão $d(u, v) = \max\{0, p(u) - p(v)\}$ são ativadas ($d = 1$) exclusivamente sobre os arcos saturados que cruzam de S para T, anulando-se ($d = 0$) nas arestas internas ou reversas.}
+\label{fig:primal_dual_potenciais}
+\end{figure}
+
+
+\section{O Teorema da Integralidade}
+
+Para que os problemas clássicos de Otimização Combinatória possam ser reduzidos a instâncias de fluxo, um último pilar matemático faz-se necessário: a garantia de que as soluções encontradas pertencerão ao domínio dos números inteiros ($\mathbb{Z}$).
+
+\begin{teorema}[Integralidade de Ford-Fulkerson, 1956][teo:integralidade]
+Se a função de capacidade $c(u,v)$ assume valores inteiros para todos os arcos $(u,v) \in A$, então existe um fluxo máximo $f^*$ onde o valor $f^*(u,v)$ transitando em cada arco é estritamente inteiro (veja~\cite{ford1956maximal}).
+\end{teorema}
+
+\intuicao{dos Incrementos Discretos} A razão pela qual a integralidade é preservada reside no caráter atômico das operações de aumento de fluxo. Partindo de um estado de repouso absoluto (onde todos os fluxos são identicamente zero, que é trivialmente um vetor de inteiros), as capacidades residuais disponíveis no digrafo residual inicial coincidem com as capacidades originais da rede e, portanto, são todas inteiras. Ao se eleger um caminho aumentante qualquer de $s$ para $t$, o valor do gargalo residual $\delta$ nada mais é do que o mínimo de um conjunto finito de inteiros estritamente positivos, sendo consequentemente um número inteiro positivo ($\delta \in \mathbb{Z}^+$). Cada atualização de fluxo adiciona ou subtrai $\delta$ em cada arco, gerando novos fluxos inteiros e novas capacidades residuais igualmente inteiras. Por indução finita, a discretização jamais se rompe.
+
+\begin{demonstracao}
+Procedemos por indução formal no número $k$ de iterações de aumento de fluxo realizadas pelo método de Ford-Fulkerson:
+
+\medskip
+\noindent \textit{Base de indução ($k = 0$):} \\
+O fluxo inicial é definido como nulo para todos os arcos: $f_0(u,v) = 0 \in \mathbb{Z}$ para todo $(u,v) \in A$. Logo, $f_0$ é um fluxo viável inteiro.
+
+\medskip
+\noindent \textit{Passo indutivo:} \\
+Assuma por hipótese que, após $k$ iterações, o fluxo $f_k$ é estritamente inteiro, isto é, $f_k(u,v) \in \mathbb{Z}$ para todo $(u,v) \in A$. Como as capacidades originais $c(u,v)$ são inteiras, as capacidades residuais no digrafo residual $D_{f_k}$:
+\begin{align*}
+    c_{f_k}(u,v) &= c(u,v) - f_k(u,v) \in \mathbb{Z} \quad \text{(arcos diretos)} \\
+    c_{f_k}(v,u) &= f_k(u,v) \in \mathbb{Z} \quad \text{(arcos reversos)}
+\end{align*}
+são todas compostas por números inteiros não negativos.
+
+Se não existe caminho aumentante em $D_{f_k}$, o algoritmo termina e $f_k$ é o fluxo máximo ótimo, que é inteiro. Caso exista um caminho direcionado simples aumentante $P$ de $s$ a $t$ em $D_{f_k}$, o acréscimo de fluxo é dado por:
+$$\delta_k = \min_{(u,v) \in P} c_{f_k}(u,v)$$
+Como $P$ é um conjunto finito de arcos e $c_{f_k}(u,v) \in \mathbb{Z}^+$ para todo $(u,v) \in P$, o gargalo residual $\delta_k$ é o mínimo de inteiros estritamente positivos, implicando diretamente $\delta_k \in \mathbb{Z}$ e $\delta_k \ge 1$.
+
+O novo fluxo $f_{k+1}$ é obtido somando ou subtraindo $\delta_k$:
+$$f_{k+1}(u,v) = \begin{cases} f_k(u,v) + \delta_k, & \text{se } (u,v) \in P \text{ é direto} \\ f_k(u,v) - \delta_k, & \text{se } (v,u) \in P \text{ é reverso} \\ f_k(u,v), & \text{caso contrário} \end{cases}$$
+Como a soma e subtração de inteiros é fechada em $\mathbb{Z}$, temos $f_{k+1}(u,v) \in \mathbb{Z}$ para todo $(u,v) \in A$.
+
+Por fim, como as capacidades originais são finitas, a capacidade de qualquer corte $s-t$ é finita. Visto que cada iteração estritamente aumenta o fluxo em pelo menos uma unidade inteira ($\delta_k \ge 1$), o algoritmo atinge a condição de ausência de caminhos aumentantes em um número finito de passos. Pelo Teorema~\ref{teo:mfmc}, o fluxo final $f^*$ é máximo e estritamente inteiro. \end{demonstracao}
+
+\implicacoes{e o Poder das Reduções Combinatórias} A consequência algorítmica deste teorema é extraordinária: embora a formulação padrão de fluxo máximo seja um programa linear contínuo, não é necessário impor restrições explícitas de integralidade ($\mathbb{Z}$) --- que em problemas gerais transformam formulações polinomiais em problemas $\mathcal{NP}$-difíceis. A integralidade natural garante que a solução ótima do programa contínuo coincide com um vértice inteiro do poliedro de fluxos. Isso permite modelar problemas de otimização combinatória puramente discretos (como emparelhamentos, alocações de tarefas, escalonamento e cobertura) diretamente como redes de fluxo contínuas, resolvendo-os em tempo estritamente polinomial.
+
+\textbf{Observação crítica:} Além da mera existência, todos os algoritmos implementados neste projeto --- Ford-Fulkerson, Edmonds-Karp, Dinic e Push-Relabel --- constroem \emph{exatamente} este fluxo inteiro ao longo de toda a execução, pois partem de um fluxo nulo inteiro e efetuam incrementos inteiros em cada passo. Não se trata de uma mera garantia de existência: é uma propriedade construtiva. Esta é a razão pela qual todas as reduções apresentadas nas seções seguintes (emparelhamento bipartido, caminhos disjuntos, etc.) tratam o fluxo obtido diretamente como uma solução inteira, sem necessidade de arredondamento ou pós-processamento. Vale ressaltar que, sob a perspectiva da Programação Linear e da Otimização Poliedral, a garantia algébrica fundamental de que os poliedros de fluxo possuem exclusivamente vértices inteiros decorre da \textbf{Total Unimodularidade} da matriz de incidência da rede, propriedade formalmente demonstrada na Subseção~\ref{sec:tum_secao}.
+
+

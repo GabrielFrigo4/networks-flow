@@ -1,0 +1,100 @@
+% =========================================================================
+% PROTOCOLO EXPERIMENTAL E BENCHMARKS COMPUTACIONAIS
+% =========================================================================
+\chapter{Protocolo Experimental e Benchmarks Computacionais}\label{sec:benchmarks}
+
+Com o intuito de confrontar as garantias assintóticas dos modelos teóricos com o comportamento prático em tempo de execução e consumo de memória, estruturou-se uma infraestrutura sistemática de avaliação experimental, documentada no módulo computacional \code{Experimentos/}. Esta subseção detalha o protocolo metodológico, os conjuntos de teste padronizados da literatura e a matriz de comparação entre os algoritmos desenvolvidos.
+
+
+\section{Rigor Metodológico e Ambiente de Teste}\label{sec:bench_metodologia}
+
+A avaliação empírica de algoritmos em grafos exige isolamento estrito de variáveis de ruído sistêmico para assegurar a reprodutibilidade dos resultados. O protocolo experimental fundamenta-se nas seguintes diretrizes:
+
+\begin{enumerate}
+    \item \textbf{Isolamento Estrito do Tempo de CPU:} A mensuração temporal é conduzida através do relógio monotônico de alta precisão \lstinline{std::chrono::high_resolution_clock} da biblioteca padrão do C++23. O intervalo cronometrado compreende exclusivamente a invocação do método \lstinline{max_flow()} ou \lstinline{min_cost_flow()}, isolando de forma estrita o tempo de leitura, conversão e parsing dos arquivos de entrada em disco ($I/O$), bem como eventuais rotinas de impressão.
+    
+    \item \textbf{Parâmetros de Compilação e Otimização:} O código-fonte é compilado utilizando o compilador GCC 13+ com suporte integral ao padrão ISO C++23, sob o nível de otimização \lstinline{-O2}. Adicionalmente, configura-se a expansão de pilha (\lstinline{-Wl,-z,stack-size=268435456}) para prevenir estouros de pilha (\textit{stack overflow}) em buscas profundas (DFS) sobre grafos patológicos.
+    
+    \item \textbf{Tratamento Estatístico e Controle de Timeout:} Cada instância é executada de forma independente por $N = 5$ repetições em regime estacionário (\textit{steady state}), descartando-se o ciclo de aquecimento de cache (\textit{warm-up}). Registram-se o tempo médio e o desvio-padrão. Fixa-se um tempo limite (\textit{timeout}) de 60 segundos por instância; métodos que excedem esse limiar são interrompidos e categorizados com \textit{Time Limit Exceeded} (TLE).
+\end{enumerate}
+
+
+\section{Famílias de Instâncias Padronizadas da Literatura (DIMACS)}\label{sec:bench_instancias}
+
+Para submeter os motores algorítmicos a desafios topológicos diversos, o ecossistema de testes emprega as coleções canônicas do \textit{First DIMACS International Algorithm Implementation Challenge} (veja~\cite{Jensen2022, ahuja1993network}):
+
+\begin{itemize}
+    \item \textbf{Família DIMACS Max-Flow:}
+    \begin{itemize}
+        \item \textbf{Washington (RLG e Line):} Redes em malha retangular e redes lineares com gargalos induzidos propositalmente para forçar caminhos aumentantes longos e repetitivos, desafiando a complexidade pseudopolinomial do método de Ford-Fulkerson;
+        \item \textbf{Genrmf e RMF:} Grafos tridimensionais formados por $b$ planos ou quadros bidimensionais interconectados com capacidades aleatórias, onde a fonte reside no primeiro vértice do primeiro plano e o sumidouro no último vértice do último plano. Essa família impõe gargalos severos de corte mínimo, constituindo um dos testes de estresse mais exigentes para métodos de pré-fluxo e caminhos aumentantes.
+    \end{itemize}
+    
+    \item \textbf{Família DIMACS Min-Cost Flow:}
+    \begin{itemize}
+        \item \textbf{Netgen:} Gerador amplamente adotado na literatura de Pesquisa Operacional para instâncias de transporte e transbordo com capacidades e custos distribuídos uniformemente;
+        \item \textbf{Grid (Toroidal e Planar):} Redes em grade bidimensional com conectividade espacial e custos correlacionados com distâncias euclidianas, modelando fluxos em malhas logísticas e circuitos elétricos.
+    \end{itemize}
+    
+    \item \textbf{Grafos Sintéticos e Aplicações Reais:}
+    \begin{itemize}
+        \item \textbf{Grafos Aleatórios Erdos-Rényi ($G(n, p)$):} Instâncias esparsas ($|A| \approx 4|V|$) e densas ($|A| \approx 0.1|V|^2$) para validação da sensibilidade dos algoritmos à densidade de arestas;
+        \item \textbf{Redes de Segmentação de Imagens:} Grafos derivados diretamente da modelagem descrita na Subseção~\ref{sec:segmentacao}, caracterizados por vizinhanças 4-conectadas locais com capacidades de corte ponderadas pelo gradiente de intensidade luminosa.
+    \end{itemize}
+\end{itemize}
+
+
+\section{Métricas Operacionais e Certificação Cruzada de Corretude}\label{sec:bench_metricas}
+
+Além do tempo de execução bruto, a instrumentação dos drivers computacionais coleta métricas internas que refletem a dinâmica algorítmica de cada abordagem:
+
+\begin{enumerate}
+    \item \textbf{Contadores de Fases e Operações Elementares:}
+    \begin{itemize}
+        \item Nos métodos primais (Ford-Fulkerson e Edmonds-Karp), quantifica-se o número exato de caminhos aumentantes descobertos e o comprimento médio desses caminhos;
+        \item No algoritmo de Dinic, contabiliza-se o número de fases de construção do digrafo de níveis e a quantidade de avanços e retrocessos de ponteiro na DFS de fluxo bloqueador;
+        \item Na família Push-Relabel, monitoram-se separadamente o número de operações de empurrão (\textit{pushes}, distinguindo entre saturantes e não saturantes) e de elevação (\textit{relabels}), evidenciando empiricamente como a heurística de lacuna (\textit{Gap Heuristic}) elimina vértices desconectados do sumidouro;
+        \item No algoritmo \textit{Network Simplex}, registra-se o total de pivoteamentos de base executados e a proporção de pivôs degenerados (onde o fluxo do arco entrante é zero).
+    \end{itemize}
+    
+    \item \textbf{Verificação Automática da Invariante de Otimalidade (Cross-Validation):} Como os resolvedores implementam estratégias de exploração independentes (primal vs. dual), o driver de testes valida automaticamente se todos os algoritmos convergem rigorosamente para o mesmo valor ótimo:
+    \begin{equation}
+        |f^*_{\text{Edmonds-Karp}}| = |f^*_{\text{Dinic}}| = |f^*_{\text{Push-Relabel}}|, \quad \text{e} \quad z^*_{\text{CycleCanceling}} = z^*_{\text{SSP}} = z^*_{\text{NetworkSimplex}}
+    \end{equation}
+    Essa checagem cruzada atua como um teste de integridade automático, prevenindo desvios de implementação ou instabilidades numéricas.
+\end{enumerate}
+
+
+\section{Quadro-Molde de Comparação dos Motores Algorítmicos}
+
+A Tabela~\ref{tab:benchmarks} sintetiza o quadro comparativo estruturado para a consolidação dos experimentos, mapeando o comportamento operacional esperado de cada motor frente às diferentes topologias de rede.
+
+\begin{table}[!ht]
+\centering
+\small
+\setlength{\tabcolsep}{4.5pt}
+\begin{tabular}{p{3.8cm} p{5.8cm} p{6.1cm}}
+\toprule
+\multicolumn{1}{c}{\textbf{Motor Algorítmico (C++)}} & \multicolumn{1}{c}{\textbf{Topologia de Melhor Desempenho}} & \multicolumn{1}{c}{\textbf{Cenário Crítico e Gargalo Empírico}} \\
+\midrule
+\multicolumn{3}{c}{\bannertext{\hyperref[sec:bench_instancias]{Motores de Fluxo Máximo (Coleções DIMACS Washington e RMF)}}} \\
+\midrule
+\hyperref[ap:ford_fulkerson]{Ford-Fulkerson} & Capacidades pequenas e caminhos curtos & Capacidades exponenciais e redes com ciclos \\
+\hyperref[ap:edmonds_karp]{Edmonds-Karp} & Redes esparsas com poucos aumentos globais & Redes em camadas profundas (custo de BFSs sucessivas) \\
+\hyperref[ap:dinic]{Dinic} & Redes unitárias, grafos bipartidos e redes densas & Gargalos múltiplos em níveis sucessivos da rede \\
+\hyperref[ap:push_relabel]{Push-Relabel (FIFO)} & Redes densas com cortes mínimos próximos à fonte & Cadeias longas sem saturação imediata de excessos \\
+\hyperref[ap:push_relabel_improved]{Push-Relabel (Gap)} & Grafos de visão (grid 2D/3D) e instâncias DIMACS RMF & Praticamente imune a patologias (elimina rótulos mortos) \\
+\midrule
+\multicolumn{3}{c}{\bannertext{\hyperref[sec:bench_instancias]{Motores de Fluxo de Custo Mínimo (Coleções DIMACS Netgen e Grid)}}} \\
+\midrule
+\hyperref[ap:cycle_canceling]{Cycle Canceling} & Redes pequenas com poucos ciclos de custo negativo & Custos residuais elevados com múltiplos ciclos de $-1$ \\
+\hyperref[ap:successive_shortest_dijkstra]{SSP (Dijkstra + $\pi$)} & Redes de transbordo com fluxo total moderado & Redes com fluxos massivos e capacidades unitárias \\
+\hyperref[ap:network_simplex]{Network Simplex} & Grafos em grade, instâncias Netgen e redes logísticas & Degenerescência cíclica severa (controlada por Cunningham) \\
+\bottomrule\end{tabular}
+\caption{Quadro de análise comparativa dos motores algorítmicos e sensibilidade topológica frente aos conjuntos de teste.}
+\label{tab:benchmarks}
+\end{table}
+
+A arquitetura de scripts implementada no diretório \code{Experimentos/} orquestra a execução automatizada deste protocolo, permitindo gerar a partir de comandos como \lstinline{make run} os relatórios consolidados em tabelas LaTeX e gráficos de escalabilidade.
+
+

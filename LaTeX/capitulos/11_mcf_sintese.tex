@@ -1,0 +1,100 @@
+% =========================================================================
+% TRANSFORMAÇÕES AVANÇADAS E SÍNTESE DE CUSTO MÍNIMO
+% =========================================================================
+\chapter{Transformações Avançadas e Síntese de Custo Mínimo}\label{sec:mcf_comparacao}
+
+\section{A Transformação Min-Cost Max-Flow}
+\label{sec:mcmf}
+
+Uma variante comum do MCF é o problema do \textbf{Fluxo Máximo de Custo Mínimo} (\textit{Min-Cost Max-Flow}): dentre todos os fluxos máximos de $s$ a $t$, encontrar aquele com o menor custo total. Este problema pode ser reduzido ao MCF padrão com demandas através de uma construção simples (veja~\cite{ahuja1993network}).
+
+A transformação consiste em adicionar à rede original um \textbf{arco artificial} $(t, s)$ do sumidouro para a fonte com capacidade infinita ($c(t,s) = \infty$) e custo suficientemente negativo ($w(t,s) = -M$, onde $M > \sum_{(u,v) \in A} |w(u,v)| \cdot c(u,v)$). Em seguida, define-se $b(v) = 0$ para todos os vértices, transformando o problema em um MCF puro sem demandas.
+
+O custo negativo no arco artificial incentiva o algoritmo a maximizar o fluxo circulante pelo ciclo $s \leadsto t \to s$, garantindo simultaneamente o fluxo máximo e o custo mínimo. Qualquer algoritmo de MCF (incluindo o \textit{Network Simplex}) aplicado a esta rede transformada produz a solução desejada.
+
+\paragraph{O Network Simplex como Motor Unificado para Fluxo Máximo Puro.}
+Uma consequência teórica de excepcional elegância desta modelagem é que o próprio problema do \textbf{Fluxo Máximo Puro} pode ser formulado e resolvido diretamente pelo \textit{Network Simplex}. Para tanto, basta configurar o custo de todos os arcos da rede original em zero ($w(u,v) = 0, \forall (u,v) \in A$) e atribuir custo estritamente negativo $w(t,s) = -1$ ao arco de retorno $(t,s)$ com capacidade infinita ($c(t,s) = \infty$), com todas as demandas nodais nulas ($b(v) = 0$).
+
+Sob esta formulação, a função objetivo do Simplex em Redes:
+\begin{equation}
+    \min \sum_{(u,v) \in A} w(u,v) f(u,v) = \min \big( -1 \cdot f(t,s) \big) \equiv \max f(t,s)
+\end{equation}
+minimiza o custo negativo do arco artificial, o que equivale perfeitamente a maximizar o fluxo circulante líquido que atravessa de $s$ a $t$ e retorna por $(t,s)$.
+
+A construção geométrica desta transformação em rede de circulação com arco artificial de retorno é ilustrada na Figura~\ref{fig:circulacao_retorno}.
+
+\begin{figure}[!ht]
+\centering
+\begin{tikzpicture}[thick]
+    \node[source node] (s) at (0, 1.5) {$s$};
+    \node[flow node] (u) at (3.5, 3.0) {$u$};
+    \node[flow node] (v) at (3.5, 0.0) {$v$};
+    \node[sink node] (t) at (7.0, 1.5) {$t$};
+
+    \node[font=\footnotesize, left=3pt] at (s.west) {$b(s)\!=\!0$};
+    \node[font=\footnotesize, above=3pt] at (u.north) {$b(u)\!=\!0$};
+    \node[font=\footnotesize, below=3pt] at (v.south) {$b(v)\!=\!0$};
+    \node[font=\footnotesize, right=3pt] at (t.east) {$b(t)\!=\!0$};
+
+    \draw[flow edge] (s) -- node[edge lbl above] {$c\!=\!10, \; w\!=\!0$} (u);
+    \draw[flow edge] (s) -- node[edge lbl below] {$c\!=\!8, \; w\!=\!0$} (v);
+    \draw[flow edge] (u) -- node[edge lbl, right=3pt] {$c\!=\!5, \; w\!=\!0$} (v);
+    \draw[flow edge] (u) -- node[edge lbl above] {$c\!=\!7, \; w\!=\!0$} (t);
+    \draw[flow edge] (v) -- node[edge lbl below] {$c\!=\!10, \; w\!=\!0$} (t);
+
+    \draw[tree edge, red, line width=1.8pt, dashed, bend left=60, looseness=1.4] (t) to node[below=5pt, font=\footnotesize, text=red!80!black, fill=white, inner sep=2pt] {Arco de Retorno Artificial: $c(t,s)\!=\!\infty, \; w(t,s)\!=\!-1$} (s);
+\end{tikzpicture}
+\caption{Redução do Problema do Fluxo Máximo a Fluxo de Custo Mínimo através de Circulação. O arco artificial de retorno $(t,s)$ (vermelho tracejado) com custo estritamente negativo $w(t,s) = -1$ e capacidade infinita induz o motor de custo mínimo a saturar a circulação pelo ciclo $s \leadsto t \to s$, maximizando $f(t,s) = |f|$ com demandas nodais nulas ($b(v)=0$).}
+\label{fig:circulacao_retorno}
+\end{figure}
+
+\textbf{Decisão de Projeto: Por que não implementar um Network Simplex especializado em Fluxo Máximo?} 
+Na literatura clássica de Otimização Combinatória (como em Ahuja, Magnanti e Orlin~\cite{ahuja1993network}, Goldfarb e Hao~\cite{goldfarb1990primal} e Tarjan~\cite{tarjan1991efficiency}), conceitualiza-se a possibilidade teórica de um \textit{Max-Flow Network Simplex}, que operaria diretamente sobre árvores geradoras manipulando apenas capacidades e buscando trajetos de $s$ a $t$. Contudo, tanto na literatura quanto na prática de engenharia de software, este método raramente é materializado como uma classe independente. A arquitetura deste projeto optou conscientemente por não criar uma subclasse dedicada em \lstinline{FlowNetwork}, respaldada por duas razões fundamentais:
+\begin{enumerate}
+    \item \textbf{Inferioridade Algorítmica no Fluxo Puro:} Em redes sem custos, algoritmos combinatórios dedicados exploram propriedades topológicas diretas da rede residual com enorme eficácia: o algoritmo de Dinic emprega fases com buscas em largura (\textit{Level Graph}), operando em tempo $\mathcal{O}(|V|^2 |A|)$ e colapsando para $\mathcal{O}(|V|^{1/2} |A|)$ em redes unitárias, enquanto o Push-Relabel com \textit{Highest Label} e \textit{Gap Heuristic} atinge o limite fortemente polinomial de $\mathcal{O}(|V|^2 \sqrt{|A|})$. Em contrapartida, o Simplex em redes especializado não possui garantia polinomial no pior caso e exige, a cada iteração, a manutenção dinâmica de árvores geradoras básicas, vetores de profundidade e travessia (\lstinline{depth}, \lstinline{thread}), busca de ciclo fundamental e pivoteamento estrutural, introduzindo uma sobrecarga computacional (\textit{overhead}) desvantajosa quando custos econômicos não estão presentes.
+    \item \textbf{Modularidade, Equivalência Assintótica e Eliminação de Redundância (Princípio DRY):} Poder-se-ia questionar se uma implementação especializada não alcançaria uma complexidade assintótica superior. A resposta teórica é negativa: demonstra-se que o \textit{Max-Flow Network Simplex} e o \textit{Network Simplex} geral com custos nulos percorrem sequências de pivoteamento matematicamente isomórficas, compartilhando o mesmo custo de $\mathcal{O}(|V|)$ por iteração e o mesmo limitante de pior caso $\mathcal{O}(|V|^2 \cdot |f^*|)$. A especialização pouparia unicamente constantes residuais no cálculo de potenciais nodais (trocando uma subtração aritmética por um teste booleano de partição), sem alterar a classe de complexidade. Sob a ótica da Engenharia de Software Orientada a Objetos, construir uma classe separada \lstinline{class MaxFlowNetworkSimplex : public FlowNetwork} exigiria duplicar integralmente centenas de linhas de código relativas ao gerenciamento dinâmico da árvore geradora que já residem na classe \lstinline{NetworkSimplex}. Uma vez comprovada a equivalência algorítmica e assintótica, a instanciação de uma segunda classe violaria frontalmente o princípio DRY (\textit{Don't Repeat Yourself}) sem auferir nenhum benefício prático de desempenho.
+\end{enumerate}
+Deste modo, a equivalência do arco de retorno artificial atesta a universalidade matemática do \textit{Network Simplex}, consolidando-o como a infraestrutura canônica que unifica os domínios de fluxo máximo e de fluxo com custos.
+
+
+\section{Síntese Comparativa dos Três Paradigmas de Custo Mínimo}
+
+A Tabela~\ref{tab:min_cost} sintetiza os paradigmas, invariantes mantidas e as complexidades assintóticas dos três algoritmos de fluxo de custo mínimo desenvolvidos nesta Iniciação Científica.
+
+\begin{table}[!ht]
+\centering
+\small
+\setlength{\tabcolsep}{5pt}
+\begin{tabular}{p{4.2cm} l p{7.5cm}}
+\toprule
+\multicolumn{1}{c}{\textbf{Algoritmo}} & \multicolumn{1}{c}{\textbf{Complexidade}} & \multicolumn{1}{c}{\textbf{Mecanismo / Estratégia}} \\
+\midrule
+\multicolumn{3}{c}{\bannertext{\hyperref[sec:cycle_canceling]{Abordagem Primal Direta: Cancelamento de Ciclos}}} \\
+\midrule
+\hyperref[ap:cycle_canceling]{Cycle Canceling} & $\mathcal{O}(|V| \cdot |A|^2 \cdot C \cdot W)$ & Mantém viabilidade primal e cancela ciclos residuais negativos via SPFA \\
+\midrule
+\multicolumn{3}{c}{\bannertext{\hyperref[sec:ssp]{Abordagem Dual Construtiva: Caminhos de Custo Mínimo}}} \\
+\midrule
+\hyperref[ap:successive_shortest]{SSP (SPFA)} & $\mathcal{O}(|V| \cdot |A| \cdot F)$ & Caminhos aumentantes mais curtos em custos residuais via Bellman-Ford/SPFA \\
+\hyperref[ap:successive_shortest_dijkstra]{SSP (Dijkstra + $\pi$)} & $\mathcal{O}(F \cdot |A| \log |V|)$ & Potenciais nodais $\pi$ ($\bar{w}_\pi \ge 0$) permitindo Dijkstra com heap binária \\
+\midrule
+\multicolumn{3}{c}{\bannertext{\hyperref[sec:network_simplex]{Abordagem Primal-Dual em Árvore: Estrutura de Base}}} \\
+\midrule
+\hyperref[ap:network_simplex]{Network Simplex} & $\mathcal{O}(|V| \cdot |A| \cdot C \cdot W)^*$ & Pivoteamento local em árvores geradoras via ciclos fundamentais ($\mathcal{O}(|V|)$) \\
+\bottomrule
+\end{tabular}
+\caption{Comparação dos algoritmos de Fluxo de Custo Mínimo ($C = \max c$, $W = \max |w|$, $F = |f^*|$). $^*$Embora o Network Simplex possua pior caso teórico exponencial, cada iteração custa apenas $\mathcal{O}(|V|)$ e seu desempenho prático supera amplamente os métodos de aumentos sucessivos em instâncias reais.}
+\label{tab:min_cost}
+\end{table}
+
+Sob uma perspectiva unificadora, a análise da Tabela~\ref{tab:min_cost} evidencia o \textbf{papel universal dos ciclos negativos na tríade algorítmica}: a condição de inexistência de ciclos de custo negativo em $D_f$ atua como o certificado universal que rege as três abordagens sob diferentes estruturas:
+\begin{itemize}
+    \item \textbf{Cycle Canceling (Abordagem Primal Direta):} Mantém a viabilidade primal do fluxo e cancela iterativamente ciclos direcionados negativos detectados no digrafo residual até eliminá-los completamente;
+    \item \textbf{Successive Shortest Path (Abordagem Dual Construtiva):} Mantém a otimalidade de custos como invariante permanente (assegurando que nenhum ciclo negativo seja criado ao rotear fluxo por caminhos residuais mínimos) e constrói a viabilidade do fluxo por aumentos sucessivos;
+    \item \textbf{Network Simplex (Abordagem Primal-Dual em Árvore):} Estrutura as soluções básicas viáveis sobre árvores geradoras da rede, onde a entrada de um arco não básico com custo reduzido negativo induz um ciclo fundamental direcionado de custo negativo a ser saturado e pivotado.
+\end{itemize}
+
+Deste modo, a transição conceitual operada ao longo do projeto demonstra que os métodos não são isolados: enquanto o \textit{Cycle Canceling} e o \textit{Successive Shortest Path} operam diretamente sobre buscas em digrafos residuais, o \textit{Network Simplex} transcende essa abordagem ao explorar a estrutura combinatória das árvores geradoras. A correspondência unívoca entre bases do programa linear e árvores da rede permite que operações matriciais complexas sejam substituídas por travessias lineares $\mathcal{O}(|V|)$ via vetores \lstinline{parent}, \lstinline{depth} e \lstinline{tree_adj}, tornando-o o algoritmo mais robusto e escalável para aplicações práticas.
+
+\vspace{0.8cm}
+

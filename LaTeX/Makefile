@@ -5,10 +5,16 @@ MAKEFLAGS += --no-print-directory
 LATEXMK  = latexmk
 PDFLATEX = pdflatex
 BIBTEX   = bibtex
+PYTHON   = python3
 
 TARGETS  = ic.pdf relatorio.pdf projeto.pdf book.pdf
 
-.PHONY: all ic relatorio projeto book clean distclean
+CAPITULOS = $(wildcard capitulos/*.tex)
+APENDICES = $(wildcard apendices/*.tex)
+BOOK_SRC  = $(wildcard book/*.tex)
+UFABC_SRC = $(wildcard ufabc/*.tex)
+
+.PHONY: all ic relatorio projeto book clean distclean sync-code
 
 all: $(TARGETS)
 	@printf "\n==> Todos os documentos foram compilados com sucesso!\n"
@@ -18,7 +24,10 @@ relatorio: relatorio.pdf
 projeto: projeto.pdf
 book: book.pdf
 
-book.pdf: book.tex header.tex cit.bib
+sync-code:
+	$(PYTHON) ../Scripts/sync_listings.py
+
+book.pdf: book.tex header.tex cit.bib $(CAPITULOS) $(APENDICES) $(BOOK_SRC)
 	@printf "%s" "-> Compilando book.pdf... "
 	@if command -v $(LATEXMK) >/dev/null 2>&1; then \
 		$(LATEXMK) -pdf -silent -interaction=nonstopmode book.tex >/dev/null 2>&1; \
@@ -30,7 +39,7 @@ book.pdf: book.tex header.tex cit.bib
 	fi
 	@printf "%s\n" "[OK]"
 
-ic.pdf: ic.tex header.tex cit.bib
+ic.pdf: ic.tex header.tex cit.bib $(CAPITULOS) $(APENDICES) $(UFABC_SRC)
 	@printf "%s" "-> Compilando ic.pdf... "
 	@if command -v $(LATEXMK) >/dev/null 2>&1; then \
 		$(LATEXMK) -pdf -silent -interaction=nonstopmode ic.tex >/dev/null 2>&1; \
@@ -42,7 +51,7 @@ ic.pdf: ic.tex header.tex cit.bib
 	fi
 	@printf "%s\n" "[OK]"
 
-relatorio.pdf: relatorio.tex header.tex cit.bib
+relatorio.pdf: relatorio.tex header.tex cit.bib $(CAPITULOS) $(APENDICES) $(UFABC_SRC)
 	@printf "%s" "-> Compilando relatorio.pdf... "
 	@if command -v $(LATEXMK) >/dev/null 2>&1; then \
 		$(LATEXMK) -pdf -silent -interaction=nonstopmode relatorio.tex >/dev/null 2>&1; \
@@ -67,7 +76,7 @@ projeto.pdf: projeto.tex cit.bib
 	@printf "%s\n" "[OK]"
 
 clean:
-	rm -f *.aux *.log *.out *.toc *.bbl *.blg *.synctex.gz *.fls *.fdb_latexmk
+	rm -f *.aux *.log *.out *.toc *.bbl *.blg *.synctex.gz *.fls *.fdb_latexmk */*.aux
 	@if command -v $(LATEXMK) >/dev/null 2>&1; then $(LATEXMK) -c >/dev/null 2>&1 || true; fi
 
 distclean: clean

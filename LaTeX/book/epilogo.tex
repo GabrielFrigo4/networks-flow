@@ -1,0 +1,25 @@
+% =========================================================================
+% EPÍLOGO DO LIVRO: SÍNTESE E HORIZONTES DE PESQUISA
+% =========================================================================
+\chapter*{Epílogo: Síntese e Horizontes de Pesquisa}\label{sec:conclusoes}
+\addcontentsline{toc}{chapter}{Epílogo: Síntese e Horizontes de Pesquisa}
+
+Os estudos, formulações teóricas e implementações consolidados neste volume demonstram a potência da integração entre Otimização Combinatória rigorosa e engenharia de software contemporânea em C++23. Ao longo das quatro partes deste livro, perpassamos os eixos fundamentais da disciplina:
+
+\begin{enumerate}[leftmargin=1.5em, itemsep=0.4em]
+    \item \textbf{Fundamentação Teórica Rigorosa:} Formalizamos e demonstramos matematicamente os teoremas estruturais da teoria de fluxos, incluindo o Teorema do Fluxo Máximo e Corte Mínimo, o Teorema da Integralidade de Ford-Fulkerson, o Teorema da Decomposição de Fluxo, o Teorema de Menger (versões por arcos e por vértices), o Teorema de König e as Quatro Dualidades Fundamentais em grafos bipartidos. No domínio de custo mínimo, foram deduzidas a condição de otimalidade por ciclos negativos de Klein, o Teorema de Equivalência dos Custos Reduzidos, as condições de Complementaridade de Folgas e a Total Unimodularidade da matriz de incidência.
+    
+    \item \textbf{Arquitetura Orientada a Objetos em C++ Moderno:} Desenvolvemos um ecossistema polimórfico de alto desempenho organizado em duas famílias de classes:
+    \begin{itemize}
+        \item \textbf{Família \lstinline{FlowNetwork} (Fluxo Máximo):} Centralizada na classe base abstrata \lstinline{FlowNetwork} e concretizada pelos motores \lstinline{FordFulkerson}, \lstinline{EdmondsKarp}, \lstinline{Dinic}, \lstinline{PushRelabel} (FIFO) e \lstinline{PushRelabelImproved} (Gap Heuristic), documentados nos Apêndices~\ref{ap:flownetwork} a~\ref{ap:push_relabel_improved}.
+        \item \textbf{Família \lstinline{CostNetwork} (Custo Mínimo):} Centralizada na classe base abstrata \lstinline{CostNetwork} e concretizada pelos algoritmos \lstinline{CycleCanceling}, \lstinline{SuccessiveShortest} (SPFA), \lstinline{SuccessiveShortestDijkstra} (Potenciais) e \lstinline{NetworkSimplex}, documentados nos Apêndices~\ref{ap:costnetwork} a~\ref{ap:network_simplex}.
+    \end{itemize}
+    
+    \item \textbf{Aplicações Práticas e Reduções Combinatórias:} Evidenciamos a versatilidade prática dos modelos de fluxo mediante a resolução exata de problemas clássicos (\textit{Maximum Bipartite Matching}, \textit{Minimum Vertex Cover}, \textit{Maximum Independent Set}, rotas disjuntas e corte mínimo global), culminando na concepção e validação de uma ferramenta completa de \textbf{Segmentação Interativa de Imagens} baseada em corte mínimo via corte de grafos (\textit{Graph Cuts}).
+    
+    \item \textbf{Protocolo Experimental e Benchmarks Computacionais:} Estruturamos um protocolo reprodutível de benchmarking em instâncias canônicas da literatura (coleções DIMACS e geradores sintéticos), projetado para confrontar os limites assintóticos teóricos com medições de tempo de CPU em alta resolução e contadores operacionais internos.
+\end{enumerate}
+
+Como perspectivas de evolução contínua desta pesquisa, destacam-se a avaliação empírica em larga escala sobre grafos massivos esparsos da web e redes de transporte intercontinentais, a investigação de variantes paralelizadas em OpenMP/CUDA dos algoritmos de pré-fluxo e a exploração de regras dinâmicas de pivoteamento no \textit{Network Simplex} (como \textit{Candidate List Pricing} com filtragem adaptativa).
+
+
