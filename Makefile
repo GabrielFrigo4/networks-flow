@@ -11,8 +11,6 @@ format:
 	find . -type f \( -name "*.hpp" -o -name "*.cpp" -o -name "*.h" -o -name "*.c" \) -not -path "*/.*/*" -exec clang-format -i {} +
 	@printf "%s\n" "Formatação completa de todos os códigos C++ concluída com sucesso!"
 
-
-
 setup:
 	git config core.hooksPath .githooks
 	chmod +x .githooks/*

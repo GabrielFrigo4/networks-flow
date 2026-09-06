@@ -14,8 +14,6 @@ format:
 	find . -type f \( -name "*.hpp" -o -name "*.cpp" \) -not -path "*/.*/*" -exec clang-format -i {} +
 	@printf "%s\n" "Formatação completa de Implementações concluída!"
 
-
-
 check:
 	@printf "%s\n" "Verificando sintaxe dos headers (FlowNetwork)..."
 	@for f in FlowNetwork/*.hpp; do \

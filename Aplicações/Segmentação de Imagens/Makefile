@@ -17,7 +17,6 @@ format:
 	find . -type f \( -name "*.hpp" -o -name "*.cpp" \) -not -path "*/.*/*" -exec clang-format -i {} +
 	@printf "%s\n" "Formatação da Segmentação de Imagens concluída!"
 
-
 $(SEG_EXE): main.cpp
 	$(CXX) $(CXXFLAGS) main.cpp -o $(SEG_EXE)
 
