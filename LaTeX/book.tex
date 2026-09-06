@@ -172,20 +172,22 @@
     % Redes de Fluxo e Otimização
     % ---------------------------------------------------------------------
     flow node/.style={circle, draw, fill=white, minimum size=8.5mm, inner sep=1pt, font=\small},
-    source node/.style={flow node, fill=green!20},
-    sink node/.style={flow node, fill=red!20},
+    source node/.style={flow node, draw=setSborder, fill=setSsource, text=setStext, line width=1.1pt},
+    sink node/.style={flow node, draw=setTborder, fill=setTsink, text=setTtext, line width=1.1pt},
+    s node internal/.style={flow node, draw=setSborder!80, fill=setSnode, text=setStext, line width=0.9pt},
+    t node internal/.style={flow node, draw=setTborder!80, fill=setTnode, text=setTtext, line width=0.9pt},
     trans node/.style={flow node, fill=yellow!15},
     flow edge/.style={->, thick},
     sat edge/.style={->, line width=1.5pt, red},
     res edge/.style={->, blue, dashed},
     rev edge/.style={->, red, dashed, line width=1.1pt},
-    cut S/.style={dashed, blue, rounded corners, thick},
-    cut T/.style={dashed, orange, rounded corners, thick},
+    cut S/.style={dashed, draw=setSborder, fill=setSbg, rounded corners, thick},
+    cut T/.style={dashed, draw=setTborder, fill=setTbg, rounded corners, thick},
     % ---------------------------------------------------------------------
     % Rótulos de Partição e Legendas
     % ---------------------------------------------------------------------
-    cut label S/.style={font=\footnotesize\bfseries, blue!80!black, anchor=north west},
-    cut label T/.style={font=\footnotesize\bfseries, orange!80!black, anchor=north east},
+    cut label S/.style={font=\footnotesize\bfseries, text=setStext, anchor=north west},
+    cut label T/.style={font=\footnotesize\bfseries, text=setTtext, anchor=north east},
     bip label L/.style={font=\large\bfseries, blue!80!black},
     bip label R/.style={font=\large\bfseries, orange!80!black},
     % ---------------------------------------------------------------------
@@ -253,22 +255,29 @@
 % =========================================================================
 
 % -------------------------------------------------------------------------
-% Paleta Cromática da Capa (MIT Press Two-Tone)
+% Paleta Cromática e Identidade Visual Compartilhada (Clean Code)
 % -------------------------------------------------------------------------
-\definecolor{topbg}{RGB}{15, 23, 42}        % [COR] Fundo superior: Slate 900 profundo
-\definecolor{bottombg}{RGB}{248, 250, 252}  % [COR] Fundo inferior: Papel Neve (Slate 50)
-\definecolor{accentgold}{RGB}{226, 192, 116}% [COR] Dourado nobre metálico
-\definecolor{accentcyan}{RGB}{14, 165, 233} % [COR] Azul ciano vibrante
-\definecolor{cutred}{RGB}{225, 29, 72}      % [COR] Vermelho rubro do corte mínimo
-\definecolor{darkslate}{RGB}{30, 41, 59}    % [COR] Slate escuro para tipografia e arestas
-\definecolor{cardbg}{RGB}{224, 232, 242}    % [COR] Fundo do card do grafo (intensidade duplicada V5-1)
-\definecolor{cardborder}{RGB}{186, 202, 220}% [COR] Borda do card do grafo
-\definecolor{scyan}{RGB}{2, 132, 199}       % [COR] Ciano profundo para bordas e textos de S
-\definecolor{scyanbg}{RGB}{220, 240, 253}   % [COR] Fundo pastel para vértices v1, v2 de S
-\definecolor{ssourcebg}{RGB}{186, 230, 253} % [COR] Fundo luminoso para vértice fonte s
-\definecolor{tgold}{RGB}{180, 130, 30}      % [COR] Dourado profundo para bordas e textos de T
-\definecolor{tgoldbg}{RGB}{254, 246, 185}   % [COR] Fundo pastel para vértices v3, v4 de T
-\definecolor{tsinkbg}{RGB}{254, 235, 120}   % [COR] Fundo luminoso para vértice sumidouro t
+\input{estilos-redes.tex}
+
+% -------------------------------------------------------------------------
+% Cores da Capa (MIT Press Two-Tone)
+% -------------------------------------------------------------------------
+\definecolor{topbg}{RGB}{15, 23, 42}         % [COR] Fundo superior: Slate 900 profundo
+\definecolor{bottombg}{RGB}{248, 250, 252}   % [COR] Fundo inferior: Papel Neve (Slate 50)
+\definecolor{accentgold}{RGB}{226, 192, 116} % [COR] Dourado nobre metálico
+\definecolor{accentcyan}{RGB}{14, 165, 233}  % [COR] Azul ciano vibrante
+\definecolor{cardbg}{RGB}{224, 232, 242}     % [COR] Fundo do card do grafo (intensidade duplicada V5-1)
+\definecolor{cardborder}{RGB}{186, 202, 220} % [COR] Borda do card do grafo
+
+% -------------------------------------------------------------------------
+% Aliases de Compatibilidade para a Paleta Semântica
+% -------------------------------------------------------------------------
+\colorlet{scyan}{setSborder}
+\colorlet{scyanbg}{setSnode}
+\colorlet{ssourcebg}{setSsource}
+\colorlet{tgold}{setTborder}
+\colorlet{tgoldbg}{setTnode}
+\colorlet{tsinkbg}{setTsink}
 
 % =========================================================================
 % FIM DO PREÂMBULO — INÍCIO DO CORPO DO DOCUMENTO
@@ -342,24 +351,11 @@
         % Badges Técnicas de Especificação Editorial
         % -----------------------------------------------------------------
         \node[anchor=south] at ($(splitMid)+(0, 0.88cm)$) {
-            \begin{tikzpicture}[baseline=(X.base)]
-                \node (X) [draw=accentcyan, fill=topbg!95, text=accentcyan, rounded corners=3pt, font=\fontsize{7.5}{9.5}\selectfont\bfseries, inner sep=3.8pt] 
-                    {C++23 STANDARD};
-            \end{tikzpicture}
-            \hspace{0.14cm}
-            \begin{tikzpicture}[baseline=(X.base)]
-                \node (X) [draw=accentgold, fill=topbg!95, text=accentgold, rounded corners=3pt, font=\fontsize{7.5}{9.5}\selectfont\bfseries, inner sep=3.8pt] 
-                    {TEOREMAS E PROVAS};
-            \end{tikzpicture}
-            \hspace{0.14cm}
-            \begin{tikzpicture}[baseline=(X.base)]
-                \node (X) [draw=white!45, fill=topbg!95, text=white!95, rounded corners=3pt, font=\fontsize{7.5}{9.5}\selectfont\bfseries, inner sep=3.8pt] 
-                    {FLUXO MÁXIMO \& CORTE MÍNIMO};
-            \end{tikzpicture}
-            \hspace{0.14cm}
-            \begin{tikzpicture}[baseline=(X.base)]
-                \node (X) [draw=white!45, fill=topbg!95, text=white!95, rounded corners=3pt, font=\fontsize{7.5}{9.5}\selectfont\bfseries, inner sep=3.8pt] 
-                    {FLUXO DE CUSTO MÍNIMO};
+            \begin{tikzpicture}
+                \node (B1) [cover badge, draw=accentcyan, text=accentcyan] {C++23 STANDARD};
+                \node (B2) [cover badge, draw=accentgold, text=accentgold, right=0.14cm of B1] {TEOREMAS E PROVAS};
+                \node (B3) [cover badge, draw=white!45, text=white!95, right=0.14cm of B2] {FLUXO MÁXIMO \& CORTE MÍNIMO};
+                \node (B4) [cover badge, draw=white!45, text=white!95, right=0.14cm of B3] {FLUXO DE CUSTO MÍNIMO};
             \end{tikzpicture}
         };
 
@@ -380,7 +376,7 @@
             % -------------------------------------------------------------
             \node[anchor=center] at (-3.5, 2.45) {
                 \begin{tikzpicture}[baseline=(P.base)]
-                    \node (P) [draw=scyan!70, fill=white, text=scyan!90!black, rounded corners=3pt, font=\scriptsize\bfseries, inner sep=2.5pt] 
+                    \node (P) [draw=setSborder!80, fill=white, text=setStext, rounded corners=3pt, font=\scriptsize\bfseries, inner sep=2.5pt] 
                         {Conjunto $S$};
                 \end{tikzpicture}
             };
@@ -394,7 +390,7 @@
 
             \node[anchor=center] at (3.5, 2.45) {
                 \begin{tikzpicture}[baseline=(Q.base)]
-                    \node (Q) [draw=tgold!70, fill=white, text=tgold!95!black, rounded corners=3pt, font=\scriptsize\bfseries, inner sep=2.5pt] 
+                    \node (Q) [draw=setTborder!80, fill=white, text=setTtext, rounded corners=3pt, font=\scriptsize\bfseries, inner sep=2.5pt] 
                         {Conjunto $T$};
                 \end{tikzpicture}
             };
@@ -448,13 +444,13 @@
             % -------------------------------------------------------------
             % Vértices das Partições S e T
             % -------------------------------------------------------------
-            \node (S_node)  at (S)  [circle, draw=scyan!90!black, fill=ssourcebg, line width=2.0pt, minimum size=11mm, font=\large\bfseries, text=scyan!95!black] {$s$};
-            \node (V1_node) at (V1) [circle, draw=scyan!80!black, fill=scyanbg, line width=1.5pt, minimum size=10mm, font=\normalsize\bfseries, text=scyan!95!black] {$v_1$};
-            \node (V2_node) at (V2) [circle, draw=scyan!80!black, fill=scyanbg, line width=1.5pt, minimum size=10mm, font=\normalsize\bfseries, text=scyan!95!black] {$v_2$};
+            \node (S_node)  at (S)  [circle, draw=setSborder, fill=setSsource, line width=2.0pt, minimum size=11mm, font=\large\bfseries, text=setStext] {$s$};
+            \node (V1_node) at (V1) [circle, draw=setSborder!80, fill=setSnode, line width=1.5pt, minimum size=10mm, font=\normalsize\bfseries, text=setStext] {$v_1$};
+            \node (V2_node) at (V2) [circle, draw=setSborder!80, fill=setSnode, line width=1.5pt, minimum size=10mm, font=\normalsize\bfseries, text=setStext] {$v_2$};
 
-            \node (V3_node) at (V3) [circle, draw=tgold!85!black, fill=tgoldbg, line width=1.5pt, minimum size=10mm, font=\normalsize\bfseries, text=tgold!95!black] {$v_3$};
-            \node (V4_node) at (V4) [circle, draw=tgold!85!black, fill=tgoldbg, line width=1.5pt, minimum size=10mm, font=\normalsize\bfseries, text=tgold!95!black] {$v_4$};
-            \node (T_node)  at (T)  [circle, draw=tgold!90!black, fill=tsinkbg, line width=2.0pt, minimum size=11mm, font=\large\bfseries, text=tgold!95!black] {$t$};
+            \node (V3_node) at (V3) [circle, draw=setTborder!80, fill=setTnode, line width=1.5pt, minimum size=10mm, font=\normalsize\bfseries, text=setTtext] {$v_3$};
+            \node (V4_node) at (V4) [circle, draw=setTborder!80, fill=setTnode, line width=1.5pt, minimum size=10mm, font=\normalsize\bfseries, text=setTtext] {$v_4$};
+            \node (T_node)  at (T)  [circle, draw=setTborder, fill=setTsink, line width=2.0pt, minimum size=11mm, font=\large\bfseries, text=setTtext] {$t$};
         \end{scope}
 
         % -----------------------------------------------------------------
@@ -716,11 +712,11 @@ Como não há caminho aumentante, o sumidouro $t$ é inalcançável a partir de 
     \node[cut label T] at (8.8, 1.65) {$\mathbf{T}$};
 
     \node[source node] (s) at (0.0, 0.0) {$s$};
-    \node[flow node, fill=green!10] (a) at (2.0, 0.8) {$a$};
-    \node[flow node, fill=green!10] (b) at (2.0, -0.8) {$b$};
+    \node[s node internal] (a) at (2.0, 0.8) {$a$};
+    \node[s node internal] (b) at (2.0, -0.8) {$b$};
     
-    \node[flow node, fill=red!10] (c) at (6.2, 0.8) {$c$};
-    \node[flow node, fill=red!10] (d) at (6.2, -0.8) {$d$};
+    \node[t node internal] (c) at (6.2, 0.8) {$c$};
+    \node[t node internal] (d) at (6.2, -0.8) {$d$};
     \node[sink node] (t) at (8.2, 0.0) {$t$};
 
     \draw[sat edge] (a) -- node[edge lbl above, text=red!80!black] {$f=c$} (c);
@@ -817,11 +813,11 @@ A interpretação geométrica desta bijeção dual é ilustrada na Figura~\ref{f
   \node[cut label T] at (8.8, 1.65) {$\mathbf{T} : p^*(v) = 0$};
 
   \node[source node] (s) at (0.0, 0.0) {$s$};
-  \node[flow node, fill=green!10] (a) at (2.0, 0.8) {$a$};
-  \node[flow node, fill=green!10] (b) at (2.0, -0.8) {$b$};
+  \node[s node internal] (a) at (2.0, 0.8) {$a$};
+  \node[s node internal] (b) at (2.0, -0.8) {$b$};
 
-  \node[flow node, fill=red!10] (c) at (6.2, 0.8) {$c$};
-  \node[flow node, fill=red!10] (d) at (6.2, -0.8) {$d$};
+  \node[t node internal] (c) at (6.2, 0.8) {$c$};
+  \node[t node internal] (d) at (6.2, -0.8) {$d$};
   \node[sink node] (t) at (8.2, 0.0) {$t$};
 
   \draw[flow edge] (s) -- node[edge lbl above] {$d=0$} (a);
@@ -2051,10 +2047,10 @@ O custo total do corte é exatamente a soma dos termos de dados e de regulariza�
 \begin{figure}[!ht]
 \centering
 \begin{tikzpicture}[thick, transform shape]
-  \fill[green!10, rounded corners=15pt] (-4.5, 1.7) rectangle (8.5, 6.8);
+  \draw[cut S, rounded corners=15pt] (-4.5, 1.7) rectangle (8.5, 6.8);
   \node[cut label S, anchor=west] at (-3.8, 6.1) {$\mathbf{S}$ \textnormal{\footnotesize(Foreground)}};
   
-  \fill[red!10, rounded corners=15pt] (-4.5, -3.8) rectangle (8.5, 1.3);
+  \draw[cut T, rounded corners=15pt] (-4.5, -3.8) rectangle (8.5, 1.3);
   \node[cut label T, anchor=west] at (-3.8, -3.0) {$\mathbf{T}$ \textnormal{\footnotesize(Background)}};
   
   \node[source node] (s) at (2, 6) {$s$};

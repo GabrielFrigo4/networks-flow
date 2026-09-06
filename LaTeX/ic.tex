@@ -137,6 +137,7 @@
 % BIBLIOTECA DE ESTILOS GRÁFICOS (TIKZ)
 % =========================================================================
 \newcommand{\tikzsubcaption}[2]{\node[font=\footnotesize\bfseries, above] at #1 {#2};}
+\input{estilos-redes.tex}
 
 \tikzset{
     >=Stealth,
@@ -144,20 +145,22 @@
     % Redes de Fluxo e Otimização
     % ---------------------------------------------------------------------
     flow node/.style={circle, draw, fill=white, minimum size=8.5mm, inner sep=1pt, font=\small},
-    source node/.style={flow node, fill=green!20},
-    sink node/.style={flow node, fill=red!20},
+    source node/.style={flow node, draw=setSborder, fill=setSsource, text=setStext, line width=1.1pt},
+    sink node/.style={flow node, draw=setTborder, fill=setTsink, text=setTtext, line width=1.1pt},
+    s node internal/.style={flow node, draw=setSborder!80, fill=setSnode, text=setStext, line width=0.9pt},
+    t node internal/.style={flow node, draw=setTborder!80, fill=setTnode, text=setTtext, line width=0.9pt},
     trans node/.style={flow node, fill=yellow!15},
     flow edge/.style={->, thick},
     sat edge/.style={->, line width=1.5pt, red},
     res edge/.style={->, blue, dashed},
     rev edge/.style={->, red, dashed, line width=1.1pt},
-    cut S/.style={dashed, blue, rounded corners, thick},
-    cut T/.style={dashed, orange, rounded corners, thick},
+    cut S/.style={dashed, draw=setSborder, fill=setSbg, rounded corners, thick},
+    cut T/.style={dashed, draw=setTborder, fill=setTbg, rounded corners, thick},
     % ---------------------------------------------------------------------
     % Rótulos de Partição e Legendas
     % ---------------------------------------------------------------------
-    cut label S/.style={font=\footnotesize\bfseries, blue!80!black, anchor=north west},
-    cut label T/.style={font=\footnotesize\bfseries, orange!80!black, anchor=north east},
+    cut label S/.style={font=\footnotesize\bfseries, text=setStext, anchor=north west},
+    cut label T/.style={font=\footnotesize\bfseries, text=setTtext, anchor=north east},
     bip label L/.style={font=\large\bfseries, blue!80!black},
     bip label R/.style={font=\large\bfseries, orange!80!black},
     % ---------------------------------------------------------------------
@@ -543,11 +546,11 @@ Como não há caminho aumentante, o sumidouro $t$ é inalcançável a partir de 
     \node[cut label T] at (8.8, 1.65) {$\mathbf{T}$};
 
     \node[source node] (s) at (0.0, 0.0) {$s$};
-    \node[flow node, fill=green!10] (a) at (2.0, 0.8) {$a$};
-    \node[flow node, fill=green!10] (b) at (2.0, -0.8) {$b$};
+    \node[s node internal] (a) at (2.0, 0.8) {$a$};
+    \node[s node internal] (b) at (2.0, -0.8) {$b$};
 
-    \node[flow node, fill=red!10] (c) at (6.2, 0.8) {$c$};
-    \node[flow node, fill=red!10] (d) at (6.2, -0.8) {$d$};
+    \node[t node internal] (c) at (6.2, 0.8) {$c$};
+    \node[t node internal] (d) at (6.2, -0.8) {$d$};
     \node[sink node] (t) at (8.2, 0.0) {$t$};
 
     \draw[flow edge] (s) -- (a);
@@ -644,11 +647,11 @@ A interpretação geométrica desta bijeção dual é ilustrada na Figura~\ref{f
   \node[cut label T] at (8.8, 1.65) {$\mathbf{T} : p^*(v) = 0$};
 
   \node[source node] (s) at (0.0, 0.0) {$s$};
-  \node[flow node, fill=green!10] (a) at (2.0, 0.8) {$a$};
-  \node[flow node, fill=green!10] (b) at (2.0, -0.8) {$b$};
+  \node[s node internal] (a) at (2.0, 0.8) {$a$};
+  \node[s node internal] (b) at (2.0, -0.8) {$b$};
 
-  \node[flow node, fill=red!10] (c) at (6.2, 0.8) {$c$};
-  \node[flow node, fill=red!10] (d) at (6.2, -0.8) {$d$};
+  \node[t node internal] (c) at (6.2, 0.8) {$c$};
+  \node[t node internal] (d) at (6.2, -0.8) {$d$};
   \node[sink node] (t) at (8.2, 0.0) {$t$};
 
   \draw[flow edge] (s) -- node[edge lbl above] {$d\!=\!0$} (a);
@@ -1846,10 +1849,10 @@ O custo total do corte é exatamente a soma dos termos de dados e de regulariza�
 \begin{figure}[!ht]
 \centering
 \begin{tikzpicture}[thick, transform shape]
-  \fill[green!10, rounded corners=15pt] (-4.5, 1.7) rectangle (8.5, 6.8);
+  \draw[cut S, rounded corners=15pt] (-4.5, 1.7) rectangle (8.5, 6.8);
   \node[cut label S, anchor=west] at (-3.8, 6.1) {$\mathbf{S}$ \textnormal{\footnotesize(Foreground)}};
   
-  \fill[red!10, rounded corners=15pt] (-4.5, -3.8) rectangle (8.5, 1.3);
+  \draw[cut T, rounded corners=15pt] (-4.5, -3.8) rectangle (8.5, 1.3);
   \node[cut label T, anchor=west] at (-3.8, -3.0) {$\mathbf{T}$ \textnormal{\footnotesize(Background)}};
   
   \node[source node] (s) at (2, 6) {$s$};
@@ -1878,7 +1881,7 @@ O custo total do corte é exatamente a soma dos termos de dados e de regulariza�
   \draw[->,red!60!black,dashed] (p1) to[out=225, in=180] node[left, edge lbl red, pos=0.5]{$w_t$\,baixo} (t);
   \draw[->,red!60!black,dashed] (p2) to[out=315, in=0] node[right, edge lbl red, pos=0.5]{$w_t$\,baixo} (t);
 
-  \draw[red, thick, dashed] (-4.5, 1.5) -- (8.5, 1.5) node[right, font=\footnotesize, text=red, fill=white, inner sep=2pt, yshift=3mm] {Corte Mínimo};
+  \draw[red, thick, dashed] (-4.5, 1.5) -- (8.5, 1.5) node[right, font=\footnotesize\bfseries, text=red, fill=white, inner sep=2pt, yshift=3mm] {Corte Mínimo};
 \end{tikzpicture}
 \caption{Geometria do corte mínimo na segmentação. Os pixels da camada superior ($p_1, p_2$) são classificados como Foreground ($S$) e os da inferior ($p_3, p_4$) como Background ($T$). O corte mínimo (linha vermelha tracejada) atua como uma guilhotina separando o conjunto $S$ do conjunto $T$. Visualmente, percebe-se que ele rompe com precisão as arestas mais fracas: os N-links verticais ($w_n$ baixo, pixels de cores distintas), e os T-links cruzados fracos ($s \to T$ e $S \to t$). Em contrapartida, os T-links com capacidade $\infty$ (sementes) protegem seus pixels contra cortes indevidos.}
 \label{fig:segmentacao_corte}
