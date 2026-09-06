@@ -18,7 +18,7 @@ relatorio: relatorio.pdf
 projeto: projeto.pdf
 book: book.pdf
 
-book.pdf: book.tex cit.bib
+book.pdf: book.tex header.tex cit.bib
 	@printf "%s" "-> Compilando book.pdf... "
 	@if command -v $(LATEXMK) >/dev/null 2>&1; then \
 		$(LATEXMK) -pdf -silent -interaction=nonstopmode book.tex >/dev/null 2>&1; \
@@ -30,7 +30,7 @@ book.pdf: book.tex cit.bib
 	fi
 	@printf "%s\n" "[OK]"
 
-ic.pdf: ic.tex cit.bib
+ic.pdf: ic.tex header.tex cit.bib
 	@printf "%s" "-> Compilando ic.pdf... "
 	@if command -v $(LATEXMK) >/dev/null 2>&1; then \
 		$(LATEXMK) -pdf -silent -interaction=nonstopmode ic.tex >/dev/null 2>&1; \
@@ -42,7 +42,7 @@ ic.pdf: ic.tex cit.bib
 	fi
 	@printf "%s\n" "[OK]"
 
-relatorio.pdf: relatorio.tex cit.bib
+relatorio.pdf: relatorio.tex header.tex cit.bib
 	@printf "%s" "-> Compilando relatorio.pdf... "
 	@if command -v $(LATEXMK) >/dev/null 2>&1; then \
 		$(LATEXMK) -pdf -silent -interaction=nonstopmode relatorio.tex >/dev/null 2>&1; \

@@ -1,227 +1,12 @@
 \documentclass[12pt,a4paper]{article}
 
-% =========================================================================
-% INÍCIO DO PREÂMBULO: PACOTES, CONFIGURAÇÕES E DEFINIÇÕES SEMÂNTICAS
-% =========================================================================
-
-% =========================================================================
-% PACOTES FUNDAMENTAIS E GEOMETRIA DE PÁGINA
-% =========================================================================
-\usepackage{amssymb}
-\usepackage{amsmath}
-\usepackage{amsthm}
-\usepackage{bm}
-\usepackage{enumitem}
-\usepackage{mathtools}
-\usepackage{lipsum}
-\usepackage[brazilian]{babel}
-\usepackage[utf8]{inputenc}
-\usepackage[T1]{fontenc}
-\usepackage[pdftex]{graphicx}
-\usepackage{color}
-\usepackage{tikz}
-\usetikzlibrary{arrows.meta, calc, positioning, decorations.markings}
-\usepackage{verbatim}
-\usepackage[hyphens]{url}
-\usepackage{longtable}
-\usepackage{booktabs}
-\usepackage[section]{placeins}
 \usepackage{geometry}
 \geometry{
     a4paper,
     margin=2cm
 }
 
-% =========================================================================
-% LISTAGENS DE CÓDIGO-FONTE C++ (LISTINGS)
-% =========================================================================
-\usepackage{listings}
-\usepackage{xcolor}
-\usepackage{colortbl}
-
-% -------------------------------------------------------------------------
-% Paleta de Cores de Sintaxe
-% -------------------------------------------------------------------------
-\definecolor{codegreen}{rgb}{0,0.6,0}
-\definecolor{codegray}{rgb}{0.5,0.5,0.5}
-\definecolor{codepurple}{rgb}{0.58,0,0.82}
-\definecolor{backcolour}{rgb}{0.9,0.9,0.9}
-
-% -------------------------------------------------------------------------
-% Configurações Globais do Listings
-% -------------------------------------------------------------------------
-\lstset{
-    language=C++,
-    basicstyle=\ttfamily\small,
-    tabsize=4,
-    keepspaces=true,
-    columns=fullflexible,
-    lineskip=-2pt,
-    backgroundcolor=\color{backcolour},
-    commentstyle=\color{codegreen},
-    keywordstyle=\color{blue}\bfseries,
-    stringstyle=\color{codepurple},
-    deletestring={[b]'},
-    numbers=left,
-    numberstyle=\tiny\color{codegray},
-    numbersep=6pt,
-    breaklines=true,
-    breakatwhitespace=false,
-    showspaces=false,
-    showstringspaces=false,
-    showtabs=false,
-    frame=single,
-    rulecolor=\color{black},
-    captionpos=b
-}
-
-% =========================================================================
-% TIPOGRAFIA, HIPERLIGAÇÕES E FORMATAÇÃO DE TEXTO
-% =========================================================================
-\usepackage{helvet}
-\renewcommand{\familydefault}{\sfdefault}
-
-\usepackage{hyperref}
-\usepackage{titlesec}
-\usepackage{setspace}
-
-% =========================================================================
-% ESTRUTURAS SEMÂNTICAS, TEOREMAS E DEFINIÇÕES
-% =========================================================================
-\newtheorem{prop}{Proposição}
-
-% -------------------------------------------------------------------------
-% Definições Formais
-% -------------------------------------------------------------------------
-\newcounter{definicao}
-\renewcommand{\thedefinicao}{\arabic{definicao}}
-\NewDocumentEnvironment{definicao}{o o}{%
-    \par\addvspace{0.8\baselineskip}\noindent
-    \refstepcounter{definicao}%
-    \IfValueT{#2}{\label{#2}}%
-    \textbf{Definição~\thedefinicao\IfValueT{#1}{ (#1)}}.%
-    \space
-}{%
-    \par\addvspace{0.5\baselineskip}
-}
-
-% -------------------------------------------------------------------------
-% Teoremas e Demonstrações
-% -------------------------------------------------------------------------
-\newcounter{teorema}
-\renewcommand{\theteorema}{\arabic{teorema}}
-\NewDocumentEnvironment{teorema}{o o}{%
-    \par\addvspace{0.8\baselineskip}\noindent
-    \refstepcounter{teorema}%
-    \IfValueT{#2}{\label{#2}}%
-    \textbf{Teorema~\theteorema\IfValueT{#1}{ (#1)}}.%
-    \space\itshape
-}{%
-    \par\addvspace{0.5\baselineskip}
-}
-
-\NewDocumentEnvironment{demonstracao}{}{%
-    \par\noindent\textbf{Demonstração.}\space
-}{%
-    \hfill $\blacksquare$\par\addvspace{0.5\baselineskip}
-}
-
-% -------------------------------------------------------------------------
-% Macros Conceituais e Auxiliares
-% -------------------------------------------------------------------------
-\newcommand{\intuicao}[1]{\paragraph{Intuição #1.}}
-\newcommand{\implicacoes}[1]{\paragraph{Implicações Estratégicas #1.}}
-\newcommand{\sa}{\text{s.a.}\quad}
-
-% =========================================================================
-% BIBLIOTECA DE ESTILOS GRÁFICOS (TIKZ)
-% =========================================================================
-\newcommand{\tikzsubcaption}[2]{\node[font=\footnotesize\bfseries, above] at #1 {#2};}
-\input{estilos-redes.tex}
-
-\tikzset{
-    >=Stealth,
-    % ---------------------------------------------------------------------
-    % Redes de Fluxo e Otimização
-    % ---------------------------------------------------------------------
-    flow node/.style={circle, draw, fill=white, minimum size=8.5mm, inner sep=1pt, font=\small},
-    source node/.style={flow node, draw=setSborder, fill=setSsource, text=setStext, line width=1.1pt},
-    sink node/.style={flow node, draw=setTborder, fill=setTsink, text=setTtext, line width=1.1pt},
-    s node internal/.style={flow node, draw=setSborder!80, fill=setSnode, text=setStext, line width=0.9pt},
-    t node internal/.style={flow node, draw=setTborder!80, fill=setTnode, text=setTtext, line width=0.9pt},
-    trans node/.style={flow node, fill=yellow!15},
-    flow edge/.style={->, thick},
-    sat edge/.style={->, line width=1.5pt, red},
-    res edge/.style={->, blue, dashed},
-    rev edge/.style={->, red, dashed, line width=1.1pt},
-    cut S/.style={dashed, draw=setSborder, fill=setSbg, rounded corners, thick},
-    cut T/.style={dashed, draw=setTborder, fill=setTbg, rounded corners, thick},
-    % ---------------------------------------------------------------------
-    % Rótulos de Partição e Legendas
-    % ---------------------------------------------------------------------
-    cut label S/.style={font=\footnotesize\bfseries, text=setStext, anchor=north west},
-    cut label T/.style={font=\footnotesize\bfseries, text=setTtext, anchor=north east},
-    bip label L/.style={font=\large\bfseries, blue!80!black},
-    bip label R/.style={font=\large\bfseries, orange!80!black},
-    % ---------------------------------------------------------------------
-    % Network Simplex e Árvores de Base
-    % ---------------------------------------------------------------------
-    tree edge/.style={->, line width=1.8pt, blue!80!black},
-    nontree edge/.style={->, gray, dashed},
-    pivot enter/.style={->, red, dashed, line width=1.5pt},
-    pivot leave/.style={->, gray, dashed, line width=1.2pt},
-    % ---------------------------------------------------------------------
-    % Grafos em Camadas e Distâncias
-    % ---------------------------------------------------------------------
-    active node/.style={flow node, fill=yellow!30},
-    gap node/.style={flow node, fill=orange!40},
-    layer line/.style={gray!40, dashed},
-    % ---------------------------------------------------------------------
-    % Grafos Bipartidos e Emparelhamento
-    % ---------------------------------------------------------------------
-    bip L/.style={circle, draw, fill=blue!15, minimum size=7.5mm, inner sep=1pt, font=\small},
-    bip R/.style={circle, draw, fill=orange!15, minimum size=7.5mm, inner sep=1pt, font=\small},
-    cover node/.style={double, double distance=1.2pt},
-    match edge/.style={-, line width=1.8pt, blue!80!black},
-    unmatch edge/.style={-, gray},
-    % ---------------------------------------------------------------------
-    % Segmentação de Imagens e Caixas Conceituais
-    % ---------------------------------------------------------------------
-    pixel node/.style={circle, draw, fill=white, minimum size=8mm, font=\footnotesize},
-    nlink/.style={-, thick},
-    tlink s/.style={->, green!60!black, dashed},
-    tlink t/.style={->, red!70!black, dashed},
-    concept box/.style={draw, rounded corners=4pt, minimum height=1.4cm, align=center, font=\small},
-    legend node/.style={circle, draw, minimum size=4mm, inner sep=0pt},
-    % ---------------------------------------------------------------------
-    % Rótulos Padronizados para Arestas
-    % ---------------------------------------------------------------------
-    edge lbl/.style={font=\footnotesize, fill=white, inner sep=1.2pt, pos=0.5},
-    edge lbl sloped/.style={edge lbl, sloped},
-    edge lbl above/.style={edge lbl sloped, above=2.8pt},
-    edge lbl below/.style={edge lbl sloped, below=2.8pt},
-    edge lbl right/.style={edge lbl, right=3pt},
-    edge lbl left/.style={edge lbl, left=3pt},
-    edge lbl above norm/.style={edge lbl, above=3pt},
-    edge lbl below norm/.style={edge lbl, below=3pt},
-    edge lbl green/.style={font=\footnotesize, fill=green!10, inner sep=1.2pt, pos=0.5},
-    edge lbl red/.style={font=\footnotesize, fill=red!10, inner sep=1.2pt, pos=0.5},
-    stage box/.style={draw=blue!80!black, fill=blue!5, rounded corners=4pt, line width=1pt, align=center, font=\footnotesize, minimum height=1.4cm, text width=2.4cm},
-    main/.style={flow node}
-}
-
-% =========================================================================
-% OPERADORES MATEMÁTICOS E MACROS AUXILIARES
-% =========================================================================
-\DeclareMathOperator{\ccap}{cap}                  % [OPERADOR] Capacidade de corte funcional: cap(S,T)
-\DeclareMathOperator{\cost}{custo}                % [OPERADOR] Custo total de um fluxo: custo(f)
-\DeclareMathOperator{\dist}{dist}                 % [OPERADOR] Distância em caminhos mínimos: dist(u,v)
-
-\newcommand{\cred}[2][]{\bar{w}_{#1}(#2)}         % [NOTACAO] Custo reduzido: \cred[\pi]{u,v}
-\newcommand{\cres}[2][f]{c_{#1}(#2)}              % [NOTACAO] Capacidade residual: \cres{u,v}
-\newcommand{\Dres}[1][f]{D_{#1}}                  % [NOTACAO] Digrafo residual: \Dres
-\newcommand{\code}[1]{\lstinline{#1}}             % [MACRO] Código inline ergonômico
-\newcommand{\bannertext}[1]{\textbf{\textsf{#1}}} % [MACRO] Cabeçalho destacado de tabela
+\input{header.tex}
 
 % =========================================================================
 % FIM DO PREÂMBULO — INÍCIO DO CORPO DO DOCUMENTO
@@ -557,14 +342,14 @@ Como não há caminho aumentante, o sumidouro $t$ é inalcançável a partir de 
     \draw[flow edge] (s) -- (b);
     \draw[flow edge] (a) -- (b);
 
-    \draw[sat edge] (a) -- node[edge lbl above, text=red!80!black] {$f\!=\!c$} (c);
-    \draw[sat edge] (b) -- node[edge lbl below, text=red!80!black] {$f\!=\!c$} (d);
+    \draw[sat edge] (a) -- node[edge lbl above, text=cutviolet!90!black] {$f\!=\!c$} (c);
+    \draw[sat edge] (b) -- node[edge lbl below, text=cutviolet!90!black] {$f\!=\!c$} (d);
 
     \draw[flow edge] (c) -- (d);
     \draw[flow edge] (c) -- (t);
     \draw[flow edge] (d) -- (t);
 \end{tikzpicture}
-\caption{Corte mínimo $(S,T)$: os arcos que cruzam de $S$ para $T$ (em vermelho) estão saturados ($f = c$).}
+\caption{Corte mínimo $(S,T)$: os arcos que cruzam de $S$ para $T$ (em violeta) estão saturados ($f = c$).}
 \label{fig:corte_minimo}
 \end{figure}
 
@@ -662,8 +447,8 @@ A interpretação geométrica desta bijeção dual é ilustrada na Figura~\ref{f
   \draw[flow edge] (d) -- node[edge lbl below] {$d\!=\!0$} (t);
   \draw[flow edge] (c) -- node[edge lbl right] {$d\!=\!0$} (d);
 
-  \draw[sat edge] (a) -- node[edge lbl above, text=red!80!black] {$\mathbf{d\!=\!1},\; f\!=\!c$} (c);
-  \draw[sat edge] (b) -- node[edge lbl below, text=red!80!black] {$\mathbf{d\!=\!1},\; f\!=\!c$} (d);
+  \draw[sat edge] (a) -- node[edge lbl above, text=cutviolet!90!black] {$\mathbf{d\!=\!1},\; f\!=\!c$} (c);
+  \draw[sat edge] (b) -- node[edge lbl below, text=cutviolet!90!black] {$\mathbf{d\!=\!1},\; f\!=\!c$} (d);
 
   \node[font=\footnotesize, align=center, below=4pt] at (4.1, -2.0) {Custo dual: $\sum c(e)d(e) = c(a,c)\cdot 1 + c(b,d)\cdot 1 = \ccap(S,T)$. Pela dualidade forte: $\max |f| = \min \ccap(S,T)$.};
 \end{tikzpicture}
@@ -1863,11 +1648,11 @@ O custo total do corte é exatamente a soma dos termos de dados e de regulariza�
   \node[flow node, fill=orange!20] (p4) at (0, 0) {$p_4$};
   \node[flow node, fill=orange!40] (p3) at (4, 0) {$p_3$};
 
-  \draw[-,blue!70,line width=1.5pt] (p1) -- node[above,font=\footnotesize,text=black]{$w_n$\,alto} (p2);
-  \draw[-,blue!70,line width=1.5pt] (p4) -- node[below,font=\footnotesize,text=black]{$w_n$\,alto} (p3);
+  \draw[-, line width=1.4pt] (p1) -- node[above, font=\footnotesize, fill=white, inner sep=1.2pt]{$w_n$\,alto} (p2);
+  \draw[-, line width=1.4pt] (p4) -- node[below, font=\footnotesize, fill=white, inner sep=1.2pt]{$w_n$\,alto} (p3);
   
-  \draw[-,orange,line width=1.5pt] (p1) -- node[edge lbl green, right=3.5pt, pos=0.25]{$w_n$\,baixo} (p4);
-  \draw[-,orange,line width=1.5pt] (p2) -- node[edge lbl green, left=3.5pt, pos=0.25]{$w_n$\,baixo} (p3);
+  \draw[-, line width=1.4pt] (p1) -- node[edge lbl, right=3.5pt, pos=0.25]{$w_n$\,baixo} (p4);
+  \draw[-, line width=1.4pt] (p2) -- node[edge lbl, left=3.5pt, pos=0.25]{$w_n$\,baixo} (p3);
 
   \draw[->,green!60!black,dashed] (s) -- node[above left, edge lbl green]{$w_s=\infty$} (p1);
   \draw[->,green!60!black,dashed] (s) -- node[above right, edge lbl green]{$w_s$\,alto} (p2);
@@ -1881,9 +1666,10 @@ O custo total do corte é exatamente a soma dos termos de dados e de regulariza�
   \draw[->,red!60!black,dashed] (p1) to[out=225, in=180] node[left, edge lbl red, pos=0.5]{$w_t$\,baixo} (t);
   \draw[->,red!60!black,dashed] (p2) to[out=315, in=0] node[right, edge lbl red, pos=0.5]{$w_t$\,baixo} (t);
 
-  \draw[red, thick, dashed] (-4.5, 1.5) -- (8.5, 1.5) node[right, font=\footnotesize\bfseries, text=red, fill=white, inner sep=2pt, yshift=3mm] {Corte Mínimo};
+  \draw[cutviolet, line width=1.8pt, dashed] (-4.5, 1.5) -- (8.5, 1.5) 
+      node[right, font=\footnotesize\bfseries, text=cutviolet, fill=white, inner sep=2.5pt, yshift=3mm] {Corte Mínimo};
 \end{tikzpicture}
-\caption{Geometria do corte mínimo na segmentação. Os pixels da camada superior ($p_1, p_2$) são classificados como Foreground ($S$) e os da inferior ($p_3, p_4$) como Background ($T$). O corte mínimo (linha vermelha tracejada) atua como uma guilhotina separando o conjunto $S$ do conjunto $T$. Visualmente, percebe-se que ele rompe com precisão as arestas mais fracas: os N-links verticais ($w_n$ baixo, pixels de cores distintas), e os T-links cruzados fracos ($s \to T$ e $S \to t$). Em contrapartida, os T-links com capacidade $\infty$ (sementes) protegem seus pixels contra cortes indevidos.}
+\caption{Geometria do corte mínimo na segmentação. Os pixels da camada superior ($p_1, p_2$) são classificados como Foreground ($S$) e os da inferior ($p_3, p_4$) como Background ($T$). O corte mínimo (linha violeta tracejada) atua como uma guilhotina separando o conjunto $S$ do conjunto $T$. Visualmente, percebe-se que ele rompe com precisão as arestas mais fracas: os N-links verticais ($w_n$ baixo, pixels de cores distintas), e os T-links cruzados fracos ($s \to T$ e $S \to t$). Em contrapartida, os T-links com capacidade $\infty$ (sementes) protegem seus pixels contra cortes indevidos.}
 \label{fig:segmentacao_corte}
 \end{figure}
 

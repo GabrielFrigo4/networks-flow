@@ -20,7 +20,11 @@ jobs:
       - name: Compilar todos os arquivos LaTeX via Makefile
         uses: xu-cheng/latex-action@v4
         with:
-          root_file: "*.tex"
+          root_file: |
+            book.tex
+            ic.tex
+            relatorio.tex
+            projeto.tex
           working_directory: LaTeX
           extra_system_packages: "make"
           pre_compile: "make all"
