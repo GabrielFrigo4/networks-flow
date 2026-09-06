@@ -128,26 +128,14 @@
             % -------------------------------------------------------------
             % Indicadores das Partições S, T e Corte Mínimo
             % -------------------------------------------------------------
-            \node[anchor=center] at (-3.5, 2.45) {
-                \begin{tikzpicture}[baseline=(P.base)]
-                    \node (P) [draw=setSborder!80, fill=white, text=setStext, rounded corners=3pt, font=\scriptsize\bfseries, inner sep=2.5pt] 
-                        {Conjunto $S$};
-                \end{tikzpicture}
-            };
+            \node[card badge, draw=setSborder!80, text=setStext] at (-3.5, 2.45) 
+                {Conjunto $S$};
 
-            \node[anchor=center] at (0, 2.45) {
-                \begin{tikzpicture}[baseline=(C.base)]
-                    \node (C) [draw=cutviolet!80, fill=white, text=cutviolet!90!black, rounded corners=3pt, font=\scriptsize\bfseries, inner sep=2.5pt] 
-                        {\textbf{Corte Mínimo} $(S, T)$};
-                \end{tikzpicture}
-            };
+            \node[card badge, draw=cutviolet!80, text=cutviolet!90!black] at (0, 2.45) 
+                {\textbf{Corte Mínimo} $(S, T)$};
 
-            \node[anchor=center] at (3.5, 2.45) {
-                \begin{tikzpicture}[baseline=(Q.base)]
-                    \node (Q) [draw=setTborder!80, fill=white, text=setTtext, rounded corners=3pt, font=\scriptsize\bfseries, inner sep=2.5pt] 
-                        {Conjunto $T$};
-                \end{tikzpicture}
-            };
+            \node[card badge, draw=setTborder!80, text=setTtext] at (3.5, 2.45) 
+                {Conjunto $T$};
 
             % -------------------------------------------------------------
             % Topologia e Coordenadas Nodais da Rede
@@ -168,7 +156,7 @@
             \draw[-{Stealth[length=3.2mm]}, line width=1.6pt, darkslate] (S) -- 
                 node[sloped, below=2.5pt, font=\scriptsize\bfseries, fill=cardbg, inner sep=1.5pt] {$6 / 10$} (V2);
 
-            \draw[-{Stealth[length=2.5mm]}, line width=1.3pt, darkslate] (V1) -- 
+            \draw[-{Stealth[length=3.2mm]}, line width=1.6pt, darkslate] (V1) -- 
                 node[left=3pt, font=\scriptsize\bfseries, fill=cardbg, inner sep=1.5pt] {$1 / 3$} (V2);
 
             \draw[-{Stealth[length=3.2mm]}, line width=1.6pt, darkslate] (V1) -- 
@@ -473,6 +461,10 @@ Como não há caminho aumentante, o sumidouro $t$ é inalcançável a partir de 
     \node[t node internal] (d) at (6.2, -0.8) {$d$};
     \node[sink node] (t) at (8.2, 0.0) {$t$};
 
+    % Reta transversal do corte mínimo passando exclusivamente pelas arestas do corte
+    \draw[line width=1.5pt, dashed, cutviolet] (4.1, -1.85) -- (4.1, 1.85)
+        node[above=2.5pt, solid, font=\scriptsize\bfseries, text=cutviolet!90!black, fill=white, inner sep=2.5pt, rounded corners=3pt, draw=cutviolet!70] {Corte Mínimo $(S,T)$};
+
     \draw[sat edge] (a) -- node[edge lbl above, text=cutviolet!90!black] {$f=c$} (c);
     \draw[sat edge] (b) -- node[edge lbl below, text=cutviolet!90!black] {$f=c$} (d);
     
@@ -581,6 +573,10 @@ A interpretação geométrica desta bijeção dual é ilustrada na Figura~\ref{f
   \draw[flow edge] (c) -- node[edge lbl above] {$d=0$} (t);
   \draw[flow edge] (d) -- node[edge lbl below] {$d=0$} (t);
   \draw[flow edge] (c) -- node[edge lbl right] {$d=0$} (d);
+
+  % Reta transversal do corte mínimo passando exclusivamente pelas arestas do corte
+  \draw[line width=1.5pt, dashed, cutviolet] (4.1, -1.85) -- (4.1, 1.85)
+      node[above=2.5pt, solid, font=\scriptsize\bfseries, text=cutviolet!90!black, fill=white, inner sep=2.5pt, rounded corners=3pt, draw=cutviolet!70] {Corte Mínimo $(S,T)$};
 
   \draw[sat edge] (a) -- node[edge lbl above, text=cutviolet!90!black] {$\mathbf{d=1},\; f=c$} (c);
   \draw[sat edge] (b) -- node[edge lbl below, text=cutviolet!90!black] {$\mathbf{d=1},\; f=c$} (d);
@@ -1175,7 +1171,7 @@ A solidez desta extração reside no fato de que, pelas propriedades de conserva
   \node[source node,cover node] (r3) at (4,0.5) {$r_3$};
   
   \draw[->] (s) -- (l1); 
-  \draw[sat edge] (s) -- node[above,font=\footnotesize,red,sloped]{corte} (l2); 
+  \draw[sat edge] (s) -- node[above,font=\footnotesize\bfseries,text=cutviolet!90!black,sloped]{corte} (l2); 
   \draw[->] (s) -- (l3);
   
   \draw[match edge,->] (l1) -- (r3);
@@ -1185,7 +1181,7 @@ A solidez desta extração reside no fato de que, pelas propriedades de conserva
   
   \draw[->] (r1) -- (t); 
   \draw[->] (r2) -- (t); 
-  \draw[sat edge] (r3) -- node[above,font=\footnotesize,red,sloped]{corte} (t);
+  \draw[sat edge] (r3) -- node[above,font=\footnotesize\bfseries,text=cutviolet!90!black,sloped]{corte} (t);
   
   \node[legend node,fill=green!20] (legS) at (0, -1.0) {};
   \node[right,font=\footnotesize] at (legS.east) {$\in S$ (Alcançável no grafo residual)};
@@ -1199,7 +1195,7 @@ A solidez desta extração reside no fato de que, pelas propriedades de conserva
   \node[font=\footnotesize,align=center] at (3, -3.1) {\textbf{Resultado:} $C = \{l_2, r_3\}$, $|C| = |M| = 2$};
   
 \end{tikzpicture}
-\caption{Teorema de König: a BFS no digrafo residual $D_f$ particiona os vértices em $S$ (verde) e $T$ (vermelho). Os arcos de $S$ para $T$ (vermelhos) definem o corte mínimo. A cobertura mínima é construída por $C = (L\cap T) \cup (R \cap S)$, correspondendo aos vértices com borda dupla. Com isso, fica provado visualmente que $|C| = |M| = 2$. Arestas azuis grossas representam o emparelhamento $M$.}
+\caption{Teorema de König: a BFS no digrafo residual $D_f$ particiona os vértices em $S$ (verde) e $T$ (vermelho). Os arcos de $S$ para $T$ (em violeta) definem o corte mínimo. A cobertura mínima é construída por $C = (L\cap T) \cup (R \cap S)$, correspondendo aos vértices com borda dupla. Com isso, fica provado visualmente que $|C| = |M| = 2$. Arestas azuis grossas representam o emparelhamento $M$.}
 \label{fig:konig_corte}
 \end{figure}
 
