@@ -1,19 +1,24 @@
 .POSIX:
 .SILENT:
+
 MAKEFLAGS += --no-print-directory -s
+
+# ----------------------------------------------------------------
+# Makefile: Network Flow Research Suite
+# ----------------------------------------------------------------
 
 .PHONY: all latex book apps impl exp format test setup clean sync-code
 
 all: latex apps impl
 
 format:
-	@printf "%s\n" "Formatando todos os códigos C++ (.hpp e .cpp) de todo o repositório com clang-format..."
+	printf "%s\n" "Formatando todos os códigos C++ (.hpp e .cpp) de todo o repositório com clang-format..."
 	find . -type f \( -name "*.hpp" -o -name "*.cpp" -o -name "*.h" -o -name "*.c" \) -not -path "*/.*/*" -exec clang-format -i {} +
-	@printf "%s\n" "Formatação completa de todos os códigos C++ concluída com sucesso!"
+	printf "%s\n" "Formatação completa de todos os códigos C++ concluída com sucesso!"
 
 setup:
 	git config core.hooksPath .githooks
-	chmod +x .githooks/*
+	chmod 0755 .githooks/*
 
 latex:
 	$(MAKE) -C LaTeX all
