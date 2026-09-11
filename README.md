@@ -173,6 +173,37 @@ Cada problema em [`Implementações/Problemas/`](./Implementações/Problemas/) 
 
 ---
 
+## 🪝 Configuração dos Git Hooks (`.githooks`)
+
+Para manter a integridade do repositório, impedir que binários compilados (ELF), artefatos temporários do LaTeX ou imagens intermediárias sejam comitados acidentalmente, e assegurar a sincronização contínua dos apêndices com os códigos em C++, o projeto conta com hooks do Git versionados na pasta [`.githooks/`](./.githooks/).
+
+### Ativação Automática
+
+A forma mais simples e recomendada de configurar o ambiente e ativar os hooks é através da regra `setup` do Makefile:
+
+```bash
+make setup
+```
+
+### Ativação Manual
+
+Caso prefira realizar a configuração manualmente via terminal:
+
+1. **Configurar o repositório Git para utilizar a pasta `.githooks`:**
+   ```bash
+   git config core.hooksPath .githooks
+   ```
+
+2. **Conceder permissão de execução aos scripts com `chmod`:**
+   ```bash
+   chmod +x .githooks/*
+   ```
+
+> [!TIP]
+> Com o hook [`pre-commit`](./.githooks/pre-commit) ativado, qualquer tentativa de commit contendo arquivos binários ou apêndices desatualizados em relação aos fontes em C++ será bloqueada com mensagens explicativas no terminal.
+
+---
+
 ## 📄 Como Compilar o Código-Fonte (LaTeX)
 
 > [!NOTE]
