@@ -1,6 +1,6 @@
 .POSIX:
 .SILENT:
-MAKEFLAGS += --no-print-directory
+MAKEFLAGS += --no-print-directory -s
 
 CXX      = c++
 CXXFLAGS = -std=c++23 -fsyntax-only -Wall -Wextra

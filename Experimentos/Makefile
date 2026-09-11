@@ -1,6 +1,6 @@
 .POSIX:
 .SILENT:
-MAKEFLAGS += --no-print-directory
+MAKEFLAGS += --no-print-directory -s
 
 .PHONY: all run format clean
 

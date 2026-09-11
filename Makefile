@@ -1,6 +1,6 @@
 .POSIX:
 .SILENT:
-MAKEFLAGS += --no-print-directory
+MAKEFLAGS += --no-print-directory -s
 
 .PHONY: all latex book apps impl exp format test setup clean sync-code
 
