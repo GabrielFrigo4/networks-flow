@@ -6,17 +6,17 @@
 
 set -e
 
-### --------------------------------
+### ================================
 ### Setup & Repository Root
-### --------------------------------
+### ================================
 _repo_root="$(git rev-parse --show-toplevel 2> "/dev/null" || pwd)"
 cd "${_repo_root}"
 
 echo "🔍 [pre-commit] Executing Networks Flow quality gates..."
 
-### --------------------------------
+### ================================
 ### Whitespace & Formatting Check
-### --------------------------------
+### ================================
 echo "  ↳ Checking whitespace and formatting (git diff --check)..."
 if ! git diff --check --cached; then
 	echo "❌ [pre-commit] Whitespace or EOF formatting error detected!" >&2
@@ -24,9 +24,9 @@ if ! git diff --check --cached; then
 	exit 1
 fi
 
-### --------------------------------
+### ================================
 ### Forbidden Artifacts & Binaries
-### --------------------------------
+### ================================
 echo "  ↳ Checking for binaries and compiled LaTeX artifacts..."
 _has_error=0
 
@@ -64,9 +64,9 @@ if [ -n "${_staged_files}" ]; then
 	done
 fi
 
-### --------------------------------
+### ================================
 ### LaTeX & C++ Listings Sync Check
-### --------------------------------
+### ================================
 if [ -f "Scripts/sync_listings.py" ]; then
 	echo "  ↳ Validating LaTeX code listings synchronization..."
 	if ! python3 Scripts/sync_listings.py --check > "/dev/null" 2>&1; then
@@ -76,9 +76,9 @@ if [ -f "Scripts/sync_listings.py" ]; then
 	fi
 fi
 
-### --------------------------------
+### ================================
 ### Markdown Prettier Validation
-### --------------------------------
+### ================================
 if command -v prettier > "/dev/null" 2>&1; then
 	echo "  ↳ Validating staged Markdown files with Prettier..."
 	_unformatted_md=""
