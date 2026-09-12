@@ -14,12 +14,34 @@ PYTHON   = python3
 
 TARGETS  = ic.pdf relatorio.pdf projeto.pdf book.pdf
 
-CAPITULOS = $(wildcard capitulos/*.tex)
-APENDICES = $(wildcard apendices/*.tex)
-BOOK_SRC  = $(wildcard book/*.tex)
-UFABC_SRC = $(wildcard ufabc/*.tex)
+CAPITULOS != find capitulos -name "*.tex" 2> "/dev/null" || true
+APENDICES != find apendices -name "*.tex" 2> "/dev/null" || true
+BOOK_SRC  != find book -name "*.tex" 2> "/dev/null" || true
+UFABC_SRC != find ufabc -name "*.tex" 2> "/dev/null" || true
 
-.PHONY: all ic relatorio projeto book clean distclean sync-code
+.PHONY: help all ic relatorio projeto book clean distclean sync-code
+
+### ================================
+### HELP & DOCUMENTATION
+### ================================
+help:
+	cmd() { printf "    \033[36mmake %-20s\033[0m %s\n" "$$1" "$$2"; }; \
+	sec() { printf "\n  \033[1;33m%s\033[0m\n" "$$1"; }; \
+	sub() { printf "  \033[1;34m  ── %s ──\033[0m\n" "$$1"; }; \
+	printf "\n  \033[1;37mNetwork Flow LaTeX — Editoração Científica & Relatórios\033[0m\n"; \
+	printf "  ============================================================\n"; \
+	sec "Compilação de Documentos:"; \
+	cmd "all"            "Compila todos os documentos (livro, IC, projeto, relatório)"; \
+	cmd "book"           "Compila a monografia principal do livro (book.pdf)"; \
+	cmd "ic"             "Compila o relatório de Iniciação Científica (ic.pdf)"; \
+	cmd "projeto"        "Compila a proposta do projeto de pesquisa (projeto.pdf)"; \
+	cmd "relatorio"      "Compila o relatório técnico final (relatorio.pdf)"; \
+	sec "Sincronização & Código:"; \
+	cmd "sync-code"      "Sincroniza algoritmos das Implementações com o LaTeX"; \
+	sec "Limpeza:"; \
+	cmd "clean"          "Remove pasta build/ e arquivos temporários (.aux, .log)"; \
+	cmd "distclean"      "Limpeza profunda (remove temporários e PDFs gerados)"; \
+	echo ""
 
 all: $(TARGETS)
 	printf "\n==> Todos os documentos foram compilados com sucesso!\n"

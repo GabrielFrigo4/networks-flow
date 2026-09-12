@@ -7,9 +7,33 @@ MAKEFLAGS += --no-print-directory -s
 # Makefile: Network Flow Research Suite
 # ----------------------------------------------------------------
 
-.PHONY: all latex book apps impl exp format test setup clean sync-code
+.PHONY: help all latex book apps impl exp format test setup clean sync-code
 
-all: latex apps impl
+all: help
+
+### ================================
+### HELP & DOCUMENTATION
+### ================================
+help:
+	cmd() { printf "    \033[36mmake %-20s\033[0m %s\n" "$$1" "$$2"; }; \
+	sec() { printf "\n  \033[1;33m%s\033[0m\n" "$$1"; }; \
+	sub() { printf "  \033[1;34m  ── %s ──\033[0m\n" "$$1"; }; \
+	printf "\n  \033[1;37mNetwork Flow — Suíte de Pesquisa & Implementações em Grafos\033[0m\n"; \
+	printf "  ============================================================\n"; \
+	sec "Fluxos de Compilação:"; \
+	cmd "latex"          "Compila todos os documentos da suíte LaTeX"; \
+	cmd "book"           "Compila especificamente a monografia do livro"; \
+	cmd "apps"           "Compila e executa as aplicações reais de fluxo"; \
+	cmd "impl"           "Compila a biblioteca de algoritmos e problemas"; \
+	cmd "exp"            "Compila e executa os benchmarks e experimentos"; \
+	sec "Qualidade & Sincronização:"; \
+	cmd "test"           "Executa a suíte de testes de algoritmos e aplicações"; \
+	cmd "format"         "Formata todos os códigos C++ (.hpp/.cpp) com clang-format"; \
+	cmd "sync-code"      "Sincroniza algoritmos das Implementações com o LaTeX"; \
+	cmd "setup"          "Configura os githooks e permissões de execução"; \
+	sec "Limpeza:"; \
+	cmd "clean"          "Limpa artefatos temporários em todos os submódulos"; \
+	echo ""
 
 format:
 	printf "%s\n" "Formatando todos os códigos C++ (.hpp e .cpp) de todo o repositório com clang-format..."
