@@ -189,7 +189,7 @@ Para manter a integridade do repositório, impedir que binários compilados (ELF
 
 A forma mais simples e recomendada de configurar o ambiente e ativar os hooks é através da regra `setup` do Makefile:
 
-```bash
+```sh
 make setup
 ```
 
@@ -199,12 +199,12 @@ Caso prefira realizar a configuração manualmente via terminal:
 
 1. **Configurar o repositório Git para utilizar a pasta `.githooks`:**
 
-    ```bash
+    ```sh
     git config core.hooksPath .githooks
     ```
 
 2. **Conceder permissão de execução aos scripts com `chmod`:**
-    ```bash
+    ```sh
     chmod +x .githooks/*
     ```
 
@@ -222,13 +222,13 @@ Caso queira gerar qualquer um dos PDFs (`book.pdf`, `ic.pdf`, `relatorio.pdf` ou
 
 1. Certifique-se de ter uma distribuição LaTeX instalada (como TeX Live, MiKTeX ou MacTeX) com suporte aos pacotes requeridos (`amsmath`, `tikz`, `geometry`, etc.).
 
-```bash
+```sh
 make latex
 ```
 
 Ou navegando até o diretório [`LaTeX/`](./LaTeX/) para compilar documentos específicos:
 
-```bash
+```sh
 cd LaTeX
 make book
 make ic
