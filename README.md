@@ -1,12 +1,20 @@
-# IC | Problemas de Fluxos em Redes: Teoria, Algoritmos e Implementações
+# 🕸️ IC | Problemas de Fluxos em Redes: Teoria, Algoritmos e Implementações
+
+> Projeto de Iniciação Científica (UFABC / PIC/PIBIC) focado na interseção entre Ciência da Computação, Matemática Discreta e Otimização Combinatória.
+
+[![C++23](https://img.shields.io/badge/Language-C%2B%2B23-00599C?logo=c%2B%2B&logoColor=white)](Implementações/)
+[![LaTeX](https://img.shields.io/badge/Typesetting-LaTeX-green?logo=latex&logoColor=white)](LaTeX/)
+[![DIMACS](https://img.shields.io/badge/Benchmark-DIMACS-orange?logo=databricks&logoColor=white)](DIMACS/)
+[![UFABC](https://img.shields.io/badge/Instituição-UFABC-darkblue)](https://www.ufabc.edu.br/)
+
+---
 
 ## 📚 Documentação e Relatórios da Pesquisa
 
-<div align="center">
-
-[![Baixar Livro (Monografia)][baixar_pdf_book_icon]][baixar_pdf_book] &nbsp;&nbsp;&nbsp; [![Baixar PDF do Projeto][baixar_pdf_projeto_icon]][baixar_pdf_projeto] &nbsp;&nbsp;&nbsp; [![Baixar PDF do Relatório][baixar_pdf_relatorio_icon]][baixar_pdf_relatorio] &nbsp;&nbsp;&nbsp; [![Baixar PDF da IC][baixar_pdf_ic_icon]][baixar_pdf_ic]
-
-</div>
+[![Baixar Livro (Monografia)][baixar_pdf_book_icon]][baixar_pdf_book]
+[![Baixar PDF do Projeto][baixar_pdf_projeto_icon]][baixar_pdf_projeto]
+[![Baixar PDF do Relatório][baixar_pdf_relatorio_icon]][baixar_pdf_relatorio]
+[![Baixar PDF da IC][baixar_pdf_ic_icon]][baixar_pdf_ic]
 
 A documentação oficial da pesquisa é gerada a partir dos códigos-fonte em LaTeX disponíveis na pasta [`LaTeX/`](./LaTeX/). A tabela a seguir detalha a finalidade de cada documento e as diferenças entre eles:
 
@@ -190,14 +198,15 @@ make setup
 Caso prefira realizar a configuração manualmente via terminal:
 
 1. **Configurar o repositório Git para utilizar a pasta `.githooks`:**
-   ```bash
-   git config core.hooksPath .githooks
-   ```
+
+    ```bash
+    git config core.hooksPath .githooks
+    ```
 
 2. **Conceder permissão de execução aos scripts com `chmod`:**
-   ```bash
-   chmod +x .githooks/*
-   ```
+    ```bash
+    chmod +x .githooks/*
+    ```
 
 > [!TIP]
 > Com o hook [`pre-commit`](./.githooks/pre-commit) ativado, qualquer tentativa de commit contendo arquivos binários ou apêndices desatualizados em relação aos fontes em C++ será bloqueada com mensagens explicativas no terminal.
@@ -247,11 +256,11 @@ make clean
 [baixar_pdf_book]: https://github.com/GabrielFrigo4/IC_Networks_Flow/releases/latest/download/book.pdf
 [baixar_pdf_book_icon]: https://img.shields.io/badge/Livro-Baixar-success?style=for-the-badge&logo=gitbook&logoColor=white
 [baixar_pdf_ic]: https://github.com/GabrielFrigo4/IC_Networks_Flow/releases/latest/download/ic.pdf
-[baixar_pdf_ic_icon]: https://img.shields.io/badge/IC-Baixar-red?style=for-the-badge&logo=adobeacrobatreader
+[baixar_pdf_ic_icon]: https://img.shields.io/badge/IC-Baixar-red?style=for-the-badge&logo=adobeacrobatreader&logoColor=white
 [baixar_pdf_projeto]: https://github.com/GabrielFrigo4/IC_Networks_Flow/releases/latest/download/projeto.pdf
-[baixar_pdf_projeto_icon]: https://img.shields.io/badge/Projeto-Baixar-red?style=for-the-badge&logo=adobeacrobatreader
+[baixar_pdf_projeto_icon]: https://img.shields.io/badge/Projeto-Baixar-red?style=for-the-badge&logo=adobeacrobatreader&logoColor=white
 [baixar_pdf_relatorio]: https://github.com/GabrielFrigo4/IC_Networks_Flow/releases/latest/download/relatorio.pdf
-[baixar_pdf_relatorio_icon]: https://img.shields.io/badge/Relatório-Baixar-red?style=for-the-badge&logo=adobeacrobatreader
+[baixar_pdf_relatorio_icon]: https://img.shields.io/badge/Relatório-Baixar-red?style=for-the-badge&logo=adobeacrobatreader&logoColor=white
 [download_speed]: https://cses.fi/problemset/task/1694
 [school_dance]: https://cses.fi/problemset/task/1696
 [distinct_routes]: https://cses.fi/problemset/task/1711
