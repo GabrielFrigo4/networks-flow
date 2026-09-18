@@ -1,6 +1,14 @@
 % =========================================================================
 % CORPO INTEGRAL DA MONOGRAFIA E RELATÓRIO DE INICIAÇÃO CIENTÍFICA
 % =========================================================================
+% Controle de Modalidade (DRY Switch):
+% \apendiceteoricoFALSE -> OPÇÃO 1A: Relatório Executivo (Resultados <= 20 pgs)
+%                         Provas matemáticas completas no Livro independente (book.pdf).
+% \apendiceteoricoTRUE  -> OPÇÃO 2A: Relatório com Apêndice Teórico Integral anexo
+%                         Reutiliza diretamente capitulos/*.tex sem duplicação de texto.
+\newif\ifapendiceteorico
+\apendiceteoricofalse
+
 \pagestyle{empty}
 \input{ufabc/resumo.tex}
 \newpage
@@ -11,7 +19,25 @@
 
 \pagestyle{textual}
 \input{ufabc/preliminares.tex}
+\input{ufabc/resultados.tex}
 
+\section{Conclusões}\label{sec:conclusoes}
+\input{ufabc/conclusoes.tex}
+
+\newpage
+\section{Bibliografia}
+\bibliographystyle{plain}
+\bibliography{cit}
+
+\newpage
+\appendix
+\renewcommand{\theHsection}{apendice.\arabic{section}}
+\providecommand{\apendice}[1]{\section{#1}}
+
+\ifapendiceteorico
+% =========================================================================
+% OPÇÃO 2A: APÊNDICE DE DEMONSTRAÇÕES E FUNDAMENTAÇÃO MATEMÁTICA INTEGRAL
+% =========================================================================
 \let\origsection\section
 \let\origsubsection\subsection
 \let\origsubsubsection\subsubsection
@@ -25,8 +51,8 @@
 \titlespacing*{\paragraph}{0pt}{2ex plus 0.5ex minus .2ex}{1ex}
 
 \newcommand{\divisaobloco}[2]{\phantomsection\label{#1}\par\addvspace{0.6\baselineskip}\noindent\textbf{\large #2}\par\addvspace{0.6\baselineskip}}
-\newcommand{\apendice}[1]{\origsection{#1}}
 
+\origsection{Fundamentação Teórica e Demonstrações Matemáticas Integrais}\label{ap:teoria_completa}
 \divisaobloco{bloco:max_flow}{Bloco I: Teoria e Algoritmos do Fluxo Máximo}
 \input{capitulos/01_fundamentos.tex}
 \input{capitulos/02_mfmc.tex}
@@ -36,7 +62,6 @@
 \divisaobloco{bloco:aplicacoes}{Bloco II: Reduções Combinatórias e Aplicações}
 \input{capitulos/05_grafos_bipartidos.tex}
 \input{capitulos/06_conectividade.tex}
-\input{capitulos/07_segmentacao.tex}
 
 \divisaobloco{bloco:min_cost}{Bloco III: Fluxo de Custo Mínimo e o Network Simplex}
 \input{capitulos/08_custo_minimo_teoria.tex}
@@ -44,21 +69,13 @@
 \input{capitulos/10_network_simplex.tex}
 \input{capitulos/11_mcf_sintese.tex}
 
-\divisaobloco{bloco:benchmarks}{Bloco IV: Avaliação Experimental e Benchmarks Computacionais}
-\input{capitulos/12_benchmarks.tex}
+\let\section\origsection
+\let\subsection\origsubsection
+\let\subsubsection\origsubsubsection
+\let\paragraph\origparagraph
+\fi
 
-\origsection{Conclusões}\label{sec:conclusoes}
-\input{ufabc/conclusoes.tex}
-
-\newpage
-\origsection{Bibliografia}
-\bibliographystyle{plain}
-\bibliography{cit}
-
-\newpage
-\appendix
-\renewcommand{\theHsection}{apendice.\arabic{section}}
-\begin{center}{\Large\textbf{Apêndice}}\end{center}
+\begin{center}{\Large\textbf{Apêndice Computacional: Implementações em C++23}}\end{center}
 
 \input{apendices/01_flownetwork.tex}
 \input{apendices/02_ford_fulkerson.tex}
