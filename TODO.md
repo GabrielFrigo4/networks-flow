@@ -8,17 +8,18 @@ Progresso das tarefas, correções e direcionamentos solicitados pela orientador
 
 Progresso das otimizações e refatorações de código no projeto, visando melhorar a performance dos algoritmos e organizar a estrutura das classes de implementação.
 
-- ✅ Testar e se precisar finalizar a Segmentação de Imagens (Max Flow / Min Cut)
-- ✅ Consertar alguns casos de borda do Segmentação de Imagens (Max Flow / Min Cut)
-- ✅ Reler o Relatório, fazer uma auditoria completa da iniciação científica
-- ✅ Fazer o Minimum Cost Flow - Teoria
-- ✅ Fazer o Network Simplex - Teoria
-- ✅ Fazer o Minimum Cost Flow - Implementação
-- ✅ Fazer as Implementações dos Problemas de Fluxo Máximo Restantes
-- ✅ Fazer as Implementações dos Problemas de Fluxo de Custo Mínimo
+- 🔄 **Reler e analisar:** Auditoria final e revisão de texto do relatório institucional junto com a orientadora (Profa. Dra. Cristiane Sato)
+- 🔄 **Benchmarks empíricos:** Rodar as instâncias na máquina local e atualizar as tabelas do relatório (`make bench`, `make bench-tables`)
+- ❌ **Entrega e protocolo formal:** Colher assinaturas e submeter o relatório final da IC (UFABC / ProPes / CNPq)
+- ✅ Adequar a Seção de Resultados às normas da UFABC (máximo de 20 páginas — alcançado 13 páginas)
+- ✅ Implementar chave DRY para Opções 1A (relatório executivo) e 2A (relatório com apêndice teórico integral)
 - ✅ Criar o `book.tex` (Livro/Monografia independente de alta densidade teórica e editorial)
-- 🔄 Fazer os Experimentos e Validação Experimental (Experimentos/ — Infraestrutura Concluída)
-- ❌ Por fim fazer a auditoria final do Relatório e entregar a IC
+- ✅ Estruturar a infraestrutura completa de benchmarks (`Experimentos/`)
+- ✅ Testar e finalizar a Segmentação de Imagens (Max Flow / Min Cut)
+- ✅ Consertar casos de borda da Segmentação de Imagens
+- ✅ Fazer o Minimum Cost Flow - Teoria e Implementação
+- ✅ Fazer o Network Simplex - Teoria e Implementação
+- ✅ Fazer as Implementações dos Problemas de Fluxo Máximo e Custo Mínimo
 
 ---
 
