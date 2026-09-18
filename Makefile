@@ -7,7 +7,7 @@ MAKEFLAGS += --no-print-directory -s
 # Makefile: Network Flow Research Suite
 # ----------------------------------------------------------------
 
-.PHONY: help all latex book apps impl exp format test setup clean sync-code
+.PHONY: help all latex book apps impl exp dimacs bench bench-tables bench-plots format test setup clean sync-code
 
 all: help
 
@@ -26,6 +26,10 @@ help:
 	cmd "apps"           "Compila e executa as aplicações reais de fluxo"; \
 	cmd "impl"           "Compila a biblioteca de algoritmos e problemas"; \
 	cmd "exp"            "Compila e executa os benchmarks e experimentos"; \
+	cmd "dimacs"         "Baixa os geradores oficiais e cria instâncias canônicas"; \
+	cmd "bench"          "Executa a pipeline completa de benchmarks"; \
+	cmd "bench-tables"   "Gera tabelas LaTeX com resultados dos benchmarks"; \
+	cmd "bench-plots"    "Gera gráficos comparativos dos benchmarks"; \
 	sec "Qualidade & Sincronização:"; \
 	cmd "test"           "Executa a suíte de testes de algoritmos e aplicações"; \
 	cmd "format"         "Formata todos os códigos C++ (.hpp/.cpp) com clang-format"; \
@@ -61,6 +65,18 @@ impl:
 
 exp:
 	$(MAKE) -C Experimentos all
+
+dimacs:
+	$(MAKE) -C Experimentos dimacs
+
+bench: exp
+	$(MAKE) -C Experimentos run
+
+bench-tables:
+	$(MAKE) -C Experimentos tables
+
+bench-plots:
+	$(MAKE) -C Experimentos plots
 
 test:
 	$(MAKE) -C Implementações test

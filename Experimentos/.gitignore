@@ -1,0 +1,17 @@
+# Binários compilados dos drivers
+drivers/max_flow_runner
+drivers/min_cost_runner
+
+# Resultados brutos (gerados sob demanda)
+results/*.csv
+results/*.json
+results/*.pdf
+results/*.tex
+
+# Instâncias DIMACS (grandes, baixadas sob demanda)
+instances/dimacs_maxflow/
+instances/dimacs_mincost/
+instances/synthetic/
+
+# Geradores compilados e baixados
+build_generators/

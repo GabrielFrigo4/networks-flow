@@ -89,9 +89,8 @@ public:
 					best_violation = rc;
 					entering = i;
 				}
-				else if (
-				    arc_state[arc_idx] == ArcState::UPPER && -rc < best_violation
-				)
+				else if (arc_state[arc_idx] == ArcState::UPPER &&
+				         -rc < best_violation)
 				{
 					best_violation = -rc;
 					entering = i;

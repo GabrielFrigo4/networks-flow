@@ -1,0 +1,10 @@
+c Small test instance for min-cost flow validation
+c 4 nodes, 5 arcs
+p min 4 5
+n 1 4
+n 4 -4
+a 1 2 0 4 2
+a 1 3 0 2 2
+a 2 3 0 2 1
+a 2 4 0 3 3
+a 3 4 0 5 1
