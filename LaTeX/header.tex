@@ -29,6 +29,25 @@
 \usepackage{listings}
 \usepackage{helvet}
 \renewcommand{\familydefault}{\sfdefault}
+\usepackage{fancyhdr}
+
+\fancypagestyle{textual}{%
+    \fancyhf{}%
+    \fancyhead[L]{\small\textsf{\nouppercase{\leftmark}}}%
+    \fancyhead[R]{\small\textsf{\textbf{\thepage}}}%
+    \fancyfoot{}%
+    \renewcommand{\headrulewidth}{0.4pt}%
+    \renewcommand{\footrulewidth}{0pt}%
+}
+
+\fancypagestyle{plain}{%
+    \fancyhf{}%
+    \fancyhead[R]{\small\textsf{\textbf{\thepage}}}%
+    \fancyfoot{}%
+    \renewcommand{\headrulewidth}{0pt}%
+    \renewcommand{\footrulewidth}{0pt}%
+}
+
 \usepackage{titlesec}
 \usepackage{setspace}
 \usepackage[plainpages=false,pdfpagelabels]{hyperref}

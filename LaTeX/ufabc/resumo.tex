@@ -1,0 +1,24 @@
+% =========================================================================
+% RESUMO E PALAVRAS-CHAVE DA INICIAÇÃO CIENTÍFICA
+% =========================================================================
+\begin{singlespace}
+\section*{Resumo}
+
+O presente trabalho de Iniciação Científica investiga de maneira integrada a teoria matemática, a modelagem combinatória e a engenharia de software de alto desempenho aplicadas aos problemas fundamentais de Fluxos em Redes. A pesquisa estrutura-se em quatro eixos complementares:
+
+\begin{itemize}[leftmargin=1.5em, itemsep=0.15em, topsep=0.3em, parsep=0em]
+    \item \textbf{Fundamentação Teórica e Dualidade:} Formalização e demonstração rigorosa dos teoremas estruturais clássicos (Ford-Fulkerson, Total Unimodularidade de Poincaré, Dualidades de König, Gallai, Hall e Menger, Decomposição Canônica, Otimalidade por Ciclos Negativos de Klein e Custos Reduzidos sob Folga Complementar). Cada teorema é apresentado sob quatro dimensões: formalismo, intuição geométrica, demonstração e reflexo algorítmico.
+
+    \item \textbf{Arquitetura Orientada a Objetos em C++23:} Desenvolvimento de um ecossistema modular polimórfico (padrões \textit{Strategy} e \textit{Template Method}) dividido em duas famílias: \code{FlowNetwork}, com cinco motores de Fluxo Máximo (\textit{Ford-Fulkerson}, \textit{Edmonds-Karp}, \textit{Dinic}, \textit{Push-Relabel FIFO} e \textit{Push-Relabel Gap Heuristic}); e \code{CostNetwork}, com quatro motores de Fluxo de Custo Mínimo (\textit{Cycle Canceling}, \textit{Successive Shortest Path} via SPFA e acelerado via Dijkstra com potenciais, e o \textit{Network Simplex} com manutenção direta de bases em árvores geradoras).
+
+    \item \textbf{Reduções Combinatórias e Aplicações Práticas:} Modelagem e resolução de problemas clássicos em grafos bipartidos (emparelhamento máximo, coberturas mínimas e caminhos disjuntos), culminando na concepção de um pipeline autônomo de \textbf{Segmentação Interativa de Imagens} baseado no algoritmo de corte mínimo ($s$-$t$ \textit{cut}) aplicado à visão computacional.
+
+    \item \textbf{Protocolo Experimental e Benchmarks:} Metodologia sistemática de avaliação de desempenho em instâncias padronizadas da literatura (coleções DIMACS \textit{Washington}, \textit{Genrmf}, \textit{Netgen} e \textit{Grid}), contemplando isolamento estrito de tempo de CPU, instrumentação operacional e validação cruzada automática de soluções ótimas.
+\end{itemize}
+
+\vspace{0.3cm}
+\noindent \textbf{Nota sobre a Estrutura do Documento:} O relatório organiza-se no corpo analítico de fundamentação, deduções e algoritmos (Seções~\ref{sec:introducao} a~\ref{sec:conclusoes}), seguido pelos Apêndices~\ref{ap:flownetwork} a~\ref{ap:github} com a documentação integral do código-fonte em C++23.
+
+\vspace{0.3cm}
+\noindent \textbf{Palavras-chave:} Otimização Combinatória, Teoria dos Grafos, Fluxo Máximo, Fluxo de Custo Mínimo, Dualidade Primal-Dual, Network Simplex, Total Unimodularidade, Benchmarks DIMACS, C++ Moderno.
+\end{singlespace}
