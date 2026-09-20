@@ -7,6 +7,15 @@ import sys
 from pathlib import Path
 import csv
 
+USE_COLOR = os.environ.get(
+    "NO_COLOR") is None and os.environ.get("TERM", "") != "dumb"
+C_RESET = "\033[0m" if USE_COLOR else ""
+C_BOLD = "\033[1m" if USE_COLOR else ""
+C_DIM = "\033[90m" if USE_COLOR else ""
+C_BLUE = "\033[1;34m" if USE_COLOR else ""
+C_YELLOW = "\033[1;33m" if USE_COLOR else ""
+C_GREEN = "\033[1;32m" if USE_COLOR else ""
+
 
 def parse_args():
     parser = argparse.ArgumentParser(
@@ -77,10 +86,10 @@ def run_type(benchmark_type, instances_dir, output_dir, driver_path, ext, repeat
         for i, instance in enumerate(instances, 1):
             if not force and check_existing(csv_path, instance.name):
                 print(
-                    f"[{i}/{len(instances)}] Skipping {instance.name} (already exists)...", file=sys.stderr)
+                    f"{C_DIM}[{i}/{len(instances)}] Skipping {instance.name} (already exists)...{C_RESET}", file=sys.stderr)
                 continue
 
-            print(f"[{i}/{len(instances)}] Running {instance.name}...",
+            print(f"{C_BLUE}[{i}/{len(instances)}]{C_RESET} Running {C_BOLD}{instance.name}{C_RESET}...",
                   file=sys.stderr)
 
             cmd = [
@@ -107,10 +116,8 @@ def run_type(benchmark_type, instances_dir, output_dir, driver_path, ext, repeat
                     any_error = True
 
             except subprocess.TimeoutExpired:
-                # TLE não é erro de implementação: é resultado esperado para
-                # algoritmos exponenciais (Ford-Fulkerson) em instâncias difíceis.
                 print(
-                    f"[{i}/{len(instances)}] {instance.name} timed out after {subprocess_timeout}s (salvaguarda Python)", file=sys.stderr)
+                    f"{C_YELLOW}[{i}/{len(instances)}] {instance.name} timed out after {subprocess_timeout}s (salvaguarda Python){C_RESET}", file=sys.stderr)
                 if benchmark_type == "max_flow":
                     f.write(
                         f"{instance.name},TimeoutAll,0,0,0,{timeout*1000.0:.2f},0,TLE\n")

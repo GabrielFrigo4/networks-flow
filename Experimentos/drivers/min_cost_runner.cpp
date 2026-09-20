@@ -7,10 +7,13 @@
 #include <cstdlib>
 #include <fstream>
 #include <future>
+#include <iomanip>
 #include <iostream>
 #include <memory>
 #include <numeric>
+#include <sstream>
 #include <string>
+#include <string_view>
 #include <thread>
 #include <utility>
 #include <vector>
@@ -20,6 +23,49 @@
 #include "CostNetwork/NetworkSimplex.hpp"
 #include "CostNetwork/SuccessiveShortest.hpp"
 #include "CostNetwork/SuccessiveShortestDijkstra.hpp"
+
+namespace Term
+{
+static bool use_color()
+{
+	static const bool enabled = [] {
+		if (std::getenv("NO_COLOR") != nullptr)
+			return false;
+		const char *term = std::getenv("TERM");
+		return term != nullptr && std::string_view(term) != "dumb";
+	}();
+	return enabled;
+}
+
+inline const char *reset()
+{
+	return use_color() ? "\033[0m" : "";
+}
+inline const char *bold()
+{
+	return use_color() ? "\033[1m" : "";
+}
+inline const char *dim()
+{
+	return use_color() ? "\033[90m" : "";
+}
+inline const char *cyan()
+{
+	return use_color() ? "\033[36m" : "";
+}
+inline const char *green()
+{
+	return use_color() ? "\033[1;32m" : "";
+}
+inline const char *yellow()
+{
+	return use_color() ? "\033[1;33m" : "";
+}
+inline const char *red()
+{
+	return use_color() ? "\033[1;31m" : "";
+}
+} // namespace Term
 
 struct EngineEntry
 {
@@ -213,20 +259,43 @@ int main(int argc, char *argv[])
 	Long reference_flow = -1;
 	bool cross_validation_ok = true;
 
+	Size max_name_len = 0;
+	for (const auto &engine : get_engines())
+		max_name_len = std::max(max_name_len, engine.name.size());
+	const Size col_width = max_name_len + 4;
+
 	for (const auto &engine : get_engines())
 	{
-		std::cerr << "  [" << instance_name << "] " << engine.name << "..."
-		          << std::flush;
+		std::string label = engine.name + "...";
+		std::string padding(
+		    col_width > label.size() ? col_width - label.size() : 1, ' '
+		);
+
+		std::cerr << "  " << Term::cyan() << "[" << instance_name << "]"
+		          << Term::reset() << " " << engine.name << Term::dim() << "..."
+		          << padding << Term::reset() << std::flush;
 
 		auto res = benchmark_engine(engine, inst, repeats, timeout_s);
+
+		std::ostringstream time_ss;
+		time_ss << res.mean_ms;
+		std::string time_str = time_ss.str();
+
+		std::cerr << std::setw(10) << std::right << time_str << " " << Term::dim()
+		          << "ms" << Term::reset() << " ";
+
+		if (res.status == "OK")
+			std::cerr << Term::green() << "[OK]" << Term::reset() << "\n";
+		else if (res.status == "TLE")
+			std::cerr << Term::yellow() << "[TLE]" << Term::reset() << "\n";
+		else
+			std::cerr << Term::red() << "[" << res.status << "]" << Term::reset()
+			          << "\n";
 
 		std::cout << instance_name << "," << res.algorithm << "," << res.n << ","
 		          << res.m << "," << res.flow_value << "," << res.cost_value << ","
 		          << res.mean_ms << "," << res.stddev_ms << "," << res.status
 		          << "\n";
-
-		std::cerr << " " << res.mean_ms << " ms"
-		          << " [" << res.status << "]\n";
 
 		if (res.status == "OK")
 		{
@@ -246,12 +315,12 @@ int main(int argc, char *argv[])
 
 	if (!cross_validation_ok)
 	{
-		std::cerr << "ERRO: Verificação cruzada falhou! "
-		          << "Valores de z* ou f* divergentes.\n";
+		std::cerr << "  " << Term::red() << "ERRO: Verificação cruzada falhou! "
+		          << "Valores de z* ou f* divergentes." << Term::reset() << "\n";
 		return 2;
 	}
 
-	std::cerr << "Verificação cruzada: OK (z* = " << reference_cost
-	          << ", f* = " << reference_flow << ")\n";
+	std::cerr << "  Verificação cruzada: " << Term::green() << "OK" << Term::reset()
+	          << " (z* = " << reference_cost << ", f* = " << reference_flow << ")\n";
 	return 0;
 }
