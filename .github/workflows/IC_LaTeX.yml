@@ -1,87 +1,89 @@
 name: Compilar LaTeX e Gerar PDF
 
 on:
-  push:
-    branches:
-      - main
-      - master
+    push:
+        branches:
+            - main
+            - master
 
 env:
-  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+    FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
 jobs:
-  build_latex:
-    name: Build LaTeX (Múltiplos Arquivos)
-    runs-on: ubuntu-latest
-    permissions:
-      contents: write
+    build_latex:
+        name: Build LaTeX (Múltiplos Arquivos)
+        runs-on: ubuntu-latest
+        permissions:
+            contents: write
 
-    steps:
-      - name: Fazer Checkout do código
-        uses: actions/checkout@v7
+        steps:
+            - name: Fazer Checkout do código
+              uses: actions/checkout@v7
 
-      - name: Compilar todos os arquivos LaTeX via Makefile
-        uses: xu-cheng/latex-action@v4
-        with:
-          root_file: |
-            book.tex
-            ic.tex
-            relatorio.tex
-            projeto.tex
-          working_directory: LaTeX
-          extra_system_packages: "make"
-          pre_compile: "make all"
+            - name: Compilar todos os arquivos LaTeX via Makefile
+              uses: xu-cheng/latex-action@v4
+              with:
+                  root_file: |
+                      book.tex
+                      ic.tex
+                      ic-estendido.tex
+                      relatorio.tex
+                      relatorio-estendido.tex
+                      projeto.tex
+                  working_directory: LaTeX
+                  extra_system_packages: "make"
+                  pre_compile: "make all"
 
-      - name: Deletar Release e Tag 'latest' antigas
-        if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          gh release delete latest --cleanup-tag --yes || true
+            - name: Deletar Release e Tag 'latest' antigas
+              if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
+              env:
+                  GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+              run: |
+                  gh release delete latest --cleanup-tag --yes || true
 
-      - name: Sleep for 4 seconds
-        if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
-        run: sleep 4
+            - name: Sleep for 4 seconds
+              if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
+              run: sleep 4
 
-      - name: Preparar Metadados e Links da Release
-        id: meta_step
-        if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
-        run: |
-          # Formatar data (Fuso Horário de São Paulo)
-          export TZ="America/Sao_Paulo"
-          RAW_DATE="${{ github.event.head_commit.timestamp }}"
-          FORMATTED_DATE=$(date -d "$RAW_DATE" +'%d/%m/%Y %H:%M')
-          echo "DATA_FORMATADA=$FORMATTED_DATE" >> "$GITHUB_OUTPUT"
+            - name: Preparar Metadados e Links da Release
+              id: meta_step
+              if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
+              run: |
+                  # Formatar data (Fuso Horário de São Paulo)
+                  export TZ="America/Sao_Paulo"
+                  RAW_DATE="${{ github.event.head_commit.timestamp }}"
+                  FORMATTED_DATE=$(date -d "$RAW_DATE" +'%d/%m/%Y %H:%M')
+                  echo "DATA_FORMATADA=$FORMATTED_DATE" >> "$GITHUB_OUTPUT"
 
-          # Gerar links de download dinâmicos para cada PDF encontrado
-          {
-            echo 'PDF_LINKS<<EOF'
-            for pdf_path in LaTeX/*.pdf; do
-              if [ -f "$pdf_path" ]; then
-                pdf_file=$(basename "$pdf_path")
-                echo "- [\`$pdf_file\`](https://github.com/${{ github.repository }}/releases/download/latest/$pdf_file)"
-              fi
-            done
-            echo 'EOF'
-          } >> "$GITHUB_OUTPUT"
+                  # Gerar links de download dinâmicos para cada PDF encontrado
+                  {
+                    echo 'PDF_LINKS<<EOF'
+                    for pdf_path in LaTeX/*.pdf; do
+                      if [ -f "$pdf_path" ]; then
+                        pdf_file=$(basename "$pdf_path")
+                        echo "- [\`$pdf_file\`](https://github.com/${{ github.repository }}/releases/download/latest/$pdf_file)"
+                      fi
+                    done
+                    echo 'EOF'
+                  } >> "$GITHUB_OUTPUT"
 
-      - name: Criar Nova Release 'latest'
-        uses: softprops/action-gh-release@v3
-        if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
-        with:
-          tag_name: latest
-          name: Documentos LaTeX Compilados
-          body: |
-            Build automatizado de todos os documentos LaTeX do repositório.
+            - name: Criar Nova Release 'latest'
+              uses: softprops/action-gh-release@v3
+              if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
+              with:
+                  tag_name: latest
+                  name: Documentos LaTeX Compilados
+                  body: |
+                      Build automatizado de todos os documentos LaTeX do repositório.
 
-            **Commit:** ${{ github.sha }}
-            **Data:** ${{ steps.meta_step.outputs.DATA_FORMATADA }}
+                      **Commit:** ${{ github.sha }}
+                      **Data:** ${{ steps.meta_step.outputs.DATA_FORMATADA }}
 
-            **Conteúdo Gerado:**
-            ${{ steps.meta_step.outputs.PDF_LINKS }}
-          target_commitish: ${{ github.sha }}
-          files: "LaTeX/*.pdf"
-          draft: false
-          prerelease: false
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+                      **Conteúdo Gerado:**
+                      ${{ steps.meta_step.outputs.PDF_LINKS }}
+                  target_commitish: ${{ github.sha }}
+                  files: "LaTeX/*.pdf"
+                  draft: false
+                  prerelease: false
+              env:
+                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

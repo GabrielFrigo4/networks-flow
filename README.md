@@ -14,7 +14,9 @@
 [![Baixar Livro (Monografia)][baixar_pdf_book_icon]][baixar_pdf_book]
 [![Baixar PDF do Projeto][baixar_pdf_projeto_icon]][baixar_pdf_projeto]
 [![Baixar PDF do Relatório][baixar_pdf_relatorio_icon]][baixar_pdf_relatorio]
+[![Baixar PDF do Relatório Estendido][baixar_pdf_relatorio_est_icon]][baixar_pdf_relatorio_est]
 [![Baixar PDF da IC][baixar_pdf_ic_icon]][baixar_pdf_ic]
+[![Baixar PDF da IC Estendida][baixar_pdf_ic_est_icon]][baixar_pdf_ic_est]
 
 A documentação oficial da pesquisa é gerada a partir dos códigos-fonte em LaTeX disponíveis na pasta [`LaTeX/`](./LaTeX/). A tabela a seguir detalha a finalidade de cada documento e as diferenças entre eles:
 
@@ -253,14 +255,18 @@ make clean
 [successive_shortest]: ./Implementações/CostNetwork/SuccessiveShortest.hpp
 [successive_shortest_dijkstra]: ./Implementações/CostNetwork/SuccessiveShortestDijkstra.hpp
 [network_simplex]: ./Implementações/CostNetwork/NetworkSimplex.hpp
+[baixar_pdf_projeto]: https://github.com/GabrielFrigo4/IC_Networks_Flow/releases/latest/download/projeto.pdf
+[baixar_pdf_projeto_icon]: https://img.shields.io/badge/Projeto-Baixar-red?style=for-the-badge&logo=adobeacrobatreader&logoColor=white
 [baixar_pdf_book]: https://github.com/GabrielFrigo4/IC_Networks_Flow/releases/latest/download/book.pdf
 [baixar_pdf_book_icon]: https://img.shields.io/badge/Livro-Baixar-success?style=for-the-badge&logo=gitbook&logoColor=white
 [baixar_pdf_ic]: https://github.com/GabrielFrigo4/IC_Networks_Flow/releases/latest/download/ic.pdf
 [baixar_pdf_ic_icon]: https://img.shields.io/badge/IC-Baixar-red?style=for-the-badge&logo=adobeacrobatreader&logoColor=white
-[baixar_pdf_projeto]: https://github.com/GabrielFrigo4/IC_Networks_Flow/releases/latest/download/projeto.pdf
-[baixar_pdf_projeto_icon]: https://img.shields.io/badge/Projeto-Baixar-red?style=for-the-badge&logo=adobeacrobatreader&logoColor=white
+[baixar_pdf_ic_est]: https://github.com/GabrielFrigo4/IC_Networks_Flow/releases/latest/download/ic-estendido.pdf
+[baixar_pdf_ic_est_icon]: https://img.shields.io/badge/IC_Estendida-Baixar-red?style=for-the-badge&logo=adobeacrobatreader&logoColor=white
 [baixar_pdf_relatorio]: https://github.com/GabrielFrigo4/IC_Networks_Flow/releases/latest/download/relatorio.pdf
 [baixar_pdf_relatorio_icon]: https://img.shields.io/badge/Relatório-Baixar-red?style=for-the-badge&logo=adobeacrobatreader&logoColor=white
+[baixar_pdf_relatorio_est]: https://github.com/GabrielFrigo4/IC_Networks_Flow/releases/latest/download/relatorio-estendido.pdf
+[baixar_pdf_relatorio_est_icon]: https://img.shields.io/badge/Relatório_Estendido-Baixar-red?style=for-the-badge&logo=adobeacrobatreader&logoColor=white
 [download_speed]: https://cses.fi/problemset/task/1694
 [school_dance]: https://cses.fi/problemset/task/1696
 [distinct_routes]: https://cses.fi/problemset/task/1711
