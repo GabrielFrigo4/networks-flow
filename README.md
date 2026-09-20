@@ -11,21 +11,22 @@
 
 ## 📚 Documentação e Relatórios da Pesquisa
 
-[![Baixar Livro (Monografia)][baixar_pdf_book_icon]][baixar_pdf_book]
-[![Baixar PDF do Projeto][baixar_pdf_projeto_icon]][baixar_pdf_projeto]
-[![Baixar PDF do Relatório][baixar_pdf_relatorio_icon]][baixar_pdf_relatorio]
-[![Baixar PDF do Relatório Estendido][baixar_pdf_relatorio_est_icon]][baixar_pdf_relatorio_est]
-[![Baixar PDF da IC][baixar_pdf_ic_icon]][baixar_pdf_ic]
-[![Baixar PDF da IC Estendida][baixar_pdf_ic_est_icon]][baixar_pdf_ic_est]
+[![Baixar Livro (Monografia)][baixar_pdf_book_icon]][baixar_pdf_book] [![Baixar PDF do Projeto][baixar_pdf_projeto_icon]][baixar_pdf_projeto]
+
+[![Baixar PDF do Relatório][baixar_pdf_relatorio_icon]][baixar_pdf_relatorio] [![Baixar PDF do Relatório Estendido][baixar_pdf_relatorio_est_icon]][baixar_pdf_relatorio_est]
+
+[![Baixar PDF da IC][baixar_pdf_ic_icon]][baixar_pdf_ic] [![Baixar PDF da IC Estendida][baixar_pdf_ic_est_icon]][baixar_pdf_ic_est]
 
 A documentação oficial da pesquisa é gerada a partir dos códigos-fonte em LaTeX disponíveis na pasta [`LaTeX/`](./LaTeX/). A tabela a seguir detalha a finalidade de cada documento e as diferenças entre eles:
 
-| PDF Gerado                                          | Arquivo Fonte                            | Descrição e Diferenças                                                                                                                                                                                                                                                   |
-| :-------------------------------------------------- | :--------------------------------------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| [📗&nbsp;**`book.pdf`**][baixar_pdf_book]           | [`book.tex`](./LaTeX/book.tex)           | **Livro e Monografia Independente.** Documento completo e denso estruturado editorialmente em Partes e Capítulos para estudo profundo e distribuição aberta, livre da formatação burocrática de Iniciação Científica.                                                    |
-| [📘&nbsp;**`projeto.pdf`**][baixar_pdf_projeto]     | [`projeto.tex`](./LaTeX/projeto.tex)     | Proposta e plano de trabalho inicial do projeto de pesquisa, submetido para a avaliação do edital.                                                                                                                                                                       |
-| [📙&nbsp;**`relatorio.pdf`**][baixar_pdf_relatorio] | [`relatorio.tex`](./LaTeX/relatorio.tex) | Relatório formal de acompanhamento da pesquisa. Contém a capa oficial institucional da UFABC com identificação do edital e campos de assinaturas.                                                                                                                        |
-| [📕&nbsp;**`ic.pdf`**][baixar_pdf_ic]               | [`ic.tex`](./LaTeX/ic.tex)               | Documento principal compilando todo o conteúdo técnico da pesquisa. **Possui exatamente o mesmo conteúdo textual do `relatorio.tex`**, diferindo apenas por **não ter a capa formal do relatório** (folha de assinaturas), oferecendo uma formatação limpa para leitura. |
+| PDF Gerado                                                        | Arquivo Fonte                                                        | Descrição e Diferenças                                                                                                                                                                                                                                                   |
+| :---------------------------------------------------------------- | :------------------------------------------------------------------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [📗&nbsp;**`book.pdf`**][baixar_pdf_book]                         | [🖋️&nbsp;`book.tex`](./LaTeX/book.tex)                               | **Livro e Monografia Independente.** Documento completo e denso estruturado editorialmente em Partes e Capítulos para estudo profundo e distribuição aberta, livre da formatação burocrática de Iniciação Científica.                                                    |
+| [📘&nbsp;**`projeto.pdf`**][baixar_pdf_projeto]                   | [🖋️&nbsp;`projeto.tex`](./LaTeX/projeto.tex)                         | Proposta e plano de trabalho inicial do projeto de pesquisa, submetido para a avaliação do edital.                                                                                                                                                                       |
+| [📙&nbsp;**`relatorio.pdf`**][baixar_pdf_relatorio]               | [🖋️&nbsp;`relatorio.tex`](./LaTeX/relatorio.tex)                     | Relatório formal de acompanhamento da pesquisa. Contém a capa oficial institucional da UFABC com identificação do edital e campos de assinaturas.                                                                                                                        |
+| [📙&nbsp;**`relatorio‑estendido.pdf`**][baixar_pdf_relatorio_est] | [🖋️&nbsp;`relatorio‑estendido.tex`](./LaTeX/relatorio-estendido.tex) | Relatório formal de acompanhamento da pesquisa. Contém a capa oficial institucional da UFABC com identificação do edital e campos de assinaturas.                                                                                                                        |
+| [📕&nbsp;**`ic.pdf`**][baixar_pdf_ic]                             | [🖋️&nbsp;`ic.tex`](./LaTeX/ic.tex)                                   | Documento principal compilando todo o conteúdo técnico da pesquisa. **Possui exatamente o mesmo conteúdo textual do `relatorio.tex`**, diferindo apenas por **não ter a capa formal do relatório** (folha de assinaturas), oferecendo uma formatação limpa para leitura. |
+| [📕&nbsp;**`ic‑estendido.pdf`**][baixar_pdf_ic_est]               | [🖋️&nbsp;`ic‑estendido.tex`](./LaTeX/ic-estendido.tex)               | Documento principal compilando todo o conteúdo técnico da pesquisa. **Possui exatamente o mesmo conteúdo textual do `relatorio.tex`**, diferindo apenas por **não ter a capa formal do relatório** (folha de assinaturas), oferecendo uma formatação limpa para leitura. |
 
 ---
 
@@ -256,17 +257,17 @@ make clean
 [successive_shortest_dijkstra]: ./Implementações/CostNetwork/SuccessiveShortestDijkstra.hpp
 [network_simplex]: ./Implementações/CostNetwork/NetworkSimplex.hpp
 [baixar_pdf_projeto]: https://github.com/GabrielFrigo4/IC_Networks_Flow/releases/latest/download/projeto.pdf
-[baixar_pdf_projeto_icon]: https://img.shields.io/badge/Projeto-Baixar-red?style=for-the-badge&logo=adobeacrobatreader&logoColor=white
+[baixar_pdf_projeto_icon]: https://img.shields.io/badge/Projeto-Baixar-0969da?style=for-the-badge&logo=latex&logoColor=white
 [baixar_pdf_book]: https://github.com/GabrielFrigo4/IC_Networks_Flow/releases/latest/download/book.pdf
-[baixar_pdf_book_icon]: https://img.shields.io/badge/Livro-Baixar-success?style=for-the-badge&logo=gitbook&logoColor=white
+[baixar_pdf_book_icon]: https://img.shields.io/badge/Livro-Baixar-2ea44f?style=for-the-badge&logo=gitbook&logoColor=white
 [baixar_pdf_ic]: https://github.com/GabrielFrigo4/IC_Networks_Flow/releases/latest/download/ic.pdf
-[baixar_pdf_ic_icon]: https://img.shields.io/badge/IC-Baixar-red?style=for-the-badge&logo=adobeacrobatreader&logoColor=white
+[baixar_pdf_ic_icon]: https://img.shields.io/badge/IC-Baixar-cf222e?style=for-the-badge&logo=adobeacrobatreader&logoColor=white
 [baixar_pdf_ic_est]: https://github.com/GabrielFrigo4/IC_Networks_Flow/releases/latest/download/ic-estendido.pdf
-[baixar_pdf_ic_est_icon]: https://img.shields.io/badge/IC_Estendida-Baixar-red?style=for-the-badge&logo=adobeacrobatreader&logoColor=white
+[baixar_pdf_ic_est_icon]: https://img.shields.io/badge/IC_Estendida-Baixar-991b1b?style=for-the-badge&logo=adobeacrobatreader&logoColor=white
 [baixar_pdf_relatorio]: https://github.com/GabrielFrigo4/IC_Networks_Flow/releases/latest/download/relatorio.pdf
-[baixar_pdf_relatorio_icon]: https://img.shields.io/badge/Relatório-Baixar-red?style=for-the-badge&logo=adobeacrobatreader&logoColor=white
+[baixar_pdf_relatorio_icon]: https://img.shields.io/badge/Relatório-Baixar-d97706?style=for-the-badge&logo=adobeacrobatreader&logoColor=white
 [baixar_pdf_relatorio_est]: https://github.com/GabrielFrigo4/IC_Networks_Flow/releases/latest/download/relatorio-estendido.pdf
-[baixar_pdf_relatorio_est_icon]: https://img.shields.io/badge/Relatório_Estendido-Baixar-red?style=for-the-badge&logo=adobeacrobatreader&logoColor=white
+[baixar_pdf_relatorio_est_icon]: https://img.shields.io/badge/Relatório_Estendido-Baixar-b45309?style=for-the-badge&logo=adobeacrobatreader&logoColor=white
 [download_speed]: https://cses.fi/problemset/task/1694
 [school_dance]: https://cses.fi/problemset/task/1696
 [distinct_routes]: https://cses.fi/problemset/task/1711
