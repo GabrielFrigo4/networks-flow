@@ -15,8 +15,10 @@ from pathlib import Path
 
 BASE_URL = "http://archive.dimacs.rutgers.edu/pub/netflow/generators/network"
 
+
 def log(msg):
     print(f"[DIMACS] {msg}", flush=True)
+
 
 def download_file(url, target_path):
     log(f"Baixando {url} -> {target_path.name}")
@@ -24,11 +26,14 @@ def download_file(url, target_path):
     with urllib.request.urlopen(req) as resp, open(target_path, "wb") as out:
         out.write(resp.read())
 
+
 def compile_cmd(cmd, cwd):
-    res = subprocess.run(cmd, shell=True, cwd=cwd, capture_output=True, text=True)
+    res = subprocess.run(cmd, shell=True, cwd=cwd,
+                         capture_output=True, text=True)
     if res.returncode != 0:
         log(f"ERRO ao compilar:\n{res.stderr}")
         sys.exit(1)
+
 
 def build_washington(build_dir):
     wash_dir = build_dir / "washington"
@@ -39,13 +44,15 @@ def build_washington(build_dir):
     bin_file = wash_dir / "washington"
     if not bin_file.exists():
         log("Compilando gerador Washington...")
-        compile_cmd("cc -Wno-everything -Wno-return-mismatch -O2 washington.c -o washington", wash_dir)
+        compile_cmd("cc -std=gnu89 -w -O2 washington.c -o washington", wash_dir)
     return bin_file
+
 
 def build_genrmf(build_dir):
     rmf_dir = build_dir / "genrmf"
     rmf_dir.mkdir(parents=True, exist_ok=True)
-    files = ["genrmf.c", "genmain.c", "genio.c", "genio.h", "gen_maxflow_typedef.h", "math_to_gcc.h"]
+    files = ["genrmf.c", "genmain.c", "genio.c", "genio.h",
+             "gen_maxflow_typedef.h", "math_to_gcc.h"]
     for f in files:
         target = rmf_dir / f
         if not target.exists():
@@ -53,8 +60,10 @@ def build_genrmf(build_dir):
     bin_file = rmf_dir / "genrmf"
     if not bin_file.exists():
         log("Compilando gerador Genrmf...")
-        compile_cmd("cc -Wno-everything -O2 genrmf.c genmain.c genio.c -lm -o genrmf", rmf_dir)
+        compile_cmd(
+            "cc -std=gnu89 -w -O2 genrmf.c genmain.c genio.c -lm -o genrmf", rmf_dir)
     return bin_file
+
 
 def build_netgen(build_dir):
     net_dir = build_dir / "netgen"
@@ -77,15 +86,15 @@ def build_netgen(build_dir):
     bin_file = net_dir / "netgen"
     if not bin_file.exists():
         log("Compilando gerador Netgen...")
-        compile_cmd("cc -Wno-everything -DDIMACS -O2 netgen.c index.c random.c -o netgen", net_dir)
+        compile_cmd(
+            "cc -std=gnu89 -w -DDIMACS -O2 netgen.c index.c random.c -o netgen", net_dir)
     return bin_file, net_dir / "problems"
+
 
 def generate_maxflow_instances(wash_bin, rmf_bin, out_dir):
     out_dir.mkdir(parents=True, exist_ok=True)
     log(f"Gerando instâncias DIMACS Max-Flow em {out_dir}...")
 
-    # Washington: function dim1 dim2 range output
-    # fct 1 = Mesh, 2 = RLG, 6 = BasicLine
     wash_jobs = [
         (1, 16, 16, 1000, out_dir / "wash_mesh_16.max"),
         (1, 32, 32, 1000, out_dir / "wash_mesh_32.max"),
@@ -98,9 +107,15 @@ def generate_maxflow_instances(wash_bin, rmf_bin, out_dir):
     for fct, d1, d2, rng, path in wash_jobs:
         if not path.exists():
             log(f"  -> Washington {path.name}")
-            subprocess.run([str(wash_bin), str(fct), str(d1), str(d2), str(rng), str(path)], check=True)
+            subprocess.run(
+                [str(wash_bin), str(fct), str(d1),
+                 str(d2), str(rng), str(path)],
+                check=False,
+            )
+            if not path.exists() or path.stat().st_size == 0:
+                log(f"ERRO: {path.name} não foi gerado pelo washington.")
+                sys.exit(1)
 
-    # Genrmf: -a frame_size -b depth -c1 cap1 -c2 cap2 -out out_file
     rmf_jobs = [
         (4, 16, 10000, 1000, out_dir / "genrmf_small.max"),
         (8, 16, 10000, 1000, out_dir / "genrmf_medium.max"),
@@ -110,7 +125,9 @@ def generate_maxflow_instances(wash_bin, rmf_bin, out_dir):
     for a, b, c1, c2, path in rmf_jobs:
         if not path.exists():
             log(f"  -> Genrmf {path.name}")
-            subprocess.run([str(rmf_bin), "-a", str(a), "-b", str(b), "-c1", str(c1), "-c2", str(c2), "-out", str(path)], check=True)
+            subprocess.run([str(rmf_bin), "-a", str(a), "-b", str(b), "-c1",
+                           str(c1), "-c2", str(c2), "-out", str(path)], check=True)
+
 
 def generate_mincost_instances(net_bin, problems_file, out_dir):
     out_dir.mkdir(parents=True, exist_ok=True)
@@ -119,8 +136,6 @@ def generate_mincost_instances(net_bin, problems_file, out_dir):
     with open(problems_file, "r") as f:
         lines = [line.strip() for line in f if line.strip()]
 
-    # Canonical problems 1 through 8
-    # Each problem in the problems file has two lines: seed line, then parameters line
     i = 0
     prob_idx = 1
     while i < len(lines) and prob_idx <= 8:
@@ -131,11 +146,13 @@ def generate_mincost_instances(net_bin, problems_file, out_dir):
 
         if not out_file.exists():
             log(f"  -> Netgen {out_file.name}")
-            res = subprocess.run([str(net_bin)], input=input_data, text=True, capture_output=True, check=True)
+            res = subprocess.run(
+                [str(net_bin)], input=input_data, text=True, capture_output=True, check=True)
             out_file.write_text(res.stdout, encoding="utf-8")
 
         i += 2
         prob_idx += 1
+
 
 def write_provenance_documentation(doc_dir):
     readme_path = doc_dir / "README.md"
@@ -214,6 +231,7 @@ make dimacs
     readme_path.write_text(content, encoding="utf-8")
     log(f"Documentação de proveniência salva em {readme_path}")
 
+
 def main():
     script_dir = Path(__file__).resolve().parent
     exp_dir = script_dir.parent
@@ -224,11 +242,14 @@ def main():
     rmf_bin = build_genrmf(build_dir)
     net_bin, problems_file = build_netgen(build_dir)
 
-    generate_maxflow_instances(wash_bin, rmf_bin, instances_dir / "dimacs_maxflow")
-    generate_mincost_instances(net_bin, problems_file, instances_dir / "dimacs_mincost")
+    generate_maxflow_instances(
+        wash_bin, rmf_bin, instances_dir / "dimacs_maxflow")
+    generate_mincost_instances(
+        net_bin, problems_file, instances_dir / "dimacs_mincost")
     write_provenance_documentation(instances_dir)
 
     log("Instâncias DIMACS baixadas, geradas e documentadas com sucesso!")
+
 
 if __name__ == "__main__":
     main()

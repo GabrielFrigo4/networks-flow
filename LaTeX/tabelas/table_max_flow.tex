@@ -1,0 +1,138 @@
+\begin{table}[!ht]
+\centering
+\small
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{llrrrrl}
+\toprule
+\textbf{Inst\^ancia} & \textbf{Algoritmo} & $|V|$ & $|A|$ & $f^*$ & $\bar{t}$ (ms) & \textbf{Status} \\
+\midrule
+test\_small.max & FordFulkerson & 6 & 8 & 15 & \textbf{0.00} & OK \\
+test\_small.max & EdmondsKarp & 6 & 8 & 15 & 0.00 & OK \\
+test\_small.max & Dinic & 6 & 8 & 15 & 0.00 & OK \\
+test\_small.max & PushRelabel & 6 & 8 & 15 & 0.00 & OK \\
+test\_small.max & PushRelabelImproved & 6 & 8 & 15 & 0.00 & OK \\
+\midrule
+genrmf\_long.max & FordFulkerson & 1024 & 4080 & 40352 & 1186.75 & OK \\
+genrmf\_long.max & EdmondsKarp & 1024 & 4080 & 40352 & 7.34 & OK \\
+genrmf\_long.max & Dinic & 1024 & 4080 & 40352 & \textbf{1.93} & OK \\
+genrmf\_long.max & PushRelabel & 1024 & 4080 & 40352 & 3.36 & OK \\
+genrmf\_long.max & PushRelabelImproved & 1024 & 4080 & 40352 & 1.98 & OK \\
+\midrule
+genrmf\_medium.max & FordFulkerson & 1024 & 4544 & 130458 & 4988.82 & OK \\
+genrmf\_medium.max & EdmondsKarp & 1024 & 4544 & 130458 & 6.58 & OK \\
+genrmf\_medium.max & Dinic & 1024 & 4544 & 130458 & 1.60 & OK \\
+genrmf\_medium.max & PushRelabel & 1024 & 4544 & 130458 & 116.41 & OK \\
+genrmf\_medium.max & PushRelabelImproved & 1024 & 4544 & 130458 & \textbf{1.58} & OK \\
+\midrule
+genrmf\_small.max & FordFulkerson & 256 & 1008 & 38328 & 125.05 & OK \\
+genrmf\_small.max & EdmondsKarp & 256 & 1008 & 38328 & 0.39 & OK \\
+genrmf\_small.max & Dinic & 256 & 1008 & 38328 & \textbf{0.20} & OK \\
+genrmf\_small.max & PushRelabel & 256 & 1008 & 38328 & 6.22 & OK \\
+genrmf\_small.max & PushRelabelImproved & 256 & 1008 & 38328 & 0.25 & OK \\
+\midrule
+genrmf\_wide.max & TimeoutAll & 0 & 0 & 0 & --- & TLE \\
+\midrule
+wash\_line\_100.max & TimeoutAll & 0 & 0 & 0 & --- & TLE \\
+\midrule
+wash\_line\_50.max & TimeoutAll & 0 & 0 & 0 & --- & TLE \\
+\midrule
+wash\_mesh\_16.max & FordFulkerson & 258 & 752 & 14283 & 23.82 & OK \\
+wash\_mesh\_16.max & EdmondsKarp & 258 & 752 & 14283 & 1.52 & OK \\
+wash\_mesh\_16.max & Dinic & 258 & 752 & 14283 & \textbf{0.15} & OK \\
+wash\_mesh\_16.max & PushRelabel & 258 & 752 & 14283 & 1.22 & OK \\
+wash\_mesh\_16.max & PushRelabelImproved & 258 & 752 & 14283 & 0.28 & OK \\
+\midrule
+wash\_mesh\_32.max & FordFulkerson & 1026 & 3040 & 28917 & 668.87 & OK \\
+wash\_mesh\_32.max & EdmondsKarp & 1026 & 3040 & 28917 & 32.53 & OK \\
+wash\_mesh\_32.max & Dinic & 1026 & 3040 & 28917 & \textbf{2.49} & OK \\
+wash\_mesh\_32.max & PushRelabel & 1026 & 3040 & 28917 & 54.02 & OK \\
+wash\_mesh\_32.max & PushRelabelImproved & 1026 & 3040 & 28917 & 2.78 & OK \\
+\midrule
+wash\_rlg\_16.max & FordFulkerson & 258 & 752 & 12100 & 69.47 & OK \\
+wash\_rlg\_16.max & EdmondsKarp & 258 & 752 & 12100 & 1.92 & OK \\
+wash\_rlg\_16.max & Dinic & 258 & 752 & 12100 & \textbf{0.25} & OK \\
+wash\_rlg\_16.max & PushRelabel & 258 & 752 & 12100 & 2.87 & OK \\
+wash\_rlg\_16.max & PushRelabelImproved & 258 & 752 & 12100 & 0.46 & OK \\
+\midrule
+wash\_rlg\_32.max & FordFulkerson & 1026 & 3040 & 21933 & 749.73 & OK \\
+wash\_rlg\_32.max & EdmondsKarp & 1026 & 3040 & 21933 & 34.98 & OK \\
+wash\_rlg\_32.max & Dinic & 1026 & 3040 & 21933 & \textbf{1.26} & OK \\
+wash\_rlg\_32.max & PushRelabel & 1026 & 3040 & 21933 & 55.22 & OK \\
+wash\_rlg\_32.max & PushRelabelImproved & 1026 & 3040 & 21933 & 2.38 & OK \\
+\midrule
+wash\_rlg\_64.max & FordFulkerson & 4098 & 12224 & 45921 & 7285.07 & OK \\
+wash\_rlg\_64.max & EdmondsKarp & 4098 & 12224 & 45921 & 690.12 & OK \\
+wash\_rlg\_64.max & Dinic & 4098 & 12224 & 45921 & \textbf{16.16} & OK \\
+wash\_rlg\_64.max & PushRelabel & 4098 & 12224 & 45921 & 392.74 & OK \\
+wash\_rlg\_64.max & PushRelabelImproved & 4098 & 12224 & 45921 & 17.53 & OK \\
+\midrule
+grid\_100x100.max & FordFulkerson & 10000 & 39600 & 54 & 22.38 & OK \\
+grid\_100x100.max & EdmondsKarp & 10000 & 39600 & 54 & 20.49 & OK \\
+grid\_100x100.max & Dinic & 10000 & 39600 & 54 & \textbf{2.28} & OK \\
+grid\_100x100.max & PushRelabel & 10000 & 39600 & 54 & 9128.08 & OK \\
+grid\_100x100.max & PushRelabelImproved & 10000 & 39600 & 54 & 27.40 & OK \\
+\midrule
+grid\_10x10.max & FordFulkerson & 100 & 360 & 129 & 0.30 & OK \\
+grid\_10x10.max & EdmondsKarp & 100 & 360 & 129 & 0.05 & OK \\
+grid\_10x10.max & Dinic & 100 & 360 & 129 & \textbf{0.02} & OK \\
+grid\_10x10.max & PushRelabel & 100 & 360 & 129 & 0.13 & OK \\
+grid\_10x10.max & PushRelabelImproved & 100 & 360 & 129 & 0.10 & OK \\
+\midrule
+grid\_50x50.max & FordFulkerson & 2500 & 9800 & 42 & 4.06 & OK \\
+grid\_50x50.max & EdmondsKarp & 2500 & 9800 & 42 & 2.29 & OK \\
+grid\_50x50.max & Dinic & 2500 & 9800 & 42 & \textbf{0.27} & OK \\
+grid\_50x50.max & PushRelabel & 2500 & 9800 & 42 & 546.39 & OK \\
+grid\_50x50.max & PushRelabelImproved & 2500 & 9800 & 42 & 7.33 & OK \\
+\midrule
+random\_dense\_100.max & FordFulkerson & 100 & 1000 & 4987 & 8.70 & OK \\
+random\_dense\_100.max & EdmondsKarp & 100 & 1000 & 4987 & 0.14 & OK \\
+random\_dense\_100.max & Dinic & 100 & 1000 & 4987 & \textbf{0.12} & OK \\
+random\_dense\_100.max & PushRelabel & 100 & 1000 & 4987 & 2.55 & OK \\
+random\_dense\_100.max & PushRelabelImproved & 100 & 1000 & 4987 & 0.15 & OK \\
+\midrule
+random\_dense\_500.max & FordFulkerson & 500 & 25000 & 25347 & 1227.60 & OK \\
+random\_dense\_500.max & EdmondsKarp & 500 & 25000 & 25347 & 12.07 & OK \\
+random\_dense\_500.max & Dinic & 500 & 25000 & 25347 & \textbf{2.27} & OK \\
+random\_dense\_500.max & PushRelabel & 500 & 25000 & 25347 & 399.94 & OK \\
+random\_dense\_500.max & PushRelabelImproved & 500 & 25000 & 25347 & 2.50 & OK \\
+\midrule
+random\_sparse\_100.max & FordFulkerson & 100 & 400 & 985 & 1.13 & OK \\
+random\_sparse\_100.max & EdmondsKarp & 100 & 400 & 985 & \textbf{0.03} & OK \\
+random\_sparse\_100.max & Dinic & 100 & 400 & 985 & 0.06 & OK \\
+random\_sparse\_100.max & PushRelabel & 100 & 400 & 985 & 0.05 & OK \\
+random\_sparse\_100.max & PushRelabelImproved & 100 & 400 & 985 & 0.04 & OK \\
+\midrule
+random\_sparse\_1000.max & FordFulkerson & 1000 & 4000 & 914 & 44.96 & OK \\
+random\_sparse\_1000.max & EdmondsKarp & 1000 & 4000 & 914 & \textbf{0.34} & OK \\
+random\_sparse\_1000.max & Dinic & 1000 & 4000 & 914 & 0.56 & OK \\
+random\_sparse\_1000.max & PushRelabel & 1000 & 4000 & 914 & 125.59 & OK \\
+random\_sparse\_1000.max & PushRelabelImproved & 1000 & 4000 & 914 & 1.25 & OK \\
+\midrule
+random\_sparse\_500.max & FordFulkerson & 500 & 2000 & 1572 & 30.48 & OK \\
+random\_sparse\_500.max & EdmondsKarp & 500 & 2000 & 1572 & 0.43 & OK \\
+random\_sparse\_500.max & Dinic & 500 & 2000 & 1572 & \textbf{0.30} & OK \\
+random\_sparse\_500.max & PushRelabel & 500 & 2000 & 1572 & 27.07 & OK \\
+random\_sparse\_500.max & PushRelabelImproved & 500 & 2000 & 1572 & 0.44 & OK \\
+\midrule
+worst\_chain\_100.max & FordFulkerson & 10002 & 10100 & 100 & \textbf{0.17} & OK \\
+worst\_chain\_100.max & EdmondsKarp & 10002 & 10100 & 100 & 7.35 & OK \\
+worst\_chain\_100.max & Dinic & 10002 & 10100 & 100 & 0.26 & OK \\
+worst\_chain\_100.max & PushRelabel & 10002 & 10100 & 100 & 0.46 & OK \\
+worst\_chain\_100.max & PushRelabelImproved & 10002 & 10100 & 100 & 0.52 & OK \\
+\midrule
+worst\_ff\_10.max & FordFulkerson & 22 & 41 & 2048 & 0.01 & OK \\
+worst\_ff\_10.max & EdmondsKarp & 22 & 41 & 2048 & \textbf{0.00} & OK \\
+worst\_ff\_10.max & Dinic & 22 & 41 & 2048 & 0.00 & OK \\
+worst\_ff\_10.max & PushRelabel & 22 & 41 & 2048 & 0.00 & OK \\
+worst\_ff\_10.max & PushRelabelImproved & 22 & 41 & 2048 & 0.00 & OK \\
+\midrule
+worst\_ff\_15.max & FordFulkerson & 32 & 61 & 65536 & 0.01 & OK \\
+worst\_ff\_15.max & EdmondsKarp & 32 & 61 & 65536 & \textbf{0.00} & OK \\
+worst\_ff\_15.max & Dinic & 32 & 61 & 65536 & 0.00 & OK \\
+worst\_ff\_15.max & PushRelabel & 32 & 61 & 65536 & 0.00 & OK \\
+worst\_ff\_15.max & PushRelabelImproved & 32 & 61 & 65536 & 0.00 & OK \\
+\bottomrule
+\end{tabular}
+\caption{Resultados experimentais dos motores de fluxo m\'aximo.}
+\label{tab:results_maxflow}
+\end{table}

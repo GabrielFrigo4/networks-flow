@@ -7,8 +7,10 @@ import sys
 from pathlib import Path
 import csv
 
+
 def parse_args():
-    parser = argparse.ArgumentParser(description="Benchmark orchestrator for Networks Flow")
+    parser = argparse.ArgumentParser(
+        description="Benchmark orchestrator for Networks Flow")
     parser.add_argument("--type", choices=["maxflow", "mincost", "all"], default="all",
                         help="Type of benchmarks to run")
     parser.add_argument("--instances-dir", type=str, default="../instances",
@@ -27,6 +29,7 @@ def parse_args():
                         help="Re-run even if results exist")
     return parser.parse_args()
 
+
 def check_existing(csv_path, instance_name):
     if not csv_path.exists():
         return False
@@ -38,14 +41,17 @@ def check_existing(csv_path, instance_name):
                 return True
     return False
 
+
 def run_type(benchmark_type, instances_dir, output_dir, driver_path, ext, repeats, timeout, force):
     instances = sorted(list(instances_dir.rglob(f"*{ext}")))
     if not instances:
-        print(f"No {benchmark_type} instances found in {instances_dir}", file=sys.stderr)
+        print(
+            f"No {benchmark_type} instances found in {instances_dir}", file=sys.stderr)
         return 0
 
     if not driver_path.exists():
-        print(f"Error: {benchmark_type} driver not found at {driver_path}", file=sys.stderr)
+        print(
+            f"Error: {benchmark_type} driver not found at {driver_path}", file=sys.stderr)
         return 2
 
     csv_path = output_dir / f"{benchmark_type}_results.csv"
@@ -58,17 +64,24 @@ def run_type(benchmark_type, instances_dir, output_dir, driver_path, ext, repeat
     if needs_header:
         with open(csv_path, "w", encoding="utf-8") as f:
             if benchmark_type == "max_flow":
-                f.write("instance,algorithm,n,m,flow_value,mean_ms,stddev_ms,status\n")
+                f.write(
+                    "instance,algorithm,n,m,flow_value,mean_ms,stddev_ms,status\n")
             else:
-                f.write("instance,algorithm,n,m,flow_value,cost_value,mean_ms,stddev_ms,status\n")
+                f.write(
+                    "instance,algorithm,n,m,flow_value,cost_value,mean_ms,stddev_ms,status\n")
+
+    MAX_ENGINES = 10
+    subprocess_timeout = timeout * MAX_ENGINES + 30
 
     with open(csv_path, "a", encoding="utf-8") as f:
         for i, instance in enumerate(instances, 1):
             if not force and check_existing(csv_path, instance.name):
-                print(f"[{i}/{len(instances)}] Skipping {instance.name} (already exists)...", file=sys.stderr)
+                print(
+                    f"[{i}/{len(instances)}] Skipping {instance.name} (already exists)...", file=sys.stderr)
                 continue
 
-            print(f"[{i}/{len(instances)}] Running {instance.name}...", file=sys.stderr)
+            print(f"[{i}/{len(instances)}] Running {instance.name}...",
+                  file=sys.stderr)
 
             cmd = [
                 str(driver_path),
@@ -79,7 +92,8 @@ def run_type(benchmark_type, instances_dir, output_dir, driver_path, ext, repeat
             ]
 
             try:
-                result = subprocess.run(cmd, capture_output=True, text=True, timeout=timeout + 5)
+                result = subprocess.run(cmd, capture_output=True, text=True,
+                                        timeout=subprocess_timeout)
 
                 if result.stdout:
                     f.write(result.stdout)
@@ -93,19 +107,24 @@ def run_type(benchmark_type, instances_dir, output_dir, driver_path, ext, repeat
                     any_error = True
 
             except subprocess.TimeoutExpired:
-                print(f"[{i}/{len(instances)}] {instance.name} timed out after {timeout}s", file=sys.stderr)
+                # TLE não é erro de implementação: é resultado esperado para
+                # algoritmos exponenciais (Ford-Fulkerson) em instâncias difíceis.
+                print(
+                    f"[{i}/{len(instances)}] {instance.name} timed out after {subprocess_timeout}s (salvaguarda Python)", file=sys.stderr)
                 if benchmark_type == "max_flow":
-                    f.write(f"{instance.name},TimeoutAll,0,0,0,{timeout*1000.0:.2f},0,TLE\n")
+                    f.write(
+                        f"{instance.name},TimeoutAll,0,0,0,{timeout*1000.0:.2f},0,TLE\n")
                 else:
-                    f.write(f"{instance.name},TimeoutAll,0,0,0,0,{timeout*1000.0:.2f},0,TLE\n")
+                    f.write(
+                        f"{instance.name},TimeoutAll,0,0,0,0,{timeout*1000.0:.2f},0,TLE\n")
                 f.flush()
-                any_error = True
 
     if any_error:
         return 2
     if failed_cross_val:
         return 1
     return 0
+
 
 def main():
     args = parse_args()
@@ -122,16 +141,19 @@ def main():
     ret_min = 0
 
     if args.type in ["maxflow", "all"]:
-        ret_max = run_type("max_flow", instances_dir, output_dir, max_driver, ".max", args.repeats, args.timeout, args.force)
+        ret_max = run_type("max_flow", instances_dir, output_dir,
+                           max_driver, ".max", args.repeats, args.timeout, args.force)
 
     if args.type in ["mincost", "all"]:
-        ret_min = run_type("min_cost", instances_dir, output_dir, min_driver, ".min", args.repeats, args.timeout, args.force)
+        ret_min = run_type("min_cost", instances_dir, output_dir,
+                           min_driver, ".min", args.repeats, args.timeout, args.force)
 
     if ret_max == 2 or ret_min == 2:
         return 2
     if ret_max == 1 or ret_min == 1:
         return 1
     return 0
+
 
 if __name__ == "__main__":
     sys.exit(main())

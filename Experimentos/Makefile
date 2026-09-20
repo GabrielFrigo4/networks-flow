@@ -16,10 +16,23 @@ IMPL      = ../Implementações
 MAX_RUNNER = drivers/max_flow_runner
 MIN_RUNNER = drivers/min_cost_runner
 
-.PHONY: all drivers generate dimacs run tables plots format clean
+.PHONY: all deps drivers generate dimacs run bench tables bench-tables sync-tables plots bench-plots format clean clean-results
 
 all: drivers
 	printf "%s\n" "Drivers de benchmark compilados."
+
+deps:
+	printf "%s\n" "Instalando dependências para benchmark..."
+	if [ "$$(uname -s)" = "FreeBSD" ]; then \
+		PY_FLAVOR=$$(python3 -c 'import sys; print(f"{sys.version_info.major}{sys.version_info.minor}")' 2> "/dev/null" || echo "311"); \
+		sudo pkg install -y py$${PY_FLAVOR}-matplotlib py$${PY_FLAVOR}-numpy; \
+	elif command -v dnf > "/dev/null" 2>&1; then \
+		sudo dnf install -y python3-matplotlib python3-numpy; \
+	else \
+		printf "%s\n" "Erro: sistema não suportado. Utilize FreeBSD (pkg) ou Fedora (dnf)." >&2; \
+		exit 1; \
+	fi
+	printf "%s\n" "Dependências instaladas: matplotlib, numpy."
 
 drivers: $(MAX_RUNNER) $(MIN_RUNNER)
 
@@ -55,13 +68,27 @@ run: drivers
 	printf "%s\n" "Executando benchmarks..."
 	python3 scripts/run_benchmarks.py --type all
 
+bench: run
+
 tables:
 	printf "%s\n" "Gerando tabelas LaTeX..."
 	python3 scripts/generate_tables.py
+	$(MAKE) sync-tables
+
+bench-tables: tables
+
+sync-tables:
+	printf "%s\n" "Sincronizando tabelas para LaTeX/tabelas/..."
+	mkdir -p ../LaTeX/tabelas
+	cp -f results/table_max_flow.tex ../LaTeX/tabelas/table_max_flow.tex
+	cp -f results/table_min_cost.tex ../LaTeX/tabelas/table_min_cost.tex
+	printf "%s\n" "Tabelas copiadas para LaTeX/tabelas/"
 
 plots:
 	printf "%s\n" "Gerando gráficos..."
 	python3 scripts/plot_charts.py
+
+bench-plots: plots
 
 format:
 	printf "%s\n" "Formatando códigos C++ de Experimentos..."
@@ -74,3 +101,9 @@ clean:
 	rm -rf instances/synthetic
 	rm -rf instances/dimacs_maxflow instances/dimacs_mincost
 	rm -rf build_generators
+	printf "%s\n" "Limpeza completa concluída."
+
+clean-results:
+	rm -rf results/*.csv results/*.json results/*.pdf results/*.tex
+	rm -f ../LaTeX/tabelas/table_max_flow.tex ../LaTeX/tabelas/table_min_cost.tex
+	printf "%s\n" "Resultados e tabelas LaTeX removidos."
