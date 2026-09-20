@@ -261,13 +261,13 @@ make clean
 [baixar_pdf_book]: https://github.com/GabrielFrigo4/IC_Networks_Flow/releases/latest/download/book.pdf
 [baixar_pdf_book_icon]: https://img.shields.io/badge/Livro-Baixar-2ea44f?style=for-the-badge&logo=gitbook&logoColor=white
 [baixar_pdf_ic]: https://github.com/GabrielFrigo4/IC_Networks_Flow/releases/latest/download/ic.pdf
-[baixar_pdf_ic_icon]: https://img.shields.io/badge/IC-Baixar-cf222e?style=for-the-badge&logo=adobeacrobatreader&logoColor=white
+[baixar_pdf_ic_icon]: https://img.shields.io/badge/IC-Baixar-cf222e?style=for-the-badge&logo=googledocs&logoColor=white
 [baixar_pdf_ic_est]: https://github.com/GabrielFrigo4/IC_Networks_Flow/releases/latest/download/ic-estendido.pdf
-[baixar_pdf_ic_est_icon]: https://img.shields.io/badge/IC_Estendida-Baixar-991b1b?style=for-the-badge&logo=adobeacrobatreader&logoColor=white
+[baixar_pdf_ic_est_icon]: https://img.shields.io/badge/IC_Estendida-Baixar-991b1b?style=for-the-badge&logo=googledocs&logoColor=white
 [baixar_pdf_relatorio]: https://github.com/GabrielFrigo4/IC_Networks_Flow/releases/latest/download/relatorio.pdf
-[baixar_pdf_relatorio_icon]: https://img.shields.io/badge/Relatório-Baixar-d97706?style=for-the-badge&logo=adobeacrobatreader&logoColor=white
+[baixar_pdf_relatorio_icon]: https://img.shields.io/badge/Relatório-Baixar-d97706?style=for-the-badge&logo=googledocs&logoColor=white
 [baixar_pdf_relatorio_est]: https://github.com/GabrielFrigo4/IC_Networks_Flow/releases/latest/download/relatorio-estendido.pdf
-[baixar_pdf_relatorio_est_icon]: https://img.shields.io/badge/Relatório_Estendido-Baixar-b45309?style=for-the-badge&logo=adobeacrobatreader&logoColor=white
+[baixar_pdf_relatorio_est_icon]: https://img.shields.io/badge/Relatório_Estendido-Baixar-b45309?style=for-the-badge&logo=googledocs&logoColor=white
 [download_speed]: https://cses.fi/problemset/task/1694
 [school_dance]: https://cses.fi/problemset/task/1696
 [distinct_routes]: https://cses.fi/problemset/task/1711
