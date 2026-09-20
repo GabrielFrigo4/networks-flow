@@ -12,14 +12,14 @@ PDFLATEX = pdflatex
 BIBTEX   = bibtex
 PYTHON   = python3
 
-TARGETS  = ic.pdf relatorio.pdf projeto.pdf book.pdf
+TARGETS  = ic.pdf ic-estendido.pdf relatorio.pdf relatorio-estendido.pdf projeto.pdf book.pdf
 
 CAPITULOS != find capitulos -name "*.tex" 2> "/dev/null" || true
 APENDICES != find apendices -name "*.tex" 2> "/dev/null" || true
 BOOK_SRC  != find book -name "*.tex" 2> "/dev/null" || true
 UFABC_SRC != find ufabc -name "*.tex" 2> "/dev/null" || true
 
-.PHONY: help all ic relatorio projeto book clean distclean sync-code
+.PHONY: help all ic ic-estendido relatorio relatorio-estendido projeto book clean distclean sync-code
 
 ### ================================
 ### HELP & DOCUMENTATION
@@ -31,23 +31,27 @@ help:
 	printf "\n  \033[1;37mNetwork Flow LaTeX — Editoração Científica & Relatórios\033[0m\n"; \
 	printf "  ============================================================\n"; \
 	sec "Compilação de Documentos:"; \
-	cmd "all"            "Compila todos os documentos (livro, IC, projeto, relatório)"; \
-	cmd "book"           "Compila a monografia principal do livro (book.pdf)"; \
-	cmd "ic"             "Compila o relatório de Iniciação Científica (ic.pdf)"; \
-	cmd "projeto"        "Compila a proposta do projeto de pesquisa (projeto.pdf)"; \
-	cmd "relatorio"      "Compila o relatório técnico final (relatorio.pdf)"; \
+	cmd "all"                 "Compila todos os documentos da suíte LaTeX"; \
+	cmd "book"                "Compila a monografia principal do livro (book.pdf)"; \
+	cmd "ic"                  "Compila o relatório de IC executivo (ic.pdf, <= 20 pgs)"; \
+	cmd "ic-estendido"        "Compila o relatório de IC completo com apêndices (ic-estendido.pdf)"; \
+	cmd "relatorio"           "Compila o relatório técnico formal (relatorio.pdf, <= 20 pgs)"; \
+	cmd "relatorio-estendido" "Compila o relatório formal completo com apêndices (relatorio-estendido.pdf)"; \
+	cmd "projeto"             "Compila a proposta do projeto de pesquisa (projeto.pdf)"; \
 	sec "Sincronização & Código:"; \
-	cmd "sync-code"      "Sincroniza algoritmos das Implementações com o LaTeX"; \
+	cmd "sync-code"           "Sincroniza algoritmos das Implementações com o LaTeX"; \
 	sec "Limpeza:"; \
-	cmd "clean"          "Remove pasta build/ e arquivos temporários (.aux, .log)"; \
-	cmd "distclean"      "Limpeza profunda (remove temporários e PDFs gerados)"; \
+	cmd "clean"               "Remove pasta build/ e arquivos temporários (.aux, .log)"; \
+	cmd "distclean"           "Limpeza profunda (remove temporários e PDFs gerados)"; \
 	echo ""
 
 all: $(TARGETS)
 	printf "\n==> Todos os documentos foram compilados com sucesso!\n"
 
 ic: ic.pdf
+ic-estendido: ic-estendido.pdf
 relatorio: relatorio.pdf
+relatorio-estendido: relatorio-estendido.pdf
 projeto: projeto.pdf
 book: book.pdf
 
@@ -84,6 +88,21 @@ ic.pdf: ic.tex header.tex cit.bib $(CAPITULOS) $(APENDICES) $(UFABC_SRC)
 	fi
 	printf "%s\n" "[OK]"
 
+ic-estendido.pdf: ic-estendido.tex header.tex cit.bib $(CAPITULOS) $(APENDICES) $(UFABC_SRC)
+	mkdir -p build
+	printf "%s" "-> Compilando ic-estendido.pdf... "
+	if command -v $(LATEXMK) > "/dev/null" 2>&1; then \
+		$(LATEXMK) -pdf -silent -interaction=nonstopmode -outdir=build ic-estendido.tex > "/dev/null" 2>&1; \
+		cp build/ic-estendido.pdf ic-estendido.pdf 2> "/dev/null" || true; \
+	else \
+		$(PDFLATEX) -interaction=batchmode -output-directory=build ic-estendido.tex > "/dev/null" 2>&1 || true; \
+		$(BIBTEX) build/ic-estendido.aux > "/dev/null" 2>&1 || true; \
+		$(PDFLATEX) -interaction=batchmode -output-directory=build ic-estendido.tex > "/dev/null" 2>&1 || true; \
+		$(PDFLATEX) -interaction=batchmode -output-directory=build ic-estendido.tex > "/dev/null" 2>&1 || true; \
+		cp build/ic-estendido.pdf ic-estendido.pdf 2> "/dev/null" || true; \
+	fi
+	printf "%s\n" "[OK]"
+
 relatorio.pdf: relatorio.tex header.tex cit.bib $(CAPITULOS) $(APENDICES) $(UFABC_SRC)
 	mkdir -p build
 	printf "%s" "-> Compilando relatorio.pdf... "
@@ -96,6 +115,21 @@ relatorio.pdf: relatorio.tex header.tex cit.bib $(CAPITULOS) $(APENDICES) $(UFAB
 		$(PDFLATEX) -interaction=batchmode -output-directory=build relatorio.tex > "/dev/null" 2>&1 || true; \
 		$(PDFLATEX) -interaction=batchmode -output-directory=build relatorio.tex > "/dev/null" 2>&1 || true; \
 		cp build/relatorio.pdf relatorio.pdf 2> "/dev/null" || true; \
+	fi
+	printf "%s\n" "[OK]"
+
+relatorio-estendido.pdf: relatorio-estendido.tex header.tex cit.bib $(CAPITULOS) $(APENDICES) $(UFABC_SRC)
+	mkdir -p build
+	printf "%s" "-> Compilando relatorio-estendido.pdf... "
+	if command -v $(LATEXMK) > "/dev/null" 2>&1; then \
+		$(LATEXMK) -pdf -silent -interaction=nonstopmode -outdir=build relatorio-estendido.tex > "/dev/null" 2>&1; \
+		cp build/relatorio-estendido.pdf relatorio-estendido.pdf 2> "/dev/null" || true; \
+	else \
+		$(PDFLATEX) -interaction=batchmode -output-directory=build relatorio-estendido.tex > "/dev/null" 2>&1 || true; \
+		$(BIBTEX) build/relatorio-estendido.aux > "/dev/null" 2>&1 || true; \
+		$(PDFLATEX) -interaction=batchmode -output-directory=build relatorio-estendido.tex > "/dev/null" 2>&1 || true; \
+		$(PDFLATEX) -interaction=batchmode -output-directory=build relatorio-estendido.tex > "/dev/null" 2>&1 || true; \
+		cp build/relatorio-estendido.pdf relatorio-estendido.pdf 2> "/dev/null" || true; \
 	fi
 	printf "%s\n" "[OK]"
 

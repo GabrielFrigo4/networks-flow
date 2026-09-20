@@ -6,8 +6,6 @@
 %                         Provas matemáticas completas no Livro independente (book.pdf).
 % \apendiceteoricoTRUE  -> OPÇÃO 2A: Relatório com Apêndice Teórico Integral anexo
 %                         Reutiliza diretamente capitulos/*.tex sem duplicação de texto.
-\newif\ifapendiceteorico
-\apendiceteoricofalse
 
 \pagestyle{empty}
 \input{ufabc/resumo.tex}
@@ -29,6 +27,7 @@
 \bibliographystyle{plain}
 \bibliography{cit}
 
+\ifapendicecodigo
 \newpage
 \appendix
 \renewcommand{\theHsection}{apendice.\arabic{section}}
@@ -89,3 +88,4 @@
 \input{apendices/10_ssp_dijkstra.tex}
 \input{apendices/11_network_simplex.tex}
 \input{apendices/12_github.tex}
+\fi

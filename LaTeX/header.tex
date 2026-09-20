@@ -31,6 +31,11 @@
 \renewcommand{\familydefault}{\sfdefault}
 \usepackage{fancyhdr}
 
+\newif\ifapendiceteorico
+\apendiceteoricofalse
+\newif\ifapendicecodigo
+\apendicecodigotrue
+
 \fancypagestyle{textual}{%
     \fancyhf{}%
     \fancyhead[L]{\small\textsf{\nouppercase{\leftmark}}}%
