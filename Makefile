@@ -7,7 +7,7 @@ MAKEFLAGS += --no-print-directory -s
 # Makefile: Network Flow Research Suite
 # ----------------------------------------------------------------
 
-.PHONY: help all latex book apps impl exp dimacs bench bench-tables bench-plots format test setup clean sync-code
+.PHONY: help all latex book apps impl exp dimacs bench bench-tables bench-plots format test setup clean clean-results sync-code
 
 all: help
 
@@ -37,6 +37,7 @@ help:
 	cmd "setup"          "Configura os githooks e permissões de execução"; \
 	sec "Limpeza:"; \
 	cmd "clean"          "Limpa artefatos temporários em todos os submódulos"; \
+	cmd "clean-results"  "Remove resultados, tabelas e gráficos gerados pelos benchmarks"; \
 	echo ""
 
 format:
@@ -87,3 +88,6 @@ clean:
 	$(MAKE) -C Aplicações clean
 	$(MAKE) -C Implementações clean
 	$(MAKE) -C Experimentos clean
+
+clean-results:
+	$(MAKE) -C Experimentos clean-results

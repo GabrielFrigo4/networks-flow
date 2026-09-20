@@ -70,8 +70,8 @@ def run_type(benchmark_type, instances_dir, output_dir, driver_path, ext, repeat
                 f.write(
                     "instance,algorithm,n,m,flow_value,cost_value,mean_ms,stddev_ms,status\n")
 
-    MAX_ENGINES = 10
-    subprocess_timeout = timeout * MAX_ENGINES + 30
+    num_engines = 5 if benchmark_type == "max_flow" else 4
+    subprocess_timeout = int(num_engines * (timeout + 4))
 
     with open(csv_path, "a", encoding="utf-8") as f:
         for i, instance in enumerate(instances, 1):

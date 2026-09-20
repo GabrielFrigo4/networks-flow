@@ -102,11 +102,51 @@ A arquitetura de scripts implementada no diretório \code{Experimentos/} orquest
 
 A Tabela~\ref{tab:results_maxflow} consolida os tempos médios de execução (5 repetições, $\bar{t}$ em ms) e o fluxo ótimo $f^*$ verificado por certificação cruzada para todos os algoritmos de fluxo máximo implementados sobre as instâncias canônicas da suíte DIMACS e grafos sintéticos. O algoritmo mais rápido por instância está em \textbf{negrito}.
 
+\IfFileExists{tabelas/table_max_flow.tex}{
 \input{tabelas/table_max_flow}
+}{}
+
+\IfFileExists{figuras/scalability_maxflow.pdf}{
+\begin{figure}[!ht]
+    \centering
+    \includegraphics[width=0.92\textwidth]{figuras/scalability_maxflow}
+    \caption{Escalabilidade dos algoritmos de fluxo m\'aximo em fun\c{c}\~ao de $|V|$ (escala log-log). Gerado automaticamente por \texttt{make bench-plots}.}
+    \label{fig:scalability_maxflow}
+\end{figure}
+}{}
+
+\IfFileExists{figuras/bars_maxflow.pdf}{
+\begin{figure}[!ht]
+    \centering
+    \includegraphics[width=0.98\textwidth]{figuras/bars_maxflow}
+    \caption{Compara\c{c}\~ao direta dos tempos m\'edios de execu\c{c}\~ao por inst\^ancia (algoritmos de fluxo m\'aximo).}
+    \label{fig:bars_maxflow}
+\end{figure}
+}{}
 
 
 \section{Resultados Experimentais: Fluxo de Custo Mínimo}\label{sec:bench_resultados_mincost}
 
 A Tabela~\ref{tab:results_mincost} apresenta os resultados análogos para os motores de fluxo de custo mínimo sobre as instâncias Netgen da suíte DIMACS, reportando adicionalmente o custo ótimo $z^*$.
 
+\IfFileExists{tabelas/table_min_cost.tex}{
 \input{tabelas/table_min_cost}
+}{}
+
+\IfFileExists{figuras/scalability_mincost.pdf}{
+\begin{figure}[!ht]
+    \centering
+    \includegraphics[width=0.92\textwidth]{figuras/scalability_mincost}
+    \caption{Escalabilidade dos algoritmos de fluxo de custo m\'inimo em fun\c{c}\~ao de $|V|$ (escala log-log).}
+    \label{fig:scalability_mincost}
+\end{figure}
+}{}
+
+\IfFileExists{figuras/bars_mincost.pdf}{
+\begin{figure}[!ht]
+    \centering
+    \includegraphics[width=0.98\textwidth]{figuras/bars_mincost}
+    \caption{Compara\c{c}\~ao direta dos tempos m\'edios de execu\c{c}\~ao por inst\^ancia (algoritmos de fluxo de custo m\'inimo).}
+    \label{fig:bars_mincost}
+\end{figure}
+}{}

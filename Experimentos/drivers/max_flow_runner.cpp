@@ -6,10 +6,12 @@
 #include <cmath>
 #include <cstdlib>
 #include <fstream>
+#include <future>
 #include <iostream>
 #include <memory>
 #include <numeric>
 #include <string>
+#include <thread>
 #include <vector>
 
 #include "../Experimentos/parsers/dimacs_max.hpp"
@@ -62,13 +64,27 @@ static RunResult run_once(
 {
 	auto net = build_network(engine, inst);
 
+	std::packaged_task<Long()> task([n = std::move(net), &inst]() mutable {
+		return n->compute_max_flow(inst.source, inst.sink);
+	});
+	auto future = task.get_future();
+
 	auto t0 = std::chrono::high_resolution_clock::now();
-	Long flow = net->compute_max_flow(inst.source, inst.sink);
+	std::thread worker(std::move(task));
+
+	if (future.wait_for(std::chrono::duration<double>(timeout_s)) ==
+	    std::future_status::timeout)
+	{
+		worker.detach();
+		auto t1 = std::chrono::high_resolution_clock::now();
+		double ms = std::chrono::duration<double, std::milli>(t1 - t0).count();
+		return {-1, ms, true};
+	}
+
+	worker.join();
 	auto t1 = std::chrono::high_resolution_clock::now();
-
 	double ms = std::chrono::duration<double, std::milli>(t1 - t0).count();
-
-	return {flow, ms, ms > timeout_s * 1000.0};
+	return {future.get(), ms, false};
 }
 
 struct BenchResult

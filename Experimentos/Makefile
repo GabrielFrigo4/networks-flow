@@ -10,13 +10,13 @@ MAKEFLAGS += --no-print-directory -s
 CXX       = c++
 CXXFLAGS  = -std=c++23 -O2 -Wall -Wextra -Wpedantic -Wshadow
 CXXFLAGS += -Wconversion -Wsign-conversion -Werror
-LDFLAGS   =
+LDFLAGS   = -pthread
 IMPL      = ../Implementações
 
 MAX_RUNNER = drivers/max_flow_runner
 MIN_RUNNER = drivers/min_cost_runner
 
-.PHONY: all deps drivers generate dimacs run bench tables bench-tables sync-tables plots bench-plots format clean clean-results
+.PHONY: all deps drivers generate dimacs run bench tables bench-tables sync-tables plots bench-plots sync-plots format clean clean-results
 
 all: drivers
 	printf "%s\n" "Drivers de benchmark compilados."
@@ -87,8 +87,18 @@ sync-tables:
 plots:
 	printf "%s\n" "Gerando gráficos..."
 	python3 scripts/plot_charts.py
+	$(MAKE) sync-plots
 
 bench-plots: plots
+
+sync-plots:
+	printf "%s\n" "Sincronizando gráficos para LaTeX/figuras/..."
+	mkdir -p ../LaTeX/figuras
+	for f in results/scalability_maxflow.pdf results/bars_maxflow.pdf \
+	          results/scalability_mincost.pdf results/bars_mincost.pdf; do \
+	    test -f "$$f" && cp -f "$$f" ../LaTeX/figuras/ || true; \
+	done
+	printf "%s\n" "Gráficos copiados para LaTeX/figuras/"
 
 format:
 	printf "%s\n" "Formatando códigos C++ de Experimentos..."
@@ -106,4 +116,6 @@ clean:
 clean-results:
 	rm -rf results/*.csv results/*.json results/*.pdf results/*.tex
 	rm -f ../LaTeX/tabelas/table_max_flow.tex ../LaTeX/tabelas/table_min_cost.tex
-	printf "%s\n" "Resultados e tabelas LaTeX removidos."
+	rm -f ../LaTeX/figuras/scalability_maxflow.pdf ../LaTeX/figuras/bars_maxflow.pdf
+	rm -f ../LaTeX/figuras/scalability_mincost.pdf ../LaTeX/figuras/bars_mincost.pdf
+	printf "%s\n" "Resultados, tabelas e figuras LaTeX removidos."

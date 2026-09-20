@@ -6,10 +6,13 @@
 #include <cmath>
 #include <cstdlib>
 #include <fstream>
+#include <future>
 #include <iostream>
 #include <memory>
 #include <numeric>
 #include <string>
+#include <thread>
+#include <utility>
 #include <vector>
 
 #include "../Experimentos/parsers/dimacs_min.hpp"
@@ -63,14 +66,32 @@ static RunResult run_once(
 {
 	auto net = build_network(engine, inst);
 
+	std::packaged_task<std::pair<Long, Long>()> task(
+	    [n = std::move(net), &inst]() mutable -> std::pair<Long, Long> {
+		    Long cost = n->compute_min_cost_max_flow(inst.source, inst.sink);
+		    Long flow = n->get_total_flow(inst.source);
+		    return {cost, flow};
+	    }
+	);
+	auto future = task.get_future();
+
 	auto t0 = std::chrono::high_resolution_clock::now();
-	Long cost = net->compute_min_cost_max_flow(inst.source, inst.sink);
+	std::thread worker(std::move(task));
+
+	if (future.wait_for(std::chrono::duration<double>(timeout_s)) ==
+	    std::future_status::timeout)
+	{
+		worker.detach();
+		auto t1 = std::chrono::high_resolution_clock::now();
+		double ms = std::chrono::duration<double, std::milli>(t1 - t0).count();
+		return {-1, -1, ms, true};
+	}
+
+	worker.join();
 	auto t1 = std::chrono::high_resolution_clock::now();
-
 	double ms = std::chrono::duration<double, std::milli>(t1 - t0).count();
-	Long flow = net->get_total_flow(inst.source);
-
-	return {cost, flow, ms, ms > timeout_s * 1000.0};
+	auto [cost, flow] = future.get();
+	return {cost, flow, ms, false};
 }
 
 struct BenchResult
