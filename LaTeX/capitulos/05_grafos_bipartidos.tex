@@ -4,24 +4,22 @@
 \chapter{Otimização Combinatória em Grafos Bipartidos}\label{sec:bipartidos}
 O Problema do Fluxo Máximo é frequentemente utilizado como base para resolver outros problemas de otimização combinatória via redução polinomial (veja~\cite{cook1998combinatorial}). O processo consiste em mapear a instância de um problema original para uma rede de fluxo equivalente, computar o fluxo máximo e traduzir o estado da rede residual de volta para a solução do problema original.
 
-Um digrafo $D = (V, A)$ é classificado como bipartido se o seu conjunto de vértices $V$ puder ser particionado em dois subconjuntos disjuntos independentes, convencionalmente denotados por $L$ (esquerdo) e $R$ (direito), de modo que todo arco $a \in A$ conecte obrigatoriamente um vértice de $L$ a um vértice de $R$. Esta topologia é a estrutura canônica para a modelagem de sistemas de alocação bidirecional.
+Um digrafo $D = (V, A)$ é classificado como bipartido se o seu conjunto de vértices $V$ puder ser particionado em dois subconjuntos disjuntos independentes, convencionalmente denotados por $L$ (esquerdo) e $R$ (direito), de modo que todo arco $a \in A$ conecte obrigatoriamente um vértice de $L$ a um vértice de $R$. Essa estrutura permite modelar problemas de alocação.
 
 
 \section{Emparelhamento Máximo}\label{sec:emparelhamento}
 
-O Problema do Emparelhamento Bipartido de Cardinalidade Máxima (\textit{Maximum Bipartite Matching}) busca encontrar o maior subconjunto de arcos $M \subseteq A$ tal que nenhum vértice do digrafo incida em mais de um arco de $M$. Em termos práticos, representa a maximização de pares exclusivos entre os conjuntos $L$ e $R$.
+O Problema do Emparelhamento Bipartido de Cardinalidade Máxima (\textit{Maximum Bipartite Matching}) consiste em encontrar um subconjunto de arestas $M \subseteq A$ de cardinalidade máxima tal que nenhum vértice seja incidente a mais de uma aresta em $M$.
 
-O problema admite uma redução canônica e elegante ao cômputo de um fluxo máximo (veja~\cite{ahuja1993network}), estabelecendo a base teórica unificada para a resolução de emparelhamentos via redes de fluxo. A redução algorítmica procede através da construção de uma rede de fluxo direcionada $D' = (V', A')$ baseada no digrafo original $D$:
+O problema reduz-se ao cômputo de fluxo máximo em uma rede direcionada $D' = (V', A')$ construída a partir do grafo bipartido $G = (L \cup R, E)$:
 \begin{enumerate}
-    \item Adicionam-se dois vértices artificiais ao sistema: uma superfonte $s$ e um supersumidouro $t$.
-    \item Para cada vértice $u \in L$, cria-se um arco direcionado $(s, u)$ com capacidade exatamente igual a 1.
-    \item Para cada vértice $v \in R$, cria-se um arco direcionado $(v, t)$ com capacidade exatamente igual a 1.
-    \item Todos os arcos originais do grafo não direcionado são orientados de $L$ para $R$, recebendo capacidade infinita (ou alternativamente, capacidade 1).
+    \item Adicionam-se uma superfonte $s$ e um supersumidouro $t$.
+    \item Para cada $u \in L$, insere-se o arco $(s, u)$ com capacidade $c(s,u) = 1$.
+    \item Para cada $v \in R$, insere-se o arco $(v, t)$ com capacidade $c(v,t) = 1$.
+    \item Para cada aresta $\{u,v\} \in E$ com $u \in L$ e $v \in R$, insere-se o arco $(u, v)$ com capacidade $c(u,v) = 1$ (ou $\infty$).
 \end{enumerate}
 
-A prova de correção desta modelagem repousa sobre o Teorema da Integralidade (veja~\cite{korte2018combinatorial}). Como todas as capacidades do subdigrafo injetor ($s \rightarrow L$) e extrator ($R \rightarrow t$) são inteiras (estritamente 1), os algoritmos de fluxo garantem matematicamente o retorno de um vetor de fluxo viável inteiramente composto por zeros e uns.
-
-Consequentemente, a restrição de capacidade unitária nos arcos conectados à superfonte e ao supersumidouro força a lei de conservação a atuar como um restritor de exclusividade: se $1$ unidade de fluxo transita por um vértice $u \in L$, ela só pode ser roteada por um único arco em direção a $R$. O valor numérico do fluxo máximo computado pela rede $D'$ equivale perfeitamente à cardinalidade $|M|$ do emparelhamento máximo, e os arcos ativos ($f(u,v) = 1$) que cruzam de $L$ para $R$ constituem os pares da solução exata.
+Pelo Teorema da Integralidade (Teorema~\ref{teo:integralidade}), como todas as capacidades incidentes a $s$ e $t$ são unitárias, existe fluxo máximo inteiro onde $f(u,v) \in \{0, 1\}$ para todo arco. As restrições de capacidade nos arcos incidentes a $s$ e $t$ asseguram que cada vértice de $L$ e $R$ participe de no máximo uma unidade de fluxo. Logo, o valor do fluxo máximo $|f^*|$ é igual à cardinalidade do emparelhamento máximo $|M|$, e os arcos com $f(u,v) = 1$ definem os pares emparelhados.
 
 \begin{figure}[!ht]
 \centering
@@ -54,40 +52,37 @@ Consequentemente, a restrição de capacidade unitária nos arcos conectados à 
   \draw[flow edge] (fl3) -- (fr1); \draw[flow edge,blue,line width=1.5pt] (fl3) -- (fr3);
 \end{scope}
 \end{tikzpicture}
-\caption{Redução do Emparelhamento Bipartido a Fluxo Máximo. (a) Grafo bipartido original com $L = \{l_1,l_2,l_3\}$ e $R = \{r_1,r_2,r_3\}$. (b) Rede de fluxo $D'$: arcos de $s$ para $L$ e de $R$ para $t$ com capacidade~1; arcos de $L$ para $R$ herdados do grafo original. Arcos azuis grossos indicam o emparelhamento máximo obtido pelo fluxo máximo $|f^*|=3$.}
+\caption{Redução do Emparelhamento Bipartido a Fluxo Máximo. (a) Grafo bipartido original com $L = \{l_1,l_2,l_3\}$ e $R = \{r_1,r_2,r_3\}$. (b) Rede de fluxo $D'$: arcos de $s$ para $L$ e de $R$ para $t$ com capacidade~1; arcos de $L$ para $R$ herdados do grafo original. Arcos azuis indicam o emparelhamento máximo obtido com $|f^*|=3$.}
 \label{fig:fluxo_bipartido}
 \end{figure}
 
 
 \section{Cobertura de Vértices Mínima e o Teorema de König}\label{sec:cobertura}
 
-O Problema da Cobertura de Vértices Mínima (\textit{Minimum Vertex Cover} - MVC) consiste em determinar o menor subconjunto de vértices $C \subseteq V$ tal que todo arco do digrafo incida em pelo menos um vértice pertencente a $C$. Em digrafos arbitrários, este problema é classificado como NP-Difícil. Contudo, quando a topologia do digrafo é estritamente bipartida, o problema pode ser resolvido em tempo polinomial através da sua profunda relação dual com o emparelhamento máximo.
+O Problema da Cobertura de Vértices Mínima (\textit{Minimum Vertex Cover} - MVC) consiste em encontrar um subconjunto de vértices $C \subseteq V$ de cardinalidade mínima tal que toda aresta de $E$ seja incidente a pelo menos um vértice de $C$. Em grafos gerais o problema é $\mathcal{NP}$-difícil, mas em grafos bipartidos admite resolução em tempo polinomial.
 
-Esta relação de dualidade é formalizada pelo Teorema de König (veja~\cite{korte2018combinatorial}):
+A relação de dualidade é expressa pelo Teorema de König~\cite{korte2018combinatorial}:
 
 \begin{teorema}[König, 1931][teo:konig]
-Em qualquer grafo bipartido $G = (V, E)$, a cardinalidade de um emparelhamento máximo é exatamente igual à cardinalidade de uma cobertura de vértices mínima:
+Em qualquer grafo bipartido $G = (V, E)$, a cardinalidade de um emparelhamento máximo é igual à cardinalidade de uma cobertura de vértices mínima:
 \begin{equation}
     \max |M| = \min |C|
 \end{equation}
 \end{teorema}
 
-\intuicao{Geométrica e a Barreira Bipartida} Em um grafo geral, encontrar uma cobertura mínima de vértices é notoriamente $\mathcal{NP}$-difícil, pois os vértices podem cobrir arestas em múltiplos ciclos ímpares de maneira intrincada e conflitante. No entanto, em um grafo bipartido, a ausência de ciclos ímpares cria uma barreira perfeitamente orientável entre as duas partições $L$ e $R$. Se interpretarmos o emparelhamento como a seleção de caminhos disjuntos de comprimento 1 entre $L$ e $R$, qualquer cobertura de vértices deve interceptar obrigatoriamente cada uma dessas arestas independentes, impondo que $|C| \ge |M|$. A elegância de König consiste em provar que, no mundo bipartido, essa desigualdade atinge a igualdade estrita: não há ``desperdício combinatório''. O conjunto de vértices de gargalo que estrangula o fluxo entre $L$ e $R$ em um corte mínimo corresponde exatamente ao menor conjunto de nós capaz de cobrir todas as arestas do grafo.
+\intuicao{Dualidade Min-Max} Como cada aresta de um emparelhamento $M$ exige ao menos um vértice distinto para ser coberta, vale $|C| \ge |M|$ para qualquer grafo. Em grafos bipartidos, a igualdade é atingida pelo corte mínimo associado à rede de fluxo.
 
 \begin{demonstracao}
-Sob a ótica da teoria de redes, o Teorema de König é uma manifestação estrutural direta do Teorema do Fluxo Máximo e Corte Mínimo de Ford-Fulkerson (Teorema~\ref{teo:mfmc}) aplicado à modelagem com superfonte e supersumidouro (veja~\cite{ahuja1993network}).
+O teorema decorre diretamente do Teorema do Fluxo Máximo e Corte Mínimo (Teorema~\ref{teo:mfmc}) aplicado à rede $D'$.
 
-A extração computacional dos vértices que compõem a cobertura mínima exige uma análise minuciosa da rede residual $D_f$ gerada logo após a convergência do fluxo máximo. Na implementação computacional do resolvedor do problema \textit{Minimum Vertex Cover}, a recuperação do conjunto $C$ é realizada através do seguinte procedimento algorítmico baseado em cortes mínimos:
+Após computar o fluxo máximo em $D'$, executa-se uma busca a partir de $s$ no digrafo residual $D'_f$ percorrendo arcos com $c_f > 0$. Seja $S$ o conjunto de vértices alcançáveis e $T = V' \setminus S$ os inalcançáveis, definindo um corte mínimo $(S, T)$.
 
-\begin{enumerate}
-    \item Após computar o emparelhamento máximo, executa-se uma Busca em Largura (BFS) ou Busca em Profundidade (DFS) partindo da superfonte $s$ no digrafo residual $D_f$, transitando exclusivamente por arcos que possuam capacidade residual estritamente positiva ($c_f(u,v) > 0$).
-    \item Esta travessia particiona os vértices do digrafo bipartido original em dois conjuntos disjuntos: o conjunto dos vértices alcançáveis ($S$) e o conjunto dos vértices inalcançáveis ($T$). Este particionamento define o corte mínimo da rede.
-    \item A Cobertura de Vértices Mínima $C$ é então construída selecionando-se os vértices da partição esquerda original que não foram alcançados pela busca ($L \setminus S$) unidos aos vértices da partição direita que foram alcançados ($R \cap S$). Formalmente: $C = (L \cap T) \cup (R \cap S)$.
-\end{enumerate}
+Define-se $C = (L \cap T) \cup (R \cap S)$.
 
-A solidez desta extração reside no fato de que, pelas propriedades de conservação do corte mínimo em capacidades unitárias, não pode existir nenhum arco residual viável cruzando de $S$ para $T$. Consequentemente, a seleção $(L \cap T) \cup (R \cap S)$ garante de forma inequívoca que todos os arcos originais do digrafo bipartido estão cobertos por, no mínimo, um destes vértices selecionados, consolidando a demonstração do Teorema de König. \end{demonstracao}
+Como $(S, T)$ é um corte mínimo, não há arcos residuais com capacidade positiva de $S$ para $T$. Isso implica que não existem arestas de $L \cap S$ para $R \cap T$ no grafo original; logo, toda aresta tem extremidade em $L \cap T$ ou em $R \cap S$, de modo que $C$ é uma cobertura válida de vértices. Além disso, a capacidade do corte $(S, T)$ na rede é exatamente $|L \cap T| + |R \cap S| = |C|$. Pelo Teorema~\ref{teo:mfmc}, $\ccap(S, T) = |f^*| = |M^*|$, provando que $|C| = |M^*|$.
+\end{demonstracao}
 
-\implicacoes{e Complexidade Algorítmica} O Teorema de König marca uma das fronteiras teóricas mais célebres da Ciência da Computação: enquanto o problema de Cobertura de Vértices Mínima (\textit{Minimum Vertex Cover}) em grafos gerais pertence à lista seminal dos 21 problemas $\mathcal{NP}$-completos de Karp, a dualidade de König aliada aos algoritmos de fluxo máximo (como Dinic ou Hopcroft-Karp) reduz a resolução exata da cobertura em grafos bipartidos ao regime de tempo estritamente polinomial $\mathcal{O}(|E|\sqrt{|V|})$. Trata-se do paradigma por excelência de como a topologia orientável de redes neutraliza a intratabilidade combinatória.
+\implicacoes{e Complexidade} A redução ao fluxo máximo permite resolver o problema da cobertura de vértices mínima em grafos bipartidos em tempo $\mathcal{O}(|E|\sqrt{|V|})$ via Dinic ou Hopcroft-Karp.
 
 \begin{figure}[!ht]
 \centering
@@ -120,7 +115,7 @@ A solidez desta extração reside no fato de que, pelas propriedades de conserva
   \draw[sat edge] (r3) -- node[above,font=\footnotesize\bfseries,text=cutviolet!90!black,sloped]{corte} (t);
   
   \node[legend node,fill=green!20] (legS) at (0, -1.0) {};
-  \node[right,font=\footnotesize] at (legS.east) {$\in S$ (Alcançável no grafo residual)};
+  \node[right,font=\footnotesize] at (legS.east) {$\in S$ (Alcançável no residual)};
   
   \node[legend node,fill=red!20] (legT) at (0, -1.7) {};
   \node[right,font=\footnotesize] at (legT.east) {$\in T$ (Inalcançável)};
@@ -131,25 +126,24 @@ A solidez desta extração reside no fato de que, pelas propriedades de conserva
   \node[font=\footnotesize,align=center] at (3, -3.1) {\textbf{Resultado:} $C = \{l_2, r_3\}$, $|C| = |M| = 2$};
   
 \end{tikzpicture}
-\caption{Teorema de König: a BFS no digrafo residual $D_f$ particiona os vértices em $S$ (verde) e $T$ (vermelho). Os arcos de $S$ para $T$ (em violeta) definem o corte mínimo. A cobertura mínima é construída por $C = (L\cap T) \cup (R \cap S)$, correspondendo aos vértices com borda dupla. Com isso, fica provado visualmente que $|C| = |M| = 2$. Arestas azuis grossas representam o emparelhamento $M$.}
+\caption{Teorema de König: partição de vértices em $S$ e $T$ via corte mínimo residual. A cobertura mínima de vértices é $C = (L\cap T) \cup (R \cap S) = \{l_2, r_3\}$, com $|C| = |M| = 2$.}
 \label{fig:konig_corte}
 \end{figure}
 
 
 \section{Conjunto Independente Máximo e o Teorema de Gallai}\label{sec:conjunto_independente}
 
-O Problema do Conjunto Independente Máximo (\textit{Maximum Independent Set} - MIS) visa identificar o maior subconjunto de vértices $I \subseteq V$ no qual nenhuma dupla de vértices seja adjacente entre si. Assim como nos casos anteriores, o problema é tratado aqui sobre um \textbf{digrafo bipartido}, contexto em que a dualidade com a Cobertura de Vértices Mínima --- resultado do Teorema de König --- permite resolvê-lo em tempo polinomial via fluxo máximo. Em outras palavras, nenhum arco do digrafo pode possuir ambas as extremidades contidas no conjunto $I$.
+O Problema do Conjunto Independente Máximo (\textit{Maximum Independent Set} - MIS) consiste em encontrar um subconjunto $I \subseteq V$ de cardinalidade máxima tal que nenhuma aresta una dois vértices de $I$.
 
-Assim como a Cobertura de Vértices, este problema é NP-Difícil para digrafos gerais, mas admite uma solução polinomial elegante e direta em digrafos bipartidos graças à dualidade complementar. A relação matemática entre a Cobertura de Vértices Mínima ($C$) e o Conjunto Independente Máximo ($I$) é inversamente proporcional e estritamente complementar: se um conjunto de vértices $C$ cobre todos os arcos de um digrafo, a remoção de $C$ elimina todas as conexões possíveis entre os vértices restantes (veja~\cite{cook1998combinatorial}).
-
-Portanto, os vértices que sobrevivem a esta remoção não possuem arcos entre si, formando, por definição, um conjunto independente. Como $C$ foi minimizado pelo Teorema de König e pelo algoritmo de Corte Mínimo, o conjunto complementar resultante é matematicamente garantido como sendo o máximo possível.
-
-Desta forma, a extração computacional do Conjunto Independente Máximo dispensa a necessidade de novos roteamentos de fluxo ou buscas em digrafos residuais. A biblioteca desenvolvida computa o conjunto $I$ através de uma operação trivial de diferença de conjuntos em tempo $\mathcal{O}(|V|)$:
+Como um subconjunto $I \subseteq V$ é independente se, e somente se, o complementar $V \setminus I$ é uma cobertura de vértices, tem-se a relação direta:
 \begin{equation}
     I = V \setminus C
 \end{equation}
-
-A cardinalidade do Conjunto Independente Máximo é dada algebricamente por $|I| = |V| - |C|$. Esta sequência de reduções demonstra a aplicabilidade do modelo de fluxo em redes: a partir de uma única construção baseada em superfonte e supersumidouro, o sistema soluciona simultaneamente o Emparelhamento Máximo, a Cobertura de Vértices Mínima e o Conjunto Independente Máximo.
+onde $C$ é a cobertura de vértices mínima obtida pelo Teorema de König. Portanto:
+\begin{equation}
+    |I^*| = |V| - |C^*| = |V| - |M^*|
+\end{equation}
+A extração de $I$ opera em tempo $\mathcal{O}(|V|)$ a partir de $C$.
 
 \begin{figure}[!ht]
 \centering
@@ -192,37 +186,38 @@ A cardinalidade do Conjunto Independente Máximo é dada algebricamente por $|I|
     \node[font=\footnotesize,below] at (2.5,-0.2) {$I = \{l_1, l_3, r_1, r_2\}$};
   \end{scope}
 \end{tikzpicture}
-\caption{Relação de complementaridade entre a Cobertura de Vértices e o Conjunto Independente Máximo. Os nós em evidência (borda dupla) formam os respectivos conjuntos, demonstrando visualmente que $I = V \setminus C$ e que não há arcos entre nós de $I$.}
+\caption{Complementaridade entre Cobertura de Vértices e Conjunto Independente Máximo: $I = V \setminus C$.}
 \label{fig:conjunto_independente}
 \end{figure}
 
 
-\section{Cobertura de Arcos Mínima}\label{sec:cobertura_arcos}
+\section{Cobertura de Arestas Mínima}\label{sec:cobertura_arcos}
 
-Até este ponto, estudamos três dos quatro objetos combinatórios fundamentais em grafos bipartidos. O quarto é a \textbf{Cobertura de Arcos Mínima} (\textit{Minimum Edge Cover} - MEC): o menor subconjunto de arcos $F \subseteq A$ tal que todo vértice do digrafo seja incidente a pelo menos um arco de $F$ (ou seja, $F$ ``cobre'' todos os vértices). Ao contrário dos problemas de cobertura de vértices, este problema admite solução eficiente também em grafos gerais, não apenas bipartidos.
+A \textbf{Cobertura de Arestas Mínima} (\textit{Minimum Edge Cover} - MEC) consiste no menor subconjunto $F \subseteq E$ tal que todo vértice em $V$ é incidente a pelo menos uma aresta de $F$.
 
-A conexão entre Cobertura de Arestas e Emparelhamento Máximo é estabelecida pelas Identidades de Gallai (veja~\cite{bondy2008graph}):
+A relação com o emparelhamento máximo é expressa pelas Identidades de Gallai~\cite{bondy2008graph}:
 
 \begin{teorema}[Identidades de Gallai, 1959][teo:gallai]
-Em qualquer grafo simples $G = (V, E)$ sem vértices isolados, valem as identidades fundamentais de invariância de soma:
+Em qualquer grafo simples $G = (V, E)$ sem vértices isolados:
 \begin{align}
-    |M^*| + |C_V^*| &= |V| \quad \text{\textit{(Gallai para Vértices)}} \\
-    |M^*| + |F^*| &= |V| \quad \text{\textit{(Gallai para Arestas)}}
+    |M^*| + |C_V^*| &= |V| \label{eq:gallai_v} \\
+    |M^*| + |F^*| &= |V| \label{eq:gallai_e}
 \end{align}
-onde $|M^*|$ denota a cardinalidade do emparelhamento máximo, $|C_V^*|$ da cobertura de vértices mínima e $|F^*|$ da cobertura de arestas mínima.
+onde $|M^*|$ é o tamanho do emparelhamento máximo, $|C_V^*|$ da cobertura de vértices mínima e $|F^*|$ da cobertura de arestas mínima.
 \end{teorema}
 
-\intuicao{Combinatória: A Conservação dos Graus de Liberdade} O Teorema de Gallai expressa uma lei intrínseca de conservação dimensional sobre os vértices do grafo: cada aresta incorporada a um emparelhamento emparelha e satura exatamente dois vértices distintos, neutralizando a necessidade de cobri-los de maneira independente. Assim, quanto maior o emparelhamento que conseguimos acomodar na topologia do grafo, menor se torna a quantidade residual de elementos necessários para cobrir os vértices ou as arestas remanescentes. Cada aresta de $M^*$ cobre dois vértices simultaneamente; os $|V| - 2|M^*|$ vértices deixados desemparelhados exigem obrigatoriamente arestas adicionais exclusivas para serem cobertos, fixando a cardinalidade exata da cobertura mínima de arestas em $|M^*| + (|V| - 2|M^*|) = |V| - |M^*|$.
+\intuicao{Combinatória} Cada aresta de um emparelhamento cobre exatamente dois vértices distintos. Os $|V| - 2|M^*|$ vértices desemparelhados requerem cada um ao menos uma aresta adicional para cobertura, resultando em $|F^*| = |M^*| + (|V| - 2|M^*|) = |V| - |M^*|$.
 
 \begin{demonstracao}
-Inicia-se pela cobertura de arestas mínima $F^*$: toma-se um emparelhamento máximo $M^*$. Para cada um dos $|V| - 2|M^*|$ vértices não cobertos por $M^*$, seleciona-se uma aresta incidente qualquer (o que é sempre viável, pois $G$ não possui vértices isolados). Cada uma dessas novas arestas cobre no mínimo um vértice desemparelhado, resultando em um conjunto de arestas $F$ que cobre todos os vértices de $V$ com cardinalidade $|F| \le |M^*| + |V| - 2|M^*| = |V| - |M^*|$, logo $|F^*| \le |V| - |M^*|$. Reciprocamente, seja $F^*$ uma cobertura de arestas mínima; o subgrafo gerado por $F^*$ é uma floresta de estrelas, cuja cardinalidade satisfaz $|F^*| \ge |V| - |M^*|$. Conclui-se que $|M^*| + |F^*| = |V|$. A identidade para vértices ($|M^*| + |C_V^*| = |V|$) decorre de forma análoga combinada à dualidade de König em grafos bipartidos ou à decomposição de Gallai-Edmonds em grafos gerais. \end{demonstracao}
+Dado um emparelhamento máximo $M^*$, para cada um dos $|V| - 2|M^*|$ vértices não cobertos seleciona-se uma aresta incidente (possível pois não há vértices isolados). O conjunto resultante $F$ cobre todos os vértices e satisfaz $|F| \le |M^*| + |V| - 2|M^*| = |V| - |M^*|$, donde $|F^*| \le |V| - |M^*|$. Reciprocamente, qualquer cobertura mínima $F^*$ gera uma floresta de estrelas com cardinalidade $|F^*| \ge |V| - |M^*|$. Logo, $|M^*| + |F^*| = |V|$. A equação~\eqref{eq:gallai_v} decorre de $|C_V^*| = |M^*|$ por König em grafos bipartidos.
+\end{demonstracao}
 
-\implicacoes{e Redução Algorítmica Polinomial} A relevância prática de Gallai reside na transformação do problema de cobertura mínima de arestas --- que à primeira vista exigiria enumeração combinatória exponencial --- em um problema de emparelhamento máximo. Uma vez obtido $M^*$ em tempo polinomial (seja por aumento em redes de fluxo bipartidas ou pelo algoritmo de Edmonds em grafos gerais), a cobertura ótima $F^*$ é sintetizada de forma gulosa e instantânea em tempo linear $\mathcal{O}(|V| + |E|)$, completando o quadro unificado das quatro dualidades combinatórias.
+A cobertura mínima de arestas $F^*$ é obtida a partir de $M^*$ em tempo $\mathcal{O}(|V| + |E|)$, completando o conjunto de reduções.
 
 
 \section{O Quadro Unificado das Quatro Dualidades (König e Gallai)}
 
-Com as quatro grandezas combinatórias fundamentais rigorosamente formuladas sobre a topologia bipartida, revela-se uma das estruturas mais harmônicas da Otimização Combinatória: os quatro problemas constituem ``faces da mesma moeda'', variando unicamente o objeto de cobertura/incidência (vértice ou arco) e o operador de otimização (maximizar ou minimizar), nas dimensões sintetizadas a seguir:
+As relações entre as quatro grandezas combinatórias em grafos bipartidos estão resumidas na Tabela~\ref{tab:dualidades}:
 
 \begin{table}[!ht]
 \centering
@@ -230,33 +225,33 @@ Com as quatro grandezas combinatórias fundamentais rigorosamente formuladas sob
 \setlength{\tabcolsep}{12pt}
 \begin{tabular}{l l l}
 \toprule
-\multicolumn{1}{c}{\textbf{Objetivo}} & \multicolumn{1}{c}{\textbf{Domínio de Vértices ($V$)}} & \multicolumn{1}{c}{\textbf{Domínio de Arcos ($A$)}} \\
+\multicolumn{1}{c}{\textbf{Objetivo}} & \multicolumn{1}{c}{\textbf{Domínio de Vértices ($V$)}} & \multicolumn{1}{c}{\textbf{Domínio de Arestas ($E$)}} \\
 \midrule
 \textbf{Maximizar} & \hyperref[sec:conjunto_independente]{Conjunto Independente} $\alpha(G) = |I^*|$ & \hyperref[sec:emparelhamento]{Emparelhamento Máximo} $\nu(G) = |M^*|$ \\
 \addlinespace[0.4em]
-\textbf{Minimizar} & \hyperref[sec:cobertura]{Cobertura de Vértices} $\tau(G) = |C_V^*|$ & \hyperref[sec:cobertura_arcos]{Cobertura de Arcos} $\rho(G) = |F^*|$ \\
+\textbf{Minimizar} & \hyperref[sec:cobertura]{Cobertura de Vértices} $\tau(G) = |C_V^*|$ & \hyperref[sec:cobertura_arcos]{Cobertura de Arestas} $\rho(G) = |F^*|$ \\
 \bottomrule
 \end{tabular}
-\caption{As quatro dualidades combinatórias em grafos bipartidos. As grandezas satisfazem a equivalência min-max $\nu(G) = \tau(G)$ (\hyperref[teo:konig]{Teorema~\ref{teo:konig}}) e as identidades de conservação $\alpha(G) + \tau(G) = \nu(G) + \rho(G) = |V|$ (\hyperref[teo:gallai]{Teorema~\ref{teo:gallai}}).}
+\caption{Quatro dualidades combinatórias em grafos bipartidos: $\nu(G) = \tau(G)$ (König) e $\alpha(G) + \tau(G) = \nu(G) + \rho(G) = |V|$ (Gallai).}
 \label{tab:dualidades}
 \end{table}
 
-As relações $|M^*| = |C_V^*|$ (König) e $|I^*| + |C_V^*| = |M^*| + |F^*| = |V|$ (Gallai) mostram que conhecer qualquer um destes valores determina imediatamente os demais. Em particular, combinando a equivalência de König $\nu(G) = \tau(G)$ com as identidades de Gallai, obtém-se diretamente a notável dualidade min-max secundária:
+Combinando a equivalência de König $\nu(G) = \tau(G)$ com Gallai, decorre a identidade:
 \begin{equation}
     \alpha(G) = |V| - \tau(G) = |V| - \nu(G) = \rho(G)
 \end{equation}
-estabelecendo que a cardinalidade do Conjunto Independente Máximo $\alpha(G)$ coincide rigorosamente com a cardinalidade da Cobertura de Arcos Mínima $\rho(G)$ em qualquer grafo bipartido sem vértices isolados. Neste projeto, os três primeiros problemas ($M$, $C_V$, $I$) são resolvidos diretamente via fluxo máximo; a cobertura de arcos mínima é obtida a partir de $M^*$ por pós-processamento em $\mathcal{O}(|V|)$, sem necessidade de novo cálculo de fluxo.
+mostrando que a cardinalidade do conjunto independente máximo coincide com a da cobertura de arestas mínima em grafos bipartidos sem vértices isolados.
 
 \begin{figure}[!ht]
 \centering
 \begin{tikzpicture}[thick]
   \node[concept box, fill=blue!10, text width=3.5cm] (mis) at (0, 6) {\textbf{Conjunto Independente} \\ MIS \\ (Maximizar, Vértices)};
   
-  \node[concept box, fill=orange!10, text width=3.5cm] (match) at (9, 6) {\textbf{Emparelhamento} \\ Matching \\ (Maximizar, Arcos)};
+  \node[concept box, fill=orange!10, text width=3.5cm] (match) at (9, 6) {\textbf{Emparelhamento} \\ Matching \\ (Maximizar, Arestas)};
   
   \node[concept box, fill=blue!10, text width=3.5cm] (mvc) at (0, 0) {\textbf{Cobertura de Vértices} \\ MVC \\ (Minimizar, Vértices)};
   
-  \node[concept box, fill=orange!10, text width=3.5cm] (mec) at (9, 0) {\textbf{Cobertura de Arcos} \\ MEC \\ (Minimizar, Arcos)};
+  \node[concept box, fill=orange!10, text width=3.5cm] (mec) at (9, 0) {\textbf{Cobertura de Arestas} \\ MEC \\ (Minimizar, Arestas)};
 
   \draw[<->] (mis) -- node[left, font=\footnotesize, align=right] {Complemento\\$|I| = |V| - |C_V|$} (mvc);
   \draw[<->] (match) -- node[right, font=\footnotesize, align=left] {Gallai\\$|M| + |F| = |V|$} (mec);
@@ -264,52 +259,42 @@ estabelecendo que a cardinalidade do Conjunto Independente Máximo $\alpha(G)$ c
   \draw[<->] (match) -- node[sloped, above, font=\footnotesize, pos=0.25] {König} node[sloped, below, font=\footnotesize, pos=0.25] {$|M| = |C_V|$} (mvc);
   \draw[<->, dashed] (mis) -- node[sloped, above, font=\footnotesize, pos=0.25] {Gallai (Derivado)} node[sloped, below, font=\footnotesize, pos=0.25] {$|I| = |F|$} (mec);
 \end{tikzpicture}
-\caption{As quatro dualidades fundamentais em grafos bipartidos. Setas indicam as relações e teoremas que conectam os problemas de maximização e minimização sobre vértices e arcos.}
+\caption{Quatro grandezas duais em grafos bipartidos conectadas pelos teoremas de König e Gallai.}
 \label{fig:quatro_dualidades}
 \end{figure}
 
 
 \section{O Teorema do Casamento de Hall}\label{sec:hall}
 
-O Teorema de Hall (ou Teorema do Casamento) estabelece uma condição necessária e suficiente para a existência de um emparelhamento que sature completamente um dos lados de um grafo bipartido (veja~\cite{bondy2008graph, diestel2017graph}).
-
-Seja $G = (L \cup R, E)$ um grafo bipartido. Um emparelhamento $M$ é dito $L$-saturante se cada vértice de $L$ é coberto por alguma aresta de $M$ (e.g., $|M| = |L|$). Para qualquer subconjunto $S \subseteq L$, denotemos por $N(S) = \{v \in R : \exists\, u \in S, \, (u,v) \in E\}$ a vizinhança de $S$ em $R$.
+Seja $G = (L \cup R, E)$ um grafo bipartido. Um emparelhamento $M$ é $L$-saturante se cobre todos os vértices de $L$ ($|M| = |L|$). Para $S \subseteq L$, denota-se por $N(S) = \{v \in R \mid \exists\, u \in S, \, \{u,v\} \in E\}$ a vizinhança de $S$ em $R$.
 
 \begin{teorema}[Casamento de Hall, 1935][teo:hall]
-Existe um emparelhamento $L$-saturante em um grafo bipartido $G = (L \cup R, E)$ se, e somente se, a condição de Hall é satisfeita:
+Existe um emparelhamento $L$-saturante em $G = (L \cup R, E)$ se, e somente se:
 \begin{equation}
     |N(S)| \ge |S|, \quad \forall\, S \subseteq L
 \end{equation}
-onde $N(S) = \{v \in R \mid \exists\, u \in S, \, (u,v) \in E\}$ denota a vizinhança aberta do subconjunto $S$.
 \end{teorema}
 
-\intuicao{Combinatória e o Princípio da Casa dos Pombos} A condição de Hall traduz o Princípio da Casa dos Pombos em sua forma geométrica mais refinada: se um grupo de indivíduos $S \subseteq L$ deseja escolher parceiros exclusivos em $R$, mas a união de todas as suas opções disponíveis $N(S)$ possui menos elementos do que o próprio grupo ($|N(S)| < |S|$), é matematicamente impossível acomodar todos simultaneamente sem que ocorra conflito. A condição de Hall estabelece que essa óbvia impossibilidade local é, na verdade, o único impedimento possível para o emparelhamento completo: se nenhum subconjunto sofre com a escassez de opções vizinhas, a estrutura do grafo possui flexibilidade topológica suficiente para casar com perfeição todos os vértices de $L$.
-
 \begin{demonstracao}
-A demonstração requer a verificação das duas vias de implicação:
+$(\Rightarrow)$ Se existe emparelhamento $L$-saturante $M$, as arestas de $M$ incidentes a $S$ associam cada vértice de $S$ a um vizinho distinto em $N(S)$. Logo, $|N(S)| \ge |S|$.
 
 \medskip
-\noindent $(\Rightarrow)$ \textbf{Necessidade:} \\
-Suponha que exista um emparelhamento $M$ que sature todos os vértices de $L$. Para qualquer subconjunto $S \subseteq L$, as arestas de $M$ incidentes em $S$ associam cada vértice de $S$ a um vértice exclusivo em $R$. Esses parceiros emparelhados pertencem obrigatoriamente a $N(S)$ e são mutuamente distintos. Portanto, a cardinalidade da vizinhança é necessariamente maior ou igual ao tamanho do subconjunto: $|N(S)| \ge |S|$.
+\noindent $(\Leftarrow)$ Suponha por contradição que $|N(S)| \ge |S|$ para todo $S \subseteq L$, mas o emparelhamento máximo satisfaça $|M^*| < |L|$.
 
-\medskip
-\noindent $(\Leftarrow)$ \textbf{Suficiência (via Teorema de König):} \\
-Suponha por contradição que a condição $|N(S)| \ge |S|$ seja satisfeita para todo $S \subseteq L$, mas não exista nenhum emparelhamento capaz de saturar $L$. Então, o emparelhamento máximo $M^*$ possui cardinalidade estritamente menor que $L$: $|M^*| < |L|$.
+Pelo Teorema de König (Teorema~\ref{teo:konig}), existe cobertura de vértices $C$ com $|C| = |M^*| < |L|$. Sejam $C_L = C \cap L$ e $C_R = C \cap R$, com $|C| = |C_L| + |C_R|$.
 
-Pelo Teorema de König (Teorema~\ref{teo:konig}), a cobertura mínima de vértices $C$ possui cardinalidade exatamente igual a $|M^*|$, de forma que $|C| < |L|$. Decomponha a cobertura $C$ em suas partes bipartidas: $C_L = C \cap L$ e $C_R = C \cap R$, com $|C| = |C_L| + |C_R|$.
+Defina $S = L \setminus C_L$. Como $C$ cobre todas as arestas, não há arestas entre $S$ e $R \setminus C_R$, implicando $N(S) \subseteq C_R$ e, portanto, $|N(S)| \le |C_R|$.
 
-Considere agora o subconjunto de vértices $S = L \setminus C_L$. Como $C$ é uma cobertura válida de todas as arestas de $G$, não pode existir nenhuma aresta ligando um vértice de $S$ a um vértice de $R \setminus C_R$ (caso contrário essa aresta não seria coberta por nenhum vértice de $C$). Consequentemente, todos os vizinhos de $S$ estão confinados no interior de $C_R$, isto é:
-$$N(S) \subseteq C_R \implies |N(S)| \le |C_R|$$
-Por outro lado, o tamanho de $S$ é expresso por $|S| = |L| - |C_L|$. Pela hipótese de Hall aplicada ao conjunto $S$, temos $|N(S)| \ge |S|$. Encadeando as desigualdades:
-$$|C_R| \ge |N(S)| \ge |S| = |L| - |C_L| \implies |C_L| + |C_R| \ge |L|$$
-Isso resulta em $|C| \ge |L|$, o que contradiz frontalmente o fato estabelecido por König de que $|C| = |M^*| < |L|$. Esta contradição decorre unicamente de supor que $|M^*| < |L|$. Logo, temos necessariamente $|M^*| = |L|$, demonstrando que existe um emparelhamento $L$-saturante. \end{demonstracao}
+Por hipótese de Hall, $|N(S)| \ge |S| = |L| - |C_L|$. Segue que:
+$$|C_R| \ge |N(S)| \ge |L| - |C_L| \implies |C| = |C_L| + |C_R| \ge |L|$$
+o que contradiz $|C| < |L|$. Logo, $|M^*| = |L|$.
+\end{demonstracao}
 
-\implicacoes{e Aplicações em Sistemas de Alocação} O Teorema de Hall é a espinha dorsal matemática de sistemas de alocação de recursos em tempo real (como agendamento de tarefas em processadores, atribuição de canais de rádio em redes móveis e alocação de pedidos a entregadores). Em teoria de matrizes, Hall é a base para o célebre Teorema de Birkhoff-von Neumann sobre matrizes duplamente estocásticas. Computacionalmente, embora a condição de Hall pareça exigir a verificação combinatorial de $2^{|L|}$ subconjuntos, a equivalência demonstrada via redes de fluxo garante que podemos testar se a condição de Hall é satisfeita e encontrar o emparelhamento correspondente em tempo estritamente polinomial resolvendo uma única instância de fluxo máximo com Hopcroft-Karp em $\mathcal{O}(|E|\sqrt{|V|})$.
+A verificação computacional da condição de Hall e a construção do emparelhamento correspondente realizam-se em tempo $\mathcal{O}(|E|\sqrt{|V|})$ via fluxo máximo.
 
 \begin{figure}[!ht]
 \centering
 \begin{tikzpicture}[thick]
-    
     \node[bip L] (l1) at (0,3) {$l_1$};
     \node[bip L] (l2) at (0,1.5) {$l_2$};
     \node[bip L] (l3) at (0,0) {$l_3$};
@@ -329,31 +314,27 @@ Isso resulta em $|C| \ge |L|$, o que contradiz frontalmente o fato estabelecido 
     \node[bip label L] at (0,3.7) {$\mathbf{L}$};
     \node[bip label R] at (3,3.7) {$\mathbf{R}$};
 \end{tikzpicture}
-\caption{Emparelhamento $L$-saturante (arestas azuis) em um grafo bipartido: cada vértice de $L$ é coberto. A condição de Hall $|N(S)| \ge |S|$ é satisfeita para todo $S \subseteq L$.}
+\caption{Emparelhamento $L$-saturante (arestas azuis) satisfazendo a condição de Hall $|N(S)| \ge |S|$ para todo $S \subseteq L$.}
 \label{fig:hall_casamento}
 \end{figure}
 
 
-\section{Equivalência com Algoritmos Dedicados e o Colapso do Grafo Residual}
+\section{Equivalência com Algoritmos Dedicados e Simplificação Residual}
 
-Embora a formulação via rede de fluxo com superfonte e supersumidouro proporcione uma visão unificada e viabilize o uso direto de motores gerais de alto desempenho como \lstinline{PushRelabelImproved} e \lstinline{Dinic}, a literatura combinatória consagrou algoritmos dedicados para emparelhamento bipartido, notadamente o \textbf{Algoritmo de Kuhn} (1955) e o \textbf{Algoritmo de Hopcroft-Karp} (1973) (veja~\cite{schrijver2003combinatorial, korte2018combinatorial}).
-
-Longe de constituírem métodos desconexos ou concorrentes, esses algoritmos dedicados são instâncias especializadas do próprio método de caminhos aumentantes de Ford-Fulkerson e da estratégia em fases de Dinic. A aparente simplificação dessas implementações --- que dispensam a manutenção explícita de estruturas de dados de arcos reversos, ponteiros residuais e capacidades em memória --- decorre de uma elegante propriedade matemática: o \textbf{colapso do digrafo residual sob restrição bipartida unitária}:
+Algoritmos dedicados para emparelhamento bipartido, como Kuhn~\cite{kuhn1955hungarian} e Hopcroft-Karp~\cite{korte2018combinatorial}, correspondem a especializações dos métodos de Ford-Fulkerson e Dinic sob capacidades unitárias:
 
 \begin{enumerate}
-    \item \textbf{Binaridade Estrita das Capacidades ($c \in \{0, 1\}$):} Em uma rede de fluxo genérica, um arco pode carregar qualquer fração ou múltiplo inteiro de fluxo, exigindo o cômputo contínuo de $c_f(u, v) = c(u, v) - f(u, v)$. Em grafos bipartidos unitários, cada aresta admite exclusivamente dois estados: \textit{livre} ($f = 0$, permitindo trânsito direto $L \to R$) ou \textit{emparelhada} ($f = 1$, permitindo trânsito reverso $R \to L$).
-    
-    \item \textbf{Unicidade Determinística dos Arcos Reversos:} Em digrafos gerais, um vértice pode possuir múltiplos arcos afluentes com fluxo positivo, demandando listas de adjacência reversa. Em um emparelhamento bipartido viável, cada vértice $v \in R$ está associado a no máximo um único parceiro $u \in L$. Consequentemente, o arco residual de retorno saindo de $v$ é unívoco e corresponde diretamente ao valor armazenado no vetor de emparelhamento \lstinline{match[v]}.
-    
-    \item \textbf{Alternância Topológica Estrita ($L \to R \to L \to R$):} Pela ausência de arcos internos em $L$ ou $R$, todo caminho aumentante residual descreve uma trajetória estritamente alternante entre arestas não emparelhadas e arestas emparelhadas. A travessia de retorno $v \to \text{\lstinline{match}}[v]$ simula perfeitamente o cancelamento de fluxo no arco reverso do grafo residual.
+    \item \textbf{Capacidades Unitárias ($c \in \{0, 1\}$):} Cada aresta assume apenas dois estados: livre ($f = 0$, sentido $L \to R$) ou emparelhada ($f = 1$, sentido residual $R \to L$).
+    \item \textbf{Arcos Reversos Determinísticos:} Como cada vértice $v \in R$ emparelha-se com no máximo um $u \in L$, o arco reverso no digrafo residual é único e dado por \lstinline{match[v]}.
+    \item \textbf{Caminhos Alternantes:} Pela bipartição, todo caminho residual aumentante alterna arestas não emparelhadas e emparelhadas.
 \end{enumerate}
 
-Essa correspondência estabelece uma equivalência algorítmica e assintótica direta entre os paradigmas:
+Essa correspondência traduz-se em paridade assintótica:
 \begin{itemize}
-    \item \textbf{Kuhn vs. Ford-Fulkerson:} O Algoritmo de Kuhn realiza uma DFS para localizar um caminho aumentante individual por iteração, operando em $\mathcal{O}(|V| \cdot |A|)$. Equivale ao Ford-Fulkerson com DFS em redes unitárias.
-    \item \textbf{Hopcroft-Karp vs. Dinic:} O Algoritmo de Hopcroft-Karp divide a execução em fases: uma BFS simultânea a partir de todos os vértices livres de $L$ determina o comprimento $k$ do menor caminho aumentante, seguida por uma DFS que extrai um conjunto maximal de caminhos disjuntos de comprimento $k$. Como o comprimento dos caminhos estritamente cresce a cada fase ($k_1 < k_2 < \dots$), o número de fases é limitado por $\mathcal{O}(\sqrt{|V|})$, garantindo a complexidade ótima de $\mathcal{O}(|A| \sqrt{|V|})$ (veja~\cite{korte2018combinatorial}). Esta dinâmica é rigorosamente idêntica ao comportamento do algoritmo de Dinic operando sobre a rede unitária $D'$.
+    \item \textbf{Kuhn vs. Ford-Fulkerson:} Executa DFS para encontrar um caminho alternante por iteração em tempo $\mathcal{O}(|V| \cdot |E|)$.
+    \item \textbf{Hopcroft-Karp vs. Dinic:} Opera em fases com BFS global seguida de DFS bloqueadora. O número de fases é limitado por $\mathcal{O}(\sqrt{|V|})$, resultando em $\mathcal{O}(|E| \sqrt{|V|})$~\cite{korte2018combinatorial}, equivalente a Dinic sobre a rede unitária.
 \end{itemize}
 
-\textbf{Extensão Ponderada e o Algoritmo Húngaro:} Quando custos ou pesos são associados aos emparelhamentos (problema de atribuição ponderada de custo mínimo), a extensão natural desta equivalência conduz ao célebre \textbf{Algoritmo Húngaro de Kuhn e Munkres} (veja~\cite{kuhn1955hungarian}). Sob a perspectiva de redes, este método corresponde formalmente ao algoritmo \textit{Successive Shortest Path} operando com potenciais nodais --- cuja formulação completa e fundamentação teórica de custos reduzidos são detalhadas adiante na Subseção~\ref{sec:ssp} no contexto de Fluxo de Custo Mínimo.
+Para o caso ponderado (atribuição de custo mínimo), o Algoritmo Húngaro~\cite{kuhn1955hungarian} equivale ao método \textit{Successive Shortest Path} com potenciais nodais, analisado na Seção~\ref{sec:ssp}.
 
 

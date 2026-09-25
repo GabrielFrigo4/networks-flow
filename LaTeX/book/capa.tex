@@ -170,19 +170,19 @@
 \chapter*{Prefácio do Autor}
 \addcontentsline{toc}{chapter}{Prefácio do Autor}
 
-A teoria de fluxos em digrafos ocupa um território privilegiado na ciência moderna, situado na encruzilhada exata entre a Matemática Discreta, a Geometria Poliedral e a Ciência da Computação Teórica. Desde as formulações seminais de L. R. Ford Jr. e D. R. Fulkerson na década de 1950, a modelagem de fluxos revelou-se não apenas um modelo elegante para transporte físico ou alocação de recursos, mas uma poderosa linguagem conceitual capaz de unificar teoremas estruturais aparentemente díspares --- como as dualidades de König, Gallai, Hall e Menger.
+A teoria de fluxos em digrafos situa-se na interseção entre Matemática Discreta, Otimização Combinatória e Ciência da Computação Teórica. Desde as formulações seminais de Ford e Fulkerson na década de 1950, os modelos de fluxo constituem uma estrutura matemática unificadora para diversos problemas em grafos, como as dualidades de König, Gallai, Hall e Menger.
 
-Este volume foi concebido para preencher uma lacuna frequente na literatura técnica: a dissociação entre a matemática axiomática rigorosa e a engenharia de software de baixa latência. Frequentemente, manuais teóricos abstêm-se dos desafios concretos de representação em memória e amortização assintótica, enquanto textos práticos negligenciam as demonstrações formais de corretude e otimalidade que justificam as escolhas de projeto. 
+Este volume aborda de forma integrada o rigor conceitual e o desenvolvimento de software em C++23, buscando conectar as provas formais de otimalidade às estruturas de dados e decisões de implementação.
 
-Neste livro, ambas as vertentes operam em simbiose incondicional:
+O livro organiza-se em quatro eixos:
 \begin{enumerate}[leftmargin=1.5em, itemsep=0.4em]
-    \item \textbf{Rigor Teórico Sem Atalhos:} Apresentamos as deduções e demonstrações formais integrais de todos os teoremas estruturais fundamentais que regem a teoria de fluxos (desde o Teorema do Fluxo Máximo e Corte Mínimo de Ford-Fulkerson até a Total Unimodularidade de Poincaré), articulando enunciado formal, intuição geométrica/física, prova construtiva e implicações algorítmicas;
-    \item \textbf{Ecossistema de Software C++23:} Desenvolvemos uma arquitetura orientada a objetos moderna baseada em polimorfismo limpo, representações residuais simétricas compactas e estruturas de dados de alta localidade de cache;
-    \item \textbf{Reduções Práticas e Aplicações Reais:} Exploramos desde as transformações de conectividade em grafos bipartidos até a formulação energética de corte mínimo aplicada à Segmentação Interativa de Imagens em visão computacional;
-    \item \textbf{Metodologia Experimental e Benchmarks:} Estruturamos um protocolo de medição empírica sob isolamento de CPU contra instâncias padronizadas da literatura (coleções DIMACS).
+    \item \textbf{Fundamentação Teórica:} Demonstrações formais dos teoremas fundamentais de fluxos em redes (do Teorema do Fluxo Máximo e Corte Mínimo à Total Unimodularidade), acompanhadas de definições rigorosas e intuições estruturais;
+    \item \textbf{Arquitetura em C++23:} Implementação orientada a objetos com classes base abstratas, representações residuais indexadas e estruturas de dados otimizadas para memória contígua;
+    \item \textbf{Reduções e Aplicações:} Resolução de problemas clássicos em grafos bipartidos, caminhos disjuntos e o modelo de corte mínimo aplicado à Segmentação Interativa de Imagens;
+    \item \textbf{Protocolo Experimental:} Metodologia empírica sob isolamento de tempo de CPU e validação cruzada sobre as coleções de benchmark da literatura (DIMACS).
 \end{enumerate}
 
-Esta edição monográfica e independente liberta o texto das amarras burocráticas de formulários institucionais de iniciação científica, oferecendo aos leitores, pesquisadores e engenheiros de software um percurso contínuo, profundo e intelectualmente desafiador sobre a arte dos fluxos em redes.
+Esta versão monográfica consolida o conteúdo técnico da pesquisa de forma completa e autocontida, com demonstrações matemáticas detalhadas, implementações de referência e benchmarks experimentais.
 
 \vspace{1cm}
 \begin{flushright}

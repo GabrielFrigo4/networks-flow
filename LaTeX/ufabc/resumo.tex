@@ -4,16 +4,16 @@
 \begin{singlespace}
 \section*{Resumo}
 
-O presente trabalho de Iniciação Científica investiga de maneira integrada a teoria matemática, a modelagem combinatória e a engenharia de software de alto desempenho aplicadas aos problemas fundamentais de Fluxos em Redes. A pesquisa estrutura-se em quatro eixos complementares:
+O presente trabalho de Iniciação Científica investiga a teoria matemática, a modelagem combinatória e a implementação em C++23 aplicadas a problemas de Fluxos em Redes. A pesquisa organiza-se em quatro eixos:
 
 \begin{itemize}[leftmargin=1.5em, itemsep=0.15em, topsep=0.3em, parsep=0em]
-    \item \textbf{Fundamentação Teórica e Dualidade:} Formalização e demonstração rigorosa dos teoremas estruturais clássicos (Ford-Fulkerson, Total Unimodularidade de Poincaré, Dualidades de König, Gallai, Hall e Menger, Decomposição Canônica, Otimalidade por Ciclos Negativos de Klein e Custos Reduzidos sob Folga Complementar). Cada teorema é apresentado sob quatro dimensões: formalismo, intuição geométrica, demonstração e reflexo algorítmico.
+    \item \textbf{Fundamentação Teórica e Dualidade:} Demonstração dos teoremas estruturais fundamentais (Ford-Fulkerson, Total Unimodularidade, Dualidades de König, Gallai, Hall e Menger, Decomposição de Fluxos, Otimalidade por Ciclos Negativos de Klein e Custos Reduzidos com Folga Complementar).
 
-    \item \textbf{Arquitetura Orientada a Objetos em C++23:} Desenvolvimento de um ecossistema modular polimórfico (padrões \textit{Strategy} e \textit{Template Method}) dividido em duas famílias: \code{FlowNetwork}, com cinco motores de Fluxo Máximo (\textit{Ford-Fulkerson}, \textit{Edmonds-Karp}, \textit{Dinic}, \textit{Push-Relabel FIFO} e \textit{Push-Relabel Gap Heuristic}); e \code{CostNetwork}, com quatro motores de Fluxo de Custo Mínimo (\textit{Cycle Canceling}, \textit{Successive Shortest Path} via SPFA e acelerado via Dijkstra com potenciais, e o \textit{Network Simplex} com manutenção direta de bases em árvores geradoras).
+    \item \textbf{Arquitetura em C++23:} Desenvolvimento de classes modulares divididas em duas famílias: \code{FlowNetwork}, com cinco algoritmos de Fluxo Máximo (\textit{Ford-Fulkerson}, \textit{Edmonds-Karp}, \textit{Dinic}, \textit{Push-Relabel FIFO} e \textit{Push-Relabel Gap Heuristic}); e \code{CostNetwork}, com quatro algoritmos de Fluxo de Custo Mínimo (\textit{Cycle Canceling}, \textit{Successive Shortest Path} via SPFA e acelerado via Dijkstra com potenciais, e \textit{Network Simplex}).
 
-    \item \textbf{Reduções Combinatórias e Aplicações Práticas:} Modelagem e resolução de problemas clássicos em grafos bipartidos (emparelhamento máximo, coberturas mínimas e caminhos disjuntos), culminando na concepção de um pipeline autônomo de \textbf{Segmentação Interativa de Imagens} baseado no algoritmo de corte mínimo ($s$-$t$ \textit{cut}) aplicado à visão computacional.
+    \item \textbf{Reduções Combinatórias e Aplicações Práticas:} Modelagem e resolução de problemas clássicos em grafos bipartidos (emparelhamento máximo, coberturas mínimas e caminhos disjuntos) e implementação de \textbf{Segmentação Interativa de Imagens} baseada em corte mínimo ($s$-$t$ \textit{cut}).
 
-    \item \textbf{Protocolo Experimental e Benchmarks:} Metodologia sistemática de avaliação de desempenho em instâncias padronizadas da literatura (coleções DIMACS \textit{Washington}, \textit{Genrmf}, \textit{Netgen} e \textit{Grid}), contemplando isolamento estrito de tempo de CPU, instrumentação operacional e validação cruzada automática de soluções ótimas.
+    \item \textbf{Protocolo Experimental e Benchmarks:} Avaliação de desempenho em instâncias padronizadas da literatura (coleções DIMACS \textit{Washington}, \textit{Genrmf} e \textit{Netgen}), com medição de tempo de CPU e validação cruzada das soluções ótimas.
 \end{itemize}
 
 \vspace{0.3cm}

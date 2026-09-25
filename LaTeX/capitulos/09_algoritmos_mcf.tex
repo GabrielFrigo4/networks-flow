@@ -5,27 +5,27 @@
 
 \section{A Abordagem Primal: Cancelamento de Ciclos Negativos (Cycle Canceling)}\label{sec:cycle_canceling}
 
-\paragraph{Princípio Teórico e Intuição.}
-Proposto originalmente por Morton Klein em 1967 (veja~\cite{ahuja1993network, cook1998combinatorial}), o algoritmo \textit{Cycle Canceling} representa a extensão primal mais direta e intuitiva do método de Ford-Fulkerson para o problema de fluxo de custo mínimo. Sua premissa apoia-se inteiramente na condição de otimalidade por ciclos negativos: se um fluxo é viável, mas não é de custo mínimo, o digrafo residual necessariamente abriga pelo menos um ciclo direcionado de custo estritamente negativo.
+\paragraph{Princípio Teórico.}
+O algoritmo \textit{Cycle Canceling} de Klein~\cite{klein1967primal} opera sobre a condição de otimalidade por ciclos negativos: se um fluxo é viável mas não é de custo mínimo, o digrafo residual contém ao menos um ciclo direcionado de custo estritamente negativo.
 
 \paragraph{Dinâmica Operacional em Duas Fases.}
-O algoritmo opera de forma determinística através de duas fases sequenciais bem definidas:
+O método organiza-se em duas etapas:
 
 \begin{enumerate}
-    \item \textbf{Fase 1 --- Estabelecimento da Viabilidade Primal (Fluxo Máximo Inicial):} Inicialmente, ignora-se a dimensão dos custos e computa-se um fluxo viável máximo arbitrário de $s$ a $t$ na rede original. Na arquitetura desenvolvida, esta fase aproveita a família polimórfica \lstinline{FlowNetwork} (utilizando, por exemplo, o motor de Edmonds-Karp ou Dinic), saturando a capacidade de transporte da rede de modo que $|f| = |f^*|$. Ao término desta etapa, o fluxo é factível e máximo, porém seu custo total pode ser substancialmente subótimo.
+    \item \textbf{Fase 1 --- Viabilidade Primal:} Computa-se um fluxo máximo viável de $s$ a $t$ na rede, desconsiderando os custos, via \lstinline{FlowNetwork} (Dinic ou Edmonds-Karp).
     
-    \item \textbf{Fase 2 --- Otimização Iterativa por Cancelamento de Ciclos Negativos:} Com o fluxo máximo inicial estabelecido, o algoritmo entra em um laço de melhoria iterativa. A cada iteração:
+    \item \textbf{Fase 2 --- Otimização por Cancelamento de Ciclos:} Com o fluxo máximo inicial:
     \begin{itemize}
-        \item Constrói-se o digrafo residual $D_f$ com as capacidades residuais $c_f$ e os custos residuais $w_f$.
-        \item Executa-se uma rotina de detecção de ciclo de custo negativo baseada no algoritmo de \textit{Bellman-Ford} (ou em sua variante otimizada \textit{SPFA}), com complexidade $\mathcal{O}(|V| \cdot |A|)$.
-        \item Caso um ciclo negativo $C$ seja identificado, determina-se sua capacidade residual gargalo $\delta = \min_{(u,v) \in C} c_f(u,v) > 0$.
-        \item O fluxo é cancelado (aumentado) ao longo de $C$, somando $\delta$ nos arcos de $C$ e subtraindo $\delta$ em seus respectivos arcos reversos via \lstinline{push_flow}.
+        \item Constrói-se o digrafo residual $D_f$ com capacidades $c_f$ e custos $w_f$.
+        \item Detecta-se um ciclo direcionado negativo $C$ via Bellman-Ford ou SPFA ($\mathcal{O}(|V| \cdot |A|)$).
+        \item Calcula-se a capacidade residual mínima $\delta = \min_{(u,v) \in C} c_f(u,v) > 0$.
+        \item Aumenta-se o fluxo ao longo de $C$ por $\delta$ unidades via \lstinline{push_flow}.
     \end{itemize}
 \end{enumerate}
 
-\textbf{Extração Segura do Ciclo Negativo em C++:} Um detalhe algorítmico crucial na implementação prática do \textit{Cycle Canceling} reside na extração precisa do ciclo a partir do vetor de predecessores (\lstinline{parent_edge}). Quando a $|V|$-ésima iteração de relaxação do Bellman-Ford (ou a detecção de contagem de visitas $\ge |V|$ no SPFA) acusa um vértice $v$ cuja distância ainda pôde ser reduzida, este vértice $v$ não necessariamente pertence ao ciclo negativo em si; ele pode residir em um caminho que é alcançável a partir do ciclo (um ``rabo'' que conduz para fora do ciclo). Para isolar com garantia matemática o ciclo fechado, a classe \lstinline{CycleCanceling} (Código~\ref{lst:cycle_canceling}, Apêndice~\ref{ap:cycle_canceling}) aplica o Princípio da Casa dos Pombos: retrocedendo $|V|$ passos ao longo dos arcos predecessores a partir de $v$ (\lstinline{for (Size i = 0; i < size; ++i) node = edges[parent_edge[node]].from;}), qualquer sequência de $|V|$ passos em um grafo com $|V|$ vértices é forçada a repetir pelo menos um nó, prendendo \lstinline{node} garantidamente dentro do ciclo negativo. A partir deste vértice garantido, rastreiam-se os predecessores até reencontrá-lo, reconstruindo com rigor o ciclo simples $C$ e computando o gargalo residual $\delta$.
+Para isolar o ciclo negativo a partir de um vértice $v$ relaxado na $|V|$-ésima etapa do algoritmo de caminho mais curto, retrocedem-se $|V|$ passos no vetor de predecessores. Pelo Princípio da Casa dos Pombos, o nó obtido pertence garantidamente ao ciclo negativo, viabilizando a extração de $C$. A classe \lstinline{CycleCanceling} implementa esse procedimento (Código~\ref{lst:cycle_canceling}, Apêndice~\ref{ap:cycle_canceling}).
 
-Cada cancelamento preserva estritamente a lei de conservação de fluxo em todos os vértices (pois $C$ é um ciclo fechado) e não altera o valor do fluxo líquido transportado ($|f|$ permanece inalterado), mas reduz o custo total da rede em exatamente $\delta \cdot |w(C)| > 0$. O processo repete-se até que o digrafo residual $D_f$ não contenha nenhum ciclo negativo, momento no qual o Teorema da Condição de Otimalidade certifica que o fluxo é de custo mínimo. A dinâmica operacional dessa transição é ilustrada na Figura~\ref{fig:cycle_canceling_exec}.
+Cada iteração preserva a viabilidade do fluxo e o valor $|f|$, reduzindo o custo total em $\delta \cdot |w(C)|$. O algoritmo encerra quando $D_f$ não possui ciclos negativos. A Figura~\ref{fig:cycle_canceling_exec} ilustra a dinâmica.
 
 \begin{figure}[!ht]
 \centering
@@ -61,65 +61,46 @@ Cada cancelamento preserva estritamente a lei de conservação de fluxo em todos
   \draw[tree edge] (s2) -- node[edge lbl below] {$f\!=\!4,\; w\!=\!1$} (v2);
   \draw[tree edge] (v2) -- node[edge lbl right] {$f\!=\!4,\; w\!=\!1$} (u2);
 
-  \node[font=\footnotesize, align=center, below=4pt] at (2.5,-0.6) {Fluxo líquido $|f|=4$ permanece inalterado!\\Custo total reduz de $24$ para $16$ (economia de $8$)};
+  \node[font=\footnotesize, align=center, below=4pt] at (2.5,-0.6) {Fluxo líquido $|f|=4$ permanece inalterado\\Custo total reduz de $24$ para $16$};
 \end{scope}
 \end{tikzpicture}
-\caption{Dinâmica operacional do algoritmo Cycle-Canceling de Morton Klein. (a)~Com um fluxo viável máximo arbitrário de valor $|f|=4$, detecta-se no digrafo residual $D_f$ o ciclo direcionado negativo $C = s \to v \to u \to s$ com custo total $w(C) = 1 + 1 - 4 = -2 < 0$ e arco de retorno cancelando fluxo prévio. (b)~Ao enviar $\delta=4$ unidades ao longo do ciclo, o custo total da rede diminui estritamente de $24$ para $16$, preservando rigorosamente a conservação nodal e a magnitude do fluxo líquido transportado.}
+\caption{Dinâmica do algoritmo Cycle-Canceling: (a) detecção do ciclo negativo em $D_f$. (b) Envio de $\delta=4$ unidades, reduzindo o custo sem alterar o fluxo líquido.}
 \label{fig:cycle_canceling_exec}
 \end{figure}
 
 \paragraph{Complexidade Assintótica.}
-Em redes com capacidades e custos inteiros, seja $C = \max_{(u,v) \in A} c(u,v)$ a capacidade máxima e $W = \max_{(u,v) \in A} |w(u,v)|$ o maior custo unitário em módulo. O custo total do fluxo inicial é limitado superiormente por $|A| \cdot C \cdot W$. Como cada cancelamento de ciclo com capacidades inteiras transporta pelo menos $\delta \ge 1$ unidade e reduz o custo por pelo menos $1$ unidade inteira, o algoritmo executa no máximo $\mathcal{O}(|A| \cdot C \cdot W)$ iterações. Multiplicando pelo custo de $\mathcal{O}(|V| \cdot |A|)$ da detecção de ciclo via Bellman-Ford por iteração, obtém-se a complexidade total de pior caso de $\mathcal{O}(|V| \cdot |A|^2 \cdot C \cdot W)$ (veja~\cite{ahuja1993network}).
-
-Trata-se de um limite pseudopolinomial que pode degradar frente a custos ou capacidades de magnitude exponencial. Contudo, variações teóricas que selecionam sistematicamente o ciclo de \textit{custo médio mínimo} (minimizando $w(C)/|C|$, conforme proposto por Goldberg e Tarjan em 1989, veja~\cite{goldberg1988new, korte2018combinatorial}) alcançam limites fortemente polinomiais de $\mathcal{O}(|V|^2 |A|^3 \log |V|)$.
-
-\paragraph{Implementação em C++ e Apêndice.}
-A materialização em C++ da classe \lstinline{CycleCanceling} encontra-se documentada no Código~\ref{lst:cycle_canceling} (disponível no Apêndice~\ref{ap:cycle_canceling}).
+Para capacidades inteiras limitadas por $C$ e custos por $W$, o custo total é no máximo $|A| \cdot C \cdot W$. Como cada cancelamento reduz o custo em pelo menos 1 unidade inteira, ocorrem no máximo $\mathcal{O}(|A| \cdot C \cdot W)$ iterações. Com custo $\mathcal{O}(|V| \cdot |A|)$ por iteração de Bellman-Ford, a complexidade total no pior caso é $\mathcal{O}(|V| \cdot |A|^2 \cdot C \cdot W)$~\cite{ahuja1993network}.
 
 
 \section{A Abordagem Dual: Caminhos de Custo Mínimo (Successive Shortest Path)}\label{sec:ssp}
 
-Desenvolvido independentemente por Jewell (1958), Iri (1960) e Busacker e Gowen (1961) (veja~\cite{ahuja1993network, schrijver2003combinatorial}), o algoritmo \textit{Successive Shortest Path} (SSP) adota uma abordagem dual complementar ao \textit{Cycle Canceling}. Enquanto o \textit{Cycle Canceling} mantém a viabilidade primal do fluxo ($f$ viável) e cancela iterativamente ciclos negativos em $D_f$ para atingir a otimalidade de custos, o SSP mantém a \textbf{otimalidade dual de custos como invariante permanente} (o grafo residual nunca abriga ciclos direcionados de custo negativo) e constrói a viabilidade do fluxo líquido passo a passo por aumentos sucessivos.
+O algoritmo \textit{Successive Shortest Path} (SSP)~\cite{ahuja1993network, schrijver2003combinatorial} adota a estratégia dual: mantém a ausência de ciclos negativos em $D_f$ como invariante contínua e aumenta o fluxo líquido por caminhos de menor custo até atingir a viabilidade.
 
-\subsection{Invariante Dual de Otimalidade e Aumentos Sucessivos}
+\subsection{Invariante Dual e Aumentos Sucessivos}
 
-O algoritmo inicia com fluxo nulo em todos os arcos da rede ($f \equiv 0$). Como nenhum arco transporta fluxo, o digrafo residual $D_0$ coincide exatamente com o digrafo original $D$ (onde supõe-se, sem perda de generalidade, que não existem ciclos de custo estritamente negativo na rede inicial). Logo, $f \equiv 0$ satisfaz trivialmente a condição de otimalidade por ciclos negativos de Klein (Teorema~\ref{teo:ciclos_negativos}).
+Partindo do fluxo nulo ($f \equiv 0$), o digrafo residual inicial $D_0$ não possui ciclos negativos (assumindo custos iniciais não negativos em ciclos).
 
-A cada iteração da dinâmica de aumentos sucessivos:
+A cada iteração:
 \begin{enumerate}
-    \item Localiza-se o caminho aumentante de menor custo total $P$ da fonte $s$ ao sumidouro $t$ no digrafo residual $D_f$.
-    \item Computa-se a capacidade residual gargalo $\delta = \min_{(u,v) \in P} c_f(u,v) > 0$ ao longo de $P$.
-    \item Roteiam-se $\delta$ unidades de fluxo através de $P$, atualizando os fluxos diretos ($f(u,v) \leftarrow f(u,v) + \delta$) e os respectivos arcos reversos ($f(v,u) \leftarrow f(v,u) - \delta$) via \lstinline{push_flow}.
+    \item Determina-se o caminho simples $P$ de menor custo residual de $s$ a $t$ em $D_f$.
+    \item Calcula-se o gargalo $\delta = \min_{(u,v) \in P} c_f(u,v) > 0$.
+    \item Aumenta-se o fluxo em $\delta$ ao longo de $P$ via \lstinline{push_flow}.
 \end{enumerate}
 
-\paragraph{Demonstração da Preservação da Invariante Dual.}
-A validade matemática do método apoia-se no seguinte princípio fundamental: \textit{aumentar fluxo ao longo do caminho de custo mínimo residual nunca introduz ciclos de custo negativo em $D_f$}.
+\paragraph{Preservação da Invariante Dual.}
+O aumento ao longo do caminho de custo mínimo não introduz ciclos de custo negativo em $D_f$. Se um novo ciclo $C$ contivesse arcos reversos $(v,u)$ com $(u,v) \in P$, seu custo residual seria $w_{f'}(v,u) = -w_f(u,v) = d(u) - d(v)$. Como para os demais arcos vale $w_f(x,y) \ge d(y) - d(x)$ pela desigualdade triangular, o custo total do ciclo satisfaz $w_{f'}(C) \ge \sum_C [d(y) - d(x)] = 0$, assegurando a ausência de ciclos negativos.
 
-Procedemos por indução e contradição: suponha que antes da iteração o digrafo residual $D_f$ não contenha nenhum ciclo negativo, e que $P$ seja o caminho mais curto de $s$ para $t$ em $D_f$. Seja $f'$ o fluxo resultante do aumento de $\delta$ unidades ao longo de $P$. Se o novo digrafo residual $D_{f'}$ contivesse um ciclo negativo $C$, este ciclo deveria obrigatoriamente utilizar pelo menos um arco reverso $(v,u)$ recém-habilitado pelo envio de fluxo, com $(u,v) \in P$. Portanto, o arco reverso tem custo residual $w_{f'}(v,u) = -w_f(u,v)$.
 
-Sejam $d(x)$ as distâncias mínimas a partir de $s$ em $D_f$. Como $P$ é o caminho mais curto de $s$ para $t$, para todo arco $(u,v) \in P$ vale a igualdade estrita da desigualdade triangular: $d(v) = d(u) + w_f(u,v)$, donde $-w_f(u,v) = d(u) - d(v)$. Consequentemente, para qualquer arco reverso $(v,u)$ gerado por $P$, temos $w_{f'}(v,u) = d(u) - d(v)$.
+\subsection{Variante com SPFA}\label{sec:ssp_spfa}
 
-Para os demais arcos $(x,y) \in C$ que já existiam em $D_f$, a desigualdade triangular impõe $d(y) \le d(x) + w_f(x,y)$, ou equivalentemente, $w_f(x,y) \ge d(y) - d(x)$. Somando os custos de todos os arcos ao longo do ciclo fechado $C$:
-\begin{equation}
-    w_{f'}(C) = \sum_{(x,y) \in C} w_{f'}(x,y) \ge \sum_{(x,y) \in C} [d(y) - d(x)] = 0
-\end{equation}
-pois a soma das diferenças de distância em qualquer circuito fechado cancela-se telescopicamente. Obtemos $w_{f'}(C) \ge 0$, o que contradiz frontalmente a hipótese de que $C$ fosse um ciclo de custo estritamente negativo ($w_{f'}(C) < 0$). Conclui-se que $D_{f'}$ permanece livre de ciclos negativos. Quando não existirem mais caminhos residuais de $s$ a $t$, o fluxo obtido é simultaneamente máximo e de custo globalmente mínimo.
+Como arcos reversos adquirem custos negativos $w_f(v,u) = -w(u,v) < 0$, o algoritmo de Dijkstra não pode ser aplicado diretamente sobre $w_f$.
 
-\subsection{Variante Canônica com SPFA (Aumentos em Custos Residuais)}\label{sec:ssp_spfa}
+A classe \lstinline{SuccessiveShortest} (Código~\ref{lst:successive_shortest}, Apêndice~\ref{ap:successive_shortest}) utiliza o \textit{Shortest Path Faster Algorithm} (SPFA), variante de Bellman-Ford com fila de vértices relaxados.
 
-Na concretização computacional clássica do método de aumentos sucessivos, a busca pelo caminho mais curto $s \leadsto t$ é realizada diretamente sobre os custos residuais $w_f$. Contudo, tão logo a primeira iteração é executada, os arcos reversos habilitados pelo envio de fluxo passam a carregar custos unitários negativos:
-\begin{equation}
-    w_f(v,u) = -w(u,v) < 0
-\end{equation}
-A presença de arestas com pesos negativos inviabiliza sumariamente o algoritmo guloso de Dijkstra, cuja hipótese de corretude exige que todos os arcos possuam pesos não negativos (veja~\cite{cormen2022introduction}). Se Dijkstra fosse aplicado diretamente sobre $w_f$, a extração de vértices da fila de prioridade cometeria erros irreversíveis de subestrutura ótima.
-
-Para superar essa restrição preservando a simplicidade estrutural, a classe \lstinline{SuccessiveShortest} (Código~\ref{lst:successive_shortest}, Apêndice~\ref{ap:successive_shortest}) emprega o algoritmo \textit{SPFA} (\textit{Shortest Path Faster Algorithm}), uma especialização de Bellman-Ford controlada por fila FIFO (veja~\cite{cook1998combinatorial}). Em vez de realizar $|V|-1$ varreduras completas e cegas sobre todo o conjunto de arcos, o SPFA mantém uma fila de vértices ativos cujas distâncias foram recentemente relaxadas. Quando a relaxação de um arco residual $(u,v)$ com $w_f(u,v) < 0$ reduz a distância estimada de $v$, o nó $v$ é reinserido na fila para propagar a melhoria aos seus vizinhos, conforme ilustrado na Figura~\ref{fig:spfa_mcf}.
-
-A complexidade de cada busca de caminho aumentante via SPFA é $\mathcal{O}(|V| \cdot |A|)$ no pior caso. Em redes com capacidades inteiras e fluxo máximo $F = |f^*|$, o número total de iterações de aumento é no máximo $F$ (pois cada aumento transfere $\delta \ge 1$). Multiplicando os fatores, a complexidade assintótica da classe \lstinline{SuccessiveShortest} atinge:
+Com custo $\mathcal{O}(|V| \cdot |A|)$ por busca e até $F = |f^*|$ aumentos unitários, a complexidade total é:
 \begin{equation}
     \mathcal{O}(|V| \cdot |A| \cdot F)
 \end{equation}
-Trata-se de uma variante altamente intuitiva e robusta para redes de pequeno e médio porte, mas que pode apresentar degradação empírica em grafos densos devido ao retrabalho de relaxações sucessivas provocadas pelos arcos negativos.
 
 \begin{figure}[!ht]
 \centering
@@ -137,11 +118,11 @@ Trata-se de uma variante altamente intuitiva e robusta para redes de pequeno e m
   \draw[rev edge, line width=1.4pt] (u) -- node[edge lbl left, text=red!80!black] {$w_f\!=\!{-4}$} (v);
   \draw[flow edge, dashed, gray] (s) -- (u);
 
-  \node[font=\footnotesize, align=center, below=5pt] at (2.5,-0.7) {Arco reverso $u \to v$ tem $w_f = -4 < 0$\\Dijkstra clássico falha (pesos negativos!)};
+  \node[font=\footnotesize, align=center, below=5pt] at (2.5,-0.7) {Arco reverso $u \to v$ com $w_f = -4 < 0$};
 \end{scope}
 
 \begin{scope}[xshift=7.5cm]
-  \tikzsubcaption{(2.5,2.8)}{(b) Dinâmica da fila de relaxação SPFA}
+  \tikzsubcaption{(2.5,2.8)}{(b) Dinâmica da fila SPFA}
   \node[source node] (s2) at (0, 1.0) {$s$};
   \node[active node] (u2) at (2.5, 2.0) {$u$};
   \node[active node] (v2) at (2.5, 0.0) {$v$};
@@ -152,33 +133,28 @@ Trata-se de uma variante altamente intuitiva e robusta para redes de pequeno e m
   \draw[sat edge, line width=1.5pt] (u2) -- node[edge lbl left, text=red!80!black] {$w_f\!=\!{-4}$} (v2);
   \draw[flow edge] (v2) -- node[edge lbl below] {$d(t)\!=\!1$} (t2);
 
-  \node[font=\footnotesize, align=center, below=5pt] at (2.5,-0.7) {Relaxação: $d(v)$ reduz de $1$ para $2 - 4 = -2$\\Vértice $v$ é reinserido na fila FIFO do SPFA};
+  \node[font=\footnotesize, align=center, below=5pt] at (2.5,-0.7) {Relaxação: $d(v)$ reduz de $1$ para $2 - 4 = -2$\\Vértice $v$ é reinserido na fila};
 \end{scope}
 \end{tikzpicture}
-\caption{Mecânica operacional do algoritmo SPFA na variante canônica do \textit{Successive Shortest Path}. (a)~O envio prévio de fluxo introduz arcos residuais reversos com custos negativos ($w_f = -4 < 0$), inviabilizando a seleção gulosa do algoritmo de Dijkstra. (b)~O SPFA contorna a limitação gerenciando uma fila ativa: quando a relaxação do arco reverso $(u,v)$ melhora a distância $d(v)$, o vértice $v$ é reincorporado à fila para propagar a redução topológica pela rede.}
+\caption{Mecânica do SPFA em caminhos aumentantes de custo mínimo: relaxação de arcos com custo residual negativo.}
 \label{fig:spfa_mcf}
 \end{figure}
 
-\subsection{Variante Acelerada com Potenciais Nodais e Dijkstra ($\bar{w}_\pi \ge 0$)}\label{sec:ssp_dijkstra}
 
-Para destravar a alta eficiência assintótica e a monotonicidade da busca por caminhos mais curtos, a fundamentação teórica de potenciais nodais ($\pi$) permite transformar os custos dos arcos para custos reduzidos não negativos $\bar{w}_\pi(u,v) = w(u,v) - \pi(u) + \pi(v) \ge 0$, técnica pioneiramente explorada por Edmonds e Karp em 1972 (veja~\cite{edmonds1972theoretical}).
+\subsection{Variante com Potenciais Nodais e Dijkstra}\label{sec:ssp_dijkstra}
 
-A preservação da não negatividade dos custos reduzidos a cada iteração apoia-se diretamente na desigualdade triangular de caminhos mínimos: suponha que na iteração corrente tenhamos $\bar{w}_\pi(u,v) \ge 0$ para todo $(u,v) \in A_f$. Seja $d(v)$ a distância mínima da fonte $s$ a cada vértice $v$ em $D_f$ calculada sob os custos reduzidos $\bar{w}_\pi$. Pela condição de otimalidade de caminhos mais curtos, para todo arco residual viável $(u,v) \in A_f$:
+A técnica de potenciais nodais~\cite{edmonds1972theoretical} transforma os custos em valores não negativos $\bar{w}_\pi(u,v) = w(u,v) - \pi(u) + \pi(v) \ge 0$, viabilizando o uso de Dijkstra.
+
+A cada iteração, calculam-se as distâncias mínimas $d(v)$ a partir de $s$ sob $\bar{w}_\pi$. Atualizando $\pi'(v) = \pi(v) - d(v)$, o novo custo reduzido satisfaz:
 \begin{equation}
-    d(v) \le d(u) + \bar{w}_\pi(u,v) \iff \bar{w}_\pi(u,v) + d(u) - d(v) \ge 0
+    \bar{w}_{\pi'}(u,v) = \bar{w}_\pi(u,v) + d(u) - d(v) \ge 0
 \end{equation}
-Ao atualizar o vetor de potenciais nodais para $\pi'(v) = \pi(v) - d(v)$, o novo custo reduzido do arco $(u,v)$ torna-se:
-\begin{align*}
-    \bar{w}_{\pi'}(u,v) &= w(u,v) - \pi'(u) + \pi'(v) \\
-    &= w(u,v) - (\pi(u) - d(u)) + (\pi(v) - d(v)) \\
-    &= [w(u,v) - \pi(u) + \pi(v)] + d(u) - d(v) \\
-    &= \bar{w}_\pi(u,v) + d(u) - d(v) \ge 0
-\end{align*}
-Para os novos arcos reversos $(v,u)$ habilitados no digrafo residual pelo envio de fluxo ao longo do caminho mais curto $P$, sabe-se que para todo arco $(u,v) \in P$ a desigualdade triangular é satisfeita na igualdade estrita ($d(v) = d(u) + \bar{w}_\pi(u,v)$), de modo que $\bar{w}_{\pi'}(u,v) = 0$. Consequentemente, o arco reverso recém-habilitado satisfaz:
+Para arcos reversos criados ao longo do caminho de menor custo, vale $d(v) = d(u) + \bar{w}_\pi(u,v)$, de modo que $\bar{w}_{\pi'}(v,u) = -\bar{w}_{\pi'}(u,v) = 0 \ge 0$.
+
+A classe \lstinline{SuccessiveShortestDijkstra} (Código~\ref{lst:successive_shortest_dijkstra}, Apêndice~\ref{ap:successive_shortest_dijkstra}) implementa essa estratégia com complexidade:
 \begin{equation}
-    \bar{w}_{\pi'}(v,u) = -\bar{w}_{\pi'}(u,v) = 0 \ge 0
+    \mathcal{O}(F \cdot |A| \log |V|)
 \end{equation}
-Portanto, toda a malha de arcos residuais em $D_{f'}$ preserva custos reduzidos garantidamente não negativos ($\bar{w}_{\pi'} \ge 0$), viabilizando o uso do algoritmo guloso de Dijkstra com \textit{heap} binária em $\mathcal{O}(|A| \log |V|)$ ou Fibonacci em $\mathcal{O}(|A| + |V| \log |V|)$ em todas as iterações subsequentes (veja~\cite{ahuja1993network, edmonds1972theoretical, korte2018combinatorial}). A dinâmica de uma iteração com potenciais nodais $\pi$ e a conservação de $\bar{w}' = 0$ nos arcos reversos é ilustrada na Figura~\ref{fig:ssp_iteracao}.
 
 \begin{figure}[!ht]
 \centering
@@ -202,27 +178,20 @@ Portanto, toda a malha de arcos residuais em $D_{f'}$ preserva custos reduzidos 
 
     \draw[rev edge, bend right=38] (u) to node[edge lbl above, text=red!80!black, pos=0.5] {reverso: $\bar{w}'\!=\!0$} (s);
 \end{tikzpicture}
-\caption{Iteração do algoritmo \textit{Successive Shortest Path} sob potenciais nodais $\pi$. O caminho mais curto $P = s \to u \to t$ (arcos azuis espessos) possui custo reduzido $\bar{w}_\pi = 0$ ao longo de todo o trajeto, permitindo a execução de Dijkstra. O arco reverso gerado após o envio de $\delta=2$ unidades de fluxo (vermelho tracejado) preserva $\bar{w}'(u,s) = 0 \ge 0$, mantendo a invariante de não negatividade dos custos reduzidos.}
+\caption{Iteração de \textit{Successive Shortest Path} com potenciais nodais $\pi$. O caminho mais curto possui $\bar{w}_\pi = 0$, e arcos reversos gerados preservam $\bar{w}' = 0 \ge 0$.}
 \label{fig:ssp_iteracao}
 \end{figure}
 
-A classe \lstinline{SuccessiveShortestDijkstra} (Código~\ref{lst:successive_shortest_dijkstra}, Apêndice~\ref{ap:successive_shortest_dijkstra}) concretiza essa arquitetura, atingindo a complexidade fortemente otimizada de:
-\begin{equation}
-    \mathcal{O}(F \cdot |A| \log |V|)
-\end{equation}
 
 \subsection{Equivalência com o Algoritmo Húngaro (Kuhn-Munkres)}
 
-Uma consequência teórica e histórica basilar da formulação com potenciais nodais reside no \textbf{Problema da Atribuição Ponderada} (\textit{Weighted Bipartite Matching} ou \textit{Assignment Problem}), que busca um emparelhamento de peso mínimo em um grafo bipartido completo com custos nas arestas. Historicamente resolvido pelo Algoritmo Húngaro de Harold Kuhn e James Munkres (veja~\cite{kuhn1955hungarian, munkres1957algorithms, schrijver2003combinatorial}), este problema clássico modela-se diretamente como um fluxo de custo mínimo com capacidades unitárias ($c(u,v) = 1$) e demandas de suprimento balanceadas $b(v) \in \{+1, -1\}$.
+O Algoritmo Húngaro~\cite{kuhn1955hungarian, munkres1957algorithms} para o problema de atribuição bipartida ponderada equivale à execução do método \textit{Successive Shortest Path} com potenciais nodais sobre redes unitárias com balanceamento $b(v) \in \{+1, -1\}$. Os ajustes de potenciais da matriz de custos correspondem à manutenção da não negatividade dos custos reduzidos $\bar{w}_\pi \ge 0$.
 
-Sob a ótica de redes de fluxo, as tradicionais operações de ajuste de potenciais em linhas e colunas na matriz de custos do Algoritmo Húngaro correspondem com exatidão à manutenção dos potenciais nodais duais $\pi$ com custos reduzidos não negativos $\bar{w}_\pi(u,v) \ge 0$. Por sua vez, as etapas de identificação de caminhos aumentantes de menor custo acumulado em tempo cúbico $\mathcal{O}(|V|^3)$ equivalem formalmente à execução do algoritmo \textit{Successive Shortest Path} operando com potenciais nodais de Edmonds-Karp sobre uma rede unitária. Essa correspondência demonstra que o algoritmo Húngaro nada mais é do que a especialização dual do SSP para o domínio bipartido unitário.
 
-\subsection{Análise Comparativa de Complexidade e Trade-offs Operacionais}
+\subsection{Comparação entre as Variantes}
 
-A dualidade entre a variante canônica (\lstinline{SuccessiveShortest}) e a variante com potenciais (\lstinline{SuccessiveShortestDijkstra}) reflete um clássico compromisso da Engenharia de Software e da Teoria dos Algoritmos:
 \begin{itemize}
-    \item O algoritmo com \textbf{SPFA} opera com menor sobrecarga de memória (dispensa o vetor de potenciais nodais $\pi$ e a atualização telescópica de custos reduzidos a cada aumento), sendo a opção de código mais compacto e direto quando a rede possui poucos aumentos globais ou quando custos unitários já são naturalmente esparsos;
-    \item O algoritmo com \textbf{Dijkstra e Potenciais} introduz uma estrutura dual de suporte mais sofisticada, mas recompensa a implementação com previsibilidade monotônica e tempo de execução ordens de magnitude inferior em redes com grande volume de tráfego, eliminando o risco de oscilações na fila FIFO.
+    \item \textbf{SPFA:} Opera diretamente sobre custos residuais sem manter o vetor de potenciais $\pi$, com menor complexidade de código, indicada para redes esparsas com poucos aumentos.
+    \item \textbf{Dijkstra com Potenciais:} Requer a manutenção dos potenciais nodais $\pi$, mas assegura tempo de pior caso $\mathcal{O}(F \cdot |A| \log |V|)$ com fila de prioridades, apresentando menor tempo de CPU em redes densas.
 \end{itemize}
-Essa divisão é formalmente confrontada na Tabela~\ref{tab:min_cost} e avaliada empiricamente frente aos conjuntos de teste DIMACS na Tabela~\ref{tab:benchmarks}.
 

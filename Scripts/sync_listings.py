@@ -41,7 +41,7 @@ LISTING_DEFINITIONS = [
         "output": "LaTeX/apendices/05_push_relabel.tex",
         "title": "Implementação da Classe ``Push-Relabel''",
         "label_appendix": "ap:push_relabel",
-        "caption": "Implementação em C++ da classe \\lstinline{PushRelabel}, baseada em pré-fluxos topológicos e política de processamento em fila (FIFO).",
+        "caption": "Implementação em C++ da classe \\lstinline{PushRelabel}, baseada no método de pré-fluxos e política de processamento em fila (FIFO).",
         "label_listing": "lst:push_relabel",
     },
     {
