@@ -64,6 +64,19 @@ def generate_monolith(check_only: bool = False) -> bool:
             re.MULTILINE,
         )
         clean_monolith = bib_pattern.sub(lambda _: bbl_content, clean_monolith)
+    elif output_path.exists():
+        old_content = output_path.read_text(encoding="utf-8")
+        bib_match = re.search(
+            r"(\\begin\{thebibliography\}.*?\\end\{thebibliography\})",
+            old_content,
+            re.DOTALL,
+        )
+        if bib_match:
+            bib_pattern = re.compile(
+                r"\\bibliographystyle\{[^}]+\}\s*\\bibliography\{[^}]+\}",
+                re.MULTILINE,
+            )
+            clean_monolith = bib_pattern.sub(lambda _: bib_match.group(1), clean_monolith)
 
     # Normaliza quebras de linha excessivas e garante encerramento limpo antes de \end{document}
     clean_monolith = re.sub(r"\n{3,}", "\n\n", clean_monolith)

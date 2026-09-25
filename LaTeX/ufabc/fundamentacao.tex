@@ -210,8 +210,8 @@ Com política de seleção de vértices ativos em fila FIFO, a complexidade assi
   \draw[->,blue!80!black] (c) -- (a);
   \draw[->,blue!80!black] (a) -- (t);
 
-  \draw[->,red,line width=1.4pt] (u) -- node[left,pos=0.3,font=\scriptsize,text=black,align=center,xshift=-1mm,fill=white,inner sep=1.5pt] {Queda de 2 níveis\\(inadmissível)} (b);
-  \draw[->,red,line width=1.4pt] (u) -- node[right,pos=0.3,font=\scriptsize,text=black,align=center,xshift=1mm,fill=white,inner sep=1.5pt] {$h(u) \not\le h(c) + 1$\\(inadmissível)} (c);
+  \draw[->,red,line width=1.4pt] (u) -- node[left,pos=0.5,font=\scriptsize,text=black,align=center,xshift=-6mm,fill=white,rounded corners=2pt,inner sep=2pt] {Queda de 2 níveis\\(inadmissível em $A_f$)} (b);
+  \draw[->,red,line width=1.4pt] (u) -- node[right,pos=0.5,font=\scriptsize,text=black,align=center,xshift=6mm,fill=white,rounded corners=2pt,inner sep=2pt] {$h(u) \not\le h(c) + 1$\\(inadmissível em $A_f$)} (c);
 \end{tikzpicture}
 \caption{Mecanismo da Heurística de Lacuna: a restrição $h(u) \le h(v) + 1$ impede arcos residuais com salto de altura superior a uma unidade. O esvaziamento do nível intermediário $h=3$ comprova que vértices com $h \ge 4$ estão desconectados do sumidouro.}
 \label{fig:gap_prova}
