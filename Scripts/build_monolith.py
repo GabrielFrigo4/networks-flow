@@ -14,7 +14,7 @@ def find_repo_root() -> Path:
 
 
 def resolve_inputs(content: str, latex_dir: Path) -> str:
-    input_pattern = re.compile(r"^\s*\\input\{([^}]+)\}", re.MULTILINE)
+    input_pattern = re.compile(r"(?<!%)\\input\{([^}]+)\}")
 
     def replacer(match: re.Match) -> str:
         input_file_str = match.group(1).strip()
@@ -27,7 +27,7 @@ def resolve_inputs(content: str, latex_dir: Path) -> str:
             sys.stderr.write(f"Aviso: arquivo referenciado em \\input não encontrado: {input_file_str} em {target_path}\n")
             return match.group(0)
 
-        child_content = target_path.read_text(encoding="utf-8")
+        child_content = target_path.read_text(encoding="utf-8").strip()
         return resolve_inputs(child_content, latex_dir)
 
     return input_pattern.sub(replacer, content)

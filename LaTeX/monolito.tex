@@ -9,6 +9,7 @@
     margin=2cm,
     headheight=15pt
 }
+
 \RequirePackage{fix-cm}
 % =========================================================================
 % CABEÇALHO UNIFICADO E DESIGN SYSTEM (NETWORKS FLOW)
@@ -331,6 +332,7 @@
 \begin{document}
 \setlength{\emergencystretch}{3em}
 \onehalfspacing
+
 % =========================================================================
 % CAPA INSTITUCIONAL UFABC E TERMO DE HOMOLOGAÇÃO
 % =========================================================================
@@ -400,7 +402,6 @@ Discente Pesquisador & & Docente Orientadora
 \end{center}
 
 \newpage
-
 % =========================================================================
 % SUMÁRIO (ANTES DO RESUMO)
 % =========================================================================
@@ -422,6 +423,7 @@ Discente Pesquisador & & Docente Orientadora
 Fluxos em digrafos constituem uma área fundamental da Otimização Combinatória, com amplas aplicações práticas em redes de transporte e alocação de recursos. Este projeto adota uma abordagem que combina fundamentos teóricos, implementação algorítmica e validação experimental para o estudo de problemas de fluxo máximo e fluxo de custo mínimo (veja~\cite{ahuja1993network}). Foram estudados e implementados algoritmos clássicos e modernos de fluxo máximo e de fluxo de custo mínimo, bem como técnicas de modelagem e reduções combinatórias, incluindo a aplicação prática em Segmentação Interativa de Imagens via corte mínimo. A validação prática foi realizada através de experimentos computacionais utilizando instâncias de \textit{benchmarks} reconhecidas da literatura (veja~\cite{Jensen2022}).
 
 \vspace{0.35cm}
+
 % =========================================================================
 % SEÇÃO 2: INTRODUÇÃO
 % =========================================================================
@@ -434,7 +436,6 @@ O objetivo deste projeto é proporcionar uma formação sólida na área, integr
 O problema do $st$-fluxo máximo, onde se busca maximizar a quantidade de fluxo enviada de um vértice fonte $s$ para um vértice de destino $t$, é um dos pilares deste estudo (veja~\cite{ford1956maximal}). Foram analisados e implementados algoritmos clássicos e eficientes, como Ford-Fulkerson, Edmonds-Karp, Dinic e Push-Relabel com Heurística de Gap (veja~\cite{ford1956maximal, edmonds1972theoretical, dinic1970algorithm, goldberg1988new}).
 O projeto contempla também o problema de fluxo de custo mínimo, que busca minimizar o custo total enquanto satisfaz as demandas da rede, com destaque para os algoritmos de cancelamento de ciclos de Klein, caminhos sucessivos e o \textit{network simplex}, uma especialização do algoritmo simplex para redes (veja~\cite{dantzig1951application, ahuja1993network}).
 A fundamentação teórica desenvolvida reafirma que muitos problemas combinatórios, como o emparelhamento máximo em digrafos bipartidos, coberturas mínimas e segmentação de imagens via corte mínimo, podem ser resolvidos via reduções para problemas de fluxo (veja~\cite{ahuja1993network, boykov2001interactive}).
-
 \clearpage
 
 % =========================================================================
@@ -464,7 +465,6 @@ As atividades do projeto foram estruturadas e encontram-se no seguinte status:
     \item \textbf{Atividade 10:} Análise comparativa de desempenho dos algoritmos. \textbf{[Concluída]}
     \item \textbf{Atividade 11:} Aplicação prática em Segmentação Interativa de Imagens e consolidação dos resultados. \textbf{[Concluída]}
 \end{itemize}
-
 \clearpage
 
 % =========================================================================
@@ -665,11 +665,11 @@ Com política de seleção de vértices ativos em fila FIFO, a complexidade assi
 \begin{figure}[!ht]
 \centering
 \begin{tikzpicture}[thick]
-  \draw[layer line] (-2, 0) -- (6.2, 0) node[right,black,font=\footnotesize] {$h=0$ (sumidouro $t$)};
+  \draw[layer line] (-2, 0) -- (6.5, 0) node[right,black,font=\footnotesize] {$h=0$ (sumidouro $t$)};
   \foreach \y/\h in {1.3/1, 2.6/2, 4.8/4} {
-    \draw[layer line] (-2, \y) -- (6.2, \y) node[right,black,font=\footnotesize] {$h=\h$};
+    \draw[layer line] (-2, \y) -- (6.5, \y) node[right,black,font=\footnotesize] {$h=\h$};
   }
-  \draw[red!50,dashed,line width=1.5pt] (-2, 3.7) -- (6.2, 3.7) node[right,red!80!black,font=\footnotesize] {$h=3$ (\textbf{LACUNA})};
+  \draw[red!50,dashed,line width=1.5pt] (-2, 3.7) -- (6.5, 3.7) node[right,red!80!black,font=\footnotesize] {$h=3$ (\textbf{LACUNA})};
 
   \node[sink node,font=\footnotesize] (t) at (2, 0) {$t$};
   \node[flow node,fill=yellow!20,font=\footnotesize] (a) at (2, 1.3) {$a$};
@@ -825,7 +825,6 @@ Cada iteração do Network Simplex executa quatro passos: (i) \textbf{Pricing:} 
 \caption{Iteração do Network Simplex: (a) o arco não básico violador $(3,4)$ com $\bar{w}_\pi < 0$ fecha um ciclo fundamental em $T$; (b) o fluxo é aumentado por $\delta$ e o arco saturado $(2,4)$ deixa a base, restabelecendo a base em árvore.}
 \label{fig:simplex_pivoteamento}
 \end{figure}
-
 % =========================================================================
 % SEÇÃO 4: RESULTADOS COMPUTACIONAIS
 % =========================================================================
@@ -916,7 +915,6 @@ A Tabela~\ref{tab:benchmarks_mincost} apresenta a comparação entre os quatro m
     \item \textbf{Potenciais Nodais no SSP (Dijkstra vs. SPFA):} O uso de potenciais nodais ($\bar{w}_\pi \ge 0$) reduziu o tempo de execução do \textit{Successive Shortest Path} em \textbf{$3{,}5\times$ a $5{,}2\times$} frente ao SSP com SPFA, confirmando a vantagem de Dijkstra com fila de prioridades;
     \item \textbf{Limitações do Cycle Canceling:} O cancelamento de ciclos negativos requer buscas completas por ciclos via Bellman-Ford ou SPFA ($O(n m)$ por iteração). Em instâncias com muitas unidades de fluxo ou redes com mais de 500 vértices, o método apresenta tempos significativamente superiores aos demais.
 \end{itemize}
-
 % =========================================================================
 % SEÇÃO 5: APLICAÇÃO EM SEGMENTAÇÃO DE IMAGENS
 % =========================================================================
@@ -1107,7 +1105,6 @@ A Tabela~\ref{tab:segmentacao_resultados} apresenta a escalabilidade do pipeline
 \end{table}
 
 Mesmo em redes com mais de 40.000 vértices e 270.000 arcos, o corte mínimo global é obtido em menos de 100 milissegundos.
-
 % =========================================================================
 % SEÇÃO 6: CONCLUSÕES
 % =========================================================================
@@ -1218,6 +1215,7 @@ Alexander Schrijver.
 \providecommand{\apendice}[1]{\section{#1}}
 
 \begin{center}{\Large\textbf{Apêndice Computacional: Implementações em C++23}}\end{center}
+
 % =========================================================================
 % ARQUITETURA DE SOFTWARE EM C++23 E ESTRUTURAS DE DADOS
 % =========================================================================
@@ -1256,7 +1254,6 @@ A biblioteca organiza-se em duas famílias baseadas nos padrões \textit{Strateg
 \end{itemize}
 
 Os métodos virtuais \lstinline{make(n)} e \lstinline{clone()} permitem a instanciação e a clonagem profunda (\textit{deep copy}) de instâncias polimórficas preservando o estado residual, o que é fundamental em aplicações iterativas como corte mínimo e segmentação de imagens.
-
 % =========================================================================
 % IMPLEMENTAÇÃO DA INTERFACE BASE ``FLOW-NETWORK''
 % =========================================================================
@@ -1339,7 +1336,6 @@ protected:
 
 #endif // FLOW_NETWORK_HPP
 \end{lstlisting}
-
 % =========================================================================
 % IMPLEMENTAÇÃO DA CLASSE ``FORD-FULKERSON''
 % =========================================================================
@@ -1424,7 +1420,6 @@ private:
 
 #endif // FORD_FULKERSON_HPP
 \end{lstlisting}
-
 % =========================================================================
 % IMPLEMENTAÇÃO DA CLASSE ``EDMONDS-KARP''
 % =========================================================================
@@ -1522,7 +1517,6 @@ private:
 
 #endif // EDMONDS_KARP_HPP
 \end{lstlisting}
-
 % =========================================================================
 % IMPLEMENTAÇÃO DA CLASSE ``DINIC''
 % =========================================================================
@@ -1633,7 +1627,6 @@ private:
 
 #endif // DINIC_HPP
 \end{lstlisting}
-
 % =========================================================================
 % IMPLEMENTAÇÃO DA CLASSE ``PUSH-RELABEL''
 % =========================================================================
@@ -1789,7 +1782,6 @@ private:
 
 #endif // PUSH_RELABEL_HPP
 \end{lstlisting}
-
 % =========================================================================
 % IMPLEMENTAÇÃO DA CLASSE ``PUSH-RELABEL IMPROVED''
 % =========================================================================
@@ -1979,7 +1971,6 @@ private:
 
 #endif // PUSH_RELABEL_IMPROVED_HPP
 \end{lstlisting}
-
 % =========================================================================
 % IMPLEMENTAÇÃO DA INTERFACE BASE ``COST-NETWORK''
 % =========================================================================
@@ -2069,7 +2060,6 @@ protected:
 
 #endif // COST_NETWORK_HPP
 \end{lstlisting}
-
 % =========================================================================
 % IMPLEMENTAÇÃO DA CLASSE ``CYCLE-CANCELING''
 % =========================================================================
@@ -2224,7 +2214,6 @@ private:
 
 #endif // CYCLE_CANCELING_HPP
 \end{lstlisting}
-
 % =========================================================================
 % IMPLEMENTAÇÃO DA CLASSE ``SUCCESSIVE-SHORTEST-PATH''
 % =========================================================================
@@ -2337,7 +2326,6 @@ private:
 
 #endif // SUCCESSIVE_SHORTEST_HPP
 \end{lstlisting}
-
 % =========================================================================
 % IMPLEMENTAÇÃO DA CLASSE ``SUCCESSIVE-SHORTEST-PATH'' COM DIJKSTRA E POTENCIAIS
 % =========================================================================
@@ -2511,7 +2499,6 @@ private:
 
 #endif // SUCCESSIVE_SHORTEST_DIJKSTRA_HPP
 \end{lstlisting}
-
 % =========================================================================
 % IMPLEMENTAÇÃO DA CLASSE ``NETWORK-SIMPLEX''
 % =========================================================================
@@ -2848,7 +2835,6 @@ private:
 
 #endif // NETWORK_SIMPLEX_HPP
 \end{lstlisting}
-
 % =========================================================================
 % ACESSO AO CÓDIGO-FONTE E REPOSITÓRIO GITHUB
 % =========================================================================

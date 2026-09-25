@@ -1,0 +1,27 @@
+\begin{tikzpicture}[thick]
+\foreach \x in {0,2.5,5.0,7.5} { \draw[layer line] (\x,-0.7) -- (\x,3.8); }
+
+\node[gray,font=\footnotesize] at (0,4.1) {nív. 0};
+\node[gray,font=\footnotesize] at (2.5,4.1) {nív. 1};
+\node[gray,font=\footnotesize] at (5.0,4.1) {nív. 2};
+\node[gray,font=\footnotesize] at (7.5,4.1) {nív. 3};
+
+\node[source node] (s) at (0,1.5) {$s$};
+\node[flow node] (a) at (2.5,3) {$a$};
+\node[flow node] (b) at (2.5,0) {$b$};
+\node[flow node] (c) at (5.0,3) {$c$};
+\node[flow node] (d) at (5.0,0) {$d$};
+\node[sink node] (t) at (7.5,1.5) {$t$};
+
+\draw[flow edge,blue,line width=1.5pt] (s) -- (a);
+\draw[flow edge,blue,line width=1.5pt] (s) -- (b);
+\draw[flow edge,blue,line width=1.5pt] (a) -- (c);
+\draw[flow edge,blue,line width=1.5pt] (b) -- (d);
+\draw[flow edge,blue,line width=1.5pt] (a) -- (d);
+\draw[flow edge,blue,line width=1.5pt] (b) -- (c);
+\draw[flow edge,blue,line width=1.5pt] (c) -- (t);
+\draw[flow edge,blue,line width=1.5pt] (d) -- (t);
+
+\draw[nontree edge,bend right=30] (a) to (b);
+\draw[nontree edge,bend right=20] (c) to (a);
+\end{tikzpicture}

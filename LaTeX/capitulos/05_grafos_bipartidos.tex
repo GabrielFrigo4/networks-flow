@@ -23,35 +23,7 @@ Pelo Teorema da Integralidade (Teorema~\ref{teo:integralidade}), como todas as c
 
 \begin{figure}[!ht]
 \centering
-\begin{tikzpicture}[thick]
-
-\begin{scope}[xshift=0cm]
-  \tikzsubcaption{(1.5,3.8)}{(a) Grafo bipartido}
-  \foreach \i/\y in {1/3, 2/1.5, 3/0} {
-    \node[bip L] (l\i) at (0,\y) {$l_\i$};
-    \node[bip R] (r\i) at (3,\y) {$r_\i$};
-  }
-  \draw[-] (l1) -- (r1); \draw[-] (l1) -- (r2);
-  \draw[-] (l2) -- (r2); \draw[-] (l2) -- (r3);
-  \draw[-] (l3) -- (r1); \draw[-] (l3) -- (r3);
-\end{scope}
-\node at (5,1.5) {\Huge $\Rightarrow$};
-
-\begin{scope}[xshift=6.5cm]
-  \tikzsubcaption{(2.5,3.8)}{(b) Rede de fluxo $D'$}
-  \node[source node] (s) at (0,1.5) {$s$};
-  \node[sink node] (t) at (5,1.5) {$t$};
-  \foreach \i/\y in {1/3, 2/1.5, 3/0} {
-    \node[bip L,font=\footnotesize] (fl\i) at (1.8,\y) {$l_\i$};
-    \node[bip R,font=\footnotesize] (fr\i) at (3.2,\y) {$r_\i$};
-    \draw[flow edge] (s) -- node[above,font=\footnotesize] {$1$} (fl\i);
-    \draw[flow edge] (fr\i) -- node[above,font=\footnotesize] {$1$} (t);
-  }
-  \draw[flow edge,blue,line width=1.5pt] (fl1) -- (fr1); \draw[flow edge] (fl1) -- (fr2);
-  \draw[flow edge,blue,line width=1.5pt] (fl2) -- (fr2); \draw[flow edge] (fl2) -- (fr3);
-  \draw[flow edge] (fl3) -- (fr1); \draw[flow edge,blue,line width=1.5pt] (fl3) -- (fr3);
-\end{scope}
-\end{tikzpicture}
+\input{imagens/fluxo_bipartido.tex}
 \caption{Redução do Emparelhamento Bipartido a Fluxo Máximo. (a) Grafo bipartido original com $L = \{l_1,l_2,l_3\}$ e $R = \{r_1,r_2,r_3\}$. (b) Rede de fluxo $D'$: arcos de $s$ para $L$ e de $R$ para $t$ com capacidade~1; arcos de $L$ para $R$ herdados do grafo original. Arcos azuis indicam o emparelhamento máximo obtido com $|f^*|=3$.}
 \label{fig:fluxo_bipartido}
 \end{figure}

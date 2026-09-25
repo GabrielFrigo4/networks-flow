@@ -1,0 +1,28 @@
+\begin{tikzpicture}[thick]
+    \draw[cut S] (-0.8, -1.8) rectangle (2.8, 1.8);
+    \node[cut label S] at (-0.6, 1.65) {$\mathbf{S}$};
+
+    \draw[cut T] (5.4, -1.8) rectangle (9.0, 1.8);
+    \node[cut label T] at (8.8, 1.65) {$\mathbf{T}$};
+
+    \node[source node] (s) at (0.0, 0.0) {$s$};
+    \node[s node internal] (a) at (2.0, 0.8) {$a$};
+    \node[s node internal] (b) at (2.0, -0.8) {$b$};
+
+    \node[t node internal] (c) at (6.2, 0.8) {$c$};
+    \node[t node internal] (d) at (6.2, -0.8) {$d$};
+    \node[sink node] (t) at (8.2, 0.0) {$t$};
+
+    \draw[line width=1.5pt, dashed, cutviolet] (4.1, -1.85) -- (4.1, 1.85)
+        node[above=2.5pt, solid, font=\scriptsize\bfseries, text=cutviolet!90!black, fill=white, inner sep=2.5pt, rounded corners=3pt, draw=cutviolet!70] {Corte Mínimo $(S,T)$};
+
+    \draw[sat edge] (a) -- node[edge lbl above, text=cutviolet!90!black] {$f=c$} (c);
+    \draw[sat edge] (b) -- node[edge lbl below, text=cutviolet!90!black] {$f=c$} (d);
+
+    \draw[flow edge] (s) -- (a);
+    \draw[flow edge] (s) -- (b);
+    \draw[flow edge] (c) -- (t);
+    \draw[flow edge] (d) -- (t);
+    \draw[flow edge] (a) -- (b);
+    \draw[flow edge] (c) -- (d);
+\end{tikzpicture}

@@ -55,38 +55,7 @@ Para capacidades inteiras, uma sequência desfavorável de caminhos pode demanda
 
 \begin{figure}[!ht]
 \centering
-\begin{tikzpicture}[scale=1.1, thick]
-\begin{scope}[xshift=0cm]
-  \tikzsubcaption{(2.5,2.6)}{(a) Rede patológica ($M = 10^6$)}
-  \node[source node] (s) at (0, 1) {$s$};
-  \node[flow node] (u) at (2.5, 2) {$u$};
-  \node[flow node] (v) at (2.5, 0) {$v$};
-  \node[sink node] (t) at (5, 1) {$t$};
-
-  \draw[flow edge] (s) -- node[edge lbl above] {$M$} (u);
-  \draw[flow edge] (s) -- node[edge lbl below] {$M$} (v);
-  \draw[sat edge] (u) -- node[edge lbl right, text=red!80!black] {$c=1$} (v);
-  \draw[flow edge] (u) -- node[edge lbl above] {$M$} (t);
-  \draw[flow edge] (v) -- node[edge lbl below] {$M$} (t);
-\end{scope}
-
-\begin{scope}[xshift=7.5cm]
-  \tikzsubcaption{(2.5,2.6)}{(b) Alternância da DFS: $2M$ iterações}
-  \node[source node] (s2) at (0, 1) {$s$};
-  \node[flow node] (u2) at (2.5, 2) {$u$};
-  \node[flow node] (v2) at (2.5, 0) {$v$};
-  \node[sink node] (t2) at (5, 1) {$t$};
-
-  \draw[tree edge, line width=2pt] (s2) -- node[edge lbl above] {$+1$} (u2);
-  \draw[sat edge, line width=2pt] (u2) -- node[edge lbl right] {$+1$} (v2);
-  \draw[tree edge, line width=2pt] (v2) -- node[edge lbl below] {$+1$} (t2);
-
-  \draw[flow edge, opacity=0.3] (s2) -- (v2);
-  \draw[flow edge, opacity=0.3] (u2) -- (t2);
-
-  \node[font=\footnotesize, align=center, below=4pt] at (2.5,-0.6) {DFS alterna $s \to u \to v \to t$ e $s \to v \to u \to t$\\Gargalo $1 \implies 2 \times 10^6$ passos (BFS: 2 passos)};
-\end{scope}
-\end{tikzpicture}
+\input{imagens/ford_fulkerson_patologico.tex}
 \caption{Contraexemplo patológico de Ford-Fulkerson com capacidades $M = 10^6$ e arco central unitário $c=1$. (a)~Rede com fluxo máximo $|f^*| = 2M$. (b)~DFS ingênua alternando caminhos pelo arco central, aumentando $\delta=1$ por passo em $2 \times 10^6$ iterações. Em contrapartida, métodos baseados em BFS priorizam caminhos de menor distância: Edmonds-Karp encerra em $2$ iterações e Dinic em $1$ única fase de fluxo bloqueador.}
 \label{fig:ford_fulkerson_patologico}
 \end{figure}
@@ -160,35 +129,7 @@ A classe correspondente está estruturada como \lstinline{Dinic} (Código~\ref{l
 
 \begin{figure}[!ht]
 \centering
-\begin{tikzpicture}[thick]
-
-\foreach \x in {0,2.5,5.0,7.5} { \draw[layer line] (\x,-0.7) -- (\x,3.8); }
-
-\node[gray,font=\footnotesize] at (0,4.1) {nív. 0};
-\node[gray,font=\footnotesize] at (2.5,4.1) {nív. 1};
-\node[gray,font=\footnotesize] at (5.0,4.1) {nív. 2};
-\node[gray,font=\footnotesize] at (7.5,4.1) {nív. 3};
-
-\node[source node] (s) at (0,1.5) {$s$};
-\node[flow node] (a) at (2.5,3) {$a$};
-\node[flow node] (b) at (2.5,0) {$b$};
-\node[flow node] (c) at (5.0,3) {$c$};
-\node[flow node] (d) at (5.0,0) {$d$};
-\node[sink node] (t) at (7.5,1.5) {$t$};
-
-\draw[flow edge,blue,line width=1.5pt] (s) -- (a);
-\draw[flow edge,blue,line width=1.5pt] (s) -- (b);
-\draw[flow edge,blue,line width=1.5pt] (a) -- (c);
-\draw[flow edge,blue,line width=1.5pt] (b) -- (d);
-\draw[flow edge,blue,line width=1.5pt] (a) -- (d);
-\draw[flow edge,blue,line width=1.5pt] (b) -- (c);
-\draw[flow edge,blue,line width=1.5pt] (c) -- (t);
-\draw[flow edge,blue,line width=1.5pt] (d) -- (t);
-
-\draw[nontree edge,bend right=30] (a) to (b);
-\draw[nontree edge,bend right=20] (c) to (a);
-
-\end{tikzpicture}
+\input{imagens/grafo_niveis.tex}
 \caption{Digrafo de Níveis no Algoritmo de Dinic (organizado em colunas, onde cada coluna da esquerda para a direita representa um nível crescente). Arcos azuis são os arcos admissíveis (avançam exatamente um nível: $d(v) = d(u)+1$), que compõem o Digrafo de Níveis. Arcos cinza tracejados são excluídos por não avançarem nível. O Fluxo Bloqueador é extraído apenas sobre os arcos azuis.}
 \label{fig:grafo_niveis}
 \end{figure}

@@ -39,66 +39,7 @@ Seja $I$ uma imagem com $n = W \times H$ pixels. A rede de segmentação $D = (V
 
 \begin{figure}[!ht]
 \centering
-\begin{tikzpicture}[
-    x={(-1.2cm, -0.6cm)},
-    y={(1.2cm, -0.6cm)},
-    z={(0cm, 1.5cm)}
-]
-
-    \node[sink node] (t) at (2,2,-3.5) {$t$};
-
-    \foreach \x in {1,2,3} {
-        \foreach \y in {1,2,3} {
-            \coordinate (cp\x\y) at (\x,\y,0);
-        }
-    }
-
-    \foreach \x in {1,2,3} {
-        \foreach \y in {1,2,3} {
-            \draw[->, red!70!black, dashed, line width=0.8pt, draw opacity=0.65] (cp\x\y) -- (t);
-        }
-    }
-
-    \draw[fill=gray!15, draw=gray!60, fill opacity=0.85, rounded corners=6pt]
-        (0.3,0.3,0) -- (3.7,0.3,0) -- (3.7,3.7,0) -- (0.3,3.7,0) -- cycle;
-
-    \begin{scope}[line width=1.1pt, black!75]
-      \foreach \x in {1,2,3} {
-        \draw[<->] (\x,1,0) -- (\x,2,0);
-        \draw[<->] (\x,2,0) -- (\x,3,0);
-      }
-      \foreach \y in {1,2,3} {
-        \draw[<->] (1,\y,0) -- (2,\y,0);
-        \draw[<->] (2,\y,0) -- (3,\y,0);
-      }
-    \end{scope}
-
-    \foreach \x in {1,2,3} {
-        \foreach \y in {1,2,3} {
-            \node[pixel node] (p\x\y) at (\x,\y,0) {$p_{\x\y}$};
-        }
-    }
-
-    \node[source node] (s) at (2,2,3.5) {$s$};
-
-    \foreach \x in {1,2,3} {
-        \foreach \y in {1,2,3} {
-            \draw[->, green!70!black, dashed, line width=0.8pt, draw opacity=0.65] (s) -- (p\x\y);
-        }
-    }
-
-    \begin{scope}[x={(1cm,0cm)}, y={(0cm,1cm)}, z={(0cm,0cm)}]
-        \node[right, font=\footnotesize, green!60!black] at (3.5, 0.7) {T-links $s \to p$};
-        \draw[->, green!70!black, dashed, line width=0.8pt] (2.3, 0.7) -- (3.3, 0.7);
-
-        \node[right, font=\footnotesize, text=black] at (3.5, -0.1) {N-links (similaridade)};
-        \draw[<->, line width=1.1pt, black!75] (2.3, -0.1) -- (3.3, -0.1);
-
-        \node[right, font=\footnotesize, red!60!black] at (3.5, -0.9) {T-links $p \to t$};
-        \draw[->, red!70!black, dashed, line width=0.8pt] (2.3, -0.9) -- (3.3, -0.9);
-    \end{scope}
-
-\end{tikzpicture}
+\input{imagens/segmentacao_rede_3d.tex}
 \caption{Modelagem de grade $3 \times 3$ de pixels como rede de fluxo para segmentação: N-links bidirecionais entre vizinhos planares sobre o grid e T-links verticais conectando cada pixel aos terminais $s$ e $t$.}
 \label{fig:segmentacao_grafo}
 \end{figure}
@@ -118,42 +59,7 @@ O corte mínimo minimiza a soma da energia regional e de fronteira.
 
 \begin{figure}[!ht]
 \centering
-\begin{tikzpicture}[thick, transform shape]
-  \draw[cut S, rounded corners=15pt] (-4.5, 1.7) rectangle (8.5, 6.8);
-  \node[cut label S, anchor=west] at (-3.8, 6.1) {$\mathbf{S}$ \textnormal{\footnotesize(Foreground)}};
-
-  \draw[cut T, rounded corners=15pt] (-4.5, -3.8) rectangle (8.5, 1.3);
-  \node[cut label T, anchor=west] at (-3.8, -3.0) {$\mathbf{T}$ \textnormal{\footnotesize(Background)}};
-
-  \node[source node] (s) at (2, 6) {$s$};
-  \node[sink node] (t) at (2, -3) {$t$};
-
-  \node[flow node, fill=blue!10] (p1) at (0, 3) {$p_1$};
-  \node[flow node, fill=blue!30] (p2) at (4, 3) {$p_2$};
-  \node[flow node, fill=orange!20] (p4) at (0, 0) {$p_4$};
-  \node[flow node, fill=orange!40] (p3) at (4, 0) {$p_3$};
-
-  \draw[-, line width=1.4pt] (p1) -- node[above, font=\footnotesize, fill=white, inner sep=1.2pt]{$w_n$\,alto} (p2);
-  \draw[-, line width=1.4pt] (p4) -- node[below, font=\footnotesize, fill=white, inner sep=1.2pt]{$w_n$\,alto} (p3);
-
-  \draw[-, line width=1.4pt] (p1) -- node[edge lbl, right=3.5pt, pos=0.25]{$w_n$\,baixo} (p4);
-  \draw[-, line width=1.4pt] (p2) -- node[edge lbl, left=3.5pt, pos=0.25]{$w_n$\,baixo} (p3);
-
-  \draw[->,green!60!black,dashed] (s) -- node[above left, edge lbl green]{$w_s=\infty$} (p1);
-  \draw[->,green!60!black,dashed] (s) -- node[above right, edge lbl green]{$w_s$\,alto} (p2);
-
-  \draw[->,green!60!black,dashed] (s) to[out=180, in=135] node[left, edge lbl green, pos=0.5]{$w_s$\,baixo} (p4);
-  \draw[->,green!60!black,dashed] (s) to[out=0, in=45] node[right, edge lbl green, pos=0.5]{$w_s$\,baixo} (p3);
-
-  \draw[->,red!60!black,dashed] (p4) -- node[below left, edge lbl red]{$w_t=\infty$} (t);
-  \draw[->,red!60!black,dashed] (p3) -- node[below right, edge lbl red]{$w_t$\,alto} (t);
-
-  \draw[->,red!60!black,dashed] (p1) to[out=225, in=180] node[left, edge lbl red, pos=0.5]{$w_t$\,baixo} (t);
-  \draw[->,red!60!black,dashed] (p2) to[out=315, in=0] node[right, edge lbl red, pos=0.5]{$w_t$\,baixo} (t);
-
-  \draw[cutviolet, line width=1.8pt, dashed] (-4.5, 1.5) -- (8.5, 1.5)
-      node[right, font=\footnotesize\bfseries, text=cutviolet, fill=white, inner sep=2.5pt, yshift=3mm] {Corte Mínimo};
-\end{tikzpicture}
+\input{imagens/segmentacao_corte_2d.tex}
 \caption{Estrutura do corte mínimo na segmentação: os pixels superiores ($p_1, p_2$) são atribuídos a $S$ e os inferiores ($p_3, p_4$) a $T$. O corte secciona os N-links de menor capacidade e os T-links cruzados, preservando os T-links infinitos das sementes.}
 \label{fig:segmentacao_corte}
 \end{figure}

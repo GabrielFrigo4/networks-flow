@@ -1,0 +1,36 @@
+\begin{tikzpicture}[thick]
+  \draw[cut S, rounded corners=12pt] (-4.2, 1.6) rectangle (8.2, 6.6);
+  \node[cut label S, anchor=west] at (-3.6, 6.0) {$\mathbf{S}$ \textnormal{\footnotesize(Foreground / Objeto)}};
+
+  \draw[cut T, rounded corners=12pt] (-4.2, -3.6) rectangle (8.2, 1.2);
+  \node[cut label T, anchor=west] at (-3.6, -2.8) {$\mathbf{T}$ \textnormal{\footnotesize(Background / Fundo)}};
+
+  \node[source node] (s) at (2, 5.8) {$s$};
+  \node[sink node] (t) at (2, -2.8) {$t$};
+
+  \node[flow node, fill=blue!10] (p1) at (0, 3) {$p_1$};
+  \node[flow node, fill=blue!30] (p2) at (4, 3) {$p_2$};
+  \node[flow node, fill=orange!20] (p4) at (0, 0) {$p_4$};
+  \node[flow node, fill=orange!40] (p3) at (4, 0) {$p_3$};
+
+  \draw[-, line width=1.3pt] (p1) -- node[above, font=\footnotesize, fill=white, inner sep=1.2pt]{$w_n$ alto} (p2);
+  \draw[-, line width=1.3pt] (p4) -- node[below, font=\footnotesize, fill=white, inner sep=1.2pt]{$w_n$ alto} (p3);
+
+  \draw[-, line width=1.3pt] (p1) -- node[edge lbl, right=3pt, pos=0.25]{$w_n$ baixo} (p4);
+  \draw[-, line width=1.3pt] (p2) -- node[edge lbl, left=3pt, pos=0.25]{$w_n$ baixo} (p3);
+
+  \draw[->,green!60!black,dashed] (s) -- node[above left, edge lbl green]{$w_s=\infty$} (p1);
+  \draw[->,green!60!black,dashed] (s) -- node[above right, edge lbl green]{$w_s$ alto} (p2);
+
+  \draw[->,green!60!black,dashed] (s) to[out=180, in=135] node[left, edge lbl green, pos=0.5]{$w_s$ baixo} (p4);
+  \draw[->,green!60!black,dashed] (s) to[out=0, in=45] node[right, edge lbl green, pos=0.5]{$w_s$ baixo} (p3);
+
+  \draw[->,red!60!black,dashed] (p4) -- node[below left, edge lbl red]{$w_t=\infty$} (t);
+  \draw[->,red!60!black,dashed] (p3) -- node[below right, edge lbl red]{$w_t$ alto} (t);
+
+  \draw[->,red!60!black,dashed] (p1) to[out=225, in=180] node[left, edge lbl red, pos=0.5]{$w_t$ baixo} (t);
+  \draw[->,red!60!black,dashed] (p2) to[out=315, in=0] node[right, edge lbl red, pos=0.5]{$w_t$ baixo} (t);
+
+  \draw[cutviolet, line width=1.8pt, dashed] (-4.2, 1.4) -- (8.2, 1.4)
+      node[right, font=\footnotesize\bfseries, text=cutviolet, fill=white, inner sep=2.5pt, yshift=3mm] {Corte Mínimo $(S, T)$};
+\end{tikzpicture}

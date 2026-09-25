@@ -52,34 +52,7 @@ Além disso, as seguintes condições são equivalentes: (i) $f$ é um fluxo má
 
 \begin{figure}[!ht]
 \centering
-\begin{tikzpicture}[thick]
-    \draw[cut S] (-0.8, -1.8) rectangle (2.8, 1.8);
-    \node[cut label S] at (-0.6, 1.65) {$\mathbf{S}$};
-
-    \draw[cut T] (5.4, -1.8) rectangle (9.0, 1.8);
-    \node[cut label T] at (8.8, 1.65) {$\mathbf{T}$};
-
-    \node[source node] (s) at (0.0, 0.0) {$s$};
-    \node[s node internal] (a) at (2.0, 0.8) {$a$};
-    \node[s node internal] (b) at (2.0, -0.8) {$b$};
-
-    \node[t node internal] (c) at (6.2, 0.8) {$c$};
-    \node[t node internal] (d) at (6.2, -0.8) {$d$};
-    \node[sink node] (t) at (8.2, 0.0) {$t$};
-
-    \draw[line width=1.5pt, dashed, cutviolet] (4.1, -1.85) -- (4.1, 1.85)
-        node[above=2.5pt, solid, font=\scriptsize\bfseries, text=cutviolet!90!black, fill=white, inner sep=2.5pt, rounded corners=3pt, draw=cutviolet!70] {Corte Mínimo $(S,T)$};
-
-    \draw[sat edge] (a) -- node[edge lbl above, text=cutviolet!90!black] {$f=c$} (c);
-    \draw[sat edge] (b) -- node[edge lbl below, text=cutviolet!90!black] {$f=c$} (d);
-
-    \draw[flow edge] (s) -- (a);
-    \draw[flow edge] (s) -- (b);
-    \draw[flow edge] (c) -- (t);
-    \draw[flow edge] (d) -- (t);
-    \draw[flow edge] (a) -- (b);
-    \draw[flow edge] (c) -- (d);
-\end{tikzpicture}
+\input{imagens/corte_minimo.tex}
 \caption{Estrutura do corte mínimo $(S,T)$: arcos que cruzam de $S$ para $T$ (em violeta) estão saturados ($f = c$), e fluxos no sentido reverso de $T$ para $S$ são nulos.}
 \label{fig:corte_minimo}
 \end{figure}
@@ -99,38 +72,7 @@ A Figura~\ref{fig:ford_fulkerson_patologico} ilustra a patologia clássica do m�
 \begin{figure}[!ht]
 \centering
 \resizebox{0.92\textwidth}{!}{%
-\begin{tikzpicture}[thick]
-\begin{scope}[xshift=0cm]
-  \tikzsubcaption{(2.5,2.6)}{(a) Rede patológica ($M = 10^6$)}
-  \node[source node] (s) at (0, 1) {$s$};
-  \node[flow node] (u) at (2.5, 2) {$u$};
-  \node[flow node] (v) at (2.5, 0) {$v$};
-  \node[sink node] (t) at (5, 1) {$t$};
-
-  \draw[flow edge] (s) -- node[edge lbl above] {$M$} (u);
-  \draw[flow edge] (s) -- node[edge lbl below] {$M$} (v);
-  \draw[sat edge] (u) -- node[edge lbl right, text=red!80!black] {$c=1$} (v);
-  \draw[flow edge] (u) -- node[edge lbl above] {$M$} (t);
-  \draw[flow edge] (v) -- node[edge lbl below] {$M$} (t);
-\end{scope}
-
-\begin{scope}[xshift=7.2cm]
-  \tikzsubcaption{(2.5,2.6)}{(b) Degeneração da DFS: $2M$ iterações}
-  \node[source node] (s2) at (0, 1) {$s$};
-  \node[flow node] (u2) at (2.5, 2) {$u$};
-  \node[flow node] (v2) at (2.5, 0) {$v$};
-  \node[sink node] (t2) at (5, 1) {$t$};
-
-  \draw[tree edge, line width=1.8pt] (s2) -- node[edge lbl above] {$+1$} (u2);
-  \draw[sat edge, line width=1.8pt] (u2) -- node[edge lbl right] {$+1$} (v2);
-  \draw[tree edge, line width=1.8pt] (v2) -- node[edge lbl below] {$+1$} (t2);
-
-  \draw[flow edge, opacity=0.3] (s2) -- (v2);
-  \draw[flow edge, opacity=0.3] (u2) -- (t2);
-
-  \node[font=\scriptsize, align=center, below=3pt] at (2.5,-0.5) {DFS alterna $s \to u \to v \to t$ e $s \to v \to u \to t$\\Aumento $\delta=1 \implies 2 \times 10^6$ passos (BFS / Dinic: 1 fase / 2 passos)};
-\end{scope}
-\end{tikzpicture}%
+\input{imagens/ford_fulkerson_patologico.tex}%
 }
 \caption{Contraexemplo patológico de Ford-Fulkerson com $M = 10^6$ e arco central unitário $c=1$: (a) rede com fluxo ótimo $|f^*| = 2M$; (b) busca ingênua por DFS alternando caminhos em zigue-zague com aumento $\delta = 1$, demandando $2 \times 10^6$ iterações. Em contraste, métodos baseados em BFS (Edmonds-Karp e Dinic) priorizam caminhos mais curtos ($s \to u \to t$ e $s \to v \to t$), saturando a rede em 2 passos ou em 1 única fase.}
 \label{fig:ford_fulkerson_patologico}
@@ -142,33 +84,7 @@ A Figura~\ref{fig:ford_fulkerson_patologico} ilustra a patologia clássica do m�
 
 \begin{figure}[!ht]
 \centering
-\begin{tikzpicture}[thick]
-\foreach \x in {0,2.5,5.0,7.5} { \draw[layer line] (\x,-0.7) -- (\x,3.8); }
-
-\node[gray,font=\footnotesize] at (0,4.1) {nív. 0};
-\node[gray,font=\footnotesize] at (2.5,4.1) {nív. 1};
-\node[gray,font=\footnotesize] at (5.0,4.1) {nív. 2};
-\node[gray,font=\footnotesize] at (7.5,4.1) {nív. 3};
-
-\node[source node] (s) at (0,1.5) {$s$};
-\node[flow node] (a) at (2.5,3) {$a$};
-\node[flow node] (b) at (2.5,0) {$b$};
-\node[flow node] (c) at (5.0,3) {$c$};
-\node[flow node] (d) at (5.0,0) {$d$};
-\node[sink node] (t) at (7.5,1.5) {$t$};
-
-\draw[flow edge,blue,line width=1.5pt] (s) -- (a);
-\draw[flow edge,blue,line width=1.5pt] (s) -- (b);
-\draw[flow edge,blue,line width=1.5pt] (a) -- (c);
-\draw[flow edge,blue,line width=1.5pt] (b) -- (d);
-\draw[flow edge,blue,line width=1.5pt] (a) -- (d);
-\draw[flow edge,blue,line width=1.5pt] (b) -- (c);
-\draw[flow edge,blue,line width=1.5pt] (c) -- (t);
-\draw[flow edge,blue,line width=1.5pt] (d) -- (t);
-
-\draw[nontree edge,bend right=30] (a) to (b);
-\draw[nontree edge,bend right=20] (c) to (a);
-\end{tikzpicture}
+\input{imagens/grafo_niveis.tex}
 \caption{Digrafo de Níveis no algoritmo de Dinic: arcos azuis são admissíveis ($d(v) = d(u)+1$) e integram a fase de fluxo bloqueador; arcos cinza tracejados não avançam nível e são desconsiderados na fase.}
 \label{fig:grafo_niveis}
 \end{figure}
@@ -192,27 +108,7 @@ Com política de seleção de vértices ativos em fila FIFO, a complexidade assi
 
 \begin{figure}[!ht]
 \centering
-\begin{tikzpicture}[thick]
-  \draw[layer line] (-2, 0) -- (6.2, 0) node[right,black,font=\footnotesize] {$h=0$ (sumidouro $t$)};
-  \foreach \y/\h in {1.3/1, 2.6/2, 4.8/4} {
-    \draw[layer line] (-2, \y) -- (6.2, \y) node[right,black,font=\footnotesize] {$h=\h$};
-  }
-  \draw[red!50,dashed,line width=1.5pt] (-2, 3.7) -- (6.2, 3.7) node[right,red!80!black,font=\footnotesize] {$h=3$ (\textbf{LACUNA})};
-
-  \node[sink node,font=\footnotesize] (t) at (2, 0) {$t$};
-  \node[flow node,fill=yellow!20,font=\footnotesize] (a) at (2, 1.3) {$a$};
-  \node[flow node,fill=yellow!20,font=\footnotesize] (b) at (0.5, 2.6) {$b$};
-  \node[flow node,fill=yellow!20,font=\footnotesize] (c) at (3.5, 2.6) {$c$};
-
-  \node[gap node,fill=red!20,font=\footnotesize] (u) at (2, 4.8) {$u$};
-
-  \draw[->,blue!80!black] (b) -- (a);
-  \draw[->,blue!80!black] (c) -- (a);
-  \draw[->,blue!80!black] (a) -- (t);
-
-  \draw[->,red,line width=1.4pt] (u) -- node[left,pos=0.5,font=\scriptsize,text=black,align=center,xshift=-5mm,fill=white,rounded corners=2pt,inner sep=2pt] {Queda de 2 níveis\\(inadmissível em $A_f$)} (b);
-  \draw[->,red,line width=1.4pt] (u) -- node[right,pos=0.5,font=\scriptsize,text=black,align=center,xshift=5mm,fill=white,rounded corners=2pt,inner sep=2pt] {$h(u) \not\le h(c) + 1$\\(inadmissível em $A_f$)} (c);
-\end{tikzpicture}
+\input{imagens/gap_heuristica.tex}
 \caption{Mecanismo da Heurística de Lacuna: a restrição $h(u) \le h(v) + 1$ impede arcos residuais com salto de altura superior a uma unidade. O esvaziamento do nível intermediário $h=3$ comprova que vértices com $h \ge 4$ estão desconectados do sumidouro.}
 \label{fig:gap_prova}
 \end{figure}
@@ -226,34 +122,7 @@ A formulação de fluxo máximo permite resolver problemas clássicos em grafos 
 
 \begin{figure}[!ht]
 \centering
-\begin{tikzpicture}[thick]
-\begin{scope}[xshift=0cm]
-  \tikzsubcaption{(1.5,3.8)}{(a) Grafo bipartido original}
-  \foreach \i/\y in {1/3, 2/1.5, 3/0} {
-    \node[bip L] (l\i) at (0,\y) {$l_\i$};
-    \node[bip R] (r\i) at (3,\y) {$r_\i$};
-  }
-  \draw[-] (l1) -- (r1); \draw[-] (l1) -- (r2);
-  \draw[-] (l2) -- (r2); \draw[-] (l2) -- (r3);
-  \draw[-] (l3) -- (r1); \draw[-] (l3) -- (r3);
-\end{scope}
-\node at (4.8,1.5) {\Huge $\Rightarrow$};
-
-\begin{scope}[xshift=6.2cm]
-  \tikzsubcaption{(2.5,3.8)}{(b) Rede de fluxo equivalente $D'$}
-  \node[source node] (s) at (0,1.5) {$s$};
-  \node[sink node] (t) at (5,1.5) {$t$};
-  \foreach \i/\y in {1/3, 2/1.5, 3/0} {
-    \node[bip L,font=\footnotesize] (fl\i) at (1.8,\y) {$l_\i$};
-    \node[bip R,font=\footnotesize] (fr\i) at (3.2,\y) {$r_\i$};
-    \draw[flow edge] (s) -- node[above,font=\footnotesize] {$1$} (fl\i);
-    \draw[flow edge] (fr\i) -- node[above,font=\footnotesize] {$1$} (t);
-  }
-  \draw[flow edge,blue,line width=1.5pt] (fl1) -- (fr1); \draw[flow edge] (fl1) -- (fr2);
-  \draw[flow edge,blue,line width=1.5pt] (fl2) -- (fr2); \draw[flow edge] (fl2) -- (fr3);
-  \draw[flow edge] (fl3) -- (fr1); \draw[flow edge,blue,line width=1.5pt] (fl3) -- (fr3);
-\end{scope}
-\end{tikzpicture}
+\input{imagens/fluxo_bipartido.tex}
 \caption{Redução do problema de Emparelhamento Máximo Bipartido para Fluxo Máximo: (a) grafo bipartido original; (b) rede com superfonte $s$, supersumidouro $t$ e capacidades unitárias. Os arcos azuis com $f(u, v) = 1$ indicam as arestas do emparelhamento máximo $|f^*| = 3$.}
 \label{fig:fluxo_bipartido}
 \end{figure}
@@ -321,35 +190,7 @@ Cada iteração do Network Simplex executa quatro passos: (i) \textbf{Pricing:} 
 
 \begin{figure}[!ht]
 \centering
-\begin{tikzpicture}[thick]
-\begin{scope}[xshift=0cm]
-  \tikzsubcaption{(2.0,3.6)}{(a) Entrada do arco $(3,4)$ no ciclo fundamental}
-  \node[source node] (a1) at (0, 1.3) {$1$};
-  \node[flow node] (a2) at (2, 2.6) {$2$};
-  \node[flow node] (a3) at (2, 0.0) {$3$};
-  \node[sink node] (a4) at (4, 1.3) {$4$};
-
-  \draw[tree edge] (a1) -- (a2);
-  \draw[tree edge] (a2) -- (a4);
-  \draw[tree edge] (a1) -- (a3);
-  \draw[pivot enter] (a3) -- node[below=3pt,sloped,font=\scriptsize,text=red!80!black] {entra} (a4);
-\end{scope}
-
-\node at (5.2,1.3) {\Large $\Rightarrow$};
-
-\begin{scope}[xshift=6.4cm]
-  \tikzsubcaption{(2.0,3.6)}{(b) Nova base em árvore após o pivot}
-  \node[source node] (b1) at (0, 1.3) {$1$};
-  \node[flow node] (b2) at (2, 2.6) {$2$};
-  \node[flow node] (b3) at (2, 0.0) {$3$};
-  \node[sink node] (b4) at (4, 1.3) {$4$};
-
-  \draw[tree edge] (b1) -- (b2);
-  \draw[pivot leave] (b2) -- node[above=3pt,sloped,font=\scriptsize,text=gray!80!black] {sai} (b4);
-  \draw[tree edge] (b1) -- (b3);
-  \draw[tree edge] (b3) -- (b4);
-\end{scope}
-\end{tikzpicture}
+\input{imagens/simplex_pivoteamento.tex}
 \caption{Iteração do Network Simplex: (a) o arco não básico violador $(3,4)$ com $\bar{w}_\pi < 0$ fecha um ciclo fundamental em $T$; (b) o fluxo é aumentado por $\delta$ e o arco saturado $(2,4)$ deixa a base, restabelecendo a base em árvore.}
 \label{fig:simplex_pivoteamento}
 \end{figure}

@@ -1,0 +1,60 @@
+\begin{tikzpicture}[
+    x={(-1.2cm, -0.6cm)},
+    y={(1.2cm, -0.6cm)},
+    z={(0cm, 1.5cm)}
+]
+
+    \node[sink node] (t) at (2,2,-3.5) {$t$};
+
+    \foreach \x in {1,2,3} {
+        \foreach \y in {1,2,3} {
+            \coordinate (cp\x\y) at (\x,\y,0);
+        }
+    }
+
+    \foreach \x in {1,2,3} {
+        \foreach \y in {1,2,3} {
+            \draw[->, red!70!black, dashed, line width=0.8pt, draw opacity=0.65] (cp\x\y) -- (t);
+        }
+    }
+
+    \draw[fill=gray!15, draw=gray!60, fill opacity=0.85, rounded corners=6pt]
+        (0.3,0.3,0) -- (3.7,0.3,0) -- (3.7,3.7,0) -- (0.3,3.7,0) -- cycle;
+
+    \begin{scope}[line width=1.1pt, black!75]
+      \foreach \x in {1,2,3} {
+        \draw[<->] (\x,1,0) -- (\x,2,0);
+        \draw[<->] (\x,2,0) -- (\x,3,0);
+      }
+      \foreach \y in {1,2,3} {
+        \draw[<->] (1,\y,0) -- (2,\y,0);
+        \draw[<->] (2,\y,0) -- (3,\y,0);
+      }
+    \end{scope}
+
+    \foreach \x in {1,2,3} {
+        \foreach \y in {1,2,3} {
+            \node[pixel node] (p\x\y) at (\x,\y,0) {$p_{\x\y}$};
+        }
+    }
+
+    \node[source node] (s) at (2,2,3.5) {$s$};
+
+    \foreach \x in {1,2,3} {
+        \foreach \y in {1,2,3} {
+            \draw[->, green!70!black, dashed, line width=0.8pt, draw opacity=0.65] (s) -- (p\x\y);
+        }
+    }
+
+    \begin{scope}[x={(1cm,0cm)}, y={(0cm,1cm)}, z={(0cm,0cm)}]
+        \node[right, font=\footnotesize, green!60!black] at (3.5, 0.7) {T-links $s \to p$};
+        \draw[->, green!70!black, dashed, line width=0.8pt] (2.3, 0.7) -- (3.3, 0.7);
+
+        \node[right, font=\footnotesize, text=black] at (3.5, -0.1) {N-links (vizinhança)};
+        \draw[<->, line width=1.1pt, black!75] (2.3, -0.1) -- (3.3, -0.1);
+
+        \node[right, font=\footnotesize, red!60!black] at (3.5, -0.9) {T-links $p \to t$};
+        \draw[->, red!70!black, dashed, line width=0.8pt] (2.3, -0.9) -- (3.3, -0.9);
+    \end{scope}
+
+\end{tikzpicture}

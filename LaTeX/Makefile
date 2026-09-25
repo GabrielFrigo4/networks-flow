@@ -18,6 +18,7 @@ CAPITULOS != find capitulos -name "*.tex" 2> "/dev/null" || true
 APENDICES != find apendices -name "*.tex" 2> "/dev/null" || true
 BOOK_SRC  != find book -name "*.tex" 2> "/dev/null" || true
 UFABC_SRC != find ufabc -name "*.tex" 2> "/dev/null" || true
+IMAGENS   != find imagens -name "*.tex" 2> "/dev/null" || true
 
 .PHONY: help all ic relatorio monolito projeto book clean distclean sync-code
 
@@ -57,7 +58,7 @@ sync-code:
 	$(PYTHON) ../Scripts/sync_listings.py
 	$(PYTHON) ../Scripts/build_monolith.py
 
-book.pdf: book.tex header.tex cit.bib $(CAPITULOS) $(APENDICES) $(BOOK_SRC)
+book.pdf: book.tex header.tex cit.bib $(CAPITULOS) $(APENDICES) $(BOOK_SRC) $(IMAGENS)
 	mkdir -p build
 	printf "%s" "-> Compilando book.pdf... "
 	if command -v $(LATEXMK) > "/dev/null" 2>&1; then \
@@ -72,7 +73,7 @@ book.pdf: book.tex header.tex cit.bib $(CAPITULOS) $(APENDICES) $(BOOK_SRC)
 	fi
 	printf "%s\n" "[OK]"
 
-ic.pdf: ic.tex header.tex cit.bib $(APENDICES) $(UFABC_SRC)
+ic.pdf: ic.tex header.tex cit.bib $(APENDICES) $(UFABC_SRC) $(IMAGENS)
 	mkdir -p build
 	printf "%s" "-> Compilando ic.pdf... "
 	if command -v $(LATEXMK) > "/dev/null" 2>&1; then \
@@ -87,7 +88,7 @@ ic.pdf: ic.tex header.tex cit.bib $(APENDICES) $(UFABC_SRC)
 	fi
 	printf "%s\n" "[OK]"
 
-relatorio.pdf: relatorio.tex header.tex cit.bib $(APENDICES) $(UFABC_SRC)
+relatorio.pdf: relatorio.tex header.tex cit.bib $(APENDICES) $(UFABC_SRC) $(IMAGENS)
 	mkdir -p build
 	printf "%s" "-> Compilando relatorio.pdf... "
 	if command -v $(LATEXMK) > "/dev/null" 2>&1; then \
@@ -102,7 +103,7 @@ relatorio.pdf: relatorio.tex header.tex cit.bib $(APENDICES) $(UFABC_SRC)
 	fi
 	printf "%s\n" "[OK]"
 
-monolito.tex: relatorio.tex header.tex $(UFABC_SRC) $(APENDICES)
+monolito.tex: relatorio.tex header.tex $(UFABC_SRC) $(APENDICES) $(IMAGENS)
 	$(PYTHON) ../Scripts/build_monolith.py
 
 monolito.pdf: monolito.tex cit.bib
