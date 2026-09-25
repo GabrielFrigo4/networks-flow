@@ -665,11 +665,11 @@ Com política de seleção de vértices ativos em fila FIFO, a complexidade assi
 \begin{figure}[!ht]
 \centering
 \begin{tikzpicture}[thick]
-  \draw[layer line] (-2, 0) -- (6, 0) node[right,black,font=\footnotesize] {$h=0$ (sumidouro $t$)};
+  \draw[layer line] (-2, 0) -- (6.2, 0) node[right,black,font=\footnotesize] {$h=0$ (sumidouro $t$)};
   \foreach \y/\h in {1.3/1, 2.6/2, 4.8/4} {
-    \draw[layer line] (-2, \y) -- (6, \y) node[right,black,font=\footnotesize] {$h=\h$};
+    \draw[layer line] (-2, \y) -- (6.2, \y) node[right,black,font=\footnotesize] {$h=\h$};
   }
-  \draw[red!50,dashed,line width=1.5pt] (-2, 3.7) -- (6, 3.7) node[right,red!80!black,font=\footnotesize] {$h=3$ (\textbf{LACUNA})};
+  \draw[red!50,dashed,line width=1.5pt] (-2, 3.7) -- (6.2, 3.7) node[right,red!80!black,font=\footnotesize] {$h=3$ (\textbf{LACUNA})};
 
   \node[sink node,font=\footnotesize] (t) at (2, 0) {$t$};
   \node[flow node,fill=yellow!20,font=\footnotesize] (a) at (2, 1.3) {$a$};
@@ -682,8 +682,8 @@ Com política de seleção de vértices ativos em fila FIFO, a complexidade assi
   \draw[->,blue!80!black] (c) -- (a);
   \draw[->,blue!80!black] (a) -- (t);
 
-  \draw[->,red,line width=1.4pt] (u) -- node[left,pos=0.5,font=\scriptsize,text=black,align=center,xshift=-6mm,fill=white,rounded corners=2pt,inner sep=2pt] {Queda de 2 níveis\\(inadmissível em $A_f$)} (b);
-  \draw[->,red,line width=1.4pt] (u) -- node[right,pos=0.5,font=\scriptsize,text=black,align=center,xshift=6mm,fill=white,rounded corners=2pt,inner sep=2pt] {$h(u) \not\le h(c) + 1$\\(inadmissível em $A_f$)} (c);
+  \draw[->,red,line width=1.4pt] (u) -- node[left,pos=0.5,font=\scriptsize,text=black,align=center,xshift=-5mm,fill=white,rounded corners=2pt,inner sep=2pt] {Queda de 2 níveis\\(inadmissível em $A_f$)} (b);
+  \draw[->,red,line width=1.4pt] (u) -- node[right,pos=0.5,font=\scriptsize,text=black,align=center,xshift=5mm,fill=white,rounded corners=2pt,inner sep=2pt] {$h(u) \not\le h(c) + 1$\\(inadmissível em $A_f$)} (c);
 \end{tikzpicture}
 \caption{Mecanismo da Heurística de Lacuna: a restrição $h(u) \le h(v) + 1$ impede arcos residuais com salto de altura superior a uma unidade. O esvaziamento do nível intermediário $h=3$ comprova que vértices com $h \ge 4$ estão desconectados do sumidouro.}
 \label{fig:gap_prova}
