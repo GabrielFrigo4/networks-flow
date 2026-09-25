@@ -1,0 +1,150 @@
+% =========================================================================
+% SEÇÃO 3: FUNDAMENTAÇÃO TEÓRICA
+% =========================================================================
+\section{Fundamentação Teórica}\label{sec:fundamentacao}
+
+Esta seção formaliza os modelos matemáticos, teoremas estruturais e mecanismos algorítmicos que regem os problemas de Fluxo Máximo e Fluxo de Custo Mínimo.
+
+\subsection{Base Matemática dos Grafos de Fluxo}
+
+Uma rede de fluxo é representada por um digrafo $D = (V, A)$, onde $V$ denota o conjunto de vértices e $A$ o conjunto de arcos direcionados (veja~\cite{ahuja1993network, bondy2008graph}). A rede possui dois vértices terminais distinguidos: uma fonte $s \in V$ e um sumidouro $t \in V$. Cada arco $(u, v) \in A$ possui uma capacidade não negativa $c(u, v) \ge 0$, estipulada pela função $c: A \to \mathbb{R}_{\ge 0}$, que estabelece o limite superior de tráfego admissível no arco.
+
+Um fluxo na rede $D$ é uma função $f: A \to \mathbb{R}_{\ge 0}$ que associa a cada arco $(u, v)$ um escalar $f(u, v)$. O fluxo $f$ é dito viável se satisfaz duas condições axiomáticas (veja~\cite{ford1956maximal, cook1998combinatorial}):
+\begin{enumerate}
+    \item \textbf{Restrição de Capacidade:} O fluxo em cada conexão é não negativo e não excede sua capacidade:
+    \begin{equation}
+        0 \le f(u, v) \le c(u, v), \quad \forall (u, v) \in A
+    \end{equation}
+    \item \textbf{Conservação de Fluxo:} Para todo vértice intermediário $v \in V \setminus \{s, t\}$, a soma dos fluxos que entram em $v$ é igual à soma dos fluxos que dele saem:
+    \begin{equation}
+        \sum_{\{u \mid (u, v) \in A\}} f(u, v) = \sum_{\{w \mid (v, w) \in A\}} f(v, w)
+    \end{equation}
+\end{enumerate}
+
+O valor total do fluxo, denotado por $|f|$, quantifica a taxa líquida que emerge da fonte $s$:
+\begin{equation}
+    |f| = \sum_{\{v \mid (s, v) \in A\}} f(s, v) - \sum_{\{u \mid (u, s) \in A\}} f(u, s)
+\end{equation}
+Pela conservação nodal, esse valor coincide rigorosamente com o fluxo líquido absorvido pelo sumidouro $t$. O Problema do Fluxo Máximo consiste em determinar uma função viável $f$ que maximize $|f|$.
+
+\subsection{Redes Residuais, Caminhos Aumentantes e Dualidade}
+
+Dado um fluxo viável $f$, a rede residual $D_f = (V, A_f)$ quantifica a capacidade ociosa dos arcos originais e a possibilidade de cancelamento de fluxos previamente despachados (veja~\cite{ahuja1993network}). A capacidade residual $c_f(u, v)$ é definida por:
+\begin{equation}
+    c_f(u, v) = c(u, v) - f(u, v) + f(v, u)
+\end{equation}
+O conjunto $A_f$ é formado por todos os arcos direcionados $(u, v)$ tais que $c_f(u, v) > 0$. Um $st$-caminho aumentante é um caminho direcionado simples de $s$ para $t$ em $D_f$. Se existir tal caminho $P$, a capacidade residual gargalo $\delta = \min_{(u, v) \in P} c_f(u, v) > 0$ pode ser enviada ao longo de $P$, gerando um novo fluxo viável $f'$ com valor $|f'| = |f| + \delta$.
+
+Um $st$-corte $(S, T)$ é uma partição de $V$ tal que $s \in S$ e $t \in T = V \setminus S$. A capacidade do corte é a soma das capacidades dos arcos direcionados de $S$ para $T$:
+\begin{equation}
+    c(S, T) = \sum_{u \in S, v \in T, (u, v) \in A} c(u, v)
+\end{equation}
+
+\begin{prop}[Teorema do Fluxo Máximo e Corte Mínimo --- Ford-Fulkerson, 1956]\label{prop:mfmc_rel}
+Em qualquer rede de fluxo, o valor máximo de um $st$-fluxo viável é igual à capacidade mínima de um $st$-corte:
+\begin{equation}
+    \max_{f \text{ viável}} |f| = \min_{(S, T) \text{ corte}} c(S, T)
+\end{equation}
+Além disso, as seguintes condições são equivalentes: (i) $f$ é um fluxo máximo; (ii) $D_f$ não contém nenhum $st$-caminho aumentante; (iii) existe um corte $(S^*, T^*)$ tal que $|f| = c(S^*, T^*)$.
+\end{prop}
+
+\noindent \textbf{Demonstração Construtiva:} Para qualquer fluxo viável $f$ e qualquer corte $(S, T)$, tem-se $|f| \le c(S, T)$. Se $D_f$ não possui caminho aumentante de $s$ a $t$, seja $S^*$ o conjunto de vértices alcançáveis a partir de $s$ em $D_f$ e $T^* = V \setminus S^*$. Como não há caminho de $s$ a $t$, $s \in S^*$ e $t \in T^*$, de modo que $(S^*, T^*)$ é um corte válido. Para todo $(u, v) \in A$ com $u \in S^*$ e $v \in T^*$, deve-se ter $c_f(u, v) = 0$, implicando $f(u, v) = c(u, v)$. De forma análoga, se $u \in T^*$ e $v \in S^*$, tem-se $f(u, v) = 0$ (caso contrário, existiria capacidade residual reversa $c_f(v, u) > 0$, contradizendo a inalcançabilidade de $u$). O fluxo líquido através do corte satisfaz $|f| = c(S^*, T^*)$, certificando a otimalidade de $f$ e a minimalidade de $(S^*, T^*)$. \hfill $\blacksquare$
+
+\begin{prop}[Teorema da Integralidade]\label{prop:integralidade_rel}
+Se a capacidade $c(a)$ for inteira para todo $a \in A$, então existe um fluxo máximo $f^*$ que é puramente inteiro, isto é, $f^*(a) \in \mathbb{Z}_{\ge 0}$ para todo arco $a \in A$.
+\end{prop}
+
+A preservação da integralidade sob capacidades inteiras é garantida pelo fato de que todo aumento ao longo de caminhos residuais em redes inteiras transporta um gargalo $\delta \in \mathbb{Z}_{> 0}$, viabilizando a modelagem exata de problemas combinatórios discretos.
+
+\subsection{Algoritmos de Caminhos Aumentantes}
+
+O algoritmo genérico de Ford-Fulkerson busca caminhos aumentantes via busca em profundidade (DFS). Sob capacidades inteiras, sua complexidade assintótica é $\mathcal{O}(|A| \cdot |f^*|)$, que depende do valor numérico das capacidades (pseudopolinomial). Para obter complexidade polinomial estrita, a literatura introduziu políticas estruturadas de seleção de caminhos.
+
+\paragraph{Algoritmo de Edmonds-Karp (1972).} O método seleciona a cada iteração o caminho aumentante de menor quantidade de arcos através de Busca em Largura (BFS) em $D_f$~\cite{edmonds1972theoretical}. Demonstra-se que a distância residual mínima $d(s, v)$ é monotonicamente não decrescente ao longo das iterações. Entre duas saturações consecutivas de um mesmo arco $(u, v)$, a distância da origem sofre um acréscimo de no mínimo duas unidades ($d'(s, u) \ge d(s, u) + 2$). Como a distância máxima em um caminho simples é $|V|-1$, cada arco é saturado no máximo $|V|/2$ vezes. Sendo $|A|$ o número de arcos, ocorrem no máximo $\mathcal{O}(|V| \cdot |A|)$ aumentos. Com custo $\mathcal{O}(|A|)$ por BFS, a complexidade é $\mathcal{O}(|V| \cdot |A|^2)$~\cite{korte2018combinatorial}.
+
+\paragraph{Algoritmo de Dinic (1970).} Yefim Dinitz estruturou o processamento em fases~\cite{dinic1970algorithm}. No início de cada fase, constrói-se o \textbf{Digrafo de Níveis} através de uma BFS global a partir de $s$, retendo apenas os arcos residuais que avançam de nível ($d(v) = d(u) + 1$). Em seguida, emprega-se uma DFS para saturar múltiplos caminhos em um único \textbf{Fluxo Bloqueador} (\textit{Blocking Flow}). Utilizando um vetor de ponteiros mortos (\textit{dead-end pointers}) que evita reexplorar arcos sem capacidade, a fase completa opera em $\mathcal{O}(|V| \cdot |A|)$. Como $d(s, t)$ cresce estritamente a cada fase, ocorrem no máximo $|V|-1$ fases, resultando em complexidade $\mathcal{O}(|V|^2 \cdot |A|)$. Em redes unitárias (como em grafos bipartidos), o número de fases limita-se a $\mathcal{O}(\sqrt{|V|})$, atingindo $\mathcal{O}(|A|\sqrt{|V|})$~\cite{ahuja1993network}.
+
+\subsection{Algoritmos de Pré-fluxo e Alturas (Push-Relabel)}
+
+A família de algoritmos de Goldberg e Tarjan~\cite{goldberg1988new} adota uma perspectiva dual: relaxa-se a restrição de conservação de fluxo durante o cálculo, mantendo a ausência de caminhos aumentantes como invariante contínua. Um pré-fluxo $f$ respeita as capacidades ($0 \le f(a) \le c(a)$) e admite excessos nodais não negativos $e(v) \ge 0$ para todo $v \in V \setminus \{s, t\}$:
+\begin{equation}
+    e(v) = \sum_{\{u \mid (u, v) \in A\}} f(u, v) - \sum_{\{w \mid (v, w) \in A\}} f(v, w) \ge 0
+\end{equation}
+
+Um vértice com $e(v) > 0$ é denominado \textbf{ativo}. Para direcionar os excessos até o sumidouro $t$ (ou devolvê-los à fonte $s$), mantém-se uma função de alturas $h: V \to \mathbb{N}$ válida, que satisfaz: (i) $h(t) = 0$; (ii) $h(s) = |V|$; e (iii) $h(u) \le h(v) + 1$ para todo $(u, v) \in A_f$. A terceira condição impede a existência de caminhos de $s$ para $t$ em $D_f$. O algoritmo executa duas operações elementares sobre vértices ativos:
+\begin{itemize}
+    \item \textbf{Push (Empurrar):} Aplicado quando existe arco residual admissível ($c_f(u, v) > 0$ e $h(u) = h(v) + 1$). Envia-se $\delta = \min(e(u), c_f(u, v))$ unidades. Se $\delta = c_f(u, v)$, o push é saturante; caso contrário, é não saturante, zerando $e(u)$;
+    \item \textbf{Relabel (Rerrotular):} Aplicado quando $u$ está ativo e não possui vizinhos residuais em nível inferior ($c_f(u, v) > 0 \implies h(u) \le h(v)$). Atualiza-se a altura para $h(u) = 1 + \min \{h(v) \mid c_f(u, v) > 0\}$.
+\end{itemize}
+
+Com política de seleção de vértices ativos em fila FIFO, a complexidade assintótica é $\mathcal{O}(|V|^3)$~\cite{goldberg1988new}.
+
+\paragraph{Heurística de Lacuna (\textit{Gap Heuristic}).} Mantendo um vetor de contagem do número de vértices em cada estrato de altura $count[h]$, detecta-se se algum nível $k < |V|$ esvaziou-se ($count[k] = 0$). Como a condição $h(u) \le h(v) + 1$ limita a inclinação dos arcos residuais, nenhum vértice com $h(u) > k$ consegue alcançar o sumidouro ($h(t) = 0$). O algoritmo eleva suas alturas para $|V| + 1$, eliminando operações redundantes de relabel e devolvendo o fluxo diretamente à fonte. Associada à seleção por Maior Altura (\textit{Highest Label}), atinge-se a complexidade $\mathcal{O}(|V|^2 \sqrt{|A|})$~\cite{goldberg1988new}.
+
+\subsection{Reduções Combinatórias em Grafos Bipartidos}
+
+A formulação de fluxo máximo permite resolver problemas clássicos em grafos bipartidos $G = (X \cup Y, E)$ através de reduções polinomiais exatas:
+
+\begin{enumerate}[leftmargin=1.5em, itemsep=0.15em, topsep=0.2em, parsep=0em]
+    \item \textbf{Emparelhamento Máximo Bipartido (\textit{Maximum Bipartite Matching}):} Constrói-se uma rede direcionada adicionando uma superfonte $s$ conectada a cada $x \in X$ com capacidade 1, e cada $y \in Y$ conectado ao supersumidouro $t$ com capacidade 1. Cada aresta $\{x, y\} \in E$ torna-se um arco $(x, y)$ com capacidade infinita (ou unitária). Pelo Teorema da Integralidade, o fluxo máximo tem valor inteiro e coincide rigorosamente com a cardinalidade máxima de emparelhamento: $|f^*| = \nu(G)$.
+
+    \item \textbf{Teorema de König (1931) e Cobertura Mínima de Vértices:} Em todo grafo bipartido, a cardinalidade do emparelhamento máximo é igual à cardinalidade da cobertura mínima de vértices ($\tau(G)$):
+    \begin{equation}
+        \nu(G) = \tau(G)
+    \end{equation}
+    A demonstração constrói o corte mínimo residual $(S^*, T^*)$ em $D_{f^*}$ a partir de $s$. O conjunto $C^* = (X \setminus S^*) \cup (Y \cap S^*)$ cobre todas as arestas do grafo e sua cardinalidade satisfaz $|C^*| = c(S^*, T^*) = |f^*| = \nu(G)$, fornecendo um algoritmo polinomial em tempo $\mathcal{O}(|E|\sqrt{|V|})$ via Dinic.
+
+    \item \textbf{Conjunto Independente Máximo e Identidades de Gallai (1959):} Um subconjunto de vértices $I$ é independente se e somente se seu complementar $V \setminus I$ for uma cobertura de vértices. Pelo Teorema de Gallai, $\alpha(G) + \tau(G) = |V|$ e $\nu(G) + \rho(G) = |V|$, onde $\alpha(G)$ é a cardinalidade do conjunto independente máximo e $\rho(G)$ da cobertura mínima de arestas. Em grafos bipartidos, $\alpha(G) = \rho(G) = |V| - \nu(G)$, e o conjunto ótimo é extraído diretamente por $I^* = V \setminus C^*$ em tempo $\mathcal{O}(|V|)$.
+
+    \item \textbf{Teorema do Casamento de Hall (1935):} Um grafo bipartido $G = (X \cup Y, E)$ possui um emparelhamento que cobre todos os vértices de $X$ se e somente se $|N(S)| \ge |S|$ para todo $S \subseteq X$, onde $N(S)$ é a vizinhança de $S$. A prova deduz-se diretamente de König aplicando a contradição de corte mínimo.
+\end{enumerate}
+
+\subsection{Conectividade e Roteamento}
+
+A determinação do número de rotas independentes entre dois vértices $s$ e $t$ reduz-se a fluxo máximo:
+\begin{itemize}[leftmargin=1.5em, itemsep=0.15em, topsep=0.2em, parsep=0em]
+    \item \textbf{Caminhos Disjuntos por Arcos:} Fixando $c(a) = 1$ para todo arco, o valor $|f^*|$ equivale ao número máximo de rotas direcionadas sem arcos em comum (Teorema de Menger por arcos, 1927).
+    \item \textbf{Caminhos Disjuntos por Vértices e \textit{Vertex Splitting}:} Para impedir que rotas compartilhem vértices intermediários, divide-se cada vértice $v \in V \setminus \{s, t\}$ em dois nós, $v_{\text{in}}$ e $v_{\text{out}}$, conectados por um arco interno $(v_{\text{in}}, v_{\text{out}})$ com capacidade unitária $c(v_{\text{in}}, v_{\text{out}}) = 1$. O corte mínimo nesta rede expandida identifica o conjunto de vértices cuja remoção desconecta a fonte do sumidouro (Teorema de Menger por vértices, 1927).
+\end{itemize}
+
+\subsection{Teoria do Fluxo de Custo Mínimo (MCF)}
+
+No problema de Fluxo de Custo Mínimo, associa-se a cada arco $(u, v) \in A$ uma capacidade $c(u, v) \ge 0$ e um custo linear unitário $w(u, v) \in \mathbb{R}$. Cada vértice $v \in V$ possui demanda $b(v) \in \mathbb{R}$ com $\sum_{v \in V} b(v) = 0$. O problema formula-se pelo programa linear:
+\begin{align}
+    \min_{f} \quad & \sum_{(u, v) \in A} w(u, v) \cdot f(u, v) \\
+    \sa \quad & \sum_{\{w \mid (v, w) \in A\}} f(v, w) - \sum_{\{u \mid (u, v) \in A\}} f(u, v) = b(v), \quad \forall v \in V \\
+    & 0 \le f(u, v) \le c(u, v), \quad \forall (u, v) \in A
+\end{align}
+
+Na rede residual $D_f$, os arcos diretos preservam o custo $w_f(u, v) = w(u, v)$ e os arcos reversos recebem custo antissimétrico $w_f(v, u) = -w(u, v)$, refletindo a devolução de custo ao cancelar fluxo.
+
+\begin{prop}[Condição de Otimalidade por Ciclos Negativos --- Klein, 1967]\label{prop:klein_rel}
+Um fluxo viável $f$ é de custo mínimo se, e somente se, o digrafo residual associado $D_f$ não contém nenhum ciclo direcionado de custo total estritamente negativo.
+\end{prop}
+
+\begin{prop}[Custos Reduzidos e Potenciais Nodais]\label{prop:potenciais_rel}
+Seja $\pi: V \to \mathbb{R}$ um vetor de potenciais nodais (variáveis duais das restrições de balanço). O custo reduzido de um arco residual $(u, v) \in A_f$ é definido por:
+\begin{equation}
+    \bar{w}_\pi(u, v) = w_f(u, v) - \pi(u) + \pi(v)
+\end{equation}
+Um fluxo viável $f$ é ótimo se e somente se existe $\pi$ tal que $\bar{w}_\pi(u, v) \ge 0$ para todo $(u, v) \in A_f$.
+\end{prop}
+
+A não negatividade dos custos reduzidos corresponde às condições de Folga Complementar de Karush-Kuhn-Tucker (KKT). Mantendo os potenciais atualizados ao longo das iterações, viabiliza-se o uso do algoritmo de Dijkstra com fila de prioridades no lugar de algoritmos com suporte a custos negativos no método \textit{Successive Shortest Path} (SSP).
+
+\subsection{O Algoritmo Network Simplex}
+
+O algoritmo \textit{Network Simplex} especializa o método Simplex linear explorando a estrutura combinatória de árvores geradoras da rede (veja~\cite{ahuja1993network, dantzig1951application}). Uma solução básica viável particiona os arcos em três classes $(T, L, U)$:
+\begin{enumerate}
+    \item $T$: arcos básicos que formam uma árvore geradora do digrafo;
+    \item $L$: arcos não básicos com fluxo no limite inferior ($f(a) = 0$);
+    \item $U$: arcos não básicos com fluxo saturado no limite superior ($f(a) = c(a)$).
+\end{enumerate}
+
+\begin{prop}[Total Unimodularidade (TUM) da Matriz Nó-Arco]\label{prop:tum_rel}
+Seja $\mathbf{M} \in \{-1, 0, 1\}^{|V| \times |A|}$ a matriz de incidência nó-arco de $D$. Todo determinante de submatriz quadrada de $\mathbf{M}$ pertence a $\{-1, 0, 1\}$. Consequentemente, para qualquer vetor de demandas e capacidades inteiras, toda solução básica (base em árvore) é puramente inteira.
+\end{prop}
+
+A Total Unimodularidade garante que a matriz básica $\mathbf{B}$ associada a qualquer árvore $T$ satisfaça $|\det \mathbf{B}| = 1$, eliminando divisões na Regra de Cramer e garantindo aritmética inteira exata.
+
+Cada iteração do Network Simplex executa quatro passos: (i) \textbf{Pricing:} identificação de arco violador $(u, v)$ fora da árvore ($\bar{w}_\pi < 0$ em $L$ ou $\bar{w}_\pi > 0$ em $U$); (ii) \textbf{Ciclo Fundamental:} determinação do ciclo $C$ formado por $(u, v)$ em $T$ via busca do ancestral comum mais próximo (\textit{LCA}); (iii) \textbf{Gargalo:} cômputo da capacidade residual mínima $\delta$ em $C$ e determinação do arco que deixa a base; e (iv) \textbf{Pivoteamento:} atualização do fluxo e ajuste dos potenciais nodais na subárvore em tempo $\mathcal{O}(|V|)$ com auxílio de listas de pré-ordem (\lstinline{thread}).

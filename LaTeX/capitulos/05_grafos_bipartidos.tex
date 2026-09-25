@@ -89,42 +89,42 @@ Como $(S, T)$ é um corte mínimo, não há arcos residuais com capacidade posit
 \begin{tikzpicture}[thick]
   \node[bip label L] at (2,4.5) {$\mathbf{L}$};
   \node[bip label R] at (4,4.5) {$\mathbf{R}$};
-  
+
   \node[source node] (s) at (0,2) {$s$};
   \node[sink node] (t) at (6,2) {$t$};
-  
+
   \node[source node] (l1) at (2,3.5) {$l_1$};
   \node[sink node,cover node] (l2) at (2,2) {$l_2$};
   \node[source node] (l3) at (2,0.5) {$l_3$};
-  
+
   \node[sink node] (r1) at (4,3.5) {$r_1$};
   \node[sink node] (r2) at (4,2) {$r_2$};
   \node[source node,cover node] (r3) at (4,0.5) {$r_3$};
-  
-  \draw[->] (s) -- (l1); 
-  \draw[sat edge] (s) -- node[above,font=\footnotesize\bfseries,text=cutviolet!90!black,sloped]{corte} (l2); 
+
+  \draw[->] (s) -- (l1);
+  \draw[sat edge] (s) -- node[above,font=\footnotesize\bfseries,text=cutviolet!90!black,sloped]{corte} (l2);
   \draw[->] (s) -- (l3);
-  
+
   \draw[match edge,->] (l1) -- (r3);
   \draw[match edge,->] (l2) -- (r1);
   \draw[->] (l2) -- (r2);
   \draw[->] (l3) -- (r3);
-  
-  \draw[->] (r1) -- (t); 
-  \draw[->] (r2) -- (t); 
+
+  \draw[->] (r1) -- (t);
+  \draw[->] (r2) -- (t);
   \draw[sat edge] (r3) -- node[above,font=\footnotesize\bfseries,text=cutviolet!90!black,sloped]{corte} (t);
-  
+
   \node[legend node,fill=green!20] (legS) at (0, -1.0) {};
   \node[right,font=\footnotesize] at (legS.east) {$\in S$ (Alcançável no residual)};
-  
+
   \node[legend node,fill=red!20] (legT) at (0, -1.7) {};
   \node[right,font=\footnotesize] at (legT.east) {$\in T$ (Inalcançável)};
 
   \node[legend node,cover node] (legC) at (0, -2.4) {};
   \node[right,font=\footnotesize] at (legC.east) {$\in C$ (Cobertura Mínima)};
-  
+
   \node[font=\footnotesize,align=center] at (3, -3.1) {\textbf{Resultado:} $C = \{l_2, r_3\}$, $|C| = |M| = 2$};
-  
+
 \end{tikzpicture}
 \caption{Teorema de König: partição de vértices em $S$ e $T$ via corte mínimo residual. A cobertura mínima de vértices é $C = (L\cap T) \cup (R \cap S) = \{l_2, r_3\}$, com $|C| = |M| = 2$.}
 \label{fig:konig_corte}
@@ -150,39 +150,39 @@ A extração de $I$ opera em tempo $\mathcal{O}(|V|)$ a partir de $C$.
 \begin{tikzpicture}[thick]
   \begin{scope}[shift={(0,0)}]
     \tikzsubcaption{(2.5,4.2)}{(a) Cobertura de Vértices $C$}
-    
+
     \node[bip L] (l1) at (1.7,3.5) {$l_1$};
     \node[bip L] (l3) at (1.7,0.5) {$l_3$};
     \node[bip R] (r1) at (3.3,3.5) {$r_1$};
     \node[bip R] (r2) at (3.3,2) {$r_2$};
-    
+
     \node[bip L,fill=blue!40,cover node] (l2) at (1.7,2) {$l_2$};
     \node[bip R,fill=orange!40,cover node] (r3) at (3.3,0.5) {$r_3$};
-    
+
     \draw[-] (l1) -- (r3);
     \draw[-] (l2) -- (r2);
     \draw[-] (l3) -- (r3);
     \draw[-] (l2) -- (r1);
-    
+
     \node[font=\footnotesize,below] at (2.5,-0.2) {$C = \{l_2, r_3\}$};
   \end{scope}
-  
+
   \begin{scope}[shift={(6,0)}]
     \tikzsubcaption{(2.5,4.2)}{(b) Conjunto Independente $I = V \setminus C$}
-    
+
     \node[bip L,fill=blue!40,cover node] (l1) at (1.7,3.5) {$l_1$};
     \node[bip L,fill=blue!40,cover node] (l3) at (1.7,0.5) {$l_3$};
     \node[bip R,fill=orange!40,cover node] (r1) at (3.3,3.5) {$r_1$};
     \node[bip R,fill=orange!40,cover node] (r2) at (3.3,2) {$r_2$};
-    
+
     \node[bip L] (l2) at (1.7,2) {$l_2$};
     \node[bip R] (r3) at (3.3,0.5) {$r_3$};
-    
+
     \draw[-] (l1) -- (r3);
     \draw[-] (l2) -- (r2);
     \draw[-] (l3) -- (r3);
     \draw[-] (l2) -- (r1);
-    
+
     \node[font=\footnotesize,below] at (2.5,-0.2) {$I = \{l_1, l_3, r_1, r_2\}$};
   \end{scope}
 \end{tikzpicture}
@@ -246,16 +246,16 @@ mostrando que a cardinalidade do conjunto independente máximo coincide com a da
 \centering
 \begin{tikzpicture}[thick]
   \node[concept box, fill=blue!10, text width=3.5cm] (mis) at (0, 6) {\textbf{Conjunto Independente} \\ MIS \\ (Maximizar, Vértices)};
-  
+
   \node[concept box, fill=orange!10, text width=3.5cm] (match) at (9, 6) {\textbf{Emparelhamento} \\ Matching \\ (Maximizar, Arestas)};
-  
+
   \node[concept box, fill=blue!10, text width=3.5cm] (mvc) at (0, 0) {\textbf{Cobertura de Vértices} \\ MVC \\ (Minimizar, Vértices)};
-  
+
   \node[concept box, fill=orange!10, text width=3.5cm] (mec) at (9, 0) {\textbf{Cobertura de Arestas} \\ MEC \\ (Minimizar, Arestas)};
 
   \draw[<->] (mis) -- node[left, font=\footnotesize, align=right] {Complemento\\$|I| = |V| - |C_V|$} (mvc);
   \draw[<->] (match) -- node[right, font=\footnotesize, align=left] {Gallai\\$|M| + |F| = |V|$} (mec);
-  
+
   \draw[<->] (match) -- node[sloped, above, font=\footnotesize, pos=0.25] {König} node[sloped, below, font=\footnotesize, pos=0.25] {$|M| = |C_V|$} (mvc);
   \draw[<->, dashed] (mis) -- node[sloped, above, font=\footnotesize, pos=0.25] {Gallai (Derivado)} node[sloped, below, font=\footnotesize, pos=0.25] {$|I| = |F|$} (mec);
 \end{tikzpicture}
@@ -298,19 +298,19 @@ A verificação computacional da condição de Hall e a construção do emparelh
     \node[bip L] (l1) at (0,3) {$l_1$};
     \node[bip L] (l2) at (0,1.5) {$l_2$};
     \node[bip L] (l3) at (0,0) {$l_3$};
-    
+
     \node[bip R] (r1) at (3,3) {$r_1$};
     \node[bip R] (r2) at (3,1.5) {$r_2$};
     \node[bip R] (r3) at (3,0) {$r_3$};
-    
+
     \draw[match edge] (l1) -- (r1);
     \draw[match edge] (l2) -- (r2);
     \draw[match edge] (l3) -- (r3);
-    
+
     \draw[unmatch edge] (l1) -- (r2);
     \draw[unmatch edge] (l2) -- (r3);
     \draw[unmatch edge] (l3) -- (r1);
-    
+
     \node[bip label L] at (0,3.7) {$\mathbf{L}$};
     \node[bip label R] at (3,3.7) {$\mathbf{R}$};
 \end{tikzpicture}

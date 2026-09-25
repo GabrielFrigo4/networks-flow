@@ -1,0 +1,55 @@
+% =========================================================================
+% SEÇÃO 2: METODOLOGIA
+% =========================================================================
+\section{Metodologia}\label{sec:metodologia}
+
+\subsection{Materiais e Métodos}
+
+A metodologia da pesquisa desenvolveu-se em ciclos de fundamentação teórica, modelagem matemática, implementação computacional e experimentação empírica sistemática:
+
+\begin{enumerate}[leftmargin=1.5em, itemsep=0.15em, topsep=0.2em, parsep=0em]
+    \item \textbf{Ambiente de Software e Compilação:} As implementações foram desenvolvidas em linguagem C++23, compiladas com GCC 13+ sob nível de otimização \lstinline{-O2}. Para garantir segurança contra estouros de pilha (\textit{stack overflow}) em buscas em profundidade recursivas sobre grafos densos, fixou-se a pilha do executável em 256~MB através da flag \lstinline{-Wl,-z,stack-size=268435456};
+    \item \textbf{Estruturas de Dados e Localidade de Cache:} As redes de fluxo foram estruturadas em listas de adjacência indexadas por vetores contíguos em memória (\lstinline{std::vector}), eliminando alocações dinâmicas dispersas de nós e ponteiros e favorecendo a taxa de acertos na memória cache da CPU;
+    \item \textbf{Protocolo Experimental e Isolamento de CPU:} Os testes foram cronometrados exclusivamente durante o cálculo algorítmico por meio do relógio monotônico \lstinline{std::chrono::high_resolution_clock}, descartando o tempo de leitura de disco e parsing das instâncias;
+    \item \textbf{Bases de Teste Padronizadas (DIMACS):} Utilizaram-se as famílias de teste do \textit{First DIMACS Challenge}~\cite{Jensen2022, ahuja1993network}, geradas oficialmente pelos programas de referência de Rutgers (famílias Washington e Genrmf para fluxo máximo; família Netgen para fluxo de custo mínimo).
+\end{enumerate}
+
+\subsection{Etapas da Pesquisa e Cronograma de Atividades}
+
+As atividades planejadas no plano de trabalho da Iniciação Científica (vigência 2025/2026) foram estruturadas conforme o cronograma oficial:
+
+\begin{itemize}[leftmargin=1.5em, itemsep=0.15em, topsep=0.2em, parsep=0em]
+    \item \textbf{Atividade 1:} Estudo dos fundamentos de Otimização Combinatória e Teoria dos Grafos~\cite{cook1998combinatorial}. \textbf{[Concluída]}
+    \item \textbf{Atividade 2:} Estudo teórico do problema de fluxo máximo e algoritmos clássicos~\cite{ford1956maximal, edmonds1972theoretical, dinic1970algorithm, goldberg1988new}. \textbf{[Concluída]}
+    \item \textbf{Atividade 3:} Implementação em C++ dos algoritmos de fluxo máximo (Ford-Fulkerson, Edmonds-Karp, Dinic, Push-Relabel e Push-Relabel com Gap Heuristic). \textbf{[Concluída]}
+    \item \textbf{Atividade 4:} Estudo de técnicas de modelagem e reduções de problemas combinatórios. \textbf{[Concluída]}
+    \item \textbf{Atividade 5:} Implementação de problemas modelados (Emparelhamento Bipartido Máximo, Cobertura Mínima, Conjunto Independente e Caminhos Disjuntos). \textbf{[Concluída]}
+    \item \textbf{Atividade 6:} Elaboração do relatório de Iniciação Científica (este documento). \textbf{[Concluída]}
+    \item \textbf{Atividade 7:} Estudo teórico do problema de fluxo de custo mínimo, dualidade e condições de otimalidade por ciclos negativos e custos reduzidos~\cite{ahuja1993network}. \textbf{[Concluída]}
+    \item \textbf{Atividade 8:} Implementação em C++ dos algoritmos de custo mínimo (Cycle Canceling, Successive Shortest Path com SPFA e Dijkstra acelerado por potenciais, e \textit{Network Simplex}). \textbf{[Concluída]}
+    \item \textbf{Atividade 9:} Baterias de testes experimentais em instâncias padronizadas de larga escala (DIMACS). \textbf{[Concluída]}
+    \item \textbf{Atividade 10:} Análise comparativa de desempenho assintótico e empírico dos algoritmos implementados. \textbf{[Concluída]}
+    \item \textbf{Atividade 11:} Aplicação prática em Segmentação de Imagens e consolidação dos resultados da pesquisa. \textbf{[Concluída]}
+\end{itemize}
+
+A Figura~\ref{fig:pipeline_metodologico} ilustra o fluxo de trabalho articulado ao longo da pesquisa.
+
+\begin{figure}[!ht]
+\centering
+\resizebox{0.95\textwidth}{!}{%
+\begin{tikzpicture}[thick, node distance=0.6cm]
+  \node[stage box] (s1) at (0,0) {\textbf{1. Teoria \& Dualidade}\\Max-Flow Min-Cut\\Reduções Bipartidas\\Fluxo Custo Mínimo};
+  \node[stage box] (s2) at (3.3,0) {\textbf{2. Arquitetura C++23}\\Herança \& Polimorfismo\\\texttt{FlowNetwork}\\\texttt{CostNetwork}};
+  \node[stage box] (s3) at (6.6,0) {\textbf{3. Motores Algorítmicos}\\Edmonds-Karp, Dinic\\Push-Relabel (Heur.)\\SSP, Network Simplex};
+  \node[stage box] (s4) at (9.9,0) {\textbf{4. Certificação Cruzada}\\Consistência de Fluxo\\Dualidade Forte\\Google Test};
+  \node[stage box] (s5) at (13.2,0) {\textbf{5. Benchmarks}\\Grades 2D, Camadas\\Grafos Aleatórios\\Segmentação Imagens};
+
+  \draw[->, line width=1.5pt, blue!80!black] (s1) -- (s2);
+  \draw[->, line width=1.5pt, blue!80!black] (s2) -- (s3);
+  \draw[->, line width=1.5pt, blue!80!black] (s3) -- (s4);
+  \draw[->, line width=1.5pt, blue!80!black] (s4) -- (s5);
+\end{tikzpicture}%
+}
+\caption{Fluxo metodológico integrando fundamentação teórica, engenharia de software em C++23, validação cruzada e testes empíricos.}
+\label{fig:pipeline_metodologico}
+\end{figure}

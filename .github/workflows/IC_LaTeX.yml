@@ -26,9 +26,8 @@ jobs:
                   root_file: |
                       book.tex
                       ic.tex
-                      ic-estendido.tex
                       relatorio.tex
-                      relatorio-estendido.tex
+                      monolito.tex
                       projeto.tex
                   working_directory: LaTeX
                   extra_system_packages: "make"

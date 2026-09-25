@@ -13,7 +13,7 @@ O método organiza-se em duas etapas:
 
 \begin{enumerate}
     \item \textbf{Fase 1 --- Viabilidade Primal:} Computa-se um fluxo máximo viável de $s$ a $t$ na rede, desconsiderando os custos, via \lstinline{FlowNetwork} (Dinic ou Edmonds-Karp).
-    
+
     \item \textbf{Fase 2 --- Otimização por Cancelamento de Ciclos:} Com o fluxo máximo inicial:
     \begin{itemize}
         \item Constrói-se o digrafo residual $D_f$ com capacidades $c_f$ e custos $w_f$.

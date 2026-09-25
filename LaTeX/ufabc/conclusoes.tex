@@ -1,25 +1,22 @@
 % =========================================================================
-% CONCLUSÕES DA INICIAÇÃO CIENTÍFICA
+% SEÇÃO 6: CONCLUSÕES
 % =========================================================================
-Os resultados obtidos demonstram o cumprimento dos objetivos do projeto, articulando teoria matemática, implementação algorítmica e validação experimental em quatro eixos:
+\section{Conclusões}\label{sec:conclusoes}
 
-\begin{enumerate}
-    \item \textbf{Fundamentação Teórica:} Demonstração formal dos teoremas centrais da teoria de fluxos: Fluxo Máximo e Corte Mínimo, Integralidade de Ford-Fulkerson, Decomposição de Fluxo, Teorema de Menger (arcos e vértices), Teorema de König e as Quatro Dualidades em grafos bipartidos. No domínio de custo mínimo: condição de otimalidade por ciclos negativos de Klein, equivalência dos custos reduzidos, complementaridade de folgas e Total Unimodularidade da matriz de incidência.
+Os resultados obtidos demonstram o cumprimento integral dos objetivos do plano de trabalho, articulando teoria matemática, engenharia de software em C++23 e validação experimental:
 
-    \item \textbf{Arquitetura em C++23:} Desenvolvimento de classes organizadas em duas famílias polimórficas:
-    \begin{itemize}
-\ifapendicecodigo
-        \item \textbf{Família \lstinline{FlowNetwork} (Fluxo Máximo):} Centralizada na classe base abstrata \lstinline{FlowNetwork} e implementada pelos algoritmos \lstinline{FordFulkerson}, \lstinline{EdmondsKarp}, \lstinline{Dinic}, \lstinline{PushRelabel} (FIFO) e \lstinline{PushRelabelImproved} (Gap Heuristic), documentados nos Apêndices~\ref{ap:flownetwork} a~\ref{ap:push_relabel_improved}.
-        \item \textbf{Família \lstinline{CostNetwork} (Custo Mínimo):} Centralizada na classe base abstrata \lstinline{CostNetwork} e implementada pelos algoritmos \lstinline{CycleCanceling}, \lstinline{SuccessiveShortest} (SPFA), \lstinline{SuccessiveShortestDijkstra} (Potenciais) e \lstinline{NetworkSimplex}, documentados nos Apêndices~\ref{ap:costnetwork} a~\ref{ap:network_simplex}.
-\else
-        \item \textbf{Família \lstinline{FlowNetwork} (Fluxo Máximo):} Classes \lstinline{FordFulkerson}, \lstinline{EdmondsKarp}, \lstinline{Dinic}, \lstinline{PushRelabel} (FIFO) e \lstinline{PushRelabelImproved} (Gap Heuristic).
-        \item \textbf{Família \lstinline{CostNetwork} (Custo Mínimo):} Classes \lstinline{CycleCanceling}, \lstinline{SuccessiveShortest} (SPFA), \lstinline{SuccessiveShortestDijkstra} (Potenciais) e \lstinline{NetworkSimplex}.
-\fi
+\begin{enumerate}[leftmargin=1.5em, itemsep=0.2em, topsep=0.2em, parsep=0em]
+    \item \textbf{Fundamentação Teórica:} Demonstração formal dos teoremas centrais da teoria de fluxos: Fluxo Máximo e Corte Mínimo, Integralidade de Ford-Fulkerson, Decomposição de Fluxo, Teorema de Menger (arcos e vértices), Teorema de König e as Quatro Dualidades em grafos bipartidos. No domínio de custo mínimo: condição de otimalidade por ciclos negativos de Klein, equivalência dos custos reduzidos sob potenciais nodais, complementaridade de folgas KKT e Total Unimodularidade da matriz de incidência;
+
+    \item \textbf{Arquitetura em C++23:} Desenvolvimento de classes organizadas em duas famílias polimórficas com representação de adjacência contígua e reversão em $\mathcal{O}(1)$:
+    \begin{itemize}[leftmargin=1.5em, itemsep=0.1em, topsep=0.1em, parsep=0em]
+        \item \textbf{Família \lstinline{FlowNetwork} (Fluxo Máximo):} Centralizada na classe base abstrata \lstinline{FlowNetwork} e implementada pelos algoritmos \lstinline{FordFulkerson}, \lstinline{EdmondsKarp}, \lstinline{Dinic}, \lstinline{PushRelabel} (FIFO) e \lstinline{PushRelabelImproved} (Gap Heuristic), documentados nos Apêndices~\ref{ap:flownetwork} a~\ref{ap:push_relabel_improved};
+        \item \textbf{Família \lstinline{CostNetwork} (Custo Mínimo):} Centralizada na classe base abstrata \lstinline{CostNetwork} e implementada pelos algoritmos \lstinline{CycleCanceling}, \lstinline{SuccessiveShortest} (SPFA), \lstinline{SuccessiveShortestDijkstra} (Potenciais) e \lstinline{NetworkSimplex}, documentados nos Apêndices~\ref{ap:costnetwork} a~\ref{ap:network_simplex};
     \end{itemize}
 
-    \item \textbf{Reduções Combinatórias e Aplicações:} Resolução de problemas clássicos (\textit{Maximum Bipartite Matching}, \textit{Minimum Vertex Cover}, \textit{Maximum Independent Set}, caminhos disjuntos e desconexão de redes) e implementação de \textbf{Segmentação Interativa de Imagens} baseada em corte mínimo via corte de grafos (\textit{Graph Cuts}).
+    \item \textbf{Reduções Combinatórias e Aplicações:} Resolução de problemas clássicos (\textit{Maximum Bipartite Matching}, \textit{Minimum Vertex Cover}, \textit{Maximum Independent Set}, caminhos disjuntos e desconexão de redes) e implementação de \textbf{Segmentação Interativa de Imagens} baseada em corte mínimo via corte de grafos (\textit{Graph Cuts});
 
-    \item \textbf{Avaliação Experimental:} Protocolo experimental com instâncias da literatura (DIMACS) e geradores sintéticos, utilizando isolamento de tempo de CPU e validação cruzada entre os algoritmos implementados.
+    \item \textbf{Avaliação Experimental:} Protocolo experimental com instâncias da literatura (DIMACS Washington, Genrmf e Netgen), utilizando isolamento estrito de tempo de CPU e validação cruzada com 100\% de concordância entre os algoritmos implementados.
 \end{enumerate}
 
-Como trabalhos futuros, destacam-se a avaliação empírica sobre instâncias de grande escala, a análise de diferentes regras de pivoteamento no \textit{Network Simplex} (como \textit{Candidate List Pricing}) e a preparação de artigo científico com a síntese dos resultados.
+Como trabalhos futuros, destacam-se a avaliação empírica sobre instâncias esparsas massivas, a análise de diferentes regras de pivoteamento no \textit{Network Simplex} (como \textit{Candidate List Pricing}) e a preparação de artigo científico com a síntese dos resultados.

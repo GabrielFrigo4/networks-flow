@@ -98,30 +98,30 @@ Redes com múltiplas fontes $s_1, \ldots, s_k$ e sumidouros $t_1, \ldots, t_m$ r
     \node[source node] (ss) at (0, 0) {$s^*$};
     \node[flow node, fill=green!10] (s1) at (2, 1.5) {$s_1$};
     \node[flow node, fill=green!10] (s2) at (2, -1.5) {$s_2$};
-    
+
     \node[flow node] (v1) at (4, 1.5) {$v_1$};
     \node[flow node] (v2) at (4, -1.5) {$v_2$};
     \node[flow node] (v3) at (5.5, 0) {$v_3$};
-    
+
     \node[flow node, fill=red!10] (t1) at (7, 1.5) {$t_1$};
     \node[flow node, fill=red!10] (t2) at (7, -1.5) {$t_2$};
-    
+
     \node[sink node] (ts) at (9, 0) {$t^*$};
-    
+
     \draw[->, dashed, blue, line width=1.2pt] (ss) -- node[above left, font=\footnotesize] {$\infty$} (s1);
     \draw[->, dashed, blue, line width=1.2pt] (ss) -- node[below left, font=\footnotesize] {$\infty$} (s2);
-    
+
     \draw[flow edge] (s1) -- (v1);
     \draw[flow edge] (s1) -- (v3);
     \draw[flow edge] (s2) -- (v2);
     \draw[flow edge] (s2) -- (v3);
-    
+
     \draw[flow edge] (v1) -- (t1);
     \draw[flow edge] (v1) -- (v3);
     \draw[flow edge] (v3) -- (t1);
     \draw[flow edge] (v3) -- (t2);
     \draw[flow edge] (v2) -- (t2);
-    
+
     \draw[->, dashed, red, line width=1.2pt] (t1) -- node[above right, font=\footnotesize] {$\infty$} (ts);
     \draw[->, dashed, red, line width=1.2pt] (t2) -- node[below right, font=\footnotesize] {$\infty$} (ts);
 \end{tikzpicture}
@@ -147,7 +147,7 @@ Na implementação, a chamada \lstinline{add_edge(u, v, c, c)} inicializa ambos 
     \node[trans node] (v) at (3, 0) {$v$};
     \draw[-] (u) -- node[above, font=\footnotesize] {$c$} (v);
   \end{scope}
-  
+
   \begin{scope}[shift={(6,0)}]
     \tikzsubcaption{(1.5,1.5)}{(b) Arcos Direcionados}
     \node[trans node] (u2) at (0, 0) {$u$};

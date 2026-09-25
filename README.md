@@ -13,20 +13,19 @@
 
 [![Baixar Livro (Monografia)][baixar_pdf_book_icon]][baixar_pdf_book] [![Baixar PDF do Projeto][baixar_pdf_projeto_icon]][baixar_pdf_projeto]
 
-[![Baixar PDF do Relatório][baixar_pdf_relatorio_icon]][baixar_pdf_relatorio] [![Baixar PDF do Relatório Estendido][baixar_pdf_relatorio_est_icon]][baixar_pdf_relatorio_est]
+[![Baixar PDF do Relatório][baixar_pdf_relatorio_icon]][baixar_pdf_relatorio] [![Baixar PDF do Monólito][baixar_pdf_monolito_icon]][baixar_pdf_monolito]
 
-[![Baixar PDF da IC][baixar_pdf_ic_icon]][baixar_pdf_ic] [![Baixar PDF da IC Estendida][baixar_pdf_ic_est_icon]][baixar_pdf_ic_est]
+[![Baixar PDF da IC][baixar_pdf_ic_icon]][baixar_pdf_ic]
 
 A documentação oficial da pesquisa é gerada a partir dos códigos-fonte em LaTeX disponíveis na pasta [`LaTeX/`](./LaTeX/). A tabela a seguir detalha a finalidade de cada documento e as diferenças entre eles:
 
-| PDF Gerado                                                        | Arquivo Fonte                                                        | Descrição e Diferenças                                                                                                                                                                                                                                                                                      |
-| :---------------------------------------------------------------- | :------------------------------------------------------------------- | :---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| [📗&nbsp;**`book.pdf`**][baixar_pdf_book]                         | [🖋️&nbsp;`book.tex`](./LaTeX/book.tex)                               | **Livro e Monografia Independente.** Documento completo e denso estruturado editorialmente em Partes e Capítulos para estudo profundo e distribuição aberta, livre da formatação burocrática de Iniciação Científica.                                                                                       |
-| [📘&nbsp;**`projeto.pdf`**][baixar_pdf_projeto]                   | [🖋️&nbsp;`projeto.tex`](./LaTeX/projeto.tex)                         | Proposta e plano de trabalho inicial do projeto de pesquisa, submetido para a avaliação do edital.                                                                                                                                                                                                          |
-| [📙&nbsp;**`relatorio.pdf`**][baixar_pdf_relatorio]               | [🖋️&nbsp;`relatorio.tex`](./LaTeX/relatorio.tex)                     | Relatório formal de acompanhamento da pesquisa. Contém a capa oficial institucional da UFABC com identificação do edital e campos de assinaturas. **Versão executiva (20 páginas)**, adequada ao limite estrito do edital.                                                                                  |
-| [📙&nbsp;**`relatorio‑estendido.pdf`**][baixar_pdf_relatorio_est] | [🖋️&nbsp;`relatorio‑estendido.tex`](./LaTeX/relatorio-estendido.tex) | Relatório formal de acompanhamento da pesquisa com capa institucional e folha de assinaturas da UFABC. **Versão estendida (~48 páginas)**, incluindo todos os apêndices computacionais com o código-fonte C++23 integral.                                                                                   |
-| [📕&nbsp;**`ic.pdf`**][baixar_pdf_ic]                             | [🖋️&nbsp;`ic.tex`](./LaTeX/ic.tex)                                   | Documento principal compilando todo o conteúdo técnico da pesquisa. **Possui exatamente o mesmo conteúdo textual do `relatorio.tex`**, diferindo apenas por **não ter a capa formal do relatório** (folha de assinaturas), oferecendo uma formatação limpa para leitura. **Versão executiva (20 páginas)**. |
-| [📕&nbsp;**`ic‑estendido.pdf`**][baixar_pdf_ic_est]               | [🖋️&nbsp;`ic‑estendido.tex`](./LaTeX/ic-estendido.tex)               | Documento técnico com formatação limpa para leitura (sem a folha de assinaturas). **Versão estendida (~48 páginas)**, contendo o relatório completo acompanhado de todos os apêndices computacionais com as implementações em C++23.                                                                        |
+| PDF Gerado                                          | Arquivo Fonte                                    | Descrição e Diferenças                                                                                                                                                                                                                    |
+| :-------------------------------------------------- | :----------------------------------------------- | :---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [📗&nbsp;**`book.pdf`**][baixar_pdf_book]           | [🖋️&nbsp;`book.tex`](./LaTeX/book.tex)           | **Livro e Monografia Independente.** Documento completo e denso estruturado editorialmente em Partes e Capítulos para estudo profundo e distribuição aberta, livre da formatação burocrática de Iniciação Científica.                     |
+| [📘&nbsp;**`projeto.pdf`**][baixar_pdf_projeto]     | [🖋️&nbsp;`projeto.tex`](./LaTeX/projeto.tex)     | Proposta e plano de trabalho inicial do projeto de pesquisa, submetido para a avaliação do edital.                                                                                                                                        |
+| [📙&nbsp;**`relatorio.pdf`**][baixar_pdf_relatorio] | [🖋️&nbsp;`relatorio.tex`](./LaTeX/relatorio.tex) | Relatório formal de acompanhamento da pesquisa com capa institucional e folha de assinaturas da UFABC. Contém o corpo textual (~14 páginas) e todos os apêndices computacionais com o código-fonte C++23 integral (~48 páginas no total). |
+| [📕&nbsp;**`ic.pdf`**][baixar_pdf_ic]               | [🖋️&nbsp;`ic.tex`](./LaTeX/ic.tex)               | Documento principal com formatação limpa para leitura (sem a folha de assinaturas), contendo o relatório completo acompanhado de todos os apêndices computacionais em C++23 (~47 páginas).                                                |
+| [📄&nbsp;**`monolito.pdf`**][baixar_pdf_monolito]   | [🖋️&nbsp;`monolito.tex`](./LaTeX/monolito.tex)   | Versão em arquivo único compilável autossuficiente (sem `\input`), idêntica ao relatório formal, ideal para edição direta e compartilhamento na plataforma Overleaf (~48 páginas).                                                        |
 
 ---
 
@@ -221,7 +220,7 @@ Caso prefira realizar a configuração manualmente via terminal:
 > [!NOTE]
 > Este repositório conta com integração contínua (CI) através do **GitHub Actions** (`.github/workflows/`). A cada _push_, os PDFs são compilados automaticamente na nuvem e disponibilizados nas [Releases do GitHub](https://github.com/GabrielFrigo4/IC_Networks_Flow/releases).
 
-Caso queira gerar qualquer um dos PDFs (`book.pdf`, `ic.pdf`, `relatorio.pdf` ou `projeto.pdf`) localmente:
+Caso queira gerar qualquer um dos PDFs (`book.pdf`, `ic.pdf`, `relatorio.pdf`, `monolito.pdf` ou `projeto.pdf`) localmente:
 
 1. Certifique-se de ter uma distribuição LaTeX instalada (como TeX Live, MiKTeX ou MacTeX) com suporte aos pacotes requeridos (`amsmath`, `tikz`, `geometry`, etc.).
 
@@ -236,6 +235,7 @@ cd LaTeX
 make book
 make ic
 make relatorio
+make monolito
 make projeto
 make clean
 ```
@@ -262,12 +262,10 @@ make clean
 [baixar_pdf_book_icon]: https://img.shields.io/badge/Livro-Baixar-2ea44f?style=for-the-badge&logo=gitbook&logoColor=white
 [baixar_pdf_ic]: https://github.com/GabrielFrigo4/IC_Networks_Flow/releases/latest/download/ic.pdf
 [baixar_pdf_ic_icon]: https://img.shields.io/badge/IC-Baixar-cf222e?style=for-the-badge&logo=googledocs&logoColor=white
-[baixar_pdf_ic_est]: https://github.com/GabrielFrigo4/IC_Networks_Flow/releases/latest/download/ic-estendido.pdf
-[baixar_pdf_ic_est_icon]: https://img.shields.io/badge/IC_Estendida-Baixar-991b1b?style=for-the-badge&logo=googledocs&logoColor=white
 [baixar_pdf_relatorio]: https://github.com/GabrielFrigo4/IC_Networks_Flow/releases/latest/download/relatorio.pdf
 [baixar_pdf_relatorio_icon]: https://img.shields.io/badge/Relatório-Baixar-d97706?style=for-the-badge&logo=googledocs&logoColor=white
-[baixar_pdf_relatorio_est]: https://github.com/GabrielFrigo4/IC_Networks_Flow/releases/latest/download/relatorio-estendido.pdf
-[baixar_pdf_relatorio_est_icon]: https://img.shields.io/badge/Relatório_Estendido-Baixar-b45309?style=for-the-badge&logo=googledocs&logoColor=white
+[baixar_pdf_monolito]: https://github.com/GabrielFrigo4/IC_Networks_Flow/releases/latest/download/monolito.pdf
+[baixar_pdf_monolito_icon]: https://img.shields.io/badge/Monólito-Baixar-8b5cf6?style=for-the-badge&logo=latex&logoColor=white
 [download_speed]: https://cses.fi/problemset/task/1694
 [school_dance]: https://cses.fi/problemset/task/1696
 [distinct_routes]: https://cses.fi/problemset/task/1711

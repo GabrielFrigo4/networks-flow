@@ -7,7 +7,7 @@ MAKEFLAGS += --no-print-directory -s
 # Makefile: Network Flow Research Suite
 # ----------------------------------------------------------------
 
-.PHONY: help all latex book apps impl exp dimacs bench bench-tables bench-plots format test setup clean clean-results sync-code
+.PHONY: help all latex book relatorio ic monolito apps impl exp dimacs bench bench-tables bench-plots format test setup clean clean-results sync-code
 
 all: help
 
@@ -23,6 +23,9 @@ help:
 	sec "Fluxos de Compilação:"; \
 	cmd "latex"          "Compila todos os documentos da suíte LaTeX"; \
 	cmd "book"           "Compila especificamente a monografia do livro"; \
+	cmd "relatorio"      "Compila o relatório formal da UFABC (relatorio.pdf)"; \
+	cmd "ic"             "Compila o texto da IC com leitura limpa (ic.pdf)"; \
+	cmd "monolito"       "Gera e compila o monólito para Overleaf (monolito.pdf)"; \
 	cmd "apps"           "Compila e executa as aplicações reais de fluxo"; \
 	cmd "impl"           "Compila a biblioteca de algoritmos e problemas"; \
 	cmd "exp"            "Compila e executa os benchmarks e experimentos"; \
@@ -55,8 +58,18 @@ latex:
 book:
 	$(MAKE) -C LaTeX book
 
+relatorio:
+	$(MAKE) -C LaTeX relatorio
+
+ic:
+	$(MAKE) -C LaTeX ic
+
+monolito:
+	$(MAKE) -C LaTeX monolito
+
 sync-code:
 	python3 Scripts/sync_listings.py
+	python3 Scripts/build_monolith.py
 
 apps:
 	$(MAKE) -C Aplicações all

@@ -90,12 +90,12 @@ Assuma como hipótese que qualquer submatriz quadrada de ordem $k-1$ possua dete
 
 \begin{enumerate}
     \item \textbf{Existe coluna identicamente nula em $M$:} $\det(M) = 0 \in \{-1, 0, +1\}$.
-    
+
     \item \textbf{Existe coluna com exatamente um elemento não nulo:} \\
     Seja a $j$-ésima coluna contendo apenas $M_{i,j} \in \{-1, +1\}$ na linha $i$. Pela expansão de Laplace por cofatores:
     $$\det(M) = M_{i,j} \cdot (-1)^{i+j} \cdot \det(M_{i,j})$$
     onde $M_{i,j}$ é de ordem $k-1$. Por hipótese de indução, $\det(M_{i,j}) \in \{-1, 0, +1\}$, logo $\det(M) \in \{-1, 0, +1\}$.
-    
+
     \item \textbf{Todas as colunas possuem exatamente dois elementos não nulos:} \\
     Cada coluna contém exatamente um $+1$ e um $-1$. Somando todas as linhas de $M$, a soma em cada coluna anula-se:
     $$\sum_{i=1}^k M_{i,j} = (+1) + (-1) = 0, \quad \forall\, j \in \{1, \dots, k\}$$

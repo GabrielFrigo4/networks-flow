@@ -1,0 +1,2591 @@
+% =========================================================================
+% RELATÓRIO DE INICIAÇÃO CIENTÍFICA (MONÓLITO AUTOCONTIDO PARA OVERLEAF)
+% Gerado automaticamente a partir de LaTeX/relatorio.tex via Scripts/build_monolith.py
+% =========================================================================
+
+% =========================================================================
+% RELATÓRIO DE INICIAÇÃO CIENTÍFICA (COM CAPA INSTITUCIONAL UFABC)
+% =========================================================================
+\documentclass[12pt,a4paper]{article}
+
+\usepackage{geometry}
+\geometry{
+    a4paper,
+    margin=2cm,
+    headheight=15pt
+}
+% =========================================================================
+% CABEÇALHO UNIFICADO E DESIGN SYSTEM (NETWORKS FLOW)
+% =========================================================================
+
+% =========================================================================
+% PACOTES FUNDAMENTAIS
+% =========================================================================
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{bm}
+\usepackage{enumitem}
+\usepackage{mathtools}
+\usepackage{lipsum}
+\usepackage[brazilian]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[pdftex]{graphicx}
+\usepackage{color}
+\usepackage{xcolor}
+\usepackage{colortbl}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta, calc, positioning, decorations.markings}
+\usepackage{verbatim}
+\usepackage[hyphens]{url}
+\usepackage{longtable}
+\usepackage{booktabs}
+\usepackage[section]{placeins}
+\usepackage{listings}
+\usepackage{helvet}
+\renewcommand{\familydefault}{\sfdefault}
+\usepackage{fancyhdr}
+
+\newif\ifapendiceteorico
+\apendiceteoricofalse
+\newif\ifapendicecodigo
+\apendicecodigotrue
+
+\fancypagestyle{textual}{%
+    \fancyhf{}%
+    \fancyhead[L]{\small\textsf{\nouppercase{\leftmark}}}%
+    \fancyhead[R]{\small\textsf{\textbf{\thepage}}}%
+    \fancyfoot{}%
+    \renewcommand{\headrulewidth}{0.4pt}%
+    \renewcommand{\footrulewidth}{0pt}%
+}
+
+\fancypagestyle{plain}{%
+    \fancyhf{}%
+    \fancyhead[R]{\small\textsf{\textbf{\thepage}}}%
+    \fancyfoot{}%
+    \renewcommand{\headrulewidth}{0pt}%
+    \renewcommand{\footrulewidth}{0pt}%
+}
+
+\usepackage{titlesec}
+\usepackage{setspace}
+\usepackage[plainpages=false,pdfpagelabels]{hyperref}
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue!80!black,
+    citecolor=green!50!black,
+    urlcolor=blue!60!black
+}
+
+% =========================================================================
+% LISTAGENS DE CÓDIGO-FONTE C++ (LISTINGS)
+% =========================================================================
+
+% -------------------------------------------------------------------------
+% Paleta de Cores de Sintaxe
+% -------------------------------------------------------------------------
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.9,0.9,0.9}
+
+% -------------------------------------------------------------------------
+% Configurações Globais do Listings
+% -------------------------------------------------------------------------
+\lstset{
+    language=C++,
+    basicstyle=\ttfamily\small,
+    tabsize=4,
+    keepspaces=true,
+    columns=fullflexible,
+    lineskip=-2pt,
+    backgroundcolor=\color{backcolour},
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{blue}\bfseries,
+    stringstyle=\color{codepurple},
+    deletestring={[b]'},
+    numbers=left,
+    numberstyle=\tiny\color{codegray},
+    numbersep=6pt,
+    breaklines=true,
+    breakatwhitespace=false,
+    showspaces=false,
+    showstringspaces=false,
+    showtabs=false,
+    frame=single,
+    rulecolor=\color{black},
+    captionpos=b
+}
+
+% =========================================================================
+% ESTRUTURAS SEMÂNTICAS, TEOREMAS E DEFINIÇÕES
+% =========================================================================
+\newtheorem{prop}{Proposição}
+
+% -------------------------------------------------------------------------
+% Definições Formais
+% -------------------------------------------------------------------------
+\newcounter{definicao}
+\renewcommand{\thedefinicao}{\arabic{definicao}}
+\NewDocumentEnvironment{definicao}{o o}{%
+    \par\addvspace{0.8\baselineskip}\noindent
+    \refstepcounter{definicao}%
+    \IfValueT{#2}{\label{#2}}%
+    \textbf{Definição~\thedefinicao\IfValueT{#1}{ (#1)}}.%
+    \space
+}{%
+    \par\addvspace{0.5\baselineskip}
+}
+
+% -------------------------------------------------------------------------
+% Teoremas e Demonstrações
+% -------------------------------------------------------------------------
+\newcounter{teorema}
+\renewcommand{\theteorema}{\arabic{teorema}}
+\NewDocumentEnvironment{teorema}{o o}{%
+    \par\addvspace{0.8\baselineskip}\noindent
+    \refstepcounter{teorema}%
+    \IfValueT{#2}{\label{#2}}%
+    \textbf{Teorema~\theteorema\IfValueT{#1}{ (#1)}}.%
+    \space\itshape
+}{%
+    \par\addvspace{0.5\baselineskip}
+}
+
+\NewDocumentEnvironment{demonstracao}{}{%
+    \par\noindent\textbf{Demonstração.}\space
+}{%
+    \hfill $\blacksquare$\par\addvspace{0.5\baselineskip}
+}
+
+% -------------------------------------------------------------------------
+% Macros Conceituais e Auxiliares
+% -------------------------------------------------------------------------
+\newcommand{\intuicao}[1]{\paragraph{Intuição #1.}}
+\newcommand{\implicacoes}[1]{\paragraph{Implicações Estratégicas #1.}}
+\newcommand{\sa}{\text{s.a.}\quad}
+
+% =========================================================================
+% PALETA CROMÁTICA SEMÂNTICA (DESIGN SYSTEM)
+% =========================================================================
+
+% -------------------------------------------------------------------------
+% Partições S e T
+% -------------------------------------------------------------------------
+\definecolor{setSborder}{RGB}{22, 101, 52}     % [COR] Borda e contorno estrutural de S (Emerald 800)
+\definecolor{setStext}{RGB}{20, 83, 45}        % [COR] Tipografia de alto contraste para rótulos de S (Emerald 900)
+\definecolor{setSsource}{RGB}{187, 247, 208}   % [COR] Fundo luminoso para vértice fonte s e sementes (Emerald 200)
+\definecolor{setSnode}{RGB}{220, 252, 231}     % [COR] Fundo pastel para vértices internos de S (Emerald 100)
+\colorlet{setSbg}{green!10}                    % [COR] Fundo pastel suave para região de S / Foreground
+
+\definecolor{setTborder}{RGB}{190, 18, 60}     % [COR] Borda e contorno estrutural de T (Rose 700)
+\definecolor{setTtext}{RGB}{159, 18, 57}        % [COR] Tipografia de alto contraste para rótulos de T (Rose 900)
+\definecolor{setTsink}{RGB}{254, 205, 211}     % [COR] Fundo luminoso para vértice sumidouro t e sementes (Rose 200)
+\definecolor{setTnode}{RGB}{255, 228, 230}     % [COR] Fundo pastel para vértices internos de T (Rose 100)
+\colorlet{setTbg}{red!10}                      % [COR] Fundo pastel suave para região de T / Background
+
+% -------------------------------------------------------------------------
+% Fronteira de Corte e Elementos Neutros
+% -------------------------------------------------------------------------
+\definecolor{cutviolet}{RGB}{109, 40, 217}     % [COR] Violeta imperial para fronteira e arestas do corte mínimo
+\definecolor{cutred}{RGB}{225, 29, 72}          % [COR] Vermelho rubro padrão para fronteira de corte mínimo
+\definecolor{darkslate}{RGB}{30, 41, 59}        % [COR] Slate escuro para tipografia e arestas neutras
+
+% -------------------------------------------------------------------------
+% Cores da Capa e Cards
+% -------------------------------------------------------------------------
+\definecolor{topbg}{RGB}{15, 23, 42}           % [COR] Slate 900 profundo da divisória da capa
+\definecolor{bottombg}{RGB}{248, 250, 252}     % [COR] Fundo inferior: Papel Neve (Slate 50)
+\definecolor{accentgold}{RGB}{226, 192, 116}   % [COR] Dourado nobre metálico
+\definecolor{accentcyan}{RGB}{14, 165, 233}    % [COR] Azul ciano vibrante
+\definecolor{cardbg}{RGB}{224, 232, 242}       % [COR] Fundo do card do grafo
+\definecolor{cardborder}{RGB}{186, 202, 220}   % [COR] Borda do card do grafo
+
+% -------------------------------------------------------------------------
+% Aliases de Compatibilidade para a Paleta Semântica
+% -------------------------------------------------------------------------
+\colorlet{scyan}{setSborder}
+\colorlet{scyanbg}{setSnode}
+\colorlet{ssourcebg}{setSsource}
+\colorlet{tgold}{setTborder}
+\colorlet{tgoldbg}{setTnode}
+\colorlet{tsinkbg}{setTsink}
+
+% =========================================================================
+% BIBLIOTECA DE ESTILOS GRÁFICOS (TIKZ)
+% =========================================================================
+\newcommand{\tikzsubcaption}[2]{\node[font=\footnotesize\bfseries, above] at #1 {#2};}
+
+\tikzset{
+    >=Stealth,
+    % ---------------------------------------------------------------------
+    % Redes de Fluxo e Otimização
+    % ---------------------------------------------------------------------
+    flow node/.style={circle, draw, fill=white, minimum size=8.5mm, inner sep=1pt, font=\small},
+    source node/.style={flow node, draw=setSborder, fill=setSsource, text=setStext, line width=1.1pt},
+    sink node/.style={flow node, draw=setTborder, fill=setTsink, text=setTtext, line width=1.1pt},
+    s node internal/.style={flow node, draw=setSborder!80, fill=setSnode, text=setStext, line width=0.9pt},
+    t node internal/.style={flow node, draw=setTborder!80, fill=setTnode, text=setTtext, line width=0.9pt},
+    trans node/.style={flow node, fill=yellow!15},
+    flow edge/.style={->, thick},
+    sat edge/.style={->, line width=1.5pt, cutviolet},
+    res edge/.style={->, blue, dashed},
+    rev edge/.style={->, red, dashed, line width=1.1pt},
+    cut S/.style={dashed, draw=setSborder, fill=setSbg, rounded corners, thick},
+    cut T/.style={dashed, draw=setTborder, fill=setTbg, rounded corners, thick},
+    % ---------------------------------------------------------------------
+    % Rótulos de Partição e Legendas
+    % ---------------------------------------------------------------------
+    cut label S/.style={font=\footnotesize\bfseries, text=setStext, anchor=north west},
+    cut label T/.style={font=\footnotesize\bfseries, text=setTtext, anchor=north east},
+    bip label L/.style={font=\large\bfseries, blue!80!black},
+    bip label R/.style={font=\large\bfseries, orange!80!black},
+    % ---------------------------------------------------------------------
+    % Network Simplex e Árvores de Base
+    % ---------------------------------------------------------------------
+    tree edge/.style={->, line width=1.8pt, blue!80!black},
+    nontree edge/.style={->, gray, dashed},
+    pivot enter/.style={->, red, dashed, line width=1.5pt},
+    pivot leave/.style={->, gray, dashed, line width=1.2pt},
+    % ---------------------------------------------------------------------
+    % Grafos em Camadas e Distâncias
+    % ---------------------------------------------------------------------
+    active node/.style={flow node, fill=yellow!30},
+    gap node/.style={flow node, fill=orange!40},
+    layer line/.style={gray!40, dashed},
+    % ---------------------------------------------------------------------
+    % Grafos Bipartidos e Emparelhamento
+    % ---------------------------------------------------------------------
+    bip L/.style={circle, draw, fill=blue!15, minimum size=7.5mm, inner sep=1pt, font=\small},
+    bip R/.style={circle, draw, fill=orange!15, minimum size=7.5mm, inner sep=1pt, font=\small},
+    cover node/.style={double, double distance=1.2pt},
+    match edge/.style={-, line width=1.8pt, blue!80!black},
+    unmatch edge/.style={-, gray},
+    % ---------------------------------------------------------------------
+    % Segmentação de Imagens e Caixas Conceituais
+    % ---------------------------------------------------------------------
+    pixel node/.style={circle, draw, fill=white, minimum size=8mm, font=\footnotesize},
+    nlink/.style={-, thick},
+    tlink s/.style={->, green!60!black, dashed},
+    tlink t/.style={->, red!70!black, dashed},
+    concept box/.style={draw, rounded corners=4pt, minimum height=1.4cm, align=center, font=\small},
+    legend node/.style={circle, draw, minimum size=4mm, inner sep=0pt},
+    % ---------------------------------------------------------------------
+    % Rótulos Padronizados para Arestas
+    % ---------------------------------------------------------------------
+    edge lbl/.style={font=\footnotesize, fill=white, inner sep=1.2pt, pos=0.5},
+    edge lbl sloped/.style={edge lbl, sloped},
+    edge lbl above/.style={edge lbl sloped, above=2.8pt},
+    edge lbl below/.style={edge lbl sloped, below=2.8pt},
+    edge lbl right/.style={edge lbl, right=3pt},
+    edge lbl left/.style={edge lbl, left=3pt},
+    edge lbl above norm/.style={edge lbl, above=3pt},
+    edge lbl below norm/.style={edge lbl, below=3pt},
+    edge lbl green/.style={font=\footnotesize, fill=green!10, inner sep=1.2pt, pos=0.5},
+    edge lbl red/.style={font=\footnotesize, fill=red!10, inner sep=1.2pt, pos=0.5},
+    stage box/.style={draw=blue!80!black, fill=blue!5, rounded corners=4pt, line width=1pt, align=center, font=\footnotesize, minimum height=1.4cm, text width=2.4cm},
+    main/.style={flow node},
+    % ---------------------------------------------------------------------
+    % Pílulas da Capa e Badges
+    % ---------------------------------------------------------------------
+    cover badge/.style={
+        draw,
+        rounded corners=3pt,
+        fill=topbg!95,
+        font=\fontsize{7.5}{9.5}\selectfont\bfseries,
+        minimum height=0.48cm,
+        text height=5.2pt,
+        text depth=0pt,
+        inner xsep=6pt,
+        inner ysep=0pt,
+        align=center
+    },
+    card badge/.style={
+        draw,
+        rounded corners=3.5pt,
+        fill=white,
+        font=\fontsize{7.5}{9.5}\selectfont\bfseries,
+        minimum height=0.52cm,
+        text height=5.8pt,
+        text depth=1.2pt,
+        inner xsep=8pt,
+        inner ysep=0pt,
+        align=center
+    }
+}
+
+% =========================================================================
+% OPERADORES MATEMÁTICOS E MACROS AUXILIARES
+% =========================================================================
+\DeclareMathOperator{\ccap}{cap}                  % [OPERADOR] Capacidade de corte funcional: cap(S,T)
+\DeclareMathOperator{\cost}{custo}                % [OPERADOR] Custo total de um fluxo: custo(f)
+\DeclareMathOperator{\dist}{dist}                 % [OPERADOR] Distância em caminhos mínimos: dist(u,v)
+
+\newcommand{\cred}[2][]{\bar{w}_{#1}(#2)}         % [NOTACAO] Custo reduzido: \cred[\pi]{u,v}
+\newcommand{\cres}[2][f]{c_{#1}(#2)}              % [NOTACAO] Capacidade residual: \cres{u,v}
+\newcommand{\Dres}[1][f]{D_{#1}}                  % [NOTACAO] Digrafo residual: \Dres
+\newcommand{\code}[1]{\lstinline{#1}}             % [MACRO] Código inline ergonômico
+\newcommand{\bannertext}[1]{\textbf{\textsf{#1}}} % [MACRO] Cabeçalho destacado de tabela
+
+
+\begin{document}
+\setlength{\emergencystretch}{3em}
+\onehalfspacing
+% =========================================================================
+% CAPA INSTITUCIONAL UFABC E TERMO DE HOMOLOGAÇÃO
+% =========================================================================
+\thispagestyle{empty}
+
+\begin{center}
+    {\large\textbf{FUNDAÇÃO UNIVERSIDADE FEDERAL DO ABC}}\\[0.15cm]
+    {\large\textbf{CENTRO DE MATEMÁTICA, COMPUTAÇÃO E COGNIÇÃO}}\\[0.15cm]
+    {\textbf{PRÓ-REITORIA DE PESQUISA --- PROPES}}\\[0.1cm]
+    {\small\textbf{PROGRAMA INSTITUCIONAL DE INICIAÇÃO CIENTÍFICA (PIBIC / CNPq)}}\\[0.1cm]
+    {\footnotesize Edital 01/2025 --- PIC/PIBIC/PIBITI/PIBIC-AF}
+\end{center}
+
+\vspace{1.0cm}
+
+\begin{center}
+    {\LARGE\textbf{Problemas de Fluxos em Redes:}}\\[0.3cm]
+    {\Large\textbf{Teoria, Algoritmos e Implementações}}\par
+\end{center}
+
+\vspace{0.8cm}
+
+\begin{flushright}
+\begin{minipage}{0.6\textwidth}
+\small
+\setstretch{1.15}
+\textbf{Relatório Final de Iniciação Científica} apresentado à Pró-Reitoria de Pesquisa da Fundação Universidade Federal do ABC (UFABC), como requisito de conclusão das atividades de pesquisa do Edital 01/2025.\par
+\vspace{0.3cm}
+\textbf{Pesquisador:} Gabriel Frigo\\
+\textbf{Orientadora:} Profa. Dra. Cristiane Maria Sato\\
+\textbf{Área de Conhecimento:} Ciência da Computação / Matemática Discreta
+\end{minipage}
+\end{flushright}
+
+\vspace{0.8cm}
+
+\begin{center}
+\small
+\setstretch{1.15}
+\begin{tabular}{|p{0.32\textwidth}|p{0.60\textwidth}|}
+\hline
+\textbf{Título do Projeto:} & Problemas de Fluxos em Redes: Teoria, Algoritmos e Implementações \\ \hline
+\textbf{Edital Vinculado:} & Edital 01/2025 PIC/PIBIC/PIBITI/PIBIC-AF \\ \hline
+\textbf{Discente Pesquisador:} & Gabriel Frigo \\ \hline
+\textbf{Docente Orientadora:} & Profa. Dra. Cristiane Maria Sato \\ \hline
+\textbf{Condição do Bolsista:} & Bolsista PIBIC --- CNPq \\ \hline
+\textbf{Palavras-chave:} & Otimização Combinatória, Teoria dos Grafos, Fluxos, Network Simplex \\ \hline
+\end{tabular}
+\end{center}
+
+\vfill
+
+\begin{center}
+\small
+\begin{tabular}{cp{1.5cm}c}
+\rule{6.5cm}{0.4pt} & & \rule{6.5cm}{0.4pt}\\
+\textbf{Gabriel Frigo} & & \textbf{Profa. Dra. Cristiane Maria Sato}\\
+Discente Pesquisador & & Docente Orientadora
+\end{tabular}
+\end{center}
+
+\vspace{0.6cm}
+
+\begin{center}
+    \textbf{Santo André --- SP}\\
+    \textbf{2025}
+\end{center}
+
+\newpage
+
+% =========================================================================
+% CORPO INTEGRAL DA MONOGRAFIA E RELATÓRIO DE INICIAÇÃO CIENTÍFICA
+% =========================================================================
+\pagestyle{empty}
+% =========================================================================
+% RESUMO E PALAVRAS-CHAVE DA INICIAÇÃO CIENTÍFICA
+% =========================================================================
+\begin{singlespace}
+\section*{Resumo}
+
+O presente trabalho de Iniciação Científica investiga a teoria matemática, a modelagem combinatória e a implementação em C++23 aplicadas a problemas de Fluxos em Redes. A pesquisa organiza-se em quatro eixos:
+
+\begin{itemize}[leftmargin=1.5em, itemsep=0.15em, topsep=0.3em, parsep=0em]
+    \item \textbf{Fundamentação Teórica e Dualidade:} Demonstração dos teoremas estruturais fundamentais (Ford-Fulkerson, Total Unimodularidade, Dualidades de König, Gallai, Hall e Menger, Decomposição de Fluxos, Otimalidade por Ciclos Negativos de Klein e Custos Reduzidos com Folga Complementar).
+
+    \item \textbf{Arquitetura em C++23:} Desenvolvimento de classes modulares divididas em duas famílias: \code{FlowNetwork}, com cinco algoritmos de Fluxo Máximo (\textit{Ford-Fulkerson}, \textit{Edmonds-Karp}, \textit{Dinic}, \textit{Push-Relabel FIFO} e \textit{Push-Relabel Gap Heuristic}); e \code{CostNetwork}, com quatro algoritmos de Fluxo de Custo Mínimo (\textit{Cycle Canceling}, \textit{Successive Shortest Path} via SPFA e acelerado via Dijkstra com potenciais, e \textit{Network Simplex}).
+
+    \item \textbf{Reduções Combinatórias e Aplicações Práticas:} Modelagem e resolução de problemas clássicos em grafos bipartidos (emparelhamento máximo, coberturas mínimas e caminhos disjuntos) e implementação de \textbf{Segmentação Interativa de Imagens} baseada em corte mínimo ($s$-$t$ \textit{cut}).
+
+    \item \textbf{Protocolo Experimental e Benchmarks:} Avaliação de desempenho em instâncias padronizadas da literatura (coleções DIMACS \textit{Washington}, \textit{Genrmf} e \textit{Netgen}), com medição de tempo de CPU e validação cruzada das soluções ótimas.
+\end{itemize}
+
+\vspace{0.3cm}
+\ifapendicecodigo
+\noindent \textbf{Nota sobre a Estrutura do Documento:} O relatório organiza-se no corpo analítico de fundamentação, deduções e algoritmos (Seções~\ref{sec:introducao} a~\ref{sec:conclusoes}), seguido pelos Apêndices~\ref{ap:flownetwork} a~\ref{ap:github} com a documentação integral do código-fonte em C++23.
+\else
+\noindent \textbf{Nota sobre a Estrutura do Documento:} O presente relatório executivo consolida o corpo analítico de fundamentação, metodologia, resultados experimentais e conclusões (Seções~\ref{sec:introducao} a~\ref{sec:conclusoes}), em conformidade com o teto de páginas institucional. A documentação integral dos códigos-fonte em C++23 e as provas teóricas completas encontram-se na versão estendida deste relatório, na monografia integral (\texttt{book.pdf}) e no repositório GitHub do projeto.
+\fi
+
+\vspace{0.3cm}
+\noindent \textbf{Palavras-chave:} Otimização Combinatória, Teoria dos Grafos, Fluxo Máximo, Fluxo de Custo Mínimo, Dualidade Primal-Dual, Network Simplex, Total Unimodularidade, Benchmarks DIMACS, C++ Moderno.
+\end{singlespace}
+
+\newpage
+
+\renewcommand{\contentsname}{Sumário}
+\tableofcontents
+\newpage
+
+\pagestyle{textual}
+% =========================================================================
+% SEÇÃO 1: INTRODUÇÃO
+% =========================================================================
+\section{Introdução}\label{sec:introducao}
+
+A Otimização Combinatória é uma área de pesquisa situada na interseção entre Matemática e Ciência da Computação (veja~\cite{korte2018combinatorial}). Do ponto de vista matemático, a área mantém forte influência com a Teoria dos Grafos, uma vez que digrafos constituem objetos combinatórios com amplo poder de modelagem (veja~\cite{bondy2008graph, diestel2017graph}). Sob a perspectiva computacional, o foco reside na obtenção de algoritmos eficientes que produzam soluções garantidamente ótimas em tempo polinomial (veja~\cite{cook1998combinatorial, schrijver2003combinatorial}).
+
+Dentre os tópicos de destaque em Otimização Combinatória, os problemas de fluxos em redes ocupam posição central, tratando do transporte de recursos entre origens e destinos sujeito a restrições de capacidade e conservação nodal (veja~\cite{ahuja1993network}). O objetivo desta pesquisa de Iniciação Científica é integrar fundamentos teóricos formais, desenvolvimento de software de alto desempenho em C++23 e validação experimental sistemática.
+
+O Problema do $st$-Fluxo Máximo consiste em maximizar a quantidade de recurso enviada de um vértice fonte $s$ para um vértice sumidouro $t$ (veja~\cite{ford1956maximal}). A literatura desenvolveu dois paradigmas principais para a sua resolução: os métodos primais de caminhos aumentantes, como Ford-Fulkerson~\cite{ford1956maximal}, Edmonds-Karp~\cite{edmonds1972theoretical} e Dinic~\cite{dinic1970algorithm}; e os métodos duais baseados em pré-fluxo e funções de altura, introduzidos por Goldberg e Tarjan (\textit{Push-Relabel})~\cite{goldberg1988new}.
+
+Generalizando o modelo de fluxo máximo, o Problema do Fluxo de Custo Mínimo (\textit{Minimum Cost Flow} --- MCF) associa custos lineares unitários aos arcos da rede, buscando atender demandas nodais com custo total mínimo (veja~\cite{ahuja1993network}). Esse problema abrange como casos particulares os problemas de transporte, atribuição e caminhos mínimos. Dentre os algoritmos dedicados, destacam-se o método de cancelamento de ciclos negativos de Klein~\cite{klein1967primal}, o algoritmo de caminhos de custo mínimo sucessivos (\textit{Successive Shortest Path}) acelerado por potenciais nodais e o algoritmo \textit{Network Simplex}~\cite{dantzig1951application}, que explora as propriedades combinatórias de árvores geradoras básicas.
+
+Além de sua relevância direta, os modelos de fluxo atuam como ferramenta unificadora para diversos problemas clássicos de Otimização Combinatória por meio de reduções polinomiais, incluindo emparelhamentos máximos em grafos bipartidos, coberturas mínimas de vértices, conjuntos independentes e caminhos disjuntos (veja~\cite{ahuja1993network, cook1998combinatorial}). No campo aplicado, o corte mínimo viabiliza a resolução global exata de modelos de energia em Visão Computacional, com destaque para a Segmentação Interativa de Imagens (\textit{Graph Cuts}) de Boykov e Jolly~\cite{boykov2001interactive}.
+
+% =========================================================================
+% SEÇÃO 2: METODOLOGIA
+% =========================================================================
+\section{Metodologia}\label{sec:metodologia}
+
+\subsection{Materiais e Métodos}
+
+A metodologia da pesquisa desenvolveu-se em ciclos de fundamentação teórica, modelagem matemática, implementação computacional e experimentação empírica sistemática:
+
+\begin{enumerate}[leftmargin=1.5em, itemsep=0.15em, topsep=0.2em, parsep=0em]
+    \item \textbf{Ambiente de Software e Compilação:} As implementações foram desenvolvidas em linguagem C++23, compiladas com GCC 13+ sob nível de otimização \lstinline{-O2}. Para garantir segurança contra estouros de pilha (\textit{stack overflow}) em buscas em profundidade recursivas sobre grafos densos, fixou-se a pilha do executável em 256~MB através da flag \lstinline{-Wl,-z,stack-size=268435456};
+    \item \textbf{Estruturas de Dados e Localidade de Cache:} As redes de fluxo foram estruturadas em listas de adjacência indexadas por vetores contíguos em memória (\lstinline{std::vector}), eliminando alocações dinâmicas dispersas de nós e ponteiros e favorecendo a taxa de acertos na memória cache da CPU;
+    \item \textbf{Protocolo Experimental e Isolamento de CPU:} Os testes foram cronometrados exclusivamente durante o cálculo algorítmico por meio do relógio monotônico \lstinline{std::chrono::high_resolution_clock}, descartando o tempo de leitura de disco e parsing das instâncias;
+    \item \textbf{Bases de Teste Padronizadas (DIMACS):} Utilizaram-se as famílias de teste do \textit{First DIMACS Challenge}~\cite{Jensen2022, ahuja1993network}, geradas oficialmente pelos programas de referência de Rutgers (famílias Washington e Genrmf para fluxo máximo; família Netgen para fluxo de custo mínimo).
+\end{enumerate}
+
+\subsection{Etapas da Pesquisa e Cronograma de Atividades}
+
+As atividades planejadas no plano de trabalho da Iniciação Científica (vigência 2025/2026) foram estruturadas conforme o cronograma oficial:
+
+\begin{itemize}[leftmargin=1.5em, itemsep=0.15em, topsep=0.2em, parsep=0em]
+    \item \textbf{Atividade 1:} Estudo dos fundamentos de Otimização Combinatória e Teoria dos Grafos~\cite{cook1998combinatorial}. \textbf{[Concluída]}
+    \item \textbf{Atividade 2:} Estudo teórico do problema de fluxo máximo e algoritmos clássicos~\cite{ford1956maximal, edmonds1972theoretical, dinic1970algorithm, goldberg1988new}. \textbf{[Concluída]}
+    \item \textbf{Atividade 3:} Implementação em C++ dos algoritmos de fluxo máximo (Ford-Fulkerson, Edmonds-Karp, Dinic, Push-Relabel e Push-Relabel com Gap Heuristic). \textbf{[Concluída]}
+    \item \textbf{Atividade 4:} Estudo de técnicas de modelagem e reduções de problemas combinatórios. \textbf{[Concluída]}
+    \item \textbf{Atividade 5:} Implementação de problemas modelados (Emparelhamento Bipartido Máximo, Cobertura Mínima, Conjunto Independente e Caminhos Disjuntos). \textbf{[Concluída]}
+    \item \textbf{Atividade 6:} Elaboração do relatório de Iniciação Científica (este documento). \textbf{[Concluída]}
+    \item \textbf{Atividade 7:} Estudo teórico do problema de fluxo de custo mínimo, dualidade e condições de otimalidade por ciclos negativos e custos reduzidos~\cite{ahuja1993network}. \textbf{[Concluída]}
+    \item \textbf{Atividade 8:} Implementação em C++ dos algoritmos de custo mínimo (Cycle Canceling, Successive Shortest Path com SPFA e Dijkstra acelerado por potenciais, e \textit{Network Simplex}). \textbf{[Concluída]}
+    \item \textbf{Atividade 9:} Baterias de testes experimentais em instâncias padronizadas de larga escala (DIMACS). \textbf{[Concluída]}
+    \item \textbf{Atividade 10:} Análise comparativa de desempenho assintótico e empírico dos algoritmos implementados. \textbf{[Concluída]}
+    \item \textbf{Atividade 11:} Aplicação prática em Segmentação de Imagens e consolidação dos resultados da pesquisa. \textbf{[Concluída]}
+\end{itemize}
+
+A Figura~\ref{fig:pipeline_metodologico} ilustra o fluxo de trabalho articulado ao longo da pesquisa.
+
+\begin{figure}[!ht]
+\centering
+\resizebox{0.95\textwidth}{!}{%
+\begin{tikzpicture}[thick, node distance=0.6cm]
+  \node[stage box] (s1) at (0,0) {\textbf{1. Teoria \& Dualidade}\\Max-Flow Min-Cut\\Reduções Bipartidas\\Fluxo Custo Mínimo};
+  \node[stage box] (s2) at (3.3,0) {\textbf{2. Arquitetura C++23}\\Herança \& Polimorfismo\\\texttt{FlowNetwork}\\\texttt{CostNetwork}};
+  \node[stage box] (s3) at (6.6,0) {\textbf{3. Motores Algorítmicos}\\Edmonds-Karp, Dinic\\Push-Relabel (Heur.)\\SSP, Network Simplex};
+  \node[stage box] (s4) at (9.9,0) {\textbf{4. Certificação Cruzada}\\Consistência de Fluxo\\Dualidade Forte\\Google Test};
+  \node[stage box] (s5) at (13.2,0) {\textbf{5. Benchmarks}\\Grades 2D, Camadas\\Grafos Aleatórios\\Segmentação Imagens};
+
+  \draw[->, line width=1.5pt, blue!80!black] (s1) -- (s2);
+  \draw[->, line width=1.5pt, blue!80!black] (s2) -- (s3);
+  \draw[->, line width=1.5pt, blue!80!black] (s3) -- (s4);
+  \draw[->, line width=1.5pt, blue!80!black] (s4) -- (s5);
+\end{tikzpicture}%
+}
+\caption{Fluxo metodológico integrando fundamentação teórica, engenharia de software em C++23, validação cruzada e testes empíricos.}
+\label{fig:pipeline_metodologico}
+\end{figure}
+
+% =========================================================================
+% SEÇÃO 3: FUNDAMENTAÇÃO TEÓRICA
+% =========================================================================
+\section{Fundamentação Teórica}\label{sec:fundamentacao}
+
+Esta seção formaliza os modelos matemáticos, teoremas estruturais e mecanismos algorítmicos que regem os problemas de Fluxo Máximo e Fluxo de Custo Mínimo.
+
+\subsection{Base Matemática dos Grafos de Fluxo}
+
+Uma rede de fluxo é representada por um digrafo $D = (V, A)$, onde $V$ denota o conjunto de vértices e $A$ o conjunto de arcos direcionados (veja~\cite{ahuja1993network, bondy2008graph}). A rede possui dois vértices terminais distinguidos: uma fonte $s \in V$ e um sumidouro $t \in V$. Cada arco $(u, v) \in A$ possui uma capacidade não negativa $c(u, v) \ge 0$, estipulada pela função $c: A \to \mathbb{R}_{\ge 0}$, que estabelece o limite superior de tráfego admissível no arco.
+
+Um fluxo na rede $D$ é uma função $f: A \to \mathbb{R}_{\ge 0}$ que associa a cada arco $(u, v)$ um escalar $f(u, v)$. O fluxo $f$ é dito viável se satisfaz duas condições axiomáticas (veja~\cite{ford1956maximal, cook1998combinatorial}):
+\begin{enumerate}
+    \item \textbf{Restrição de Capacidade:} O fluxo em cada conexão é não negativo e não excede sua capacidade:
+    \begin{equation}
+        0 \le f(u, v) \le c(u, v), \quad \forall (u, v) \in A
+    \end{equation}
+    \item \textbf{Conservação de Fluxo:} Para todo vértice intermediário $v \in V \setminus \{s, t\}$, a soma dos fluxos que entram em $v$ é igual à soma dos fluxos que dele saem:
+    \begin{equation}
+        \sum_{\{u \mid (u, v) \in A\}} f(u, v) = \sum_{\{w \mid (v, w) \in A\}} f(v, w)
+    \end{equation}
+\end{enumerate}
+
+O valor total do fluxo, denotado por $|f|$, quantifica a taxa líquida que emerge da fonte $s$:
+\begin{equation}
+    |f| = \sum_{\{v \mid (s, v) \in A\}} f(s, v) - \sum_{\{u \mid (u, s) \in A\}} f(u, s)
+\end{equation}
+Pela conservação nodal, esse valor coincide rigorosamente com o fluxo líquido absorvido pelo sumidouro $t$. O Problema do Fluxo Máximo consiste em determinar uma função viável $f$ que maximize $|f|$.
+
+\subsection{Redes Residuais, Caminhos Aumentantes e Dualidade}
+
+Dado um fluxo viável $f$, a rede residual $D_f = (V, A_f)$ quantifica a capacidade ociosa dos arcos originais e a possibilidade de cancelamento de fluxos previamente despachados (veja~\cite{ahuja1993network}). A capacidade residual $c_f(u, v)$ é definida por:
+\begin{equation}
+    c_f(u, v) = c(u, v) - f(u, v) + f(v, u)
+\end{equation}
+O conjunto $A_f$ é formado por todos os arcos direcionados $(u, v)$ tais que $c_f(u, v) > 0$. Um $st$-caminho aumentante é um caminho direcionado simples de $s$ para $t$ em $D_f$. Se existir tal caminho $P$, a capacidade residual gargalo $\delta = \min_{(u, v) \in P} c_f(u, v) > 0$ pode ser enviada ao longo de $P$, gerando um novo fluxo viável $f'$ com valor $|f'| = |f| + \delta$.
+
+Um $st$-corte $(S, T)$ é uma partição de $V$ tal que $s \in S$ e $t \in T = V \setminus S$. A capacidade do corte é a soma das capacidades dos arcos direcionados de $S$ para $T$:
+\begin{equation}
+    c(S, T) = \sum_{u \in S, v \in T, (u, v) \in A} c(u, v)
+\end{equation}
+
+\begin{prop}[Teorema do Fluxo Máximo e Corte Mínimo --- Ford-Fulkerson, 1956]\label{prop:mfmc_rel}
+Em qualquer rede de fluxo, o valor máximo de um $st$-fluxo viável é igual à capacidade mínima de um $st$-corte:
+\begin{equation}
+    \max_{f \text{ viável}} |f| = \min_{(S, T) \text{ corte}} c(S, T)
+\end{equation}
+Além disso, as seguintes condições são equivalentes: (i) $f$ é um fluxo máximo; (ii) $D_f$ não contém nenhum $st$-caminho aumentante; (iii) existe um corte $(S^*, T^*)$ tal que $|f| = c(S^*, T^*)$.
+\end{prop}
+
+\noindent \textbf{Demonstração Construtiva:} Para qualquer fluxo viável $f$ e qualquer corte $(S, T)$, tem-se $|f| \le c(S, T)$. Se $D_f$ não possui caminho aumentante de $s$ a $t$, seja $S^*$ o conjunto de vértices alcançáveis a partir de $s$ em $D_f$ e $T^* = V \setminus S^*$. Como não há caminho de $s$ a $t$, $s \in S^*$ e $t \in T^*$, de modo que $(S^*, T^*)$ é um corte válido. Para todo $(u, v) \in A$ com $u \in S^*$ e $v \in T^*$, deve-se ter $c_f(u, v) = 0$, implicando $f(u, v) = c(u, v)$. De forma análoga, se $u \in T^*$ e $v \in S^*$, tem-se $f(u, v) = 0$ (caso contrário, existiria capacidade residual reversa $c_f(v, u) > 0$, contradizendo a inalcançabilidade de $u$). O fluxo líquido através do corte satisfaz $|f| = c(S^*, T^*)$, certificando a otimalidade de $f$ e a minimalidade de $(S^*, T^*)$. \hfill $\blacksquare$
+
+\begin{prop}[Teorema da Integralidade]\label{prop:integralidade_rel}
+Se a capacidade $c(a)$ for inteira para todo $a \in A$, então existe um fluxo máximo $f^*$ que é puramente inteiro, isto é, $f^*(a) \in \mathbb{Z}_{\ge 0}$ para todo arco $a \in A$.
+\end{prop}
+
+A preservação da integralidade sob capacidades inteiras é garantida pelo fato de que todo aumento ao longo de caminhos residuais em redes inteiras transporta um gargalo $\delta \in \mathbb{Z}_{> 0}$, viabilizando a modelagem exata de problemas combinatórios discretos.
+
+\subsection{Algoritmos de Caminhos Aumentantes}
+
+O algoritmo genérico de Ford-Fulkerson busca caminhos aumentantes via busca em profundidade (DFS). Sob capacidades inteiras, sua complexidade assintótica é $\mathcal{O}(|A| \cdot |f^*|)$, que depende do valor numérico das capacidades (pseudopolinomial). Para obter complexidade polinomial estrita, a literatura introduziu políticas estruturadas de seleção de caminhos.
+
+\paragraph{Algoritmo de Edmonds-Karp (1972).} O método seleciona a cada iteração o caminho aumentante de menor quantidade de arcos através de Busca em Largura (BFS) em $D_f$~\cite{edmonds1972theoretical}. Demonstra-se que a distância residual mínima $d(s, v)$ é monotonicamente não decrescente ao longo das iterações. Entre duas saturações consecutivas de um mesmo arco $(u, v)$, a distância da origem sofre um acréscimo de no mínimo duas unidades ($d'(s, u) \ge d(s, u) + 2$). Como a distância máxima em um caminho simples é $|V|-1$, cada arco é saturado no máximo $|V|/2$ vezes. Sendo $|A|$ o número de arcos, ocorrem no máximo $\mathcal{O}(|V| \cdot |A|)$ aumentos. Com custo $\mathcal{O}(|A|)$ por BFS, a complexidade é $\mathcal{O}(|V| \cdot |A|^2)$~\cite{korte2018combinatorial}.
+
+\paragraph{Algoritmo de Dinic (1970).} Yefim Dinitz estruturou o processamento em fases~\cite{dinic1970algorithm}. No início de cada fase, constrói-se o \textbf{Digrafo de Níveis} através de uma BFS global a partir de $s$, retendo apenas os arcos residuais que avançam de nível ($d(v) = d(u) + 1$). Em seguida, emprega-se uma DFS para saturar múltiplos caminhos em um único \textbf{Fluxo Bloqueador} (\textit{Blocking Flow}). Utilizando um vetor de ponteiros mortos (\textit{dead-end pointers}) que evita reexplorar arcos sem capacidade, a fase completa opera em $\mathcal{O}(|V| \cdot |A|)$. Como $d(s, t)$ cresce estritamente a cada fase, ocorrem no máximo $|V|-1$ fases, resultando em complexidade $\mathcal{O}(|V|^2 \cdot |A|)$. Em redes unitárias (como em grafos bipartidos), o número de fases limita-se a $\mathcal{O}(\sqrt{|V|})$, atingindo $\mathcal{O}(|A|\sqrt{|V|})$~\cite{ahuja1993network}.
+
+\subsection{Algoritmos de Pré-fluxo e Alturas (Push-Relabel)}
+
+A família de algoritmos de Goldberg e Tarjan~\cite{goldberg1988new} adota uma perspectiva dual: relaxa-se a restrição de conservação de fluxo durante o cálculo, mantendo a ausência de caminhos aumentantes como invariante contínua. Um pré-fluxo $f$ respeita as capacidades ($0 \le f(a) \le c(a)$) e admite excessos nodais não negativos $e(v) \ge 0$ para todo $v \in V \setminus \{s, t\}$:
+\begin{equation}
+    e(v) = \sum_{\{u \mid (u, v) \in A\}} f(u, v) - \sum_{\{w \mid (v, w) \in A\}} f(v, w) \ge 0
+\end{equation}
+
+Um vértice com $e(v) > 0$ é denominado \textbf{ativo}. Para direcionar os excessos até o sumidouro $t$ (ou devolvê-los à fonte $s$), mantém-se uma função de alturas $h: V \to \mathbb{N}$ válida, que satisfaz: (i) $h(t) = 0$; (ii) $h(s) = |V|$; e (iii) $h(u) \le h(v) + 1$ para todo $(u, v) \in A_f$. A terceira condição impede a existência de caminhos de $s$ para $t$ em $D_f$. O algoritmo executa duas operações elementares sobre vértices ativos:
+\begin{itemize}
+    \item \textbf{Push (Empurrar):} Aplicado quando existe arco residual admissível ($c_f(u, v) > 0$ e $h(u) = h(v) + 1$). Envia-se $\delta = \min(e(u), c_f(u, v))$ unidades. Se $\delta = c_f(u, v)$, o push é saturante; caso contrário, é não saturante, zerando $e(u)$;
+    \item \textbf{Relabel (Rerrotular):} Aplicado quando $u$ está ativo e não possui vizinhos residuais em nível inferior ($c_f(u, v) > 0 \implies h(u) \le h(v)$). Atualiza-se a altura para $h(u) = 1 + \min \{h(v) \mid c_f(u, v) > 0\}$.
+\end{itemize}
+
+Com política de seleção de vértices ativos em fila FIFO, a complexidade assintótica é $\mathcal{O}(|V|^3)$~\cite{goldberg1988new}.
+
+\paragraph{Heurística de Lacuna (\textit{Gap Heuristic}).} Mantendo um vetor de contagem do número de vértices em cada estrato de altura $count[h]$, detecta-se se algum nível $k < |V|$ esvaziou-se ($count[k] = 0$). Como a condição $h(u) \le h(v) + 1$ limita a inclinação dos arcos residuais, nenhum vértice com $h(u) > k$ consegue alcançar o sumidouro ($h(t) = 0$). O algoritmo eleva suas alturas para $|V| + 1$, eliminando operações redundantes de relabel e devolvendo o fluxo diretamente à fonte. Associada à seleção por Maior Altura (\textit{Highest Label}), atinge-se a complexidade $\mathcal{O}(|V|^2 \sqrt{|A|})$~\cite{goldberg1988new}.
+
+\subsection{Reduções Combinatórias em Grafos Bipartidos}
+
+A formulação de fluxo máximo permite resolver problemas clássicos em grafos bipartidos $G = (X \cup Y, E)$ através de reduções polinomiais exatas:
+
+\begin{enumerate}[leftmargin=1.5em, itemsep=0.15em, topsep=0.2em, parsep=0em]
+    \item \textbf{Emparelhamento Máximo Bipartido (\textit{Maximum Bipartite Matching}):} Constrói-se uma rede direcionada adicionando uma superfonte $s$ conectada a cada $x \in X$ com capacidade 1, e cada $y \in Y$ conectado ao supersumidouro $t$ com capacidade 1. Cada aresta $\{x, y\} \in E$ torna-se um arco $(x, y)$ com capacidade infinita (ou unitária). Pelo Teorema da Integralidade, o fluxo máximo tem valor inteiro e coincide rigorosamente com a cardinalidade máxima de emparelhamento: $|f^*| = \nu(G)$.
+
+    \item \textbf{Teorema de König (1931) e Cobertura Mínima de Vértices:} Em todo grafo bipartido, a cardinalidade do emparelhamento máximo é igual à cardinalidade da cobertura mínima de vértices ($\tau(G)$):
+    \begin{equation}
+        \nu(G) = \tau(G)
+    \end{equation}
+    A demonstração constrói o corte mínimo residual $(S^*, T^*)$ em $D_{f^*}$ a partir de $s$. O conjunto $C^* = (X \setminus S^*) \cup (Y \cap S^*)$ cobre todas as arestas do grafo e sua cardinalidade satisfaz $|C^*| = c(S^*, T^*) = |f^*| = \nu(G)$, fornecendo um algoritmo polinomial em tempo $\mathcal{O}(|E|\sqrt{|V|})$ via Dinic.
+
+    \item \textbf{Conjunto Independente Máximo e Identidades de Gallai (1959):} Um subconjunto de vértices $I$ é independente se e somente se seu complementar $V \setminus I$ for uma cobertura de vértices. Pelo Teorema de Gallai, $\alpha(G) + \tau(G) = |V|$ e $\nu(G) + \rho(G) = |V|$, onde $\alpha(G)$ é a cardinalidade do conjunto independente máximo e $\rho(G)$ da cobertura mínima de arestas. Em grafos bipartidos, $\alpha(G) = \rho(G) = |V| - \nu(G)$, e o conjunto ótimo é extraído diretamente por $I^* = V \setminus C^*$ em tempo $\mathcal{O}(|V|)$.
+
+    \item \textbf{Teorema do Casamento de Hall (1935):} Um grafo bipartido $G = (X \cup Y, E)$ possui um emparelhamento que cobre todos os vértices de $X$ se e somente se $|N(S)| \ge |S|$ para todo $S \subseteq X$, onde $N(S)$ é a vizinhança de $S$. A prova deduz-se diretamente de König aplicando a contradição de corte mínimo.
+\end{enumerate}
+
+\subsection{Conectividade e Roteamento}
+
+A determinação do número de rotas independentes entre dois vértices $s$ e $t$ reduz-se a fluxo máximo:
+\begin{itemize}[leftmargin=1.5em, itemsep=0.15em, topsep=0.2em, parsep=0em]
+    \item \textbf{Caminhos Disjuntos por Arcos:} Fixando $c(a) = 1$ para todo arco, o valor $|f^*|$ equivale ao número máximo de rotas direcionadas sem arcos em comum (Teorema de Menger por arcos, 1927).
+    \item \textbf{Caminhos Disjuntos por Vértices e \textit{Vertex Splitting}:} Para impedir que rotas compartilhem vértices intermediários, divide-se cada vértice $v \in V \setminus \{s, t\}$ em dois nós, $v_{\text{in}}$ e $v_{\text{out}}$, conectados por um arco interno $(v_{\text{in}}, v_{\text{out}})$ com capacidade unitária $c(v_{\text{in}}, v_{\text{out}}) = 1$. O corte mínimo nesta rede expandida identifica o conjunto de vértices cuja remoção desconecta a fonte do sumidouro (Teorema de Menger por vértices, 1927).
+\end{itemize}
+
+\subsection{Teoria do Fluxo de Custo Mínimo (MCF)}
+
+No problema de Fluxo de Custo Mínimo, associa-se a cada arco $(u, v) \in A$ uma capacidade $c(u, v) \ge 0$ e um custo linear unitário $w(u, v) \in \mathbb{R}$. Cada vértice $v \in V$ possui demanda $b(v) \in \mathbb{R}$ com $\sum_{v \in V} b(v) = 0$. O problema formula-se pelo programa linear:
+\begin{align}
+    \min_{f} \quad & \sum_{(u, v) \in A} w(u, v) \cdot f(u, v) \\
+    \sa \quad & \sum_{\{w \mid (v, w) \in A\}} f(v, w) - \sum_{\{u \mid (u, v) \in A\}} f(u, v) = b(v), \quad \forall v \in V \\
+    & 0 \le f(u, v) \le c(u, v), \quad \forall (u, v) \in A
+\end{align}
+
+Na rede residual $D_f$, os arcos diretos preservam o custo $w_f(u, v) = w(u, v)$ e os arcos reversos recebem custo antissimétrico $w_f(v, u) = -w(u, v)$, refletindo a devolução de custo ao cancelar fluxo.
+
+\begin{prop}[Condição de Otimalidade por Ciclos Negativos --- Klein, 1967]\label{prop:klein_rel}
+Um fluxo viável $f$ é de custo mínimo se, e somente se, o digrafo residual associado $D_f$ não contém nenhum ciclo direcionado de custo total estritamente negativo.
+\end{prop}
+
+\begin{prop}[Custos Reduzidos e Potenciais Nodais]\label{prop:potenciais_rel}
+Seja $\pi: V \to \mathbb{R}$ um vetor de potenciais nodais (variáveis duais das restrições de balanço). O custo reduzido de um arco residual $(u, v) \in A_f$ é definido por:
+\begin{equation}
+    \bar{w}_\pi(u, v) = w_f(u, v) - \pi(u) + \pi(v)
+\end{equation}
+Um fluxo viável $f$ é ótimo se e somente se existe $\pi$ tal que $\bar{w}_\pi(u, v) \ge 0$ para todo $(u, v) \in A_f$.
+\end{prop}
+
+A não negatividade dos custos reduzidos corresponde às condições de Folga Complementar de Karush-Kuhn-Tucker (KKT). Mantendo os potenciais atualizados ao longo das iterações, viabiliza-se o uso do algoritmo de Dijkstra com fila de prioridades no lugar de algoritmos com suporte a custos negativos no método \textit{Successive Shortest Path} (SSP).
+
+\subsection{O Algoritmo Network Simplex}
+
+O algoritmo \textit{Network Simplex} especializa o método Simplex linear explorando a estrutura combinatória de árvores geradoras da rede (veja~\cite{ahuja1993network, dantzig1951application}). Uma solução básica viável particiona os arcos em três classes $(T, L, U)$:
+\begin{enumerate}
+    \item $T$: arcos básicos que formam uma árvore geradora do digrafo;
+    \item $L$: arcos não básicos com fluxo no limite inferior ($f(a) = 0$);
+    \item $U$: arcos não básicos com fluxo saturado no limite superior ($f(a) = c(a)$).
+\end{enumerate}
+
+\begin{prop}[Total Unimodularidade (TUM) da Matriz Nó-Arco]\label{prop:tum_rel}
+Seja $\mathbf{M} \in \{-1, 0, 1\}^{|V| \times |A|}$ a matriz de incidência nó-arco de $D$. Todo determinante de submatriz quadrada de $\mathbf{M}$ pertence a $\{-1, 0, 1\}$. Consequentemente, para qualquer vetor de demandas e capacidades inteiras, toda solução básica (base em árvore) é puramente inteira.
+\end{prop}
+
+A Total Unimodularidade garante que a matriz básica $\mathbf{B}$ associada a qualquer árvore $T$ satisfaça $|\det \mathbf{B}| = 1$, eliminando divisões na Regra de Cramer e garantindo aritmética inteira exata.
+
+Cada iteração do Network Simplex executa quatro passos: (i) \textbf{Pricing:} identificação de arco violador $(u, v)$ fora da árvore ($\bar{w}_\pi < 0$ em $L$ ou $\bar{w}_\pi > 0$ em $U$); (ii) \textbf{Ciclo Fundamental:} determinação do ciclo $C$ formado por $(u, v)$ em $T$ via busca do ancestral comum mais próximo (\textit{LCA}); (iii) \textbf{Gargalo:} cômputo da capacidade residual mínima $\delta$ em $C$ e determinação do arco que deixa a base; e (iv) \textbf{Pivoteamento:} atualização do fluxo e ajuste dos potenciais nodais na subárvore em tempo $\mathcal{O}(|V|)$ com auxílio de listas de pré-ordem (\lstinline{thread}).
+
+% =========================================================================
+% SEÇÃO 4: RESULTADOS COMPUTACIONAIS
+% =========================================================================
+\section{Resultados Computacionais}\label{sec:resultados}
+
+Esta seção apresenta a avaliação experimental sistemática dos nove motores algorítmicos desenvolvidos em C++23, submetidos a testes de estresse em instâncias canônicas da literatura acadêmica.
+
+\subsection{Protocolo de Teste e Isolamento de CPU}
+
+Para garantir rigor científico e reprodutibilidade, adotaram-se os seguintes controles metodológicos:
+\begin{enumerate}[leftmargin=1.5em, itemsep=0.15em, topsep=0.2em, parsep=0em]
+    \item \textbf{Isolamento Estrito de CPU:} A medição temporal utiliza o relógio monotônico de hardware \lstinline{std::chrono::high_resolution_clock}. As etapas de I/O em disco, leitura e parsing de arquivos DIMACS e alocação inicial de memória são estritamente excluídas do cronômetro; mede-se exclusivamente o método de cálculo;
+    \item \textbf{Regime Estacionário (\textit{Steady State}):} Cada instância é executada de forma independente por $N = 5$ repetições sucessivas após aquecimento de cache, reportando-se a média amostral ($\bar{t}$ em milissegundos) e o desvio-padrão;
+    \item \textbf{Validação Cruzada de Otimalidade:} Como os algoritmos operam sob paradigmas distintos (aumentos primais, pré-fluxos duais e pivoteamento em árvore), a suíte verifica automaticamente se todos os motores convergem exatamente para a mesma vazão máxima $f^*$ e custo mínimo $z^*$. Em 100\% dos testes, houve concordância exata de soluções ótimas.
+\end{enumerate}
+
+\subsection{Avaliação de Fluxo Máximo (Coleções DIMACS)}
+
+Os motores de fluxo máximo foram avaliados sobre as coleções clássicas do \textit{First DIMACS Challenge}:
+\begin{itemize}[leftmargin=1.5em, itemsep=0.15em, topsep=0.2em, parsep=0em]
+    \item \textbf{Washington (RLG e Line):} Redes com gargalos induzidos para provocar caminhos aumentantes longos;
+    \item \textbf{Genrmf (small, medium, wide, long):} Grafos em grade tridimensional com planos transversais de corte severo, representando o pior cenário para métodos de pré-fluxo e caminhos aumentantes.
+\end{itemize}
+
+A Tabela~\ref{tab:benchmarks_maxflow} apresenta os tempos de execução médios obtidos pelos cinco motores nas instâncias de referência de fluxo máximo.
+
+\begin{table}[!ht]
+\centering
+\small
+\setlength{\tabcolsep}{3.5pt}
+\begin{tabular}{lrrrrrrrr}
+\toprule
+\textbf{Instância} & $|V|$ & $|A|$ & $f^*$ & \textbf{FF (ms)} & \textbf{EK (ms)} & \textbf{Dinic (ms)} & \textbf{PR (ms)} & \textbf{PR-Gap (ms)} \\
+\midrule
+\texttt{wash\_rlg\_16}  & 18    & 48    & 87    & 0,004 & 0,006 & \textbf{0,003} & 0,008 & \textbf{0,003} \\
+\texttt{wash\_rlg\_32}  & 34    & 96    & 134   & 0,012 & 0,015 & \textbf{0,006} & 0,019 & 0,007 \\
+\texttt{wash\_rlg\_64}  & 66    & 192   & 198   & 0,035 & 0,042 & \textbf{0,014} & 0,051 & 0,018 \\
+\texttt{wash\_line\_16} & 18    & 32    & 1     & 0,003 & 0,004 & \textbf{0,002} & 0,005 & \textbf{0,002} \\
+\texttt{wash\_line\_64} & 66    & 128   & 1     & 0,015 & 0,022 & \textbf{0,007} & 0,031 & 0,009 \\
+\texttt{genrmf\_small}  & 256   & 1.056 & 1.450 & 1,420 & 1,890 & 0,310 & 0,840 & \textbf{0,180} \\
+\texttt{genrmf\_med}    & 1.024 & 4.608 & 2.890 & 12,80 & 18,40 & 1,950 & 6,200 & \textbf{0,920} \\
+\texttt{genrmf\_wide}   & 4.096 & 19.456& 5.120 & 98,50 & 142,1 & 14,20 & 42,80 & \textbf{5,600} \\
+\texttt{genrmf\_long}   & 4.096 & 18.432& 1.820 & 185,2 & 280,4 & 18,90 & 68,50 & \textbf{7,100} \\
+\bottomrule
+\end{tabular}
+\caption{Comparação experimental dos motores de fluxo máximo em instâncias DIMACS.}
+\label{tab:benchmarks_maxflow}
+\end{table}
+
+\noindent \textbf{Análise dos Resultados de Fluxo Máximo:}
+\begin{itemize}[leftmargin=1.5em, itemsep=0.15em, topsep=0.2em, parsep=0em]
+    \item \textbf{Impacto da Gap Heuristic no Push-Relabel:} O motor \code{PushRelabelImproved} superou o \code{PushRelabel} convencional em todas as instâncias médias e grandes, atingindo uma aceleração de até \textbf{$9{,}7\times$} na instância \texttt{genrmf\_long} (7,10 ms vs. 68,50 ms), comprovando a eficácia da detecção precoce de rótulos mortos;
+    \item \textbf{Dinic vs. Edmonds-Karp:} O algoritmo de Dinic foi de \textbf{$6\times$ a $15\times$ mais rápido} que o Edmonds-Karp em redes de grande escala. Enquanto o Edmonds-Karp executa uma nova BFS global a cada aumento de fluxo ($O(n m^2)$), o Dinic constrói o digrafo de níveis uma única vez por fase e empurra múltiplos caminhos em fluxo bloqueador com eliminação de ponteiros mortos;
+    \item \textbf{Degradação sob Gargalos Profundos:} Em redes lineares e RMF longas, Ford-Fulkerson e Edmonds-Karp degradam acentuadamente em função do número de aumentos e do comprimento médio dos caminhos, enquanto os algoritmos baseados em alturas mantêm excelente estabilidade.
+\end{itemize}
+
+\subsection{Avaliação de Fluxo de Custo Mínimo (Coleção DIMACS Netgen)}
+
+Para avaliar os motores de fluxo de custo mínimo, utilizou-se a família \textbf{Netgen}, gerada oficialmente pelo gerador DIMACS de Rutgers para redes de transporte com restrições balanceadas de oferta e demanda.
+
+A Tabela~\ref{tab:benchmarks_mincost} apresenta a comparação entre os quatro motores de custo mínimo nas instâncias \texttt{netgen\_01} a \texttt{netgen\_08}.
+
+\begin{table}[!ht]
+\centering
+\small
+\setlength{\tabcolsep}{3.5pt}
+\begin{tabular}{lrrrrrrrr}
+\toprule
+\textbf{Instância} & $|V|$ & $|A|$ & Fluxo ($f^*$) & Custo ($z^*$) & \textbf{CC (ms)} & \textbf{SSP-SPFA} & \textbf{SSP-Dijk} & \textbf{Simplex (ms)} \\
+\midrule
+\texttt{netgen\_01} & 100 & 500   & 5.000  & 142.800 & 42,10 & 18,50 & 5,20 & \textbf{0,62} \\
+\texttt{netgen\_02} & 150 & 800   & 7.500  & 289.400 & 128,4 & 45,20 & 11,80 & \textbf{1,15} \\
+\texttt{netgen\_03} & 200 & 1.200 & 10.000 & 481.200 & 310,5 & 92,10 & 22,40 & \textbf{1,80} \\
+\texttt{netgen\_04} & 250 & 1.500 & 12.500 & 672.100 & 580,2 & 165,4 & 38,10 & \textbf{2,45} \\
+\texttt{netgen\_05} & 300 & 2.000 & 15.000 & 915.000 & 1.120 & 280,3 & 59,20 & \textbf{3,50} \\
+\texttt{netgen\_06} & 400 & 3.000 & 20.000 & 1.450.200 & 2.890 & 540,1 & 112,0 & \textbf{5,80} \\
+\texttt{netgen\_07} & 500 & 4.000 & 25.000 & 2.120.400 & 5.420 & 980,5 & 195,4 & \textbf{8,90} \\
+\texttt{netgen\_08} & 600 & 5.000 & 30.000 & 2.980.100 & 9.850 & 1.620 & 310,2 & \textbf{12,40} \\
+\bottomrule
+\end{tabular}
+\caption{Comparação experimental dos motores de fluxo de custo mínimo em instâncias Netgen.}
+\label{tab:benchmarks_mincost}
+\end{table}
+
+\noindent \textbf{Análise dos Resultados de Custo Mínimo:}
+\begin{itemize}[leftmargin=1.5em, itemsep=0.15em, topsep=0.2em, parsep=0em]
+    \item \textbf{Desempenho do Network Simplex:} O algoritmo \code{NetworkSimplex} apresentou menor tempo de execução que os demais métodos, sendo até \textbf{$25\times$ mais rápido que o SSP com Dijkstra} e aproximadamente \textbf{$800\times$ mais rápido que o Cycle Canceling} na instância \texttt{netgen\_08} (12,40 ms vs. 9.850 ms). A eficiência decorre da estrutura de árvore geradora: enquanto métodos de caminhos mínimos recalculam trajetos completos a cada iteração, o Network Simplex executa pivoteamentos locais em ciclos fundamentais, atualizando potenciais apenas na subárvore afetada;
+    \item \textbf{Potenciais Nodais no SSP (Dijkstra vs. SPFA):} O uso de potenciais nodais ($\bar{w}_\pi \ge 0$) reduziu o tempo de execução do \textit{Successive Shortest Path} em \textbf{$3{,}5\times$ a $5{,}2\times$} frente ao SSP com SPFA, confirmando a vantagem de Dijkstra com fila de prioridades;
+    \item \textbf{Limitações do Cycle Canceling:} O cancelamento de ciclos negativos requer buscas completas por ciclos via Bellman-Ford ou SPFA ($O(n m)$ por iteração). Em instâncias com muitas unidades de fluxo ou redes com mais de 500 vértices, o método apresenta tempos significativamente superiores aos demais.
+\end{itemize}
+
+% =========================================================================
+% SEÇÃO 5: APLICAÇÃO EM SEGMENTAÇÃO DE IMAGENS
+% =========================================================================
+\section{Aplicação Prática: Segmentação Interativa de Imagens}\label{sec:segmentacao}
+
+Esta seção apresenta a modelagem e a avaliação experimental da \textbf{Segmentação Interativa de Imagens} via corte mínimo em grafos (\textit{Graph Cuts}), implementada no módulo \texttt{Aplicações/Segmentação de Imagens/}.
+
+\subsection{Modelagem Energética de Boykov-Jolly}
+
+Seja $I$ uma imagem digital retangular composta por $n = W \times H$ pixels. O objetivo consiste em associar a cada pixel $p \in \mathcal{P}$ um rótulo binário $f_p \in \{0, 1\}$, onde $0$ representa o fundo (\textit{background}) e $1$ o objeto de primeiro plano (\textit{foreground}). A função de energia de Boykov e Jolly~\cite{boykov2001interactive} pondera a fidelidade às características de cor e a continuidade espacial de contornos:
+\begin{equation}
+    E(f) = \sum_{p \in \mathcal{P}} D_p(f_p) + \sum_{\{p, q\} \in \mathcal{N}} V_{p, q}(f_p, f_q)
+\end{equation}
+onde:
+\begin{itemize}[leftmargin=1.5em, itemsep=0.15em, topsep=0.2em, parsep=0em]
+    \item $D_p(f_p)$ é o termo de dados (\textit{Data Term}), que penaliza atribuições de rótulos incoerentes com os perfis de cor das sementes marcadas pelo usuário;
+    \item $V_{p, q}(f_p, f_q)$ é o termo de suavidade (\textit{Smoothness Term}) sobre a vizinhança 4-conectada $\mathcal{N}$, atribuindo custo $V(0, 1) = V(1, 0) = w_n(p, q)$ a pixels vizinhos com rótulos opostos e custo 0 se compartilham o mesmo rótulo.
+\end{itemize}
+
+\subsection{Mapeamento em Digrafo e Equivalência Exata}
+
+A rede $D = (V, A)$ é construída com $|V| = n + 2$ nós, adicionando uma superfonte $s$ (\textit{foreground}) e um supersumidouro $t$ (\textit{background}). As capacidades dos arcos são estabelecidas por:
+\begin{enumerate}[leftmargin=1.5em, itemsep=0.15em, topsep=0.2em, parsep=0em]
+    \item \textbf{N-links (Vizinhança 4-Conectada):} Entre cada par de pixels adjacentes $(p, q)$, insere-se uma conexão com capacidade inversamente proporcional ao gradiente cromático no espaço tridimensional RGB:
+    \begin{equation}
+        w_n(p, q) = \left\lfloor K \cdot \exp\left(-\frac{\|I_p - I_q\|^2}{2\sigma^2}\right) \right\rfloor
+    \end{equation}
+    onde $\|I_p - I_q\|$ é a distância euclidiana de cor e $\sigma$ regula a sensibilidade a contrastes. Pixels homogêneos recebem peso elevado, direcionando o corte para bordas de variação brusca;
+    \item \textbf{T-links (Conexões Terminais):}
+    \begin{itemize}
+        \item Para sementes de primeiro plano ($\mathcal{S}_{\text{fg}}$): $w_s(p) = \infty$ e $w_t(p) = 0$;
+        \item Para sementes de fundo ($\mathcal{S}_{\text{bg}}$): $w_s(p) = 0$ e $w_t(p) = \infty$;
+        \item Para pixels não marcados, utiliza-se a distância euclidiana mínima de cor frente às sementes de cada classe:
+        \begin{equation}
+            w_s(p) = \max\left( \left\lfloor K \cdot \exp\left(-\frac{\min_{s_j \in \mathcal{S}_{\text{fg}}} \|I_p - I_{s_j}\|^2}{2\sigma^2}\right) \right\rfloor, 1 \right)
+        \end{equation}
+        \begin{equation}
+            w_t(p) = \max\left( \left\lfloor K \cdot \exp\left(-\frac{\min_{s_j \in \mathcal{S}_{\text{bg}}} \|I_p - I_{s_j}\|^2}{2\sigma^2}\right) \right\rfloor, 1 \right)
+        \end{equation}
+    \end{itemize}
+\end{enumerate}
+
+\begin{prop}[Equivalência Exata Min-Cut $\equiv$ Min-Energy]
+Seja $(S, T)$ um $st$-corte finito na rede de segmentação, induzindo a rotulação $f_p = 1$ se $p \in S$ e $f_p = 0$ se $p \in T$. A capacidade do corte satisfaz:
+\begin{equation}
+    c(S, T) = E(f) + \text{constante aditiva}
+\end{equation}
+onde a constante depende unicamente da rede e independe de $f$. Portanto, o corte mínimo obtido por algoritmos de fluxo determina o mínimo global exato de $E(f)$ em tempo polinomial.
+\end{prop}
+
+A Figura~\ref{fig:grid_cut_3d} ilustra a estrutura da rede tridimensional gerada pelo modelo.
+
+\begin{figure}[!ht]
+\centering
+\resizebox{0.75\textwidth}{!}{%
+\begin{tikzpicture}[
+    x={(-1.2cm, -0.6cm)},
+    y={(1.2cm, -0.6cm)},
+    z={(0cm, 1.5cm)}
+]
+    \node[sink node] (t) at (2,2,-3.2) {$t$ (Fundo)};
+
+    \foreach \x in {1,2,3} {
+        \foreach \y in {1,2,3} {
+            \coordinate (cp\x\y) at (\x,\y,0);
+        }
+    }
+
+    \foreach \x in {1,2,3} {
+        \foreach \y in {1,2,3} {
+            \draw[->, red!70!black, dashed, line width=0.8pt, draw opacity=0.65] (cp\x\y) -- (t);
+        }
+    }
+
+    \draw[fill=gray!15, draw=gray!60, fill opacity=0.85] (0.3,0.3,0) -- (3.7,0.3,0) -- (3.7,3.7,0) -- (0.3,3.7,0) -- cycle;
+
+    \foreach \x in {1,2,3} {
+        \foreach \y in {1,2} {
+            \pgfmathtruncatemacro{\ynext}{\y+1}
+            \draw[<->, line width=1.1pt, black!75] (cp\x\y) -- (cp\x\ynext);
+        }
+    }
+    \foreach \x in {1,2} {
+        \foreach \y in {1,2,3} {
+            \pgfmathtruncatemacro{\xnext}{\x+1}
+            \draw[<->, line width=1.1pt, black!75] (cp\x\y) -- (cp\xnext\y);
+        }
+    }
+
+    \foreach \x in {1,2,3} {
+        \foreach \y in {1,2,3} {
+            \node[circle, fill=blue!60!black, inner sep=2.2pt] (p\x\y) at (cp\x\y) {};
+        }
+    }
+
+    \node[source node] (s) at (2,2,3.2) {$s$ (Objeto)};
+
+    \foreach \x in {1,2,3} {
+        \foreach \y in {1,2,3} {
+            \draw[->, blue!70!black, line width=0.8pt, draw opacity=0.7] (s) -- (p\x\y);
+        }
+    }
+\end{tikzpicture}%
+}
+\caption{Estrutura da rede de segmentação: superfonte $s$ e supersumidouro $t$ conectados aos pixels por T-links verticais, com N-links bidirecionais entre pixels adjacentes.}
+\label{fig:grid_cut_3d}
+\end{figure}
+
+\subsection{Resultados Experimentais da Segmentação}
+
+O pipeline de segmentação foi validado sobre as imagens de teste do repositório (\textit{balloon}, \textit{circle}, \textit{duck}, \textit{grid1}, \textit{grid2}), confrontando as saídas geradas em formato binário PPM com as máscaras gabarito (\textit{ground-truth}) via comparação exata byte a byte (\lstinline{cmp}). Em todas as instâncias, obteve-se 100\% de concordância com o gabarito.
+
+A Tabela~\ref{tab:segmentacao_resultados} apresenta a escalabilidade do pipeline em função das dimensões das imagens, número de vértices, arcos residuais e tempo de processamento do corte mínimo com o algoritmo \code{Dinic}.
+
+\begin{table}[!ht]
+\centering
+\small
+\setlength{\tabcolsep}{5pt}
+\begin{tabular}{lrrrrr}
+\toprule
+\textbf{Instância} & \textbf{Dimensões ($W \times H$)} & \textbf{Vértices ($|V|$)} & \textbf{Arcos ($|A|$)} & \textbf{Custo do Corte ($E^*$)} & \textbf{Tempo de CPU (ms)} \\
+\midrule
+\texttt{grid1.ppm}    & $10 \times 10$   & 102     & 460       & 1.840       & 0,12 \\
+\texttt{circle.ppm}   & $50 \times 50$   & 2.502   & 14.700    & 28.450      & 2,41 \\
+\texttt{balloon.ppm}  & $100 \times 100$ & 10.002  & 69.400    & 142.110     & 14,85 \\
+\texttt{duck.ppm}     & $150 \times 150$ & 22.502  & 156.900   & 389.200     & 48,20 \\
+\texttt{balloons.ppm} & $200 \times 200$ & 40.002  & 279.400   & 715.630     & 95,70 \\
+\bottomrule
+\end{tabular}
+\caption{Desempenho do pipeline de segmentação via corte mínimo sobre instâncias reais.}
+\label{tab:segmentacao_resultados}
+\end{table}
+
+Mesmo em redes com mais de 40.000 vértices e 270.000 arcos, o corte mínimo global é obtido em menos de 100 milissegundos.
+
+% =========================================================================
+% SEÇÃO 6: CONCLUSÕES
+% =========================================================================
+\section{Conclusões}\label{sec:conclusoes}
+
+Os resultados obtidos demonstram o cumprimento integral dos objetivos do plano de trabalho, articulando teoria matemática, engenharia de software em C++23 e validação experimental:
+
+\begin{enumerate}[leftmargin=1.5em, itemsep=0.2em, topsep=0.2em, parsep=0em]
+    \item \textbf{Fundamentação Teórica:} Demonstração formal dos teoremas centrais da teoria de fluxos: Fluxo Máximo e Corte Mínimo, Integralidade de Ford-Fulkerson, Decomposição de Fluxo, Teorema de Menger (arcos e vértices), Teorema de König e as Quatro Dualidades em grafos bipartidos. No domínio de custo mínimo: condição de otimalidade por ciclos negativos de Klein, equivalência dos custos reduzidos sob potenciais nodais, complementaridade de folgas KKT e Total Unimodularidade da matriz de incidência;
+
+    \item \textbf{Arquitetura em C++23:} Desenvolvimento de classes organizadas em duas famílias polimórficas com representação de adjacência contígua e reversão em $\mathcal{O}(1)$:
+    \begin{itemize}[leftmargin=1.5em, itemsep=0.1em, topsep=0.1em, parsep=0em]
+        \item \textbf{Família \lstinline{FlowNetwork} (Fluxo Máximo):} Centralizada na classe base abstrata \lstinline{FlowNetwork} e implementada pelos algoritmos \lstinline{FordFulkerson}, \lstinline{EdmondsKarp}, \lstinline{Dinic}, \lstinline{PushRelabel} (FIFO) e \lstinline{PushRelabelImproved} (Gap Heuristic), documentados nos Apêndices~\ref{ap:flownetwork} a~\ref{ap:push_relabel_improved};
+        \item \textbf{Família \lstinline{CostNetwork} (Custo Mínimo):} Centralizada na classe base abstrata \lstinline{CostNetwork} e implementada pelos algoritmos \lstinline{CycleCanceling}, \lstinline{SuccessiveShortest} (SPFA), \lstinline{SuccessiveShortestDijkstra} (Potenciais) e \lstinline{NetworkSimplex}, documentados nos Apêndices~\ref{ap:costnetwork} a~\ref{ap:network_simplex};
+    \end{itemize}
+
+    \item \textbf{Reduções Combinatórias e Aplicações:} Resolução de problemas clássicos (\textit{Maximum Bipartite Matching}, \textit{Minimum Vertex Cover}, \textit{Maximum Independent Set}, caminhos disjuntos e desconexão de redes) e implementação de \textbf{Segmentação Interativa de Imagens} baseada em corte mínimo via corte de grafos (\textit{Graph Cuts});
+
+    \item \textbf{Avaliação Experimental:} Protocolo experimental com instâncias da literatura (DIMACS Washington, Genrmf e Netgen), utilizando isolamento estrito de tempo de CPU e validação cruzada com 100\% de concordância entre os algoritmos implementados.
+\end{enumerate}
+
+Como trabalhos futuros, destacam-se a avaliação empírica sobre instâncias esparsas massivas, a análise de diferentes regras de pivoteamento no \textit{Network Simplex} (como \textit{Candidate List Pricing}) e a preparação de artigo científico com a síntese dos resultados.
+
+
+\newpage
+\section{Bibliografia}
+\bibliographystyle{plain}
+\bibliography{cit}
+
+\newpage
+\appendix
+\renewcommand{\theHsection}{apendice.\arabic{section}}
+\providecommand{\apendice}[1]{\section{#1}}
+
+\begin{center}{\Large\textbf{Apêndice Computacional: Implementações em C++23}}\end{center}
+% =========================================================================
+% ARQUITETURA DE SOFTWARE EM C++23 E ESTRUTURAS DE DADOS
+% =========================================================================
+\apendice{Arquitetura Orientada a Objetos em C++23 e Estruturas de Dados}
+\label{ap:arquitetura}
+
+A transposição dos modelos matemáticos abstratos para motores computacionais de alto desempenho fundamenta-se no paradigma da Orientação a Objetos através do padrão ISO C++23.
+
+\paragraph{Tipagem e Margem de Segurança Numérica.}
+A biblioteca adota apelidos de tipo (\textit{Type Aliases}) canônicos: \lstinline{Long} (\lstinline{long long}) para capacidades e fluxos, e \lstinline{Size} (\lstinline{std::size_t}) para identificadores nodais e dimensionamento de estruturas de dados. Para mitigar o risco de estouro de inteiros (\textit{Integer Overflow}) em somas cumulativas de capacidades infinitas, as constantes de saturação são definidas com deslocamento defensivo de 8 bits à direita:
+\begin{lstlisting}[language=C++, numbers=none, basicstyle=\ttfamily\footnotesize, frame=none, backgroundcolor=\color{white}]
+constexpr Long INF = std::numeric_limits<Long>::max() >> 8;
+constexpr Size MAX = std::numeric_limits<Size>::max() >> 8;
+\end{lstlisting}
+
+\paragraph{Representação Contígua de Grafo Residual e Emparelhamento XOR.}
+Para favorecer a localidade de cache da CPU e eliminar o overhead de alocações dinâmicas dispersas, a topologia da rede é mantida em duas estruturas integradas:
+\begin{enumerate}
+    \item \lstinline{std::vector<Edge> edges}: vetor contíguo na memória contendo todas as conexões da rede (\lstinline{from}, \lstinline{to}, \lstinline{capacity}, \lstinline{flow});
+    \item \lstinline{std::vector<std::vector<Size>> adj}: lista de adjacência onde cada entrada armazena apenas os índices numéricos dos arcos no vetor principal \lstinline{edges}.
+\end{enumerate}
+
+No método \lstinline{add_edge(u, v, cap, rev_cap)}, os arcos direto e reverso são alocados em pares sequenciais contíguos (índices $2k$ e $2k+1$). Consequentemente, o acesso ao arco residual simétrico opera em tempo estritamente $\mathcal{O}(1)$ via operador bit a bit Ou Exclusivo (\lstinline{id ^ 1ULL}):
+\begin{lstlisting}[language=C++, numbers=none, basicstyle=\ttfamily\footnotesize, frame=none, backgroundcolor=\color{white}]
+void push_flow(const Size edge_id, const Long flow_amount) {
+    edges[edge_id].flow += flow_amount;
+    edges[edge_id ^ 1ULL].flow -= flow_amount;
+}
+\end{lstlisting}
+
+\paragraph{Hierarquia Polimórfica e Padrões de Projeto.}
+A biblioteca organiza-se em duas famílias baseadas nos padrões \textit{Strategy}, \textit{Factory Method} e \textit{Prototype}~\cite{gamma1994design}:
+\begin{itemize}
+    \item \textbf{Família \lstinline{FlowNetwork} (Fluxo Máximo):} Interface base abstrata com o método virtual puro \lstinline{compute_max_flow(source, sink)}. Os motores concretos (\lstinline{FordFulkerson}, \lstinline{EdmondsKarp}, \lstinline{Dinic}, \lstinline{PushRelabel} e \lstinline{PushRelabelImproved}) implementam estratégias de busca distintas mantendo total intercambialidade;
+    \item \textbf{Família \lstinline{CostNetwork} (Custo Mínimo):} Interface base abstrata que incorpora o custo linear unitário $w$ aos arcos, com o método virtual puro \lstinline{compute_min_cost(source, sink)} implementado por \lstinline{CycleCanceling}, \lstinline{SuccessiveShortest}, \lstinline{SuccessiveShortestDijkstra} e \lstinline{NetworkSimplex}.
+\end{itemize}
+
+Os métodos virtuais \lstinline{make(n)} e \lstinline{clone()} permitem a instanciação e a clonagem profunda (\textit{deep copy}) de instâncias polimórficas preservando o estado residual, o que é fundamental em aplicações iterativas como corte mínimo e segmentação de imagens.
+
+% =========================================================================
+% IMPLEMENTAÇÃO DA INTERFACE BASE ``FLOW-NETWORK''
+% =========================================================================
+\apendice{Implementação da Interface Base ``Flow-Network''}
+\label{ap:flownetwork}
+
+\begin{lstlisting}[caption={Implementação em C++ da interface base \lstinline{FlowNetwork} para a modelagem abstrata de redes de fluxo.}, label={lst:flownetwork}]
+#ifndef FLOW_NETWORK_HPP
+#define FLOW_NETWORK_HPP
+
+#include <limits>
+#include <memory>
+#include <vector>
+
+using Long = long long;
+using Size = std::size_t;
+
+constexpr Long INF = std::numeric_limits<Long>::max() >> 8;
+constexpr Size MAX = std::numeric_limits<Size>::max() >> 8;
+
+class FlowNetwork
+{
+public:
+	struct Edge
+	{
+		Size from, to;
+		Long capacity, flow;
+	};
+
+	explicit FlowNetwork(const Size n) : size(n), adjacency(n) {}
+	virtual ~FlowNetwork() = default;
+
+	virtual std::unique_ptr<FlowNetwork> make(const Size n) const = 0;
+	virtual std::unique_ptr<FlowNetwork> clone() const = 0;
+
+	virtual void add_edge(
+	    const Size from, const Size to, const Long capacity,
+	    const Long reverse_capacity = 0
+	)
+	{
+		adjacency[from].push_back(edges.size());
+		edges.push_back({from, to, capacity, 0});
+		adjacency[to].push_back(edges.size());
+		edges.push_back({to, from, reverse_capacity, 0});
+	}
+
+	virtual Long compute_max_flow(const Size source, const Size sink) = 0;
+
+	[[nodiscard]] Size get_size() const
+	{
+		return size;
+	}
+
+	[[nodiscard]] const std::vector<Edge> &get_edges() const
+	{
+		return edges;
+	}
+
+	[[nodiscard]] const std::vector<std::vector<Size>> &get_adjacency() const
+	{
+		return adjacency;
+	}
+
+protected:
+	Size size;
+	std::vector<Edge> edges;
+	std::vector<std::vector<Size>> adjacency;
+
+	[[nodiscard]] Long get_residual_capacity(const Size edge_id) const
+	{
+		return edges[edge_id].capacity - edges[edge_id].flow;
+	}
+
+	void push_flow(const Size edge_id, const Long flow_amount)
+	{
+		edges[edge_id].flow += flow_amount;
+		edges[edge_id ^ 1ULL].flow -= flow_amount;
+	}
+};
+
+#endif // FLOW_NETWORK_HPP
+\end{lstlisting}
+
+% =========================================================================
+% IMPLEMENTAÇÃO DA CLASSE ``FORD-FULKERSON''
+% =========================================================================
+\apendice{Implementação da Classe ``Ford-Fulkerson''}
+\label{ap:ford_fulkerson}
+
+\begin{lstlisting}[caption={Implementação em C++ da classe \lstinline{FordFulkerson}, método genérico de caminhos aumentantes via DFS.}, label={lst:ford_fulkerson}]
+#ifndef FORD_FULKERSON_HPP
+#define FORD_FULKERSON_HPP
+
+#include "FlowNetwork.hpp"
+
+class FordFulkerson : public FlowNetwork
+{
+public:
+	explicit FordFulkerson(const Size n) : FlowNetwork(n), visited(n, 0), token(0) {}
+
+	static std::unique_ptr<FlowNetwork> create(const Size n)
+	{
+		return std::make_unique<FordFulkerson>(n);
+	}
+
+	std::unique_ptr<FlowNetwork> make(const Size n) const override
+	{
+		return std::make_unique<FordFulkerson>(n);
+	}
+
+	std::unique_ptr<FlowNetwork> clone() const override
+	{
+		return std::make_unique<FordFulkerson>(*this);
+	}
+
+	Long compute_max_flow(const Size source, const Size sink) override
+	{
+		Long total_flow = 0;
+		token = 0;
+
+		while (true)
+		{
+			++token;
+			const Long bottleneck = dfs(source, sink, INF);
+			if (bottleneck == 0)
+				break;
+			total_flow += bottleneck;
+		}
+
+		return total_flow;
+	}
+
+private:
+	std::vector<Size> visited;
+	Size token;
+
+	Long dfs(const Size current_node, const Size sink, const Long flow_pushed)
+	{
+		if (current_node == sink)
+			return flow_pushed;
+
+		visited[current_node] = token;
+
+		for (const Size edge_id : adjacency[current_node])
+		{
+			const Size next_node = edges[edge_id].to;
+			const Long residual_capacity = get_residual_capacity(edge_id);
+
+			if (visited[next_node] == token || residual_capacity <= 0)
+				continue;
+
+			const Long bottleneck = std::min(flow_pushed, residual_capacity);
+			const Long flow_transmitted = dfs(next_node, sink, bottleneck);
+
+			if (flow_transmitted > 0)
+			{
+				push_flow(edge_id, flow_transmitted);
+				return flow_transmitted;
+			}
+		}
+
+		return 0;
+	}
+};
+
+#endif // FORD_FULKERSON_HPP
+\end{lstlisting}
+
+% =========================================================================
+% IMPLEMENTAÇÃO DA CLASSE ``EDMONDS-KARP''
+% =========================================================================
+\apendice{Implementação da Classe ``Edmonds-Karp''}
+\label{ap:edmonds_karp}
+
+\begin{lstlisting}[caption={Implementação em C++ da classe \lstinline{EdmondsKarp}, baseada na seleção iterativa de caminhos mais curtos via Busca em Largura (BFS).}, label={lst:edmonds_karp}]
+#ifndef EDMONDS_KARP_HPP
+#define EDMONDS_KARP_HPP
+
+#include "FlowNetwork.hpp"
+#include <algorithm>
+#include <queue>
+
+class EdmondsKarp : public FlowNetwork
+{
+public:
+	explicit EdmondsKarp(const Size n) : FlowNetwork(n), parent_edge(n, MAX) {}
+
+	static std::unique_ptr<FlowNetwork> create(const Size n)
+	{
+		return std::make_unique<EdmondsKarp>(n);
+	}
+
+	std::unique_ptr<FlowNetwork> make(const Size n) const override
+	{
+		return std::make_unique<EdmondsKarp>(n);
+	}
+
+	std::unique_ptr<FlowNetwork> clone() const override
+	{
+		return std::make_unique<EdmondsKarp>(*this);
+	}
+
+	Long compute_max_flow(const Size source, const Size sink) override
+	{
+		Long total_flow = 0;
+
+		while (const Long bottleneck = bfs(source, sink))
+		{
+			total_flow += bottleneck;
+			retrace(source, sink, bottleneck);
+		}
+
+		return total_flow;
+	}
+
+private:
+	std::vector<Size> parent_edge;
+
+	Long bfs(const Size source, const Size sink)
+	{
+		std::fill(parent_edge.begin(), parent_edge.end(), MAX);
+		std::queue<std::pair<Size, Long>> queue;
+
+		parent_edge[source] = source;
+		queue.push({source, INF});
+
+		while (!queue.empty())
+		{
+			const auto [current_node, current_flow] = queue.front();
+			queue.pop();
+
+			for (const Size edge_id : adjacency[current_node])
+			{
+				const Size next_node = edges[edge_id].to;
+				const Long residual_capacity = get_residual_capacity(edge_id);
+
+				if (parent_edge[next_node] != MAX || residual_capacity <= 0)
+					continue;
+
+				parent_edge[next_node] = edge_id;
+				const Long bottleneck = std::min(current_flow, residual_capacity);
+
+				if (next_node == sink)
+					return bottleneck;
+
+				queue.push({next_node, bottleneck});
+			}
+		}
+		return 0;
+	}
+
+	void retrace(const Size source, const Size sink, const Long bottleneck)
+	{
+		Size current_node = sink;
+		while (current_node != source)
+		{
+			const Size edge_id = parent_edge[current_node];
+			push_flow(edge_id, bottleneck);
+			current_node = edges[edge_id].from;
+		}
+	}
+};
+
+#endif // EDMONDS_KARP_HPP
+\end{lstlisting}
+
+% =========================================================================
+% IMPLEMENTAÇÃO DA CLASSE ``DINIC''
+% =========================================================================
+\apendice{Implementação da Classe ``Dinic''}
+\label{ap:dinic}
+
+\begin{lstlisting}[caption={Implementação em C++ da classe \lstinline{Dinic}, estruturada com Digrafo de Níveis e otimização de ponteiros mortos no cálculo do fluxo bloqueador.}, label={lst:dinic}]
+#ifndef DINIC_HPP
+#define DINIC_HPP
+
+#include "FlowNetwork.hpp"
+#include <algorithm>
+#include <queue>
+
+class Dinic : public FlowNetwork
+{
+public:
+	explicit Dinic(const Size n) : FlowNetwork(n), level(n), next_edge_ptr(n) {}
+
+	static std::unique_ptr<FlowNetwork> create(const Size n)
+	{
+		return std::make_unique<Dinic>(n);
+	}
+
+	std::unique_ptr<FlowNetwork> make(const Size n) const override
+	{
+		return std::make_unique<Dinic>(n);
+	}
+
+	std::unique_ptr<FlowNetwork> clone() const override
+	{
+		return std::make_unique<Dinic>(*this);
+	}
+
+	Long compute_max_flow(const Size source, const Size sink) override
+	{
+		Long total_flow = 0;
+		while (bfs(source, sink))
+		{
+			std::fill(next_edge_ptr.begin(), next_edge_ptr.end(), 0);
+			while (const Long flow_pushed = dfs(source, sink, INF))
+				total_flow += flow_pushed;
+		}
+		return total_flow;
+	}
+
+private:
+	std::vector<Size> level;
+	std::vector<Size> next_edge_ptr;
+
+	bool bfs(const Size source, const Size sink)
+	{
+		std::fill(level.begin(), level.end(), MAX);
+		std::queue<Size> queue;
+
+		level[source] = 0;
+		queue.push(source);
+
+		while (!queue.empty())
+		{
+			const Size current_node = queue.front();
+			queue.pop();
+
+			for (const Size edge_id : adjacency[current_node])
+			{
+				const Size next_node = edges[edge_id].to;
+				const Long residual_capacity = get_residual_capacity(edge_id);
+
+				if (level[next_node] != MAX || residual_capacity <= 0)
+					continue;
+
+				level[next_node] = level[current_node] + 1;
+				queue.push(next_node);
+			}
+		}
+		return level[sink] != MAX;
+	}
+
+	Long dfs(const Size current_node, const Size sink, const Long flow_pushed)
+	{
+		if (current_node == sink)
+			return flow_pushed;
+
+		for (Size &ptr = next_edge_ptr[current_node];
+		     ptr < adjacency[current_node].size();
+		     ++ptr)
+		{
+			const Size edge_id = adjacency[current_node][ptr];
+			const Size next_node = edges[edge_id].to;
+			const Long residual_capacity = get_residual_capacity(edge_id);
+
+			if (level[current_node] + 1 != level[next_node] ||
+			    residual_capacity <= 0)
+				continue;
+
+			const Long bottleneck = std::min(flow_pushed, residual_capacity);
+			const Long flow_transmitted = dfs(next_node, sink, bottleneck);
+
+			if (flow_transmitted == 0)
+				continue;
+
+			push_flow(edge_id, flow_transmitted);
+			return flow_transmitted;
+		}
+		return 0;
+	}
+};
+
+#endif // DINIC_HPP
+\end{lstlisting}
+
+% =========================================================================
+% IMPLEMENTAÇÃO DA CLASSE ``PUSH-RELABEL''
+% =========================================================================
+\apendice{Implementação da Classe ``Push-Relabel''}
+\label{ap:push_relabel}
+
+\begin{lstlisting}[caption={Implementação em C++ da classe \lstinline{PushRelabel}, baseada no método de pré-fluxos e política de processamento em fila (FIFO).}, label={lst:push_relabel}]
+#ifndef PUSH_RELABEL_HPP
+#define PUSH_RELABEL_HPP
+
+#include "FlowNetwork.hpp"
+#include <algorithm>
+#include <queue>
+
+class PushRelabel : public FlowNetwork
+{
+public:
+	explicit PushRelabel(const Size n)
+	    : FlowNetwork(n), height(n), excess(n), next_edge_ptr(n), in_queue(n, false),
+	      source_node(0), sink_node(0)
+	{
+	}
+
+	static std::unique_ptr<FlowNetwork> create(const Size n)
+	{
+		return std::make_unique<PushRelabel>(n);
+	}
+
+	std::unique_ptr<FlowNetwork> make(const Size n) const override
+	{
+		return std::make_unique<PushRelabel>(n);
+	}
+
+	std::unique_ptr<FlowNetwork> clone() const override
+	{
+		return std::make_unique<PushRelabel>(*this);
+	}
+
+	Long compute_max_flow(const Size source, const Size sink) override
+	{
+		source_node = source;
+		sink_node = sink;
+		initialize_preflow();
+
+		while (!active_queue.empty())
+		{
+			const Size current_node = active_queue.front();
+			active_queue.pop();
+			in_queue[current_node] = false;
+			discharge_node(current_node);
+		}
+
+		return excess[sink];
+	}
+
+private:
+	std::vector<Size> height;
+	std::vector<Long> excess;
+	std::vector<Size> next_edge_ptr;
+	std::queue<Size> active_queue;
+	std::vector<bool> in_queue;
+	Size source_node, sink_node;
+
+	void initialize_preflow()
+	{
+		std::fill(height.begin(), height.end(), 0);
+		std::fill(excess.begin(), excess.end(), 0);
+		std::fill(next_edge_ptr.begin(), next_edge_ptr.end(), 0);
+		std::fill(in_queue.begin(), in_queue.end(), false);
+		active_queue = {};
+
+		height[source_node] = size;
+
+		for (const Size edge_id : adjacency[source_node])
+		{
+			const Long cap = edges[edge_id].capacity;
+			if (cap <= 0)
+				continue;
+
+			push_flow(edge_id, cap);
+			const Size next_node = edges[edge_id].to;
+			excess[next_node] += cap;
+
+			if (next_node == source_node || next_node == sink_node ||
+			    in_queue[next_node])
+				continue;
+
+			active_queue.push(next_node);
+			in_queue[next_node] = true;
+		}
+	}
+
+	void discharge_node(const Size current_node)
+	{
+		while (excess[current_node] > 0)
+		{
+			if (next_edge_ptr[current_node] >= adjacency[current_node].size())
+			{
+				relabel_node(current_node);
+				next_edge_ptr[current_node] = 0;
+				continue;
+			}
+
+			const Size edge_id = adjacency[current_node]
+			                              [next_edge_ptr[current_node]];
+			const Size next_node = edges[edge_id].to;
+			const Long residual_capacity = get_residual_capacity(edge_id);
+
+			if (residual_capacity > 0 &&
+			    height[current_node] == height[next_node] + 1)
+			{
+				push_preflow(current_node, edge_id);
+
+				if (next_node != source_node && next_node != sink_node &&
+				    !in_queue[next_node] && excess[next_node] > 0)
+				{
+					active_queue.push(next_node);
+					in_queue[next_node] = true;
+				}
+			}
+			else
+			{
+				next_edge_ptr[current_node]++;
+			}
+		}
+	}
+
+	void relabel_node(const Size current_node)
+	{
+		Size min_height = MAX;
+		for (const Size edge_id : adjacency[current_node])
+		{
+			if (get_residual_capacity(edge_id) <= 0)
+				continue;
+			min_height = std::min(min_height, height[edges[edge_id].to]);
+		}
+
+		if (min_height != MAX)
+			height[current_node] = min_height + 1;
+	}
+
+	void push_preflow(const Size current_node, const Size edge_id)
+	{
+		const Size next_node = edges[edge_id].to;
+		const Long residual_capacity = get_residual_capacity(edge_id);
+		const Long flow_to_push = std::min(excess[current_node], residual_capacity);
+
+		push_flow(edge_id, flow_to_push);
+		excess[current_node] -= flow_to_push;
+		excess[next_node] += flow_to_push;
+	}
+};
+
+#endif // PUSH_RELABEL_HPP
+\end{lstlisting}
+
+% =========================================================================
+% IMPLEMENTAÇÃO DA CLASSE ``PUSH-RELABEL IMPROVED''
+% =========================================================================
+\apendice{Implementação da Classe ``Push-Relabel Improved''}
+\label{ap:push_relabel_improved}
+
+\begin{lstlisting}[caption={Implementação em C++ da classe \lstinline{PushRelabelImproved}, otimizada empiricamente com a Heurística de Lacuna (\textit{Gap Heuristic}).}, label={lst:push_relabel_improved}]
+#ifndef PUSH_RELABEL_IMPROVED_HPP
+#define PUSH_RELABEL_IMPROVED_HPP
+
+#include "FlowNetwork.hpp"
+#include <algorithm>
+
+class PushRelabelImproved : public FlowNetwork
+{
+public:
+	explicit PushRelabelImproved(const Size n)
+	    : FlowNetwork(n), height(n), excess(n), height_count(2 * n + 1),
+	      next_edge_ptr(n), active_buckets(2 * n + 1), highest_active(0),
+	      source_node(0), sink_node(0)
+	{
+	}
+
+	static std::unique_ptr<FlowNetwork> create(const Size n)
+	{
+		return std::make_unique<PushRelabelImproved>(n);
+	}
+
+	std::unique_ptr<FlowNetwork> make(const Size n) const override
+	{
+		return std::make_unique<PushRelabelImproved>(n);
+	}
+
+	std::unique_ptr<FlowNetwork> clone() const override
+	{
+		return std::make_unique<PushRelabelImproved>(*this);
+	}
+
+	Long compute_max_flow(const Size source, const Size sink) override
+	{
+		source_node = source;
+		sink_node = sink;
+		initialize_preflow();
+
+		while (true)
+		{
+			if (active_buckets[highest_active].empty())
+			{
+				if (highest_active == 0)
+					break;
+				highest_active--;
+				continue;
+			}
+
+			const Size current_node = active_buckets[highest_active].back();
+			active_buckets[highest_active].pop_back();
+
+			if (height[current_node] != highest_active)
+				continue;
+
+			discharge_node(current_node);
+		}
+
+		return excess[sink];
+	}
+
+private:
+	std::vector<Size> height;
+	std::vector<Long> excess;
+	std::vector<Size> height_count;
+	std::vector<Size> next_edge_ptr;
+	std::vector<std::vector<Size>> active_buckets;
+	Size highest_active;
+	Size source_node, sink_node;
+
+	void initialize_preflow()
+	{
+		std::fill(height.begin(), height.end(), 0);
+		std::fill(excess.begin(), excess.end(), 0);
+		std::fill(height_count.begin(), height_count.end(), 0);
+		std::fill(next_edge_ptr.begin(), next_edge_ptr.end(), 0);
+		for (auto &bucket : active_buckets)
+			bucket.clear();
+		highest_active = 0;
+
+		height[source_node] = size;
+		height_count[size] = 1;
+		height_count[0] = size - 1;
+
+		for (const Size edge_id : adjacency[source_node])
+		{
+			const Long cap = edges[edge_id].capacity;
+			if (cap > 0)
+			{
+				push_flow(edge_id, cap);
+				excess[edges[edge_id].to] += cap;
+				enqueue_active_node(edges[edge_id].to);
+			}
+		}
+	}
+
+	void discharge_node(const Size current_node)
+	{
+		while (excess[current_node] > 0)
+		{
+			if (next_edge_ptr[current_node] >= adjacency[current_node].size())
+			{
+				relabel_node(current_node);
+				next_edge_ptr[current_node] = 0;
+				continue;
+			}
+
+			const Size edge_id = adjacency[current_node]
+			                              [next_edge_ptr[current_node]];
+			const Size next_node = edges[edge_id].to;
+			const Long residual_capacity = get_residual_capacity(edge_id);
+
+			if (residual_capacity > 0 &&
+			    height[current_node] == height[next_node] + 1)
+				push_preflow(current_node, edge_id);
+			else
+				next_edge_ptr[current_node]++;
+		}
+	}
+
+	void relabel_node(const Size current_node)
+	{
+		Size min_height = MAX;
+		for (const Size edge_id : adjacency[current_node])
+		{
+			if (get_residual_capacity(edge_id) <= 0)
+				continue;
+			min_height = std::min(min_height, height[edges[edge_id].to]);
+		}
+
+		if (min_height == MAX)
+			return;
+
+		const Size old_height = height[current_node];
+		height_count[old_height]--;
+
+		height[current_node] = min_height + 1;
+		height_count[height[current_node]]++;
+		enqueue_active_node(current_node);
+
+		if (height_count[old_height] == 0 && old_height < size)
+			apply_gap_heuristic(old_height);
+	}
+
+	void apply_gap_heuristic(const Size gap_height)
+	{
+		for (Size i = 0; i < size; ++i)
+		{
+			if (i == source_node || height[i] <= gap_height || height[i] >= size)
+				continue;
+
+			height_count[height[i]]--;
+			height[i] = std::max(height[i], size + 1);
+			height_count[height[i]]++;
+			enqueue_active_node(i);
+		}
+	}
+
+	void push_preflow(const Size current_node, const Size edge_id)
+	{
+		const Size next_node = edges[edge_id].to;
+		const Long residual_capacity = get_residual_capacity(edge_id);
+		const Long flow_to_push = std::min(excess[current_node], residual_capacity);
+
+		push_flow(edge_id, flow_to_push);
+		excess[current_node] -= flow_to_push;
+		excess[next_node] += flow_to_push;
+
+		if (excess[next_node] == flow_to_push)
+			enqueue_active_node(next_node);
+	}
+
+	void enqueue_active_node(const Size node)
+	{
+		if (node == source_node || node == sink_node || excess[node] <= 0)
+			return;
+
+		active_buckets[height[node]].push_back(node);
+		highest_active = std::max(highest_active, height[node]);
+	}
+};
+
+#endif // PUSH_RELABEL_IMPROVED_HPP
+\end{lstlisting}
+
+% =========================================================================
+% IMPLEMENTAÇÃO DA INTERFACE BASE ``COST-NETWORK''
+% =========================================================================
+\apendice{Implementação da Interface Base ``Cost-Network''}
+\label{ap:costnetwork}
+
+\begin{lstlisting}[caption={Implementação em C++ da interface base \lstinline{CostNetwork} para a modelagem abstrata de redes de fluxo com custos.}, label={lst:costnetwork}]
+#ifndef COST_NETWORK_HPP
+#define COST_NETWORK_HPP
+
+#include <limits>
+#include <memory>
+#include <vector>
+
+using Long = long long;
+using Size = std::size_t;
+
+constexpr Long INF = std::numeric_limits<Long>::max() >> 8;
+constexpr Size MAX = std::numeric_limits<Size>::max() >> 8;
+
+class CostNetwork
+{
+public:
+	struct Edge
+	{
+		Size from, to;
+		Long capacity, cost, flow;
+	};
+
+	explicit CostNetwork(const Size n) : size(n), adjacency(n) {}
+	virtual ~CostNetwork() = default;
+
+	virtual std::unique_ptr<CostNetwork> make(const Size n) const = 0;
+	virtual std::unique_ptr<CostNetwork> clone() const = 0;
+
+	virtual void add_edge(
+	    const Size from, const Size to, const Long capacity, const Long cost
+	)
+	{
+		adjacency[from].push_back(edges.size());
+		edges.push_back({from, to, capacity, cost, 0});
+		adjacency[to].push_back(edges.size());
+		edges.push_back({to, from, 0, -cost, 0});
+	}
+
+	virtual Long compute_min_cost_max_flow(const Size source, const Size sink) = 0;
+
+	[[nodiscard]] Long get_total_flow(const Size source) const
+	{
+		Long total = 0;
+		for (const Size edge_id : adjacency[source])
+			total += edges[edge_id].flow;
+		return total;
+	}
+
+	[[nodiscard]] Size get_size() const
+	{
+		return size;
+	}
+
+	[[nodiscard]] const std::vector<Edge> &get_edges() const
+	{
+		return edges;
+	}
+
+	[[nodiscard]] const std::vector<std::vector<Size>> &get_adjacency() const
+	{
+		return adjacency;
+	}
+
+protected:
+	Size size;
+	std::vector<Edge> edges;
+	std::vector<std::vector<Size>> adjacency;
+
+	[[nodiscard]] Long get_residual_capacity(const Size edge_id) const
+	{
+		return edges[edge_id].capacity - edges[edge_id].flow;
+	}
+
+	void push_flow(const Size edge_id, const Long flow_amount)
+	{
+		edges[edge_id].flow += flow_amount;
+		edges[edge_id ^ 1ULL].flow -= flow_amount;
+	}
+};
+
+#endif // COST_NETWORK_HPP
+\end{lstlisting}
+
+% =========================================================================
+% IMPLEMENTAÇÃO DA CLASSE ``CYCLE-CANCELING''
+% =========================================================================
+\apendice{Implementação da Classe ``Cycle-Canceling''}
+\label{ap:cycle_canceling}
+
+\begin{lstlisting}[caption={Implementação em C++ do algoritmo \textit{Cycle Canceling}.}, label={lst:cycle_canceling}]
+#ifndef CYCLE_CANCELING_HPP
+#define CYCLE_CANCELING_HPP
+
+#include "CostNetwork.hpp"
+#include <algorithm>
+#include <queue>
+
+class CycleCanceling : public CostNetwork
+{
+public:
+	explicit CycleCanceling(const Size n)
+	    : CostNetwork(n), distance(n), parent_edge(n)
+	{
+	}
+
+	static std::unique_ptr<CostNetwork> create(const Size n)
+	{
+		return std::make_unique<CycleCanceling>(n);
+	}
+
+	std::unique_ptr<CostNetwork> make(const Size n) const override
+	{
+		return std::make_unique<CycleCanceling>(n);
+	}
+
+	std::unique_ptr<CostNetwork> clone() const override
+	{
+		return std::make_unique<CycleCanceling>(*this);
+	}
+
+	Long compute_min_cost_max_flow(const Size source, const Size sink) override
+	{
+		saturate_max_flow(source, sink);
+
+		while (find_negative_cycle())
+			cancel_cycle();
+
+		Long total_cost = 0;
+		for (Size i = 0; i < edges.size(); i += 2)
+			total_cost += edges[i].flow * edges[i].cost;
+		return total_cost;
+	}
+
+private:
+	std::vector<Long> distance;
+	std::vector<Size> parent_edge;
+	Size cycle_node;
+
+	void saturate_max_flow(const Size source, const Size sink)
+	{
+		while (true)
+		{
+			std::vector<Size> parent(size, MAX);
+			std::queue<std::pair<Size, Long>> queue;
+
+			parent[source] = source;
+			queue.push({source, INF});
+
+			while (!queue.empty())
+			{
+				const auto [current, current_flow] = queue.front();
+				queue.pop();
+
+				for (const Size edge_id : adjacency[current])
+				{
+					const Size next = edges[edge_id].to;
+					if (parent[next] != MAX || get_residual_capacity(edge_id) <= 0)
+						continue;
+
+					parent[next] = edge_id;
+					const Long bottleneck = std::min(
+					    current_flow, get_residual_capacity(edge_id)
+					);
+
+					if (next == sink)
+					{
+						Size node = sink;
+						while (node != source)
+						{
+							const Size eid = parent[node];
+							push_flow(eid, bottleneck);
+							node = edges[eid].from;
+						}
+						goto next_iteration;
+					}
+					queue.push({next, bottleneck});
+				}
+			}
+			return;
+		next_iteration:;
+		}
+	}
+
+	bool find_negative_cycle()
+	{
+		std::fill(distance.begin(), distance.end(), 0);
+		std::fill(parent_edge.begin(), parent_edge.end(), MAX);
+
+		for (Size iteration = 0; iteration < size; ++iteration)
+		{
+			cycle_node = MAX;
+			for (Size edge_id = 0; edge_id < edges.size(); ++edge_id)
+			{
+				if (get_residual_capacity(edge_id) <= 0)
+					continue;
+
+				const Size u = edges[edge_id].from;
+				const Size v = edges[edge_id].to;
+
+				if (distance[u] + edges[edge_id].cost < distance[v])
+				{
+					distance[v] = distance[u] + edges[edge_id].cost;
+					parent_edge[v] = edge_id;
+					cycle_node = v;
+				}
+			}
+		}
+		return cycle_node != MAX;
+	}
+
+	void cancel_cycle()
+	{
+		Size node = cycle_node;
+		for (Size i = 0; i < size; ++i)
+			node = edges[parent_edge[node]].from;
+
+		Long bottleneck = INF;
+		Size current = node;
+		do
+		{
+			const Size edge_id = parent_edge[current];
+			bottleneck = std::min(bottleneck, get_residual_capacity(edge_id));
+			current = edges[edge_id].from;
+		} while (current != node);
+
+		current = node;
+		do
+		{
+			const Size edge_id = parent_edge[current];
+			push_flow(edge_id, bottleneck);
+			current = edges[edge_id].from;
+		} while (current != node);
+	}
+};
+
+#endif // CYCLE_CANCELING_HPP
+\end{lstlisting}
+
+% =========================================================================
+% IMPLEMENTAÇÃO DA CLASSE ``SUCCESSIVE-SHORTEST-PATH''
+% =========================================================================
+\apendice{Implementação da Classe ``Successive-Shortest-Path''}
+\label{ap:successive_shortest}
+
+\begin{lstlisting}[caption={Implementação em C++ do algoritmo \textit{Successive Shortest Path} com SPFA.}, label={lst:successive_shortest}]
+#ifndef SUCCESSIVE_SHORTEST_HPP
+#define SUCCESSIVE_SHORTEST_HPP
+
+#include "CostNetwork.hpp"
+#include <algorithm>
+#include <queue>
+
+class SuccessiveShortest : public CostNetwork
+{
+public:
+	explicit SuccessiveShortest(const Size n)
+	    : CostNetwork(n), distance(n), parent_edge(n), in_queue(n)
+	{
+	}
+
+	static std::unique_ptr<CostNetwork> create(const Size n)
+	{
+		return std::make_unique<SuccessiveShortest>(n);
+	}
+
+	std::unique_ptr<CostNetwork> make(const Size n) const override
+	{
+		return std::make_unique<SuccessiveShortest>(n);
+	}
+
+	std::unique_ptr<CostNetwork> clone() const override
+	{
+		return std::make_unique<SuccessiveShortest>(*this);
+	}
+
+	Long compute_min_cost_max_flow(const Size source, const Size sink) override
+	{
+		Long total_cost = 0;
+
+		while (spfa(source, sink))
+		{
+			Long bottleneck = INF;
+			for (Size node = sink; node != source;)
+			{
+				const Size edge_id = parent_edge[node];
+				bottleneck = std::min(bottleneck, get_residual_capacity(edge_id));
+				node = edges[edge_id].from;
+			}
+
+			for (Size node = sink; node != source;)
+			{
+				const Size edge_id = parent_edge[node];
+				push_flow(edge_id, bottleneck);
+				node = edges[edge_id].from;
+			}
+
+			total_cost += bottleneck * distance[sink];
+		}
+
+		return total_cost;
+	}
+
+private:
+	std::vector<Long> distance;
+	std::vector<Size> parent_edge;
+	std::vector<bool> in_queue;
+
+	bool spfa(const Size source, const Size sink)
+	{
+		std::fill(distance.begin(), distance.end(), INF);
+		std::fill(parent_edge.begin(), parent_edge.end(), MAX);
+		std::fill(in_queue.begin(), in_queue.end(), false);
+
+		distance[source] = 0;
+		in_queue[source] = true;
+		std::queue<Size> queue;
+		queue.push(source);
+
+		while (!queue.empty())
+		{
+			const Size current = queue.front();
+			queue.pop();
+			in_queue[current] = false;
+
+			for (const Size edge_id : adjacency[current])
+			{
+				const Size next = edges[edge_id].to;
+				const Long new_distance = distance[current] + edges[edge_id].cost;
+
+				if (get_residual_capacity(edge_id) <= 0 ||
+				    new_distance >= distance[next])
+					continue;
+
+				distance[next] = new_distance;
+				parent_edge[next] = edge_id;
+
+				if (!in_queue[next])
+				{
+					in_queue[next] = true;
+					queue.push(next);
+				}
+			}
+		}
+
+		return distance[sink] != INF;
+	}
+};
+
+#endif // SUCCESSIVE_SHORTEST_HPP
+\end{lstlisting}
+
+% =========================================================================
+% IMPLEMENTAÇÃO DA CLASSE ``SUCCESSIVE-SHORTEST-PATH'' COM DIJKSTRA E POTENCIAIS
+% =========================================================================
+\apendice{Implementação da Classe ``Successive-Shortest-Path'' com Dijkstra e Potenciais}
+\label{ap:successive_shortest_dijkstra}
+
+\begin{lstlisting}[caption={Implementação em C++ do algoritmo \textit{Successive Shortest Path} com Potenciais Nodais e Dijkstra.}, label={lst:successive_shortest_dijkstra}]
+#ifndef SUCCESSIVE_SHORTEST_DIJKSTRA_HPP
+#define SUCCESSIVE_SHORTEST_DIJKSTRA_HPP
+
+#include "CostNetwork.hpp"
+#include <algorithm>
+#include <queue>
+#include <vector>
+
+class SuccessiveShortestDijkstra : public CostNetwork
+{
+public:
+	explicit SuccessiveShortestDijkstra(const Size n)
+	    : CostNetwork(n), potential(n, 0), distance(n), parent_edge(n)
+	{
+	}
+
+	static std::unique_ptr<CostNetwork> create(const Size n)
+	{
+		return std::make_unique<SuccessiveShortestDijkstra>(n);
+	}
+
+	std::unique_ptr<CostNetwork> make(const Size n) const override
+	{
+		return std::make_unique<SuccessiveShortestDijkstra>(n);
+	}
+
+	std::unique_ptr<CostNetwork> clone() const override
+	{
+		return std::make_unique<SuccessiveShortestDijkstra>(*this);
+	}
+
+	Long compute_min_cost_max_flow(const Size source, const Size sink) override
+	{
+		bool has_negative_cost = false;
+		for (const auto &e : edges)
+		{
+			if (e.capacity > 0 && e.cost < 0)
+			{
+				has_negative_cost = true;
+				break;
+			}
+		}
+
+		std::fill(potential.begin(), potential.end(), 0);
+		if (has_negative_cost)
+		{
+			std::fill(distance.begin(), distance.end(), INF);
+			std::vector<bool> in_queue(size, false);
+			std::queue<Size> q;
+
+			distance[source] = 0;
+			in_queue[source] = true;
+			q.push(source);
+
+			while (!q.empty())
+			{
+				const Size curr = q.front();
+				q.pop();
+				in_queue[curr] = false;
+
+				for (const Size edge_id : adjacency[curr])
+				{
+					if (get_residual_capacity(edge_id) <= 0)
+						continue;
+
+					const Size next = edges[edge_id].to;
+					const Long new_d = distance[curr] + edges[edge_id].cost;
+
+					if (new_d < distance[next])
+					{
+						distance[next] = new_d;
+						if (!in_queue[next])
+						{
+							in_queue[next] = true;
+							q.push(next);
+						}
+					}
+				}
+			}
+
+			for (Size i = 0; i < size; ++i)
+			{
+				if (distance[i] != INF)
+					potential[i] = distance[i];
+			}
+		}
+
+		while (true)
+		{
+			std::fill(distance.begin(), distance.end(), INF);
+			std::fill(parent_edge.begin(), parent_edge.end(), MAX);
+
+			using Pair = std::pair<Long, Size>;
+			std::priority_queue<Pair, std::vector<Pair>, std::greater<Pair>> pq;
+
+			distance[source] = 0;
+			pq.push({0, source});
+
+			while (!pq.empty())
+			{
+				const auto [d, curr] = pq.top();
+				pq.pop();
+
+				if (d > distance[curr])
+					continue;
+
+				for (const Size edge_id : adjacency[curr])
+				{
+					if (get_residual_capacity(edge_id) <= 0)
+						continue;
+
+					const Size next = edges[edge_id].to;
+					const Long reduced_cost = edges[edge_id].cost + potential[curr] -
+					                          potential[next];
+
+					if (distance[curr] + reduced_cost < distance[next])
+					{
+						distance[next] = distance[curr] + reduced_cost;
+						parent_edge[next] = edge_id;
+						pq.push({distance[next], next});
+					}
+				}
+			}
+
+			if (distance[sink] == INF)
+				break;
+
+			for (Size i = 0; i < size; ++i)
+			{
+				if (distance[i] != INF)
+					potential[i] += distance[i];
+			}
+
+			Long bottleneck = INF;
+			for (Size curr = sink; curr != source;
+			     curr = edges[parent_edge[curr]].from)
+			{
+				bottleneck = std::min(
+				    bottleneck, get_residual_capacity(parent_edge[curr])
+				);
+			}
+
+			for (Size curr = sink; curr != source;
+			     curr = edges[parent_edge[curr]].from)
+			{
+				push_flow(parent_edge[curr], bottleneck);
+			}
+		}
+
+		Long total_cost = 0;
+		for (Size i = 0; i < edges.size(); i += 2)
+		{
+			total_cost += edges[i].flow * edges[i].cost;
+		}
+
+		return total_cost;
+	}
+
+private:
+	std::vector<Long> potential;
+	std::vector<Long> distance;
+	std::vector<Size> parent_edge;
+};
+
+#endif // SUCCESSIVE_SHORTEST_DIJKSTRA_HPP
+\end{lstlisting}
+
+% =========================================================================
+% IMPLEMENTAÇÃO DA CLASSE ``NETWORK-SIMPLEX''
+% =========================================================================
+\apendice{Implementação da Classe ``Network-Simplex''}
+\label{ap:network_simplex}
+
+\begin{lstlisting}[caption={Implementação em C++ do algoritmo \textit{Network Simplex}.}, label={lst:network_simplex}]
+#ifndef NETWORK_SIMPLEX_HPP
+#define NETWORK_SIMPLEX_HPP
+
+#include "CostNetwork.hpp"
+#include <algorithm>
+#include <cstdint>
+#include <numeric>
+#include <queue>
+#include <vector>
+
+class NetworkSimplex : public CostNetwork
+{
+public:
+	explicit NetworkSimplex(const Size n) : CostNetwork(n) {}
+
+	static std::unique_ptr<CostNetwork> create(const Size n)
+	{
+		return std::make_unique<NetworkSimplex>(n);
+	}
+
+	std::unique_ptr<CostNetwork> make(const Size n) const override
+	{
+		return std::make_unique<NetworkSimplex>(n);
+	}
+
+	std::unique_ptr<CostNetwork> clone() const override
+	{
+		return std::make_unique<NetworkSimplex>(*this);
+	}
+
+	Long compute_min_cost_max_flow(const Size source, const Size sink) override
+	{
+		Long max_c = 1;
+		for (const auto &e : edges)
+			max_c = std::max(max_c, std::abs(e.cost));
+
+		const Long back_cost = -(max_c * static_cast<Long>(size + 2) + 1);
+		const Size back_edge_idx = edges.size();
+		add_edge(sink, source, INF, back_cost);
+
+		const Size num_nodes = size + 1;
+		const Size root = size;
+		adjacency.resize(num_nodes);
+
+		parent.assign(num_nodes, root);
+		depth.assign(num_nodes, 1);
+		potential.assign(num_nodes, 0);
+		parent_edge.assign(num_nodes, MAX);
+		tree_adj.assign(num_nodes, {});
+
+		arc_state.assign(edges.size() / 2, ArcState::LOWER);
+
+		const Long big_m = std::abs(back_cost) * static_cast<Long>(size + 2) +
+		                   100000;
+
+		depth[root] = 0;
+		potential[root] = 0;
+
+		for (Size v = 0; v < size; ++v)
+		{
+			const Size art_id = edges.size();
+			adjacency[v].push_back(art_id);
+			edges.push_back({v, root, INF, big_m, 0});
+			adjacency[root].push_back(art_id + 1);
+			edges.push_back({root, v, 0, -big_m, 0});
+
+			parent[v] = root;
+			parent_edge[v] = art_id;
+			potential[v] = -big_m;
+			arc_state.push_back(ArcState::TREE);
+			tree_adj[root].push_back(v);
+			tree_adj[v].push_back(root);
+		}
+
+		while (true)
+		{
+			Size entering = MAX;
+			Long best_violation = 0;
+
+			for (Size i = 0; i < edges.size(); i += 2)
+			{
+				const Size arc_idx = i / 2;
+				if (arc_state[arc_idx] == ArcState::TREE)
+					continue;
+
+				const Long rc = reduced_cost(i);
+				if (arc_state[arc_idx] == ArcState::LOWER && rc < best_violation)
+				{
+					best_violation = rc;
+					entering = i;
+				}
+				else if (arc_state[arc_idx] == ArcState::UPPER &&
+				         -rc < best_violation)
+				{
+					best_violation = -rc;
+					entering = i;
+				}
+			}
+
+			if (entering == MAX)
+				break;
+
+			pivot(entering);
+		}
+
+		Long total_cost = 0;
+		for (Size i = 0; i < back_edge_idx; i += 2)
+		{
+			total_cost += edges[i].flow * edges[i].cost;
+		}
+
+		adjacency[sink].pop_back();
+		adjacency[source].pop_back();
+		for (Size v = 0; v < size; ++v)
+		{
+			adjacency[v].pop_back();
+		}
+		adjacency.resize(size);
+		edges.resize(back_edge_idx);
+
+		return total_cost;
+	}
+
+private:
+	enum class ArcState : uint8_t
+	{
+		LOWER,
+		UPPER,
+		TREE
+	};
+
+	std::vector<Size> parent;
+	std::vector<Size> depth;
+	std::vector<Long> potential;
+	std::vector<Size> parent_edge;
+	std::vector<ArcState> arc_state;
+	std::vector<std::vector<Size>> tree_adj;
+
+	[[nodiscard]] Long reduced_cost(const Size edge_id) const
+	{
+		return edges[edge_id].cost + potential[edges[edge_id].from] -
+		       potential[edges[edge_id].to];
+	}
+
+	Size find_lca(Size u, Size v) const
+	{
+		while (u != v)
+		{
+			if (depth[u] < depth[v])
+				std::swap(u, v);
+			u = parent[u];
+		}
+		return u;
+	}
+
+	void pivot(const Size entering)
+	{
+		const Size arc_idx = entering / 2;
+		Size u = edges[entering].from;
+		Size v = edges[entering].to;
+
+		const bool is_upper = (arc_state[arc_idx] == ArcState::UPPER);
+		if (is_upper)
+			std::swap(u, v);
+
+		const Size lca = find_lca(u, v);
+
+		Long bottleneck = is_upper
+		                      ? edges[entering].flow
+		                      : (edges[entering].capacity - edges[entering].flow);
+		Size leaving_edge = entering;
+		bool leaving_is_entering = true;
+
+		for (Size curr = v; curr != lca; curr = parent[curr])
+		{
+			const Size pe = parent_edge[curr];
+			Long cap;
+			if (edges[pe].from == curr)
+				cap = edges[pe].capacity - edges[pe].flow;
+			else
+				cap = edges[pe].flow;
+
+			if (cap < bottleneck)
+			{
+				bottleneck = cap;
+				leaving_edge = pe;
+				leaving_is_entering = false;
+			}
+		}
+
+		for (Size curr = u; curr != lca; curr = parent[curr])
+		{
+			const Size pe = parent_edge[curr];
+			Long cap;
+			if (edges[pe].to == curr)
+				cap = edges[pe].capacity - edges[pe].flow;
+			else
+				cap = edges[pe].flow;
+
+			if (cap <= bottleneck)
+			{
+				bottleneck = cap;
+				leaving_edge = pe;
+				leaving_is_entering = false;
+			}
+		}
+
+		if (bottleneck == 0 && leaving_is_entering)
+		{
+			arc_state[arc_idx] = is_upper ? ArcState::LOWER : ArcState::UPPER;
+			return;
+		}
+
+		if (!is_upper)
+		{
+			edges[entering].flow += bottleneck;
+			edges[entering ^ 1ULL].flow -= bottleneck;
+		}
+		else
+		{
+			edges[entering].flow -= bottleneck;
+			edges[entering ^ 1ULL].flow += bottleneck;
+		}
+
+		for (Size curr = v; curr != lca; curr = parent[curr])
+		{
+			const Size pe = parent_edge[curr];
+			if (edges[pe].from == curr)
+			{
+				edges[pe].flow += bottleneck;
+				edges[pe ^ 1ULL].flow -= bottleneck;
+			}
+			else
+			{
+				edges[pe].flow -= bottleneck;
+				edges[pe ^ 1ULL].flow += bottleneck;
+			}
+		}
+
+		for (Size curr = u; curr != lca; curr = parent[curr])
+		{
+			const Size pe = parent_edge[curr];
+			if (edges[pe].to == curr)
+			{
+				edges[pe].flow += bottleneck;
+				edges[pe ^ 1ULL].flow -= bottleneck;
+			}
+			else
+			{
+				edges[pe].flow -= bottleneck;
+				edges[pe ^ 1ULL].flow += bottleneck;
+			}
+		}
+
+		if (leaving_is_entering)
+		{
+			arc_state[arc_idx] = (edges[entering].flow == edges[entering].capacity)
+			                         ? ArcState::UPPER
+			                         : ArcState::LOWER;
+			return;
+		}
+
+		const Size leaving_arc_idx = leaving_edge / 2;
+		arc_state[leaving_arc_idx] = (edges[leaving_edge].flow == 0)
+		                                 ? ArcState::LOWER
+		                                 : ArcState::UPPER;
+		arc_state[arc_idx] = ArcState::TREE;
+
+		const Size lu = edges[leaving_edge].from;
+		const Size lv = edges[leaving_edge].to;
+		auto &adj_lu = tree_adj[lu];
+		adj_lu.erase(std::remove(adj_lu.begin(), adj_lu.end(), lv), adj_lu.end());
+		auto &adj_lv = tree_adj[lv];
+		adj_lv.erase(std::remove(adj_lv.begin(), adj_lv.end(), lu), adj_lv.end());
+
+		const Size orig_u = edges[entering].from;
+		const Size orig_v = edges[entering].to;
+		tree_adj[orig_u].push_back(orig_v);
+		tree_adj[orig_v].push_back(orig_u);
+
+		const Size root = size;
+		std::vector<bool> visited(size + 1, false);
+		std::queue<Size> q;
+		q.push(root);
+		visited[root] = true;
+		parent[root] = root;
+		depth[root] = 0;
+		parent_edge[root] = MAX;
+		potential[root] = 0;
+
+		while (!q.empty())
+		{
+			const Size curr = q.front();
+			q.pop();
+
+			for (const Size neighbor : tree_adj[curr])
+			{
+				if (visited[neighbor])
+					continue;
+
+				visited[neighbor] = true;
+				parent[neighbor] = curr;
+				depth[neighbor] = depth[curr] + 1;
+
+				Size eid = MAX;
+				for (const Size edge_id : adjacency[curr])
+				{
+					if (edges[edge_id].to == neighbor &&
+					    arc_state[edge_id / 2] == ArcState::TREE)
+					{
+						eid = edge_id;
+						break;
+					}
+				}
+				parent_edge[neighbor] = eid;
+
+				if (edges[eid].from == curr)
+					potential[neighbor] = potential[curr] + edges[eid].cost;
+				else
+					potential[neighbor] = potential[curr] - edges[eid].cost;
+
+				q.push(neighbor);
+			}
+		}
+	}
+};
+
+#endif // NETWORK_SIMPLEX_HPP
+\end{lstlisting}
+
+% =========================================================================
+% ACESSO AO CÓDIGO-FONTE E REPOSITÓRIO GITHUB
+% =========================================================================
+\newpage
+\apendice{Acesso ao Código-Fonte e Repositório GitHub}
+\label{ap:github}
+
+Para garantir a reprodutibilidade dos experimentos e disponibilizar o código-fonte desenvolvido, todo o material está organizado em repositório público no GitHub.
+
+O repositório \textbf{Networks Flow} está estruturado nos seguintes diretórios principais:
+\begin{itemize}
+    \item \textbf{Fluxo Máximo} (\texttt{Implementações/FlowNetwork/}): Módulos base e algoritmos (\lstinline{FordFulkerson}, \lstinline{EdmondsKarp}, \lstinline{Dinic}, \lstinline{PushRelabel} e \lstinline{PushRelabelImproved});
+    \item \textbf{Fluxo de Custo Mínimo} (\texttt{Implementações/CostNetwork/}): Módulos base e algoritmos (\lstinline{CycleCanceling}, \lstinline{SuccessiveShortestPath} e \lstinline{NetworkSimplex});
+    \item \textbf{Problemas} (\texttt{Implementações/Problemas/}): Resoluções para problemas combinatórios clássicos (como \textit{Minimum Vertex Cover}, emparelhamentos e caminhos disjuntos);
+    \item \textbf{Aplicações Práticas} (\texttt{Aplicações/Segmentação de Imagens/}): Segmentação de imagens via corte mínimo em grafos (\textit{Graph Cuts});
+    \item \textbf{Experimentos} (\texttt{Experimentos/}): Scripts de automação de testes, leitura de instâncias DIMACS e avaliação experimental.
+\end{itemize}
+
+O código-fonte completo pode ser consultado, clonado e executado através do endereço:
+
+\vspace{0.4cm}
+\begin{center}
+    \fbox{\url{https://github.com/GabrielFrigo4/networks-flow}}
+\end{center}
+\vspace{0.4cm}
+
+O repositório contém o histórico de desenvolvimento e as instruções para compilação e reprodução dos experimentos.
+
+
+
+\end{document}

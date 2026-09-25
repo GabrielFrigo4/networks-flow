@@ -55,21 +55,21 @@
         };
 
         \begin{scope}[shift={($(current page.north)+(0, -19.6cm)$)}]
-            \draw[line width=1.3pt, cardborder, fill=cardbg, rounded corners=12pt] 
+            \draw[line width=1.3pt, cardborder, fill=cardbg, rounded corners=12pt]
                 (-6.8, -3.95) rectangle (6.8, 3.95);
 
-            \node[font=\footnotesize\bfseries, text=darkslate, anchor=north] at (0, 3.55) 
+            \node[font=\footnotesize\bfseries, text=darkslate, anchor=north] at (0, 3.55)
                 {TEOREMA DO FLUXO MÁXIMO E CORTE MÍNIMO : \enspace $|f^*| = \operatorname{cap}(S, T) = 14$};
 
             \draw[darkslate!16, line width=0.8pt] (-6.2, 2.95) -- (6.2, 2.95);
 
-            \node[card badge, draw=setSborder!80, text=setStext] at (-3.5, 2.45) 
+            \node[card badge, draw=setSborder!80, text=setStext] at (-3.5, 2.45)
                 {Conjunto $S$};
 
-            \node[card badge, draw=cutviolet!80, text=cutviolet!90!black] at (0, 2.45) 
+            \node[card badge, draw=cutviolet!80, text=cutviolet!90!black] at (0, 2.45)
                 {\textbf{Corte Mínimo} $(S, T)$};
 
-            \node[card badge, draw=setTborder!80, text=setTtext] at (3.5, 2.45) 
+            \node[card badge, draw=setTborder!80, text=setTtext] at (3.5, 2.45)
                 {Conjunto $T$};
 
             \coordinate (S)  at (-5.0, -0.20);
@@ -79,34 +79,34 @@
             \coordinate (V4) at ( 2.0, -1.85);
             \coordinate (T)  at ( 5.0, -0.20);
 
-            \draw[-{Stealth[length=3.2mm]}, line width=1.6pt, darkslate] (S) -- 
+            \draw[-{Stealth[length=3.2mm]}, line width=1.6pt, darkslate] (S) --
                 node[sloped, above=2.5pt, font=\scriptsize\bfseries, fill=cardbg, inner sep=1.5pt] {$8 / 10$} (V1);
 
-            \draw[-{Stealth[length=3.2mm]}, line width=1.6pt, darkslate] (S) -- 
+            \draw[-{Stealth[length=3.2mm]}, line width=1.6pt, darkslate] (S) --
                 node[sloped, below=2.5pt, font=\scriptsize\bfseries, fill=cardbg, inner sep=1.5pt] {$6 / 10$} (V2);
 
-            \draw[-{Stealth[length=3.2mm]}, line width=1.6pt, darkslate] (V1) -- 
+            \draw[-{Stealth[length=3.2mm]}, line width=1.6pt, darkslate] (V1) --
                 node[left=3pt, font=\scriptsize\bfseries, fill=cardbg, inner sep=1.5pt] {$1 / 3$} (V2);
 
-            \draw[-{Stealth[length=3.2mm]}, line width=1.6pt, darkslate] (V1) -- 
+            \draw[-{Stealth[length=3.2mm]}, line width=1.6pt, darkslate] (V1) --
                 node[pos=0.25, sloped, above=2.5pt, font=\scriptsize\bfseries, fill=cardbg, inner sep=1.5pt] {$4 / 4$} (V3);
 
-            \draw[-{Stealth[length=3.2mm]}, line width=1.6pt, darkslate] (V1) -- 
+            \draw[-{Stealth[length=3.2mm]}, line width=1.6pt, darkslate] (V1) --
                 node[pos=0.25, sloped, above=2.5pt, font=\scriptsize\bfseries, fill=cardbg, inner sep=1.5pt] {$3 / 3$} (V4);
 
-            \draw[-{Stealth[length=3.2mm]}, line width=1.6pt, darkslate] (V2) -- 
+            \draw[-{Stealth[length=3.2mm]}, line width=1.6pt, darkslate] (V2) --
                 node[pos=0.25, sloped, below=2.5pt, font=\scriptsize\bfseries, fill=cardbg, inner sep=1.5pt] {$2 / 2$} (V3);
 
-            \draw[-{Stealth[length=3.2mm]}, line width=1.6pt, darkslate] (V2) -- 
+            \draw[-{Stealth[length=3.2mm]}, line width=1.6pt, darkslate] (V2) --
                 node[pos=0.25, sloped, below=2.5pt, font=\scriptsize\bfseries, fill=cardbg, inner sep=1.5pt] {$5 / 5$} (V4);
 
-            \draw[-{Stealth[length=3.2mm]}, line width=1.6pt, darkslate] (V3) -- 
+            \draw[-{Stealth[length=3.2mm]}, line width=1.6pt, darkslate] (V3) --
                 node[sloped, above=2.5pt, font=\scriptsize\bfseries, fill=cardbg, inner sep=1.5pt] {$6 / 9$} (T);
 
-            \draw[-{Stealth[length=3.2mm]}, line width=1.6pt, darkslate] (V4) -- 
+            \draw[-{Stealth[length=3.2mm]}, line width=1.6pt, darkslate] (V4) --
                 node[sloped, below=2.5pt, font=\scriptsize\bfseries, fill=cardbg, inner sep=1.5pt] {$8 / 10$} (T);
 
-            \draw[line width=2.0pt, dashed, cutviolet] 
+            \draw[line width=2.0pt, dashed, cutviolet]
                 (0, 2.15) to[out=-80, in=100] (0, -2.60);
 
             \node (S_node)  at (S)  [circle, draw=setSborder, fill=setSsource, line width=2.0pt, minimum size=11mm, font=\large\bfseries, text=setStext] {$s$};
@@ -134,24 +134,24 @@
     {\scshape\large UNIVERSIDADE FEDERAL DO ABC}\\[0.2cm]
     {\fontsize{10}{13}\selectfont\textbf{\textsf{CENTRO DE MATEMÁTICA, COMPUTAÇÃO E COGNIÇÃO -- CMCC}}}\\[0.15cm]
     {\fontsize{9}{12}\selectfont\color{darkslate!75} Bacharelado em Ciência da Computação}
-    
+
     \vspace{1.8cm}
-    
+
     {\fontsize{24}{30}\selectfont\textbf{\textsf{PROBLEMAS DE FLUXOS EM REDES}}}\\[0.5cm]
     {\fontsize{12.5}{17}\selectfont\textbf{\color{darkslate!85}Teoria Matemática, Algoritmos Combinatórios\\ e Implementações de Alta Performance}}\\[0.6cm]
-    
+
     \begin{tikzpicture}
         \draw[line width=1.5pt, darkslate] (-3, 0) -- (0, 0);
         \draw[line width=1.8pt, accentgold] (0.3, 0) -- (3, 0);
     \end{tikzpicture}
-    
+
     \vspace{0.8cm}
-    
+
     {\fontsize{14}{18}\selectfont\textbf{\textsf{Gabriel Frigo}}}\\[0.35cm]
     {\fontsize{10.5}{14}\selectfont Orientação Acadêmica: \textbf{\textsf{Profa. Dra. Cristiane Maria Sato}}}
-    
+
     \vspace{1.6cm}
-    
+
     \begin{tikzpicture}
         \node[draw=cardborder, fill=cardbg, rounded corners=8pt, line width=1pt, inner sep=16pt, text width=13.0cm, align=left] {
             {\fontsize{9.5}{14}\selectfont\textbf{\color{darkslate}ESCOPO MONOGRÁFICO:}}\\[0.2cm]
@@ -159,9 +159,9 @@
             {\fontsize{8.5}{12}\selectfont\color{darkslate!80} \textbf{Palavras-chave:} Fluxo Máximo $\bullet$ Corte Mínimo $\bullet$ Custo Mínimo $\bullet$ Dualidade Linear $\bullet$ Network Simplex $\bullet$ C++23}
         };
     \end{tikzpicture}
-    
+
     \vfill
-    
+
     {\fontsize{9.5}{13}\selectfont\color{darkslate!80}\textbf{1ª Edição Monográfica}}\\[0.2cm]
     {\fontsize{10.5}{14}\selectfont\textbf{Santo André -- SP}}\\[0.15cm]
     {\fontsize{10.5}{14}\selectfont\textbf{\the\year}}

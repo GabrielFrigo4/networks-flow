@@ -1,440 +1,25 @@
 % =========================================================================
-% SEÇÃO DE RESULTADOS E DISCUSSÃO (SÍNTESE EXECUTIVA EM QUATRO EIXOS)
+% SEÇÃO 4: RESULTADOS COMPUTACIONAIS
 % =========================================================================
-\section{Resultados e Discussão}\label{sec:resultados}
+\section{Resultados Computacionais}\label{sec:resultados}
 
-Nesta seção, apresentam-se os resultados teóricos, computacionais e aplicados consolidados ao longo da pesquisa. Para conciliar o rigor conceitual exigido na área de Otimização Combinatória com o teto de volumetria estabelecido pelas diretrizes institucionais de Iniciação Científica da UFABC, a exposição organiza-se em quatro eixos complementares:
-\begin{enumerate}[leftmargin=1.5em, itemsep=0.1em, topsep=0.2em, parsep=0em]
-    \item \textbf{Eixo I --- Contribuições Teóricas, Dualidade e Otimização Combinatória:} Formalização dos teoremas estruturais clássicos, condições de otimalidade e propriedades poliedrais de integralidade;
-    \item \textbf{Eixo II --- Arquitetura de Software em C++23 e Motores Computacionais:} Estruturação polimórfica das famílias de classes \code{FlowNetwork} e \code{CostNetwork}, padrões de projeto e análise assintótica dos nove algoritmos implementados;
-    \item \textbf{Eixo III --- Aplicação Prática: Segmentação Interativa de Imagens via Cortes em Grafos:} Modelagem energética de Boykov-Jolly, redução exata para corte mínimo em digrafos residuais e resultados experimentais em visão computacional;
-    \item \textbf{Eixo IV --- Avaliação Experimental e Benchmarks Computacionais:} Metodologia empírica, validação cruzada automática de soluções ótimas e análise de desempenho sobre as famílias de referência da literatura DIMACS.
+Esta seção apresenta a avaliação experimental sistemática dos nove motores algorítmicos desenvolvidos em C++23, submetidos a testes de estresse em instâncias canônicas da literatura acadêmica.
+
+\subsection{Protocolo de Teste e Isolamento de CPU}
+
+Para garantir rigor científico e reprodutibilidade, adotaram-se os seguintes controles metodológicos:
+\begin{enumerate}[leftmargin=1.5em, itemsep=0.15em, topsep=0.2em, parsep=0em]
+    \item \textbf{Isolamento Estrito de CPU:} A medição temporal utiliza o relógio monotônico de hardware \lstinline{std::chrono::high_resolution_clock}. As etapas de I/O em disco, leitura e parsing de arquivos DIMACS e alocação inicial de memória são estritamente excluídas do cronômetro; mede-se exclusivamente o método de cálculo;
+    \item \textbf{Regime Estacionário (\textit{Steady State}):} Cada instância é executada de forma independente por $N = 5$ repetições sucessivas após aquecimento de cache, reportando-se a média amostral ($\bar{t}$ em milissegundos) e o desvio-padrão;
+    \item \textbf{Validação Cruzada de Otimalidade:} Como os algoritmos operam sob paradigmas distintos (aumentos primais, pré-fluxos duais e pivoteamento em árvore), a suíte verifica automaticamente se todos os motores convergem exatamente para a mesma vazão máxima $f^*$ e custo mínimo $z^*$. Em 100\% dos testes, houve concordância exata de soluções ótimas.
 \end{enumerate}
 
-A Tabela~\ref{tab:sintese} sumariza o quadro integrado das contribuições e dos motores algorítmicos desenvolvidos.
+\subsection{Avaliação de Fluxo Máximo (Coleções DIMACS)}
 
-\begin{table}[!ht]
-\centering
-\small
-\setlength{\tabcolsep}{4pt}
-\begin{tabular}{p{3.8cm} p{5.5cm} p{6.8cm}}
-\toprule
-\multicolumn{1}{c}{\textbf{Eixo Temático}} & \multicolumn{1}{c}{\textbf{Resultados Teóricos Chave}} & \multicolumn{1}{c}{\textbf{Algoritmos, Reduções e Aplicações}} \\
-\midrule
-\textbf{Bloco I: Fluxo Máximo} &
-$\bullet$ Teorema MFMC (Ford-Fulkerson) \newline
-$\bullet$ Teorema da Integralidade \newline
-$\bullet$ Decomposição de Fluxos &
-$\bullet$ Ford-Fulkerson (DFS) --- $O(m |f^*|)$ \newline
-$\bullet$ Edmonds-Karp (BFS) --- $O(n m^2)$ \newline
-$\bullet$ Dinic (Digrafo de Níveis) --- $O(n^2 m)$ \newline
-$\bullet$ Push-Relabel (FIFO e Gap) --- $O(n^3)$ \\
-\addlinespace
-\textbf{Bloco II: Reduções e Aplicações} &
-$\bullet$ Teorema de König ($\nu = \tau$) \newline
-$\bullet$ Teoremas de Gallai e Hall \newline
-$\bullet$ Teoremas de Menger (Conectividade) &
-$\bullet$ Emparelhamento Máximo Bipartido \newline
-$\bullet$ Coberturas e Conjuntos Independentes \newline
-$\bullet$ Caminhos Disjuntos por Arcos/Vértices \newline
-$\bullet$ Segmentação de Imagens (\textit{Graph Cuts}) \\
-\addlinespace
-\textbf{Bloco III: Custo Mínimo} &
-$\bullet$ Teorema dos Ciclos Negativos (Klein) \newline
-$\bullet$ Custos Reduzidos $\bar{c}^\pi \ge 0$ (KKT) \newline
-$\bullet$ Total Unimodularidade (TUM) &
-$\bullet$ Cycle Canceling --- $O(m C \cdot U)$ \newline
-$\bullet$ SSP com SPFA --- $O(U \cdot n m)$ \newline
-$\bullet$ SSP com Dijkstra e $\pi$ --- $O(U (m + n \log n))$ \newline
-$\bullet$ Network Simplex --- $O(n m \log n \log(n C))$ \\
-\addlinespace
-\textbf{Bloco IV: Avaliação Empírica} &
-$\bullet$ Isolamento Rigoroso de CPU \newline
-$\bullet$ Certificação Cruzada Ótima \newline
-$\bullet$ Análise de Lacunas de Altura &
-$\bullet$ Coleções DIMACS (Washington, Genrmf) \newline
-$\bullet$ Coleções DIMACS Min-Cost (Netgen) \newline
-$\bullet$ Validação Cruzada $f^*$ e $z^*$ (100\% concordância) \\
-\bottomrule
-\end{tabular}
-\caption{Quadro-Síntese dos resultados teóricos, motores computacionais em C++23 e aplicações consolidados na pesquisa.}
-\label{tab:sintese}
-\end{table}
-
-% -------------------------------------------------------------------------
-% EIXO I: CONTRIBUIÇÕES TEÓRICAS
-% -------------------------------------------------------------------------
-\subsection{Eixo I: Contribuições Teóricas, Dualidade e Otimização Combinatória}\label{sec:res_teoria}
-
-Esta subseção sintetiza os resultados teóricos que fundamentam os modelos de fluxo e suas propriedades estruturais.
-
-\subsubsection{Fundamentos Estruturais do Fluxo Máximo e Corte Mínimo}
-
-Seja um digrafo capacitado $D = (V, A)$ com capacidades $u: A \to \mathbb{R}_{\ge 0}$, fonte $s$ e sumidouro $t$. Um $st$-fluxo é uma função $f: A \to \mathbb{R}_{\ge 0}$ que satisfaz as restrições de capacidade ($0 \le f(a) \le u(a), \forall a \in A$) e conservação nodal ($\sum_{a \in \delta^+(v)} f(a) - \sum_{a \in \delta^-(v)} f(a) = 0, \forall v \in V \setminus \{s, t\}$).
-
-\begin{prop}[Teorema do Fluxo Máximo e Corte Mínimo --- Ford-Fulkerson, 1956]\label{teo:mfmc_res}
-Em qualquer rede capacitada $D = (V, A)$, o valor máximo de um $st$-fluxo é igual à capacidade mínima de um $st$-corte:
-\begin{equation}
-    \max_{f \in \mathcal{F}} |f| = \min_{(S, T) \in \mathcal{C}} u(S, T)
-\end{equation}
-Além disso, as seguintes afirmações são mutuamente equivalentes para um fluxo $f$:
-\begin{enumerate}[label=(\roman*)]
-    \item O fluxo $f$ atinge o valor máximo na rede;
-    \item A rede residual $D_f$ associada não contém nenhum caminho direcionado de $s$ para $t$ ($st$-caminho aumentante);
-    \item Existe um corte $(S^*, T^*)$ na rede tal que $|f| = u(S^*, T^*)$.
-\end{enumerate}
-\end{prop}
-
-\noindent \textbf{Certificado de Otimalidade:} O corte mínimo determina a capacidade máxima de transporte da rede. A ausência de caminhos aumentantes em $D_f$ atesta a otimalidade do fluxo $f$ e fornece o corte mínimo $(S^*, T^*)$, onde $S^*$ é o conjunto de vértices acessíveis a partir de $s$ em $D_f$.
-
-\begin{prop}[Teorema da Integralidade]\label{teo:integralidade_res}
-Se todas as capacidades dos arcos em $D = (V, A)$ forem inteiras, então existe um fluxo máximo $f^*$ que é puramente inteiro, isto é, $f^*(a) \in \mathbb{Z}_{\ge 0}$ para todo $a \in A$.
-\end{prop}
-
-O Teorema da Integralidade assegura que, sob capacidades inteiras, problemas combinatórios discretos (como emparelhamentos e coberturas) admitem soluções ótimas inteiras diretamente via fluxo, sem necessidade de impor branch-and-bound.
-
-\begin{prop}[Decomposição de Trajetórias e Ciclos]\label{teo:decomposicao_res}
-Qualquer $st$-fluxo viável $f$ pode ser decomposto em uma família de no máximo $|A|$ fluxos elementares sobre $st$-caminhos direcionados simples $P_1, \dots, P_k$ e ciclos direcionados $C_1, \dots, C_l$, de modo que $f(a) = \sum_{P_i \ni a} f(P_i) + \sum_{C_j \ni a} f(C_j)$ para todo arco $a \in A$, com $k + l \le |A|$. Se o fluxo $f$ for inteiro, as intensidades de cada caminho e ciclo são igualmente inteiras.
-\end{prop}
-
-A Decomposição de Fluxo permite extrair caminhos individuais a partir do fluxo agregado e fundamenta as provas de conectividade e rotas disjuntas.
-
-\subsubsection{Dualidades Combinatórias em Grafos Bipartidos}
-
-A aplicação do Teorema MFMC sobre redes auxiliares com superfonte e supersumidouro permitiu deduzir e unificar as clássicas dualidades de grafos bipartidos:
-
-\begin{prop}[Teorema de König, 1931]\label{teo:konig_res}
-Em todo grafo bipartido $G = (X \cup Y, E)$, a cardinalidade de um emparelhamento máximo ($\nu(G)$) é rigorosamente igual à cardinalidade de uma cobertura mínima de vértices ($\tau(G)$):
-\begin{equation}
-    \nu(G) = \tau(G)
-\end{equation}
-\end{prop}
-
-\noindent \textbf{Mecanismo de Demonstração via Fluxo Residual:} Constrói-se a rede orientada onde cada aresta $\{x, y\}$ torna-se um arco direcionado $(x, y)$ com capacidade infinita, conectando-se a fonte $s$ a todo $x \in X$ com capacidade 1, e todo $y \in Y$ ao sumidouro $t$ com capacidade 1. Pelo Teorema da Integralidade, o fluxo máximo $f^*$ tem valor inteiro $\nu(G)$. Tomando o corte mínimo residual $(S^*, T^*)$ onde $S^*$ é o conjunto de vértices acessíveis a partir de $s$ em $D_{f^*}$, define-se o conjunto $C^* = (X \setminus S^*) \cup (Y \cap S^*)$. Demonstra-se que $C^*$ cobre todas as arestas de $G$ e sua cardinalidade satisfaz $|C^*| = u(S^*, T^*) = |f^*| = \nu(G)$, provando simultaneamente a igualdade minimax e fornecendo um algoritmo polinomial exato de construção da cobertura.
-
-\begin{prop}[Identidades Fundamentais de Gallai, 1959]\label{teo:gallai_res}
-Para qualquer grafo $G = (V, E)$ sem vértices isolados com $n = |V|$ vértices:
-\begin{equation}
-    \nu(G) + \rho(G) = n \quad \text{e} \quad \alpha(G) + \tau(G) = n
-\end{equation}
-onde $\rho(G)$ é a cobertura mínima de arestas e $\alpha(G)$ é o conjunto independente máximo. Em digrafos bipartidos, decorre imediatamente que $\alpha(G) = \rho(G)$.
-\end{prop}
-
-\begin{prop}[Teorema do Casamento de Hall, 1935]\label{teo:hall_res}
-Um grafo bipartido $G = (X \cup Y, E)$ admite um emparelhamento que cobre todos os vértices de $X$ se, e somente se, para todo subconjunto $S \subseteq X$, o conjunto de vizinhos $N(S) \subseteq Y$ satisfaz a Condição de Hall:
-\begin{equation}
-    |N(S)| \ge |S|
-\end{equation}
-\end{prop}
-
-\begin{prop}[Teoremas de Menger para Arcos e Vértices, 1927]\label{teo:menger_res}
-Sejam $s, t$ vértices distintos de um digrafo $D = (V, A)$:
-\begin{enumerate}[label=(\alph*)]
-    \item O número máximo de caminhos direcionados $st$-disjuntos em arcos é igual ao número mínimo de arcos cuja remoção destrói todos os caminhos direcionados de $s$ para $t$;
-    \item Se $(s, t) \notin A$, o número máximo de caminhos direcionados $st$-disjuntos internamente em vértices é igual ao número mínimo de vértices cuja remoção desconecta $s$ de $t$.
-\end{enumerate}
-\end{prop}
-
-A demonstração do Teorema de Menger por vértices reduz-se à versão por arcos pela duplicação de vértices ($v \to v_{\text{in}} \xrightarrow{1} v_{\text{out}}$).
-
-\subsubsection{Otimalidade em Fluxo de Custo Mínimo e Total Unimodularidade}
-
-No problema de Fluxo de Custo Mínimo (MCF), associa-se a cada arco $a \in A$ uma capacidade $u(a) \ge 0$ e um custo unitário $c(a) \in \mathbb{R}$. Busca-se um fluxo viável de intensidade especificada $v$ que minimize o custo linear total $z(f) = \sum_{a \in A} c(a) f(a)$.
-
-\begin{prop}[Condição de Otimalidade por Ciclos Negativos --- Klein, 1967]\label{teo:ciclos_res}
-Um fluxo viável $f$ em uma rede com custos é de custo mínimo se, e somente se, a rede residual associada $D_f$ não contém nenhum ciclo direcionado de custo estritamente negativo.
-\end{prop}
-
-\begin{prop}[Dualidade e Custos Reduzidos sob Potenciais Nodais]\label{teo:custos_reduzidos_res}
-Seja $\pi: V \to \mathbb{R}$ um vetor de potenciais nodais (variáveis duais das restrições de conservação nodal). O custo reduzido de um arco $(i, j)$ é definido por $c^\pi(i, j) = c(i, j) - \pi(i) + \pi(j)$. Um fluxo viável $f$ é ótimo se, e somente se, existe um conjunto de potenciais $\pi$ tal que:
-\begin{equation}
-    c^\pi(i, j) \ge 0, \quad \forall (i, j) \in A_f
-\end{equation}
-onde $A_f$ denota o conjunto de arcos residuais com capacidade estrita $u_f(i, j) > 0$.
-\end{prop}
-
-\noindent \textbf{Significado Algorítmico dos Potenciais:} A condição $c^\pi \ge 0$ no grafo residual corresponde às condições de Folga Complementar de Karush-Kuhn-Tucker (KKT). Mantendo os potenciais atualizados ao longo das iterações, todos os custos residuais tornam-se não negativos, permitindo substituir algoritmos de caminhos mínimos gerais ($O(n m)$) pelo algoritmo de Dijkstra com fila de prioridade ($O(m + n \log n)$).
-
-\begin{prop}[Total Unimodularidade (TUM) da Matriz Nó-Arco e Integralidade Poliédrica]\label{teo:tum_res}
-Seja $\mathbf{M} \in \{-1, 0, 1\}^{n \times m}$ a matriz de incidência nó-arco de qualquer digrafo direcionado $D = (V, A)$, definida por:
-\begin{equation}
-    M_{v, a} = \begin{cases}
-    +1, & \text{se } v = \text{origem}(a) \\
-    -1, & \text{se } v = \text{destino}(a) \\
-    0, & \text{caso contrário}
-    \end{cases}
-\end{equation}
-Então $\mathbf{M}$ é Totalmente Unimodular, isto é, o determinante de qualquer submatriz quadrada de $\mathbf{M}$ pertence ao conjunto $\{-1, 0, 1\}$. Consequentemente, para qualquer vetor de demandas e capacidades inteiras, todo vértice extremo (solução básica viável) do poliedro de fluxos é puramente inteiro.
-\end{prop}
-
-O Teorema da Total Unimodularidade justifica algebricamente o funcionamento do algoritmo \textit{Network Simplex}: cada base do simplex corresponde a uma árvore geradora da rede, cuja matriz básica $\mathbf{B}$ tem $|\det \mathbf{B}| = 1$, eliminando divisões por pivôs fracionários pela Regra de Cramer e garantindo aritmética inteira exata sem perda de precisão.
-
-% -------------------------------------------------------------------------
-% EIXO II: ARQUITETURA DE SOFTWARE EM C++23
-% -------------------------------------------------------------------------
-\subsection{Eixo II: Arquitetura Orientada a Objetos em C++23 e Motores Computacionais}\label{sec:res_arquitetura}
-
-O segundo pilar da pesquisa consistiu na transposição dos modelos teóricos para uma biblioteca de software em C++23 de alto desempenho. A base arquitetural orienta-se por encapsulamento estrito, reuso de código via herança polimórfica e estruturas de adjacência residual indexadas por vetores contíguos de memória, favorecendo a localidade de cache da CPU.
-
-\subsubsection{Ecossistema de Classes Polimórficas: Strategy e Template Method}
-
-A biblioteca estrutura-se em duas hierarquias independentes, especializadas para Fluxo Máximo e Fluxo de Custo Mínimo, cujos diagramas de dependência e herança são ilustrados na Figura~\ref{fig:arquitetura_uml}:
-
-\begin{figure}[!ht]
-\centering
-\resizebox{0.92\textwidth}{!}{%
-\begin{tikzpicture}[
-    classbox/.style={draw=blue!80!black, thick, fill=blue!5, rounded corners=3pt, font=\small, text width=7.2cm, inner sep=6pt},
-    header/.style={font=\bfseries\small, text centered},
-    arrow/.style={-{Latex[length=3mm]}, thick, blue!80!black}
-]
-  % FlowNetwork
-  \node[classbox] (flow) at (0, 4.2) {
-    \textbf{FlowNetwork (Interface Base Abstrata)}\\[2pt]
-    \footnotesize
-    \texttt{\# num\_nodes: Size}\\
-    \texttt{\# adj: vector<vector<ResidualArc>>}\\[3pt]
-    \texttt{+ add\_arc(u, v, cap): void}\\
-    \texttt{+ virtual compute\_max\_flow(s, t): Long = 0}\\
-    \texttt{+ get\_flow(u, v): Long}
-  };
-
-  % CostNetwork
-  \node[classbox] (cost) at (8.5, 4.2) {
-    \textbf{CostNetwork (Interface Base Abstrata)}\\[2pt]
-    \footnotesize
-    \texttt{\# num\_nodes: Size}\\
-    \texttt{\# adj: vector<vector<CostResidualArc>>}\\[3pt]
-    \texttt{+ add\_arc(u, v, cap, cost): void}\\
-    \texttt{+ virtual compute\_min\_cost(s, t): Result = 0}\\
-    \texttt{+ get\_cost(): Long}
-  };
-
-  % Motores Max Flow
-  \node[draw=gray!80, thick, fill=gray!5, rounded corners=2pt, font=\footnotesize, text width=7.2cm, inner sep=4pt] (mflow) at (0, 1.2) {
-    \textbf{Motores Especializados (Fluxo Máximo):}\\
-    $\bullet$ \code{FordFulkerson} --- Busca em Profundidade (DFS)\\
-    $\bullet$ \code{EdmondsKarp} --- Busca em Largura (BFS)\\
-    $\bullet$ \code{Dinic} --- Fases \& Fluxo Bloqueador em Digrafo Níveis\\
-    $\bullet$ \code{PushRelabel} --- Pré-fluxos e Elevação FIFO\\
-    $\bullet$ \code{PushRelabelImproved} --- Aceleração por Gap Heuristic
-  };
-
-  % Motores Min Cost
-  \node[draw=gray!80, thick, fill=gray!5, rounded corners=2pt, font=\footnotesize, text width=7.2cm, inner sep=4pt] (mcost) at (8.5, 1.2) {
-    \textbf{Motores Especializados (Custo Mínimo):}\\
-    $\bullet$ \code{CycleCanceling} --- Cancelamento de Ciclos Negativos\\
-    $\bullet$ \code{SuccessiveShortestPath} --- Aumentos via SPFA\\
-    $\bullet$ \code{SuccessiveShortestDijkstra} --- Potenciais Nodais $\bar{c}^\pi \ge 0$\\
-    $\bullet$ \code{NetworkSimplex} --- Pivoteamento em Árvore Geradora
-  };
-
-  \draw[arrow] (mflow) -- (flow);
-  \draw[arrow] (mcost) -- (cost);
-\end{tikzpicture}%
-}
-\caption{Diagrama de arquitetura orientada a objetos das classes base e especializações algorítmicas em C++23.}
-\label{fig:arquitetura_uml}
-\end{figure}
-
-A arquitetura adota os seguintes padrões de projeto:
-\begin{itemize}[leftmargin=1.5em, itemsep=0.1em, topsep=0.1em, parsep=0em]
-    \item \textbf{Strategy Pattern:} Permite que o usuário do ecossistema troque transparentemente o motor de execução (por exemplo, alternar de \code{EdmondsKarp} para \code{PushRelabelImproved}) sem modificar uma única linha do código cliente ou da modelagem do problema;
-    \item \textbf{Template Method:} A classe base encapsula o gerenciamento de arcos diretos e reversos emparelhados (armazenando o índice do arco residual simétrico \lstinline{rev}), garantindo a conservação de fluxo e a atualização residual automática a cada operação elementar de aumento ou cancelamento.
-\end{itemize}
-
-\subsubsection{Análise Comparativa dos Nove Motores Desenvolvidos}
-
-A Tabela~\ref{tab:motores_complexidade} sintetiza a caracterização técnica, a classe de complexidade assintótica no pior caso e as otimizações de engenharia incorporadas a cada um dos nove algoritmos implementados.
-
-\begin{table}[!ht]
-\centering
-\small
-\setlength{\tabcolsep}{4pt}
-\begin{tabular}{llp{3.8cm}p{4.8cm}}
-\toprule
-\textbf{Motor Algorítmico} & \textbf{Paradigma} & \textbf{Complexidade Assintótica} & \textbf{Otimizações de Baixo Nível Implementadas} \\
-\midrule
-\multicolumn{4}{c}{\bannertext{Família FlowNetwork --- Algoritmos de Fluxo Máximo}} \\
-\midrule
-\code{FordFulkerson} & Primal (DFS) & $O(m \cdot |f^*|)$ & DFS recursiva com stack size expandido \\
-\code{EdmondsKarp} & Primal (BFS) & $O(n \cdot m^2)$ & Fila circular indexada e vetor de pais \\
-\code{Dinic} & Fases / Níveis & $O(n^2 m)$ / $O(m\sqrt{n})$ & Ponteiros mortos (\textit{dead-end elimination}) \\
-\code{PushRelabel} & Dual (FIFO) & $O(n^3)$ & Fila de vértices ativos com excesso $e(u) > 0$ \\
-\code{PushRelabelImproved} & Dual (Gap) & $O(n^2 \sqrt{m})$ prático & \textbf{Gap Heuristic} com contadores de altura \\
-\midrule
-\multicolumn{4}{c}{\bannertext{Família CostNetwork --- Algoritmos de Fluxo de Custo Mínimo}} \\
-\midrule
-\code{CycleCanceling} & Primal & $O(m \cdot C \cdot U)$ & SPFA com detecção de ciclo negativo \\
-\code{SSP (SPFA)} & Dual & $O(U \cdot n m)$ & Aumentos por caminhos de custo mínimo \\
-\code{SSP (Dijkstra)} & Primal-Dual & $O(U (m + n \log n))$ & Potenciais nodais com invariante $\bar{c}^\pi \ge 0$ \\
-\code{NetworkSimplex} & Árvore Base & $O(n m \log n \log(n C))$ & Raiz artificial, vetores \code{parent}, \code{depth} e pivoteamento combinatorial \\
-\bottomrule
-\end{tabular}
-\caption{Matriz comparativa de complexidades, paradigmas e otimizações dos nove motores em C++23.}
-\label{tab:motores_complexidade}
-\end{table}
-
-\noindent \textbf{Heurística de Lacuna (\textit{Gap Heuristic}):} No algoritmo \code{PushRelabelImproved}, mantém-se um vetor de contagem $count[h]$ com o número de vértices em cada nível de altura $h$. Quando o último vértice de uma altura $g < n$ é elevado e $count[g] = 0$, forma-se uma lacuna (\textit{gap}). Todos os vértices com altura $h > g$ tornam-se incapazes de alcançar o sumidouro $t$ em $D_f$. O algoritmo eleva suas alturas para $n + 1$, eliminando operações redundantes de elevação e empurrão. Conforme verificado no Eixo IV, essa heurística reduz o tempo de execução em grafos com múltiplos gargalos.
-
-% -------------------------------------------------------------------------
-% EIXO III: SEGMENTAÇÃO DE IMAGENS
-% -------------------------------------------------------------------------
-\subsection{Eixo III: Aplicação Prática: Segmentação Interativa de Imagens via Graph Cuts}\label{sec:res_segmentacao}
-
-Esta subseção apresenta o modelo e os resultados da \textbf{Segmentação Interativa de Imagens} via corte mínimo em grafos (\textit{Graph Cuts}), implementada no módulo \texttt{Aplicações/Segmentação de Imagens/}.
-
-\subsubsection{Formulação Energética e Redução para Corte Mínimo}
-
-Seja $I$ uma imagem digital retangular com $n = W \times H$ pixels. O objetivo é associar a cada pixel $p \in \mathcal{P}$ um rótulo binário $f_p \in \{0, 1\}$, onde $0$ corresponde ao fundo (\textit{background}) e $1$ ao primeiro plano de interesse (\textit{foreground}). A função de energia de Boykov-Jolly formula o trade-off entre fidelidade aos dados e suavidade espacial:
-\begin{equation}
-    E(f) = \sum_{p \in \mathcal{P}} D_p(f_p) + \sum_{\{p, q\} \in \mathcal{N}} V_{p, q}(f_p, f_q)
-\end{equation}
-onde:
-\begin{itemize}[leftmargin=1.5em, itemsep=0.1em, topsep=0.1em, parsep=0em]
-    \item $D_p(f_p)$ é o custo de dados individual (\textit{Data Term}), que penaliza a atribuição de um rótulo incoerente com as características de cor do pixel frente às sementes marcadas pelo usuário;
-    \item $V_{p, q}(f_p, f_q)$ é o termo de suavidade (\textit{Smoothness Term}) definido sobre a vizinhança 4-conectada $\mathcal{N}$, atribuindo penalidade $V(0, 1) = V(1, 0) = w_n(p, q)$ se pixels vizinhos recebem rótulos opostos, e custo $0$ se recebem o mesmo rótulo.
-\end{itemize}
-
-A estrutura da rede construída é ilustrada na Figura~\ref{fig:grid_cut_3d}.
-
-\begin{figure}[!ht]
-\centering
-\resizebox{0.78\textwidth}{!}{%
-\begin{tikzpicture}[
-    x={(-1.2cm, -0.6cm)},
-    y={(1.2cm, -0.6cm)},
-    z={(0cm, 1.5cm)}
-]
-    \node[sink node] (t) at (2,2,-3.2) {$t$ (Fundo)};
-
-    \foreach \x in {1,2,3} {
-        \foreach \y in {1,2,3} {
-            \coordinate (cp\x\y) at (\x,\y,0);
-        }
-    }
-
-    \foreach \x in {1,2,3} {
-        \foreach \y in {1,2,3} {
-            \draw[->, red!70!black, dashed, line width=0.8pt, draw opacity=0.65] (cp\x\y) -- (t);
-        }
-    }
-
-    \draw[fill=gray!15, draw=gray!60, fill opacity=0.85] (0.3,0.3,0) -- (3.7,0.3,0) -- (3.7,3.7,0) -- (0.3,3.7,0) -- cycle;
-
-    \foreach \x in {1,2,3} {
-        \foreach \y in {1,2} {
-            \pgfmathtruncatemacro{\ynext}{\y+1}
-            \draw[<->, line width=1.1pt, black!75] (cp\x\y) -- (cp\x\ynext);
-        }
-    }
-    \foreach \x in {1,2} {
-        \foreach \y in {1,2,3} {
-            \pgfmathtruncatemacro{\xnext}{\x+1}
-            \draw[<->, line width=1.1pt, black!75] (cp\x\y) -- (cp\xnext\y);
-        }
-    }
-
-    \foreach \x in {1,2,3} {
-        \foreach \y in {1,2,3} {
-            \node[circle, fill=blue!60!black, inner sep=2.2pt] (p\x\y) at (cp\x\y) {};
-        }
-    }
-
-    \node[source node] (s) at (2,2,3.2) {$s$ (Objeto)};
-
-    \foreach \x in {1,2,3} {
-        \foreach \y in {1,2,3} {
-            \draw[->, blue!70!black, line width=0.8pt, draw opacity=0.7] (s) -- (p\x\y);
-        }
-    }
-\end{tikzpicture}%
-}
-\caption{Grafo residual da segmentação: superfonte $s$ e supersumidouro $t$ conectados aos pixels por $T$-links verticais, com $N$-links bidirecionais entre pixels adjacentes.}
-\label{fig:grid_cut_3d}
-\end{figure}
-
-\subsubsection{Mapeamento Exato e Capacidades dos Arcos}
-
-A rede $D = (V, A)$ é constituída por $|V| = n + 2$ vértices, com capacidades calculadas diretamente dos gradientes de cor:
-\begin{enumerate}[leftmargin=1.5em, itemsep=0.1em, topsep=0.1em, parsep=0em]
-    \item \textbf{Arcos N-links (Vizinhança Espacial):} Para cada par de pixels adjacentes $(p, q)$ sob 4-conectividade, define-se a capacidade proporcional à similaridade cromática:
-    \begin{equation}
-        w_n(p, q) = \left\lfloor K \cdot \exp\left(-\frac{\|I_p - I_q\|^2}{2\sigma^2}\right) \right\rfloor
-    \end{equation}
-    onde $\|I_p - I_q\|$ é a distância euclidiana no espaço tridimensional RGB e $\sigma$ regula a sensibilidade a transições de contraste. Pixels de cores homogêneas recebem peso alto (elevando o custo de rompimento), enquanto variações bruscas de cor geram pesos baixos, direcionando o corte para as bordas naturais do objeto;
-
-    \item \textbf{Arcos T-links (Conexão com Terminais):}
-    \begin{itemize}
-        \item Para pixels marcados pelo usuário como sementes de primeiro plano ($\mathcal{S}_{\text{fg}}$): $w_s(p) = \infty$ e $w_t(p) = 0$;
-        \item Para sementes de fundo ($\mathcal{S}_{\text{bg}}$): $w_s(p) = 0$ e $w_t(p) = \infty$;
-        \item Para pixels não marcados, utiliza-se a distância mínima de cor em relação às sementes de cada classe:
-        \begin{equation}
-            w_s(p) = \max\left( \left\lfloor K \cdot \exp\left(-\frac{\min_{s_j \in \mathcal{S}_{\text{fg}}} \|I_p - I_{s_j}\|^2}{2\sigma^2}\right) \right\rfloor, 1 \right)
-        \end{equation}
-        \begin{equation}
-            w_t(p) = \max\left( \left\lfloor K \cdot \exp\left(-\frac{\min_{s_j \in \mathcal{S}_{\text{bg}}} \|I_p - I_{s_j}\|^2}{2\sigma^2}\right) \right\rfloor, 1 \right)
-        \end{equation}
-    \end{itemize}
-\end{enumerate}
-
-\begin{prop}[Equivalência Exata Min-Cut $\equiv$ Min-Energy]
-Seja $(S, T)$ um $st$-corte finito na rede de segmentação construída, definindo a rotulação $f_p = 1$ se $p \in S$ e $f_p = 0$ se $p \in T$. Então a capacidade do corte coincide rigorosamente com o custo de energia da rotulação, acrescida de uma constante aditiva independente de $f$:
-\begin{equation}
-    u(S, T) = E(f) + \text{constante}
-\end{equation}
-Consequentemente, o corte mínimo obtido pelo algoritmo de Dinic ou Push-Relabel encontra o mínimo global absoluto da função de energia em tempo polinomial.
-\end{prop}
-
-\subsubsection{Resultados Computacionais da Segmentação}
-
-O pipeline de segmentação foi validado sobre o conjunto de imagens de teste do repositório (\textit{balloon}, \textit{circle}, \textit{duck}, \textit{grid1}, \textit{grid2}), confrontando as saídas geradas em formato binário PPM com as máscaras gabarito (\textit{ground-truth}) através de comparação exata byte a byte (\lstinline{cmp}). Em todas as instâncias, o algoritmo produziu 100\% de concordância com o gabarito.
-
-A Tabela~\ref{tab:segmentacao_resultados} apresenta a escalabilidade do pipeline em função das dimensões das imagens, quantidade de vértices, arcos residuais e tempo de processamento do corte mínimo com o motor \code{Dinic}.
-
-\begin{table}[!ht]
-\centering
-\small
-\setlength{\tabcolsep}{5pt}
-\begin{tabular}{lrrrrr}
-\toprule
-\textbf{Instância} & \textbf{Dimensões ($W \times H$)} & \textbf{Vértices ($|V|$)} & \textbf{Arcos ($|A|$)} & \textbf{Custo do Corte ($E^*$)} & \textbf{Tempo de CPU (ms)} \\
-\midrule
-\texttt{grid1.ppm}    & $10 \times 10$   & 102     & 460       & 1.840       & 0,12 \\
-\texttt{circle.ppm}   & $50 \times 50$   & 2.502   & 14.700    & 28.450      & 2,41 \\
-\texttt{balloon.ppm}  & $100 \times 100$ & 10.002  & 69.400    & 142.110     & 14,85 \\
-\texttt{duck.ppm}     & $150 \times 150$ & 22.502  & 156.900   & 389.200     & 48,20 \\
-\texttt{balloons.ppm} & $200 \times 200$ & 40.002  & 279.400   & 715.630     & 95,70 \\
-\bottomrule
-\end{tabular}
-\caption{Desempenho do pipeline de segmentação via corte mínimo sobre instâncias reais.}
-\label{tab:segmentacao_resultados}
-\end{table}
-
-Os resultados confirmam a eficiência do algoritmo de \code{Dinic}: em redes com mais de 40.000 vértices e 270.000 arcos, o corte mínimo é obtido em menos de 100 milissegundos.
-
-% -------------------------------------------------------------------------
-% EIXO IV: BENCHMARKS COMPUTACIONAIS
-% -------------------------------------------------------------------------
-\subsection{Eixo IV: Avaliação Experimental e Benchmarks Computacionais}\label{sec:res_benchmarks}
-
-O quarto pilar consistiu na estruturação de uma bateria experimental rigorosa para submeter os motores desenvolvidos a testes de estresse em instâncias clássicas da literatura acadêmica. A infraestrutura foi totalmente implementada sob o diretório \code{Experimentos/}, automatizada por scripts em Python 3 e compilada em C++23.
-
-\subsubsection{Protocolo de Teste e Isolamento de Variáveis}
-
-Para garantir rigor científico e reprodutibilidade, adotaram-se os seguintes controles:
-\begin{enumerate}[leftmargin=1.5em, itemsep=0.1em, topsep=0.1em, parsep=0em]
-    \item \textbf{Isolamento Estrito de CPU:} A medição temporal utiliza o relógio monotônico de hardware \lstinline{std::chrono::high_resolution_clock}. O tempo de I/O em disco, parsing dos arquivos DIMACS e alocação inicial da rede são estritamente excluídos do cronômetro; mede-se exclusivamente o método de cálculo;
-    \item \textbf{Regime Estacionário (\textit{Steady State}):} Cada instância é avaliada por $N = 5$ repetições sucessivas após aquecimento de cache, calculando-se média amostral ($\bar{t}$) e desvio-padrão ($\sigma_t$);
-    \item \textbf{Certificação Cruzada Automática (Cross-Validation):} Como os motores baseiam-se em paradigmas distintos (aumentos primais vs. pré-fluxos duais vs. pivoteamento em árvore), a suíte valida automaticamente se todos os algoritmos produzem exatamente a mesma vazão máxima $f^*$ e custo ótimo $z^*$. Em todos os testes realizados, a concordância foi de 100\%, certificando a integridade das implementações.
-\end{enumerate}
-
-\subsubsection{Resultados Experimentais de Fluxo Máximo (Coleções DIMACS)}
-
-Os motores de fluxo máximo foram submetidos às coleções clássicas do \textit{First DIMACS Challenge} geradas pelos geradores oficiais de Rutgers:
-\begin{itemize}[leftmargin=1.5em, itemsep=0.1em, topsep=0.1em, parsep=0em]
+Os motores de fluxo máximo foram avaliados sobre as coleções clássicas do \textit{First DIMACS Challenge}:
+\begin{itemize}[leftmargin=1.5em, itemsep=0.15em, topsep=0.2em, parsep=0em]
     \item \textbf{Washington (RLG e Line):} Redes com gargalos induzidos para provocar caminhos aumentantes longos;
-    \item \textbf{Genrmf (small, medium, wide, long):} Grafos estruturados em grade tridimensional com planos transversais de corte severo, representando o pior cenário para métodos de pré-fluxo e caminhos aumentantes.
+    \item \textbf{Genrmf (small, medium, wide, long):} Grafos em grade tridimensional com planos transversais de corte severo, representando o pior cenário para métodos de pré-fluxo e caminhos aumentantes.
 \end{itemize}
 
 A Tabela~\ref{tab:benchmarks_maxflow} apresenta os tempos de execução médios obtidos pelos cinco motores nas instâncias de referência de fluxo máximo.
@@ -462,14 +47,14 @@ A Tabela~\ref{tab:benchmarks_maxflow} apresenta os tempos de execução médios 
 \label{tab:benchmarks_maxflow}
 \end{table}
 
-\noindent \textbf{Discussão dos Resultados de Fluxo Máximo:}
-\begin{itemize}[leftmargin=1.5em, itemsep=0.15em, topsep=0.1em, parsep=0em]
-    \item \textbf{Impacto da Gap Heuristic no Push-Relabel:} O motor \code{PushRelabelImproved} (com Gap Heuristic) superou o \code{PushRelabel} convencional em todas as instâncias médias e grandes, alcançando uma aceleração de até \textbf{$9{,}7\times$} na instância \texttt{genrmf\_long} (7,10 ms vs. 68,50 ms). Isso comprova a eficácia da detecção precoce de rótulos mortos;
-    \item \textbf{Dinic vs. Edmonds-Karp:} O algoritmo de Dinic foi de \textbf{$6\times$ a $15\times$ mais rápido} que o Edmonds-Karp nas instâncias de grande escala. Enquanto o Edmonds-Karp executa uma nova BFS global a cada aumento de fluxo ($O(n \cdot m^2)$), o Dinic constrói o digrafo de níveis uma única vez por fase e empurra múltiplos caminhos aumentantes através de busca em profundidade com eliminação de ponteiros mortos, demonstrando sua superioridade teórica e prática;
-    \item \textbf{Sensibilidade a Gargalos Profundos:} Em redes lineares e RMF longas, o Ford-Fulkerson e o Edmonds-Karp degradam acentuadamente em função do número de aumentos e do comprimento médio dos caminhos, enquanto os algoritmos baseados em alturas mantêm excelente estabilidade.
+\noindent \textbf{Análise dos Resultados de Fluxo Máximo:}
+\begin{itemize}[leftmargin=1.5em, itemsep=0.15em, topsep=0.2em, parsep=0em]
+    \item \textbf{Impacto da Gap Heuristic no Push-Relabel:} O motor \code{PushRelabelImproved} superou o \code{PushRelabel} convencional em todas as instâncias médias e grandes, atingindo uma aceleração de até \textbf{$9{,}7\times$} na instância \texttt{genrmf\_long} (7,10 ms vs. 68,50 ms), comprovando a eficácia da detecção precoce de rótulos mortos;
+    \item \textbf{Dinic vs. Edmonds-Karp:} O algoritmo de Dinic foi de \textbf{$6\times$ a $15\times$ mais rápido} que o Edmonds-Karp em redes de grande escala. Enquanto o Edmonds-Karp executa uma nova BFS global a cada aumento de fluxo ($O(n m^2)$), o Dinic constrói o digrafo de níveis uma única vez por fase e empurra múltiplos caminhos em fluxo bloqueador com eliminação de ponteiros mortos;
+    \item \textbf{Degradação sob Gargalos Profundos:} Em redes lineares e RMF longas, Ford-Fulkerson e Edmonds-Karp degradam acentuadamente em função do número de aumentos e do comprimento médio dos caminhos, enquanto os algoritmos baseados em alturas mantêm excelente estabilidade.
 \end{itemize}
 
-\subsubsection{Resultados Experimentais de Custo Mínimo (Coleção DIMACS Netgen)}
+\subsection{Avaliação de Fluxo de Custo Mínimo (Coleção DIMACS Netgen)}
 
 Para avaliar os motores de fluxo de custo mínimo, utilizou-se a família \textbf{Netgen}, gerada oficialmente pelo gerador DIMACS de Rutgers para redes de transporte com restrições balanceadas de oferta e demanda.
 
@@ -497,18 +82,9 @@ A Tabela~\ref{tab:benchmarks_mincost} apresenta a comparação entre os quatro m
 \label{tab:benchmarks_mincost}
 \end{table}
 
-\noindent \textbf{Discussão dos Resultados de Custo Mínimo:}
-\begin{itemize}[leftmargin=1.5em, itemsep=0.15em, topsep=0.1em, parsep=0em]
+\noindent \textbf{Análise dos Resultados de Custo Mínimo:}
+\begin{itemize}[leftmargin=1.5em, itemsep=0.15em, topsep=0.2em, parsep=0em]
     \item \textbf{Desempenho do Network Simplex:} O algoritmo \code{NetworkSimplex} apresentou menor tempo de execução que os demais métodos, sendo até \textbf{$25\times$ mais rápido que o SSP com Dijkstra} e aproximadamente \textbf{$800\times$ mais rápido que o Cycle Canceling} na instância \texttt{netgen\_08} (12,40 ms vs. 9.850 ms). A eficiência decorre da estrutura de árvore geradora: enquanto métodos de caminhos mínimos recalculam trajetos completos a cada iteração, o Network Simplex executa pivoteamentos locais em ciclos fundamentais, atualizando potenciais apenas na subárvore afetada;
-    \item \textbf{Potenciais Nodais no SSP (Dijkstra vs. SPFA):} O uso de potenciais nodais ($\bar{c}^\pi \ge 0$) reduziu o tempo de execução do \textit{Successive Shortest Path} em \textbf{$3{,}5\times$ a $5{,}2\times$} frente ao SSP com SPFA, confirmando a vantagem do algoritmo de Dijkstra com fila de prioridade sobre grafos densos;
-    \item \textbf{Limitações do Cycle Canceling:} O cancelamento de ciclos negativos requer buscas exaustivas por ciclos via Bellman-Ford ou SPFA ($O(n m)$ por iteração). Em instâncias com muitas unidades de fluxo ou redes com mais de 500 vértices, o método apresenta tempos significativamente superiores aos demais.
+    \item \textbf{Potenciais Nodais no SSP (Dijkstra vs. SPFA):} O uso de potenciais nodais ($\bar{w}_\pi \ge 0$) reduziu o tempo de execução do \textit{Successive Shortest Path} em \textbf{$3{,}5\times$ a $5{,}2\times$} frente ao SSP com SPFA, confirmando a vantagem de Dijkstra com fila de prioridades;
+    \item \textbf{Limitações do Cycle Canceling:} O cancelamento de ciclos negativos requer buscas completas por ciclos via Bellman-Ford ou SPFA ($O(n m)$ por iteração). Em instâncias com muitas unidades de fluxo ou redes com mais de 500 vértices, o método apresenta tempos significativamente superiores aos demais.
 \end{itemize}
-
-\subsubsection{Diretrizes Práticas para Seleção Algorítmica}
-
-A partir dos resultados experimentais, sintetizam-se as seguintes recomendações:
-\begin{enumerate}[leftmargin=1.5em, itemsep=0.1em, topsep=0.1em, parsep=0em]
-    \item \textbf{Fluxo Máximo e Corte Mínimo em Grafos Esparsos ou Bipartidos:} O algoritmo de \textbf{Dinic} apresenta o melhor desempenho prático devido à menor constante oculta e à eficiência de cache no processamento em fases;
-    \item \textbf{Grades 2D/3D (Segmentação de Imagens):} O \textbf{Push-Relabel com Gap Heuristic} e o \textbf{Dinic} apresentam desempenho similar, com vantagem para o Push-Relabel na presença de múltiplos cortes de mesma capacidade;
-    \item \textbf{Fluxo de Custo Mínimo em Larga Escala:} O \textbf{Network Simplex} é o algoritmo mais eficiente, combinando baixo número de iterações, integralidade garantida por TUM e baixo consumo de memória.
-\end{enumerate}

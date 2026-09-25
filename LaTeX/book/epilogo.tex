@@ -8,15 +8,15 @@ Os resultados e implementações consolidados neste volume integram a teoria mat
 
 \begin{enumerate}[leftmargin=1.5em, itemsep=0.4em]
     \item \textbf{Fundamentação Teórica:} Demonstração matemática dos teoremas estruturais de fluxo (Fluxo Máximo e Corte Mínimo, Integralidade, Decomposição de Fluxo, Teoremas de Menger, König e as Quatro Dualidades em grafos bipartidos; e, em custo mínimo, otimalidade por ciclos negativos, custos reduzidos, folga complementar e Total Unimodularidade da matriz de incidência).
-    
+
     \item \textbf{Arquitetura em C++23:} Desenvolvimento de classes base abstratas e algoritmos especializados divididos em duas famílias:
     \begin{itemize}
         \item \textbf{Família \lstinline{FlowNetwork} (Fluxo Máximo):} \lstinline{FordFulkerson}, \lstinline{EdmondsKarp}, \lstinline{Dinic}, \lstinline{PushRelabel} (FIFO) e \lstinline{PushRelabelImproved} (Gap Heuristic), documentados nos Apêndices~\ref{ap:flownetwork} a~\ref{ap:push_relabel_improved}.
         \item \textbf{Família \lstinline{CostNetwork} (Custo Mínimo):} \lstinline{CycleCanceling}, \lstinline{SuccessiveShortest} (SPFA), \lstinline{SuccessiveShortestDijkstra} (Potenciais) e \lstinline{NetworkSimplex}, documentados nos Apêndices~\ref{ap:costnetwork} a~\ref{ap:network_simplex}.
     \end{itemize}
-    
+
     \item \textbf{Reduções e Aplicações:} Resolução de problemas clássicos (\textit{Maximum Bipartite Matching}, \textit{Minimum Vertex Cover}, \textit{Maximum Independent Set}, caminhos disjuntos e corte mínimo) e aplicação em \textbf{Segmentação Interativa de Imagens} via corte mínimo em grafos (\textit{Graph Cuts}).
-    
+
     \item \textbf{Avaliação Experimental:} Protocolo de medição de tempo de CPU sob isolamento em instâncias padronizadas da literatura (coleções DIMACS), validando a corretude das soluções por certificação cruzada.
 \end{enumerate}
 

@@ -1,0 +1,38 @@
+% =========================================================================
+% ARQUITETURA DE SOFTWARE EM C++23 E ESTRUTURAS DE DADOS
+% =========================================================================
+\apendice{Arquitetura Orientada a Objetos em C++23 e Estruturas de Dados}
+\label{ap:arquitetura}
+
+A transposição dos modelos matemáticos abstratos para motores computacionais de alto desempenho fundamenta-se no paradigma da Orientação a Objetos através do padrão ISO C++23.
+
+\paragraph{Tipagem e Margem de Segurança Numérica.}
+A biblioteca adota apelidos de tipo (\textit{Type Aliases}) canônicos: \lstinline{Long} (\lstinline{long long}) para capacidades e fluxos, e \lstinline{Size} (\lstinline{std::size_t}) para identificadores nodais e dimensionamento de estruturas de dados. Para mitigar o risco de estouro de inteiros (\textit{Integer Overflow}) em somas cumulativas de capacidades infinitas, as constantes de saturação são definidas com deslocamento defensivo de 8 bits à direita:
+\begin{lstlisting}[language=C++, numbers=none, basicstyle=\ttfamily\footnotesize, frame=none, backgroundcolor=\color{white}]
+constexpr Long INF = std::numeric_limits<Long>::max() >> 8;
+constexpr Size MAX = std::numeric_limits<Size>::max() >> 8;
+\end{lstlisting}
+
+\paragraph{Representação Contígua de Grafo Residual e Emparelhamento XOR.}
+Para favorecer a localidade de cache da CPU e eliminar o overhead de alocações dinâmicas dispersas, a topologia da rede é mantida em duas estruturas integradas:
+\begin{enumerate}
+    \item \lstinline{std::vector<Edge> edges}: vetor contíguo na memória contendo todas as conexões da rede (\lstinline{from}, \lstinline{to}, \lstinline{capacity}, \lstinline{flow});
+    \item \lstinline{std::vector<std::vector<Size>> adj}: lista de adjacência onde cada entrada armazena apenas os índices numéricos dos arcos no vetor principal \lstinline{edges}.
+\end{enumerate}
+
+No método \lstinline{add_edge(u, v, cap, rev_cap)}, os arcos direto e reverso são alocados em pares sequenciais contíguos (índices $2k$ e $2k+1$). Consequentemente, o acesso ao arco residual simétrico opera em tempo estritamente $\mathcal{O}(1)$ via operador bit a bit Ou Exclusivo (\lstinline{id ^ 1ULL}):
+\begin{lstlisting}[language=C++, numbers=none, basicstyle=\ttfamily\footnotesize, frame=none, backgroundcolor=\color{white}]
+void push_flow(const Size edge_id, const Long flow_amount) {
+    edges[edge_id].flow += flow_amount;
+    edges[edge_id ^ 1ULL].flow -= flow_amount;
+}
+\end{lstlisting}
+
+\paragraph{Hierarquia Polimórfica e Padrões de Projeto.}
+A biblioteca organiza-se em duas famílias baseadas nos padrões \textit{Strategy}, \textit{Factory Method} e \textit{Prototype}~\cite{gamma1994design}:
+\begin{itemize}
+    \item \textbf{Família \lstinline{FlowNetwork} (Fluxo Máximo):} Interface base abstrata com o método virtual puro \lstinline{compute_max_flow(source, sink)}. Os motores concretos (\lstinline{FordFulkerson}, \lstinline{EdmondsKarp}, \lstinline{Dinic}, \lstinline{PushRelabel} e \lstinline{PushRelabelImproved}) implementam estratégias de busca distintas mantendo total intercambialidade;
+    \item \textbf{Família \lstinline{CostNetwork} (Custo Mínimo):} Interface base abstrata que incorpora o custo linear unitário $w$ aos arcos, com o método virtual puro \lstinline{compute_min_cost(source, sink)} implementado por \lstinline{CycleCanceling}, \lstinline{SuccessiveShortest}, \lstinline{SuccessiveShortestDijkstra} e \lstinline{NetworkSimplex}.
+\end{itemize}
+
+Os métodos virtuais \lstinline{make(n)} e \lstinline{clone()} permitem a instanciação e a clonagem profunda (\textit{deep copy}) de instâncias polimórficas preservando o estado residual, o que é fundamental em aplicações iterativas como corte mínimo e segmentação de imagens.

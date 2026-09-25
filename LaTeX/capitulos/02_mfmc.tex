@@ -109,14 +109,14 @@ Como não há caminho aumentante, o sumidouro $t$ é inalcançável a partir de 
 \begin{tikzpicture}[thick]
     \draw[cut S] (-0.8, -1.8) rectangle (2.8, 1.8);
     \node[cut label S] at (-0.6, 1.65) {$\mathbf{S}$};
-    
+
     \draw[cut T] (5.4, -1.8) rectangle (9.0, 1.8);
     \node[cut label T] at (8.8, 1.65) {$\mathbf{T}$};
 
     \node[source node] (s) at (0.0, 0.0) {$s$};
     \node[s node internal] (a) at (2.0, 0.8) {$a$};
     \node[s node internal] (b) at (2.0, -0.8) {$b$};
-    
+
     \node[t node internal] (c) at (6.2, 0.8) {$c$};
     \node[t node internal] (d) at (6.2, -0.8) {$d$};
     \node[sink node] (t) at (8.2, 0.0) {$t$};
@@ -126,7 +126,7 @@ Como não há caminho aumentante, o sumidouro $t$ é inalcançável a partir de 
 
     \draw[sat edge] (a) -- node[edge lbl above, text=cutviolet!90!black] {$f=c$} (c);
     \draw[sat edge] (b) -- node[edge lbl below, text=cutviolet!90!black] {$f=c$} (d);
-    
+
     \draw[flow edge] (s) -- (a);
     \draw[flow edge] (s) -- (b);
     \draw[flow edge] (c) -- (t);

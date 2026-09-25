@@ -76,6 +76,15 @@ if [ -f "Scripts/sync_listings.py" ]; then
 	fi
 fi
 
+if [ -f "Scripts/build_monolith.py" ]; then
+	echo "  ↳ Validating LaTeX monolith synchronization..."
+	if ! python3 Scripts/build_monolith.py --check > "/dev/null" 2>&1; then
+		echo "❌ [pre-commit] LaTeX/monolito.tex is out of sync with modular sources!" >&2
+		echo "   Run 'python3 Scripts/build_monolith.py' before committing." >&2
+		exit 1
+	fi
+fi
+
 ### ================================
 ### Markdown Prettier Validation
 ### ================================
