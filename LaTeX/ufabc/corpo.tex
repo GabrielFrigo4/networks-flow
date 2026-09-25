@@ -1,17 +1,32 @@
 % =========================================================================
-% CORPO INTEGRAL DA MONOGRAFIA E RELATÓRIO DE INICIAÇÃO CIENTÍFICA
+% SUMÁRIO (ANTES DO RESUMO)
 % =========================================================================
 \pagestyle{empty}
-\input{ufabc/resumo.tex}
-\newpage
-
 \renewcommand{\contentsname}{Sumário}
+\setcounter{tocdepth}{1}
 \tableofcontents
-\newpage
+\clearpage
 
+% =========================================================================
+% RESUMO E INTRODUÇÃO (COMPARTILHAM UMA ÚNICA PÁGINA)
+% =========================================================================
 \pagestyle{textual}
+\input{ufabc/resumo.tex}
+
+\vspace{0.35cm}
+
 \input{ufabc/introducao.tex}
+\clearpage
+
+% =========================================================================
+% METODOLOGIA (MÁXIMO 1 PÁGINA)
+% =========================================================================
 \input{ufabc/metodologia.tex}
+\clearpage
+
+% =========================================================================
+% FUNDAMENTAÇÃO, RESULTADOS E APLICAÇÃO
+% =========================================================================
 \input{ufabc/fundamentacao.tex}
 \input{ufabc/resultados.tex}
 \input{ufabc/segmentacao.tex}

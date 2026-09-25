@@ -1,6 +1,7 @@
 % =========================================================================
 % CAPA EDITORIAL MIT PRESS E PREFÁCIO DO AUTOR
 % =========================================================================
+\hypersetup{pageanchor=false}
 \begin{titlepage}
     \thispagestyle{empty}
     \begin{tikzpicture}[remember picture, overlay]
@@ -131,7 +132,7 @@
 \begin{titlepage}
     \centering
     \vspace*{0.5cm}
-    {\scshape\large UNIVERSIDADE FEDERAL DO ABC}\\[0.2cm]
+    {\fontsize{13}{16}\selectfont\textbf{UNIVERSIDADE FEDERAL DO ABC}}\\[0.2cm]
     {\fontsize{10}{13}\selectfont\textbf{\textsf{CENTRO DE MATEMÁTICA, COMPUTAÇÃO E COGNIÇÃO -- CMCC}}}\\[0.15cm]
     {\fontsize{9}{12}\selectfont\color{darkslate!75} Bacharelado em Ciência da Computação}
 
@@ -150,13 +151,22 @@
     {\fontsize{14}{18}\selectfont\textbf{\textsf{Gabriel Frigo}}}\\[0.35cm]
     {\fontsize{10.5}{14}\selectfont Orientação Acadêmica: \textbf{\textsf{Profa. Dra. Cristiane Maria Sato}}}
 
-    \vspace{1.6cm}
+    \vspace{0.5cm}
 
     \begin{tikzpicture}
-        \node[draw=cardborder, fill=cardbg, rounded corners=8pt, line width=1pt, inner sep=16pt, text width=13.0cm, align=left] {
-            {\fontsize{9.5}{14}\selectfont\textbf{\color{darkslate}ESCOPO MONOGRÁFICO:}}\\[0.2cm]
-            {\fontsize{9}{13}\selectfont\color{darkslate!90} Tratado monográfico completo dedicado ao estudo rigoroso, demonstrações formais axiomáticas e engenharia de software em C++23 de problemas clássicos e contemporâneos de fluxos em redes, dualidade primal-dual e suas aplicações em otimização combinatória e visão computacional.}\\[0.35cm]
-            {\fontsize{8.5}{12}\selectfont\color{darkslate!80} \textbf{Palavras-chave:} Fluxo Máximo $\bullet$ Corte Mínimo $\bullet$ Custo Mínimo $\bullet$ Dualidade Linear $\bullet$ Network Simplex $\bullet$ C++23}
+        \node[draw=cardborder, fill=cardbg, rounded corners=8pt, line width=1pt, inner sep=12pt, text width=13.0cm, align=left] {
+            {\fontsize{9}{13}\selectfont\textbf{\color{darkslate}ESCOPO MONOGRÁFICO:}}\\[0.15cm]
+            {\fontsize{8.5}{12}\selectfont\color{darkslate!90} Tratado monográfico completo dedicado ao estudo rigoroso, demonstrações formais axiomáticas e engenharia de software em C++23 de problemas clássicos e contemporâneos de fluxos em redes, dualidade primal-dual e suas aplicações em otimização combinatória e visão computacional.}\\[0.25cm]
+            {\fontsize{8}{11}\selectfont\color{darkslate!80} \textbf{Palavras-chave:} Fluxo Máximo $\bullet$ Corte Mínimo $\bullet$ Custo Mínimo $\bullet$ Dualidade Linear $\bullet$ Network Simplex $\bullet$ C++23}
+        };
+    \end{tikzpicture}
+
+    \vspace{0.35cm}
+
+    \begin{tikzpicture}
+        \node[draw=cardborder, fill=cardbg, rounded corners=8pt, line width=1pt, inner sep=12pt, text width=13.0cm, align=left] {
+            {\fontsize{9}{13}\selectfont\textbf{\color{darkslate}DECLARAÇÃO DE TRANSPARÊNCIA E USO DE IA ASSISTIVA:}}\\[0.15cm]
+            {\fontsize{8.5}{12}\selectfont\color{darkslate!90} Ferramentas de Inteligência Artificial (especificamente o ecossistema Google Gemini, integrando NotebookLM e Gems, sob o ambiente de assistência Antigravity) foram empregadas exclusivamente como instrumentos auxiliares de apoio ao estudo bibliográfico, editoração, refinamento gramatical e assistência na geração de diagramas vetoriais, sem qualquer papel de autoria ou geração autônoma de conteúdo conceitual. A formulação teórica, a concepção arquitetural das implementações em C++23, a condução das provas matemáticas e a revisão analítica integral decorrem de esforço intelectual e auditoria humana rigorosa.}
         };
     \end{tikzpicture}
 
@@ -164,8 +174,9 @@
 
     {\fontsize{9.5}{13}\selectfont\color{darkslate!80}\textbf{1ª Edição Monográfica}}\\[0.2cm]
     {\fontsize{10.5}{14}\selectfont\textbf{Santo André -- SP}}\\[0.15cm]
-    {\fontsize{10.5}{14}\selectfont\textbf{\the\year}}
+    {\fontsize{10.5}{14}\selectfont\textbf{2026}}
 \end{titlepage}
+\hypersetup{pageanchor=true}
 
 \chapter*{Prefácio do Autor}
 \addcontentsline{toc}{chapter}{Prefácio do Autor}

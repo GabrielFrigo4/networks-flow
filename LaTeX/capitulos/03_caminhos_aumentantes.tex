@@ -87,7 +87,7 @@ Para capacidades inteiras, uma sequência desfavorável de caminhos pode demanda
   \node[font=\footnotesize, align=center, below=4pt] at (2.5,-0.6) {DFS alterna $s \to u \to v \to t$ e $s \to v \to u \to t$\\Gargalo $1 \implies 2 \times 10^6$ passos (BFS: 2 passos)};
 \end{scope}
 \end{tikzpicture}
-\caption{Contraexemplo de Ford-Fulkerson com capacidades $M = 10^6$ e arco central unitário $c=1$. (a)~Rede com fluxo máximo $|f^*| = 2M$. (b)~DFS ingênua alternando caminhos pelo arco central, aumentando $\delta=1$ por passo em $2 \times 10^6$ iterações. Edmonds-Karp encerra em $2$ iterações.}
+\caption{Contraexemplo patológico de Ford-Fulkerson com capacidades $M = 10^6$ e arco central unitário $c=1$. (a)~Rede com fluxo máximo $|f^*| = 2M$. (b)~DFS ingênua alternando caminhos pelo arco central, aumentando $\delta=1$ por passo em $2 \times 10^6$ iterações. Em contrapartida, métodos baseados em BFS priorizam caminhos de menor distância: Edmonds-Karp encerra em $2$ iterações e Dinic em $1$ única fase de fluxo bloqueador.}
 \label{fig:ford_fulkerson_patologico}
 \end{figure}
 

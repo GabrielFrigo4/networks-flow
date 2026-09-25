@@ -1,11 +1,19 @@
-\begin{table}[!ht]
-\centering
+\begingroup
 \small
 \setlength{\tabcolsep}{4pt}
-\begin{tabular}{llrrrrl}
+\begin{longtable}{llrrrrl}
+\caption{Resultados experimentais dos motores de fluxo máximo.}\label{tab:results_maxflow}\\
 \toprule
-\textbf{Inst\^ancia} & \textbf{Algoritmo} & $|V|$ & $|A|$ & $f^*$ & $\bar{t}$ (ms) & \textbf{Status} \\
+\textbf{Instância} & \textbf{Algoritmo} & $|V|$ & $|A|$ & $f^*$ & $\bar{t}$ (ms) & \textbf{Status} \\
 \midrule
+\endfirsthead
+\caption[]{Resultados experimentais dos motores de fluxo máximo (continuação)}\\
+\toprule
+\textbf{Instância} & \textbf{Algoritmo} & $|V|$ & $|A|$ & $f^*$ & $\bar{t}$ (ms) & \textbf{Status} \\
+\midrule
+\endhead
+\bottomrule
+\endfoot
 genrmf\_long.max & FordFulkerson & 1024 & 4080 & 40352 & 1179.08 & OK \\
 genrmf\_long.max & EdmondsKarp & 1024 & 4080 & 40352 & 9.16 & OK \\
 genrmf\_long.max & Dinic & 1024 & 4080 & 40352 & \textbf{2.91} & OK \\
@@ -143,8 +151,5 @@ test\_small.max & EdmondsKarp & 6 & 8 & 15 & 0.06 & OK \\
 test\_small.max & Dinic & 6 & 8 & 15 & \textbf{0.03} & OK \\
 test\_small.max & PushRelabel & 6 & 8 & 15 & 0.04 & OK \\
 test\_small.max & PushRelabelImproved & 6 & 8 & 15 & 0.06 & OK \\
-\bottomrule
-\end{tabular}
-\caption{Resultados experimentais dos motores de fluxo m\'aximo.}
-\label{tab:results_maxflow}
-\end{table}
+\end{longtable}
+\endgroup

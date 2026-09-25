@@ -46,15 +46,33 @@ def generate_monolith(check_only: bool = False) -> bool:
     initial_content = entry_point.read_text(encoding="utf-8")
     monolith_content = resolve_inputs(initial_content, latex_dir)
 
-    # Adiciona cabeçalho informativo ao topo do monolito
+    # Cabeçalho padronizado para o monolito
     header_banner = (
         "% =========================================================================\n"
-        "% RELATÓRIO DE INICIAÇÃO CIENTÍFICA (MONÓLITO AUTOCONTIDO PARA OVERLEAF)\n"
-        "% Gerado automaticamente a partir de LaTeX/relatorio.tex via Scripts/build_monolith.py\n"
+        "% RELATÓRIO DE INICIAÇÃO CIENTÍFICA (COM CAPA INSTITUCIONAL UFABC)\n"
         "% =========================================================================\n\n"
     )
 
-    final_content = header_banner + monolith_content.strip() + "\n"
+    clean_monolith = monolith_content.strip()
+
+    # Se o arquivo .bbl existir, embute a bibliografia compilada no monólito (100% autocontido)
+    bbl_path = latex_dir / "build" / "relatorio.bbl"
+    if bbl_path.exists():
+        bbl_content = bbl_path.read_text(encoding="utf-8").strip()
+        bib_pattern = re.compile(
+            r"\\bibliographystyle\{[^}]+\}\s*\\bibliography\{[^}]+\}",
+            re.MULTILINE,
+        )
+        clean_monolith = bib_pattern.sub(lambda _: bbl_content, clean_monolith)
+
+    # Normaliza quebras de linha excessivas e garante encerramento limpo antes de \end{document}
+    clean_monolith = re.sub(r"\n{3,}", "\n\n", clean_monolith)
+    clean_monolith = re.sub(r"\n+\\end\{document\}", r"\n\n\\end{document}", clean_monolith)
+
+    if clean_monolith.startswith("% ========================================================================="):
+        final_content = clean_monolith + "\n"
+    else:
+        final_content = header_banner + clean_monolith + "\n"
 
     if check_only:
         if not output_path.exists():

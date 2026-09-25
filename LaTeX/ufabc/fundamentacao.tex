@@ -50,6 +50,40 @@ Além disso, as seguintes condições são equivalentes: (i) $f$ é um fluxo má
 
 \noindent \textbf{Demonstração Construtiva:} Para qualquer fluxo viável $f$ e qualquer corte $(S, T)$, tem-se $|f| \le c(S, T)$. Se $D_f$ não possui caminho aumentante de $s$ a $t$, seja $S^*$ o conjunto de vértices alcançáveis a partir de $s$ em $D_f$ e $T^* = V \setminus S^*$. Como não há caminho de $s$ a $t$, $s \in S^*$ e $t \in T^*$, de modo que $(S^*, T^*)$ é um corte válido. Para todo $(u, v) \in A$ com $u \in S^*$ e $v \in T^*$, deve-se ter $c_f(u, v) = 0$, implicando $f(u, v) = c(u, v)$. De forma análoga, se $u \in T^*$ e $v \in S^*$, tem-se $f(u, v) = 0$ (caso contrário, existiria capacidade residual reversa $c_f(v, u) > 0$, contradizendo a inalcançabilidade de $u$). O fluxo líquido através do corte satisfaz $|f| = c(S^*, T^*)$, certificando a otimalidade de $f$ e a minimalidade de $(S^*, T^*)$. \hfill $\blacksquare$
 
+\begin{figure}[!ht]
+\centering
+\begin{tikzpicture}[thick]
+    \draw[cut S] (-0.8, -1.8) rectangle (2.8, 1.8);
+    \node[cut label S] at (-0.6, 1.65) {$\mathbf{S}$};
+
+    \draw[cut T] (5.4, -1.8) rectangle (9.0, 1.8);
+    \node[cut label T] at (8.8, 1.65) {$\mathbf{T}$};
+
+    \node[source node] (s) at (0.0, 0.0) {$s$};
+    \node[s node internal] (a) at (2.0, 0.8) {$a$};
+    \node[s node internal] (b) at (2.0, -0.8) {$b$};
+
+    \node[t node internal] (c) at (6.2, 0.8) {$c$};
+    \node[t node internal] (d) at (6.2, -0.8) {$d$};
+    \node[sink node] (t) at (8.2, 0.0) {$t$};
+
+    \draw[line width=1.5pt, dashed, cutviolet] (4.1, -1.85) -- (4.1, 1.85)
+        node[above=2.5pt, solid, font=\scriptsize\bfseries, text=cutviolet!90!black, fill=white, inner sep=2.5pt, rounded corners=3pt, draw=cutviolet!70] {Corte Mínimo $(S,T)$};
+
+    \draw[sat edge] (a) -- node[edge lbl above, text=cutviolet!90!black] {$f=c$} (c);
+    \draw[sat edge] (b) -- node[edge lbl below, text=cutviolet!90!black] {$f=c$} (d);
+
+    \draw[flow edge] (s) -- (a);
+    \draw[flow edge] (s) -- (b);
+    \draw[flow edge] (c) -- (t);
+    \draw[flow edge] (d) -- (t);
+    \draw[flow edge] (a) -- (b);
+    \draw[flow edge] (c) -- (d);
+\end{tikzpicture}
+\caption{Estrutura do corte mínimo $(S,T)$: arcos que cruzam de $S$ para $T$ (em violeta) estão saturados ($f = c$), e fluxos no sentido reverso de $T$ para $S$ são nulos.}
+\label{fig:corte_minimo}
+\end{figure}
+
 \begin{prop}[Teorema da Integralidade]\label{prop:integralidade_rel}
 Se a capacidade $c(a)$ for inteira para todo $a \in A$, então existe um fluxo máximo $f^*$ que é puramente inteiro, isto é, $f^*(a) \in \mathbb{Z}_{\ge 0}$ para todo arco $a \in A$.
 \end{prop}
@@ -60,9 +94,84 @@ A preservação da integralidade sob capacidades inteiras é garantida pelo fato
 
 O algoritmo genérico de Ford-Fulkerson busca caminhos aumentantes via busca em profundidade (DFS). Sob capacidades inteiras, sua complexidade assintótica é $\mathcal{O}(|A| \cdot |f^*|)$, que depende do valor numérico das capacidades (pseudopolinomial). Para obter complexidade polinomial estrita, a literatura introduziu políticas estruturadas de seleção de caminhos.
 
+A Figura~\ref{fig:ford_fulkerson_patologico} ilustra a patologia clássica do método ingênuo com DFS: capacidades de grande magnitude ($M = 10^6$) nos arcos externos e uma conexão transversal unitária ($c=1$) provocam alternâncias sucessivas de aumento unitário ($\delta = 1$), exigindo $2 \times 10^6$ passos. Em contrapartida, algoritmos guiados por distâncias mínimas em arcos (BFS) priorizam caminhos diretos de comprimento 2 ($s \to u \to t$ e $s \to v \to t$), saturando a rede em 2 passos (Edmonds-Karp) ou em uma única fase de fluxo bloqueador (Dinic), desconsiderando o arco transversal por conectar nós no mesmo nível ($d(u) = d(v) = 1$).
+
+\begin{figure}[!ht]
+\centering
+\resizebox{0.92\textwidth}{!}{%
+\begin{tikzpicture}[thick]
+\begin{scope}[xshift=0cm]
+  \tikzsubcaption{(2.5,2.6)}{(a) Rede patológica ($M = 10^6$)}
+  \node[source node] (s) at (0, 1) {$s$};
+  \node[flow node] (u) at (2.5, 2) {$u$};
+  \node[flow node] (v) at (2.5, 0) {$v$};
+  \node[sink node] (t) at (5, 1) {$t$};
+
+  \draw[flow edge] (s) -- node[edge lbl above] {$M$} (u);
+  \draw[flow edge] (s) -- node[edge lbl below] {$M$} (v);
+  \draw[sat edge] (u) -- node[edge lbl right, text=red!80!black] {$c=1$} (v);
+  \draw[flow edge] (u) -- node[edge lbl above] {$M$} (t);
+  \draw[flow edge] (v) -- node[edge lbl below] {$M$} (t);
+\end{scope}
+
+\begin{scope}[xshift=7.2cm]
+  \tikzsubcaption{(2.5,2.6)}{(b) Degeneração da DFS: $2M$ iterações}
+  \node[source node] (s2) at (0, 1) {$s$};
+  \node[flow node] (u2) at (2.5, 2) {$u$};
+  \node[flow node] (v2) at (2.5, 0) {$v$};
+  \node[sink node] (t2) at (5, 1) {$t$};
+
+  \draw[tree edge, line width=1.8pt] (s2) -- node[edge lbl above] {$+1$} (u2);
+  \draw[sat edge, line width=1.8pt] (u2) -- node[edge lbl right] {$+1$} (v2);
+  \draw[tree edge, line width=1.8pt] (v2) -- node[edge lbl below] {$+1$} (t2);
+
+  \draw[flow edge, opacity=0.3] (s2) -- (v2);
+  \draw[flow edge, opacity=0.3] (u2) -- (t2);
+
+  \node[font=\scriptsize, align=center, below=3pt] at (2.5,-0.5) {DFS alterna $s \to u \to v \to t$ e $s \to v \to u \to t$\\Aumento $\delta=1 \implies 2 \times 10^6$ passos (BFS / Dinic: 1 fase / 2 passos)};
+\end{scope}
+\end{tikzpicture}%
+}
+\caption{Contraexemplo patológico de Ford-Fulkerson com $M = 10^6$ e arco central unitário $c=1$: (a) rede com fluxo ótimo $|f^*| = 2M$; (b) busca ingênua por DFS alternando caminhos em zigue-zague com aumento $\delta = 1$, demandando $2 \times 10^6$ iterações. Em contraste, métodos baseados em BFS (Edmonds-Karp e Dinic) priorizam caminhos mais curtos ($s \to u \to t$ e $s \to v \to t$), saturando a rede em 2 passos ou em 1 única fase.}
+\label{fig:ford_fulkerson_patologico}
+\end{figure}
+
 \paragraph{Algoritmo de Edmonds-Karp (1972).} O método seleciona a cada iteração o caminho aumentante de menor quantidade de arcos através de Busca em Largura (BFS) em $D_f$~\cite{edmonds1972theoretical}. Demonstra-se que a distância residual mínima $d(s, v)$ é monotonicamente não decrescente ao longo das iterações. Entre duas saturações consecutivas de um mesmo arco $(u, v)$, a distância da origem sofre um acréscimo de no mínimo duas unidades ($d'(s, u) \ge d(s, u) + 2$). Como a distância máxima em um caminho simples é $|V|-1$, cada arco é saturado no máximo $|V|/2$ vezes. Sendo $|A|$ o número de arcos, ocorrem no máximo $\mathcal{O}(|V| \cdot |A|)$ aumentos. Com custo $\mathcal{O}(|A|)$ por BFS, a complexidade é $\mathcal{O}(|V| \cdot |A|^2)$~\cite{korte2018combinatorial}.
 
 \paragraph{Algoritmo de Dinic (1970).} Yefim Dinitz estruturou o processamento em fases~\cite{dinic1970algorithm}. No início de cada fase, constrói-se o \textbf{Digrafo de Níveis} através de uma BFS global a partir de $s$, retendo apenas os arcos residuais que avançam de nível ($d(v) = d(u) + 1$). Em seguida, emprega-se uma DFS para saturar múltiplos caminhos em um único \textbf{Fluxo Bloqueador} (\textit{Blocking Flow}). Utilizando um vetor de ponteiros mortos (\textit{dead-end pointers}) que evita reexplorar arcos sem capacidade, a fase completa opera em $\mathcal{O}(|V| \cdot |A|)$. Como $d(s, t)$ cresce estritamente a cada fase, ocorrem no máximo $|V|-1$ fases, resultando em complexidade $\mathcal{O}(|V|^2 \cdot |A|)$. Em redes unitárias (como em grafos bipartidos), o número de fases limita-se a $\mathcal{O}(\sqrt{|V|})$, atingindo $\mathcal{O}(|A|\sqrt{|V|})$~\cite{ahuja1993network}.
+
+\begin{figure}[!ht]
+\centering
+\begin{tikzpicture}[thick]
+\foreach \x in {0,2.5,5.0,7.5} { \draw[layer line] (\x,-0.7) -- (\x,3.8); }
+
+\node[gray,font=\footnotesize] at (0,4.1) {nív. 0};
+\node[gray,font=\footnotesize] at (2.5,4.1) {nív. 1};
+\node[gray,font=\footnotesize] at (5.0,4.1) {nív. 2};
+\node[gray,font=\footnotesize] at (7.5,4.1) {nív. 3};
+
+\node[source node] (s) at (0,1.5) {$s$};
+\node[flow node] (a) at (2.5,3) {$a$};
+\node[flow node] (b) at (2.5,0) {$b$};
+\node[flow node] (c) at (5.0,3) {$c$};
+\node[flow node] (d) at (5.0,0) {$d$};
+\node[sink node] (t) at (7.5,1.5) {$t$};
+
+\draw[flow edge,blue,line width=1.5pt] (s) -- (a);
+\draw[flow edge,blue,line width=1.5pt] (s) -- (b);
+\draw[flow edge,blue,line width=1.5pt] (a) -- (c);
+\draw[flow edge,blue,line width=1.5pt] (b) -- (d);
+\draw[flow edge,blue,line width=1.5pt] (a) -- (d);
+\draw[flow edge,blue,line width=1.5pt] (b) -- (c);
+\draw[flow edge,blue,line width=1.5pt] (c) -- (t);
+\draw[flow edge,blue,line width=1.5pt] (d) -- (t);
+
+\draw[nontree edge,bend right=30] (a) to (b);
+\draw[nontree edge,bend right=20] (c) to (a);
+\end{tikzpicture}
+\caption{Digrafo de Níveis no algoritmo de Dinic: arcos azuis são admissíveis ($d(v) = d(u)+1$) e integram a fase de fluxo bloqueador; arcos cinza tracejados não avançam nível e são desconsiderados na fase.}
+\label{fig:grafo_niveis}
+\end{figure}
 
 \subsection{Algoritmos de Pré-fluxo e Alturas (Push-Relabel)}
 
@@ -81,12 +190,73 @@ Com política de seleção de vértices ativos em fila FIFO, a complexidade assi
 
 \paragraph{Heurística de Lacuna (\textit{Gap Heuristic}).} Mantendo um vetor de contagem do número de vértices em cada estrato de altura $count[h]$, detecta-se se algum nível $k < |V|$ esvaziou-se ($count[k] = 0$). Como a condição $h(u) \le h(v) + 1$ limita a inclinação dos arcos residuais, nenhum vértice com $h(u) > k$ consegue alcançar o sumidouro ($h(t) = 0$). O algoritmo eleva suas alturas para $|V| + 1$, eliminando operações redundantes de relabel e devolvendo o fluxo diretamente à fonte. Associada à seleção por Maior Altura (\textit{Highest Label}), atinge-se a complexidade $\mathcal{O}(|V|^2 \sqrt{|A|})$~\cite{goldberg1988new}.
 
+\begin{figure}[!ht]
+\centering
+\begin{tikzpicture}[thick]
+  \draw[layer line] (-2, 0) -- (6, 0) node[right,black,font=\footnotesize] {$h=0$ (sumidouro $t$)};
+  \foreach \y/\h in {1.3/1, 2.6/2, 4.8/4} {
+    \draw[layer line] (-2, \y) -- (6, \y) node[right,black,font=\footnotesize] {$h=\h$};
+  }
+  \draw[red!50,dashed,line width=1.5pt] (-2, 3.7) -- (6, 3.7) node[right,red!80!black,font=\footnotesize] {$h=3$ (\textbf{LACUNA})};
+
+  \node[sink node,font=\footnotesize] (t) at (2, 0) {$t$};
+  \node[flow node,fill=yellow!20,font=\footnotesize] (a) at (2, 1.3) {$a$};
+  \node[flow node,fill=yellow!20,font=\footnotesize] (b) at (0.5, 2.6) {$b$};
+  \node[flow node,fill=yellow!20,font=\footnotesize] (c) at (3.5, 2.6) {$c$};
+
+  \node[gap node,fill=red!20,font=\footnotesize] (u) at (2, 4.8) {$u$};
+
+  \draw[->,blue!80!black] (b) -- (a);
+  \draw[->,blue!80!black] (c) -- (a);
+  \draw[->,blue!80!black] (a) -- (t);
+
+  \draw[->,red,line width=1.4pt] (u) -- node[left,pos=0.3,font=\scriptsize,text=black,align=center,xshift=-1mm,fill=white,inner sep=1.5pt] {Queda de 2 níveis\\(inadmissível)} (b);
+  \draw[->,red,line width=1.4pt] (u) -- node[right,pos=0.3,font=\scriptsize,text=black,align=center,xshift=1mm,fill=white,inner sep=1.5pt] {$h(u) \not\le h(c) + 1$\\(inadmissível)} (c);
+\end{tikzpicture}
+\caption{Mecanismo da Heurística de Lacuna: a restrição $h(u) \le h(v) + 1$ impede arcos residuais com salto de altura superior a uma unidade. O esvaziamento do nível intermediário $h=3$ comprova que vértices com $h \ge 4$ estão desconectados do sumidouro.}
+\label{fig:gap_prova}
+\end{figure}
+
 \subsection{Reduções Combinatórias em Grafos Bipartidos}
 
 A formulação de fluxo máximo permite resolver problemas clássicos em grafos bipartidos $G = (X \cup Y, E)$ através de reduções polinomiais exatas:
 
 \begin{enumerate}[leftmargin=1.5em, itemsep=0.15em, topsep=0.2em, parsep=0em]
     \item \textbf{Emparelhamento Máximo Bipartido (\textit{Maximum Bipartite Matching}):} Constrói-se uma rede direcionada adicionando uma superfonte $s$ conectada a cada $x \in X$ com capacidade 1, e cada $y \in Y$ conectado ao supersumidouro $t$ com capacidade 1. Cada aresta $\{x, y\} \in E$ torna-se um arco $(x, y)$ com capacidade infinita (ou unitária). Pelo Teorema da Integralidade, o fluxo máximo tem valor inteiro e coincide rigorosamente com a cardinalidade máxima de emparelhamento: $|f^*| = \nu(G)$.
+
+\begin{figure}[!ht]
+\centering
+\begin{tikzpicture}[thick]
+\begin{scope}[xshift=0cm]
+  \tikzsubcaption{(1.5,3.8)}{(a) Grafo bipartido original}
+  \foreach \i/\y in {1/3, 2/1.5, 3/0} {
+    \node[bip L] (l\i) at (0,\y) {$l_\i$};
+    \node[bip R] (r\i) at (3,\y) {$r_\i$};
+  }
+  \draw[-] (l1) -- (r1); \draw[-] (l1) -- (r2);
+  \draw[-] (l2) -- (r2); \draw[-] (l2) -- (r3);
+  \draw[-] (l3) -- (r1); \draw[-] (l3) -- (r3);
+\end{scope}
+\node at (4.8,1.5) {\Huge $\Rightarrow$};
+
+\begin{scope}[xshift=6.2cm]
+  \tikzsubcaption{(2.5,3.8)}{(b) Rede de fluxo equivalente $D'$}
+  \node[source node] (s) at (0,1.5) {$s$};
+  \node[sink node] (t) at (5,1.5) {$t$};
+  \foreach \i/\y in {1/3, 2/1.5, 3/0} {
+    \node[bip L,font=\footnotesize] (fl\i) at (1.8,\y) {$l_\i$};
+    \node[bip R,font=\footnotesize] (fr\i) at (3.2,\y) {$r_\i$};
+    \draw[flow edge] (s) -- node[above,font=\footnotesize] {$1$} (fl\i);
+    \draw[flow edge] (fr\i) -- node[above,font=\footnotesize] {$1$} (t);
+  }
+  \draw[flow edge,blue,line width=1.5pt] (fl1) -- (fr1); \draw[flow edge] (fl1) -- (fr2);
+  \draw[flow edge,blue,line width=1.5pt] (fl2) -- (fr2); \draw[flow edge] (fl2) -- (fr3);
+  \draw[flow edge] (fl3) -- (fr1); \draw[flow edge,blue,line width=1.5pt] (fl3) -- (fr3);
+\end{scope}
+\end{tikzpicture}
+\caption{Redução do problema de Emparelhamento Máximo Bipartido para Fluxo Máximo: (a) grafo bipartido original; (b) rede com superfonte $s$, supersumidouro $t$ e capacidades unitárias. Os arcos azuis com $f(u, v) = 1$ indicam as arestas do emparelhamento máximo $|f^*| = 3$.}
+\label{fig:fluxo_bipartido}
+\end{figure}
 
     \item \textbf{Teorema de König (1931) e Cobertura Mínima de Vértices:} Em todo grafo bipartido, a cardinalidade do emparelhamento máximo é igual à cardinalidade da cobertura mínima de vértices ($\tau(G)$):
     \begin{equation}
@@ -148,3 +318,38 @@ Seja $\mathbf{M} \in \{-1, 0, 1\}^{|V| \times |A|}$ a matriz de incidência nó-
 A Total Unimodularidade garante que a matriz básica $\mathbf{B}$ associada a qualquer árvore $T$ satisfaça $|\det \mathbf{B}| = 1$, eliminando divisões na Regra de Cramer e garantindo aritmética inteira exata.
 
 Cada iteração do Network Simplex executa quatro passos: (i) \textbf{Pricing:} identificação de arco violador $(u, v)$ fora da árvore ($\bar{w}_\pi < 0$ em $L$ ou $\bar{w}_\pi > 0$ em $U$); (ii) \textbf{Ciclo Fundamental:} determinação do ciclo $C$ formado por $(u, v)$ em $T$ via busca do ancestral comum mais próximo (\textit{LCA}); (iii) \textbf{Gargalo:} cômputo da capacidade residual mínima $\delta$ em $C$ e determinação do arco que deixa a base; e (iv) \textbf{Pivoteamento:} atualização do fluxo e ajuste dos potenciais nodais na subárvore em tempo $\mathcal{O}(|V|)$ com auxílio de listas de pré-ordem (\lstinline{thread}).
+
+\begin{figure}[!ht]
+\centering
+\begin{tikzpicture}[thick]
+\begin{scope}[xshift=0cm]
+  \tikzsubcaption{(2.0,3.6)}{(a) Entrada do arco $(3,4)$ no ciclo fundamental}
+  \node[source node] (a1) at (0, 1.3) {$1$};
+  \node[flow node] (a2) at (2, 2.6) {$2$};
+  \node[flow node] (a3) at (2, 0.0) {$3$};
+  \node[sink node] (a4) at (4, 1.3) {$4$};
+
+  \draw[tree edge] (a1) -- (a2);
+  \draw[tree edge] (a2) -- (a4);
+  \draw[tree edge] (a1) -- (a3);
+  \draw[pivot enter] (a3) -- node[below=3pt,sloped,font=\scriptsize,text=red!80!black] {entra} (a4);
+\end{scope}
+
+\node at (5.2,1.3) {\Large $\Rightarrow$};
+
+\begin{scope}[xshift=6.4cm]
+  \tikzsubcaption{(2.0,3.6)}{(b) Nova base em árvore após o pivot}
+  \node[source node] (b1) at (0, 1.3) {$1$};
+  \node[flow node] (b2) at (2, 2.6) {$2$};
+  \node[flow node] (b3) at (2, 0.0) {$3$};
+  \node[sink node] (b4) at (4, 1.3) {$4$};
+
+  \draw[tree edge] (b1) -- (b2);
+  \draw[pivot leave] (b2) -- node[above=3pt,sloped,font=\scriptsize,text=gray!80!black] {sai} (b4);
+  \draw[tree edge] (b1) -- (b3);
+  \draw[tree edge] (b3) -- (b4);
+\end{scope}
+\end{tikzpicture}
+\caption{Iteração do Network Simplex: (a) o arco não básico violador $(3,4)$ com $\bar{w}_\pi < 0$ fecha um ciclo fundamental em $T$; (b) o fluxo é aumentado por $\delta$ e o arco saturado $(2,4)$ deixa a base, restabelecendo a base em árvore.}
+\label{fig:simplex_pivoteamento}
+\end{figure}

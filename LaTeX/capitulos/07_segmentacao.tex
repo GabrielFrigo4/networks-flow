@@ -59,20 +59,25 @@ Seja $I$ uma imagem com $n = W \times H$ pixels. A rede de segmentação $D = (V
         }
     }
 
+    \draw[fill=gray!15, draw=gray!60, fill opacity=0.85, rounded corners=6pt]
+        (0.3,0.3,0) -- (3.7,0.3,0) -- (3.7,3.7,0) -- (0.3,3.7,0) -- cycle;
+
+    \begin{scope}[line width=1.1pt, black!75]
+      \foreach \x in {1,2,3} {
+        \draw[<->] (\x,1,0) -- (\x,2,0);
+        \draw[<->] (\x,2,0) -- (\x,3,0);
+      }
+      \foreach \y in {1,2,3} {
+        \draw[<->] (1,\y,0) -- (2,\y,0);
+        \draw[<->] (2,\y,0) -- (3,\y,0);
+      }
+    \end{scope}
+
     \foreach \x in {1,2,3} {
         \foreach \y in {1,2,3} {
             \node[pixel node] (p\x\y) at (\x,\y,0) {$p_{\x\y}$};
         }
     }
-
-    \begin{scope}[line width=1.4pt, draw opacity=0.9]
-      \draw[-] (p11) -- (p21); \draw[-] (p21) -- (p31);
-      \draw[-] (p12) -- (p22); \draw[-] (p22) -- (p32);
-      \draw[-] (p13) -- (p23); \draw[-] (p23) -- (p33);
-      \draw[-] (p11) -- (p12); \draw[-] (p12) -- (p13);
-      \draw[-] (p21) -- (p22); \draw[-] (p22) -- (p23);
-      \draw[-] (p31) -- (p32); \draw[-] (p32) -- (p33);
-    \end{scope}
 
     \node[source node] (s) at (2,2,3.5) {$s$};
 
@@ -83,18 +88,18 @@ Seja $I$ uma imagem com $n = W \times H$ pixels. A rede de segmentação $D = (V
     }
 
     \begin{scope}[x={(1cm,0cm)}, y={(0cm,1cm)}, z={(0cm,0cm)}]
-        \node[right, font=\footnotesize, green!60!black] at (3.5, 0.5) {T-links $s \to p$};
-        \draw[->, green!70!black, dashed, line width=0.8pt] (2.3, 0.5) -- (3.3, 0.5);
+        \node[right, font=\footnotesize, green!60!black] at (3.5, 0.7) {T-links $s \to p$};
+        \draw[->, green!70!black, dashed, line width=0.8pt] (2.3, 0.7) -- (3.3, 0.7);
 
-        \node[right, font=\footnotesize, text=black] at (3.5, -0.5) {N-links (similaridade)};
-        \draw[-, line width=1.4pt] (2.3, -0.5) -- (3.3, -0.5);
+        \node[right, font=\footnotesize, text=black] at (3.5, -0.1) {N-links (similaridade)};
+        \draw[<->, line width=1.1pt, black!75] (2.3, -0.1) -- (3.3, -0.1);
 
-        \node[right, font=\footnotesize, red!60!black] at (3.5, -1.5) {T-links $p \to t$};
-        \draw[->, red!70!black, dashed, line width=0.8pt] (2.3, -1.5) -- (3.3, -1.5);
+        \node[right, font=\footnotesize, red!60!black] at (3.5, -0.9) {T-links $p \to t$};
+        \draw[->, red!70!black, dashed, line width=0.8pt] (2.3, -0.9) -- (3.3, -0.9);
     \end{scope}
 
 \end{tikzpicture}
-\caption{Modelagem de grade $3 \times 3$ de pixels como rede de fluxo para segmentação: N-links bidirecionais entre vizinhos e T-links conectando cada pixel aos terminais $s$ e $t$.}
+\caption{Modelagem de grade $3 \times 3$ de pixels como rede de fluxo para segmentação: N-links bidirecionais entre vizinhos planares sobre o grid e T-links verticais conectando cada pixel aos terminais $s$ e $t$.}
 \label{fig:segmentacao_grafo}
 \end{figure}
 
