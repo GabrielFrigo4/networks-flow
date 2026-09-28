@@ -10,7 +10,7 @@ O projeto de pesquisa de Iniciação Científica **"Problemas de Fluxos em Redes
 
 ---
 
-## 🏛️ Os 18 Princípios de Design (17 Princípios UNIX + Soberania do Usuário)
+## 🏛️ Os 22 Princípios de Design (17 Princípios UNIX + 5 Regras Soberanas)
 
 ### 1. Regra da Modularidade (_Rule of Modularity_)
 
@@ -119,6 +119,31 @@ O projeto de pesquisa de Iniciação Científica **"Problemas de Fluxos em Redes
 > _Honre a escolha explícita e deliberada do usuário antes de impor padrões genéricos._
 
 - Rigor e profundidade técnica alinhados às prioridades intelectuais da pesquisa e da orientação acadêmica.
+
+### 19. Regra da Autonomia Reentrante (_Rule of Reentrant Autonomy & Opportunistic Synergy_)
+
+> _Projete cada módulo para ser 100% autossuficiente e tolerante ao isolamento; conecte-o de forma silenciosa e oportuna quando seus pares estiverem presentes._
+
+- O repositório e suas implementações de fluxo compilam e executam de forma totalmente autônoma sem requerer outros hubs; scripts e Makefiles detectam compiladores (`clang++`, `g++`) e ferramentas TeX (`latexmk`, `xelatex`, `pdflatex`) de forma silenciosa e oportuna.
+
+### 20. Regra do Hermetismo de Produção & Autonomia Soberana (_Rule of Production Hermeticity_)
+
+> _O software é construído para humanos e pesquisa científica; a inteligência artificial é exclusivamente uma copiloto sob demanda. Nenhum código de produção deve depender de ferramentas de IA._
+
+- **A Invariante do Teste de Fogo (`rm -rf .agents`):** Se a pasta `.agents/` for deletada, 100% dos algoritmos de fluxo, relatórios e monografia em LaTeX continuam compilando e executando com perfeição absoluta.
+- **Zero Acoplamento de IA em Produção:** Nenhum código C++, Makefile ou pipeline de documentação LaTeX referencia arquivos em `.agents/` ou skills.
+
+### 21. Regra do Desacoplamento Dev-Hub vs. Runtime de Produção (_Rule of Production Sovereign Isolation_)
+
+> _A bancada de ferramentas do artesão não deve ser soldada ao produto final; desenvolva no repositório, execute nos caminhos canônicos do sistema._
+
+- O repositório científico opera como bancada independente. Binários de benchmark e arquivos intermediários de compilação TeX ficam isolados em diretórios locais (`build/`) sem poluir o sistema operacional.
+
+### 22. Regra da Antifragilidade & Resiliência Ativa (_Rule of Antifragility & Active Self-Healing_)
+
+> _O que é frágil quebra com variações de ambiente; o que é antifrágil adapta-se, auto-cura e gera resultados reprodutíveis em qualquer plataforma._
+
+- Scripts de automação e sincronização de listagens (`Scripts/sync_listings.py`) verificam caminhos defensivamente, tratam encodings e suportam execução limpa em múltiplos sistemas.
 
 ---
 
