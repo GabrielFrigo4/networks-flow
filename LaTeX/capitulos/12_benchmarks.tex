@@ -8,12 +8,14 @@ Para avaliar o desempenho prático dos algoritmos em relação às suas garantia
 
 \section{Rigor Metodológico e Ambiente de Teste}\label{sec:bench_metodologia}
 
+Para assegurar rigor científico e reprodutibilidade, todos os experimentos foram executados em uma estação de trabalho \textbf{Dell Vostro 3520} com processador \textbf{Intel Core i7-1255U} (12 threads lógicos, frequência base de 1,7 GHz até 4,7 GHz Turbo), 16 GB de memória RAM DDR4, sob o sistema operacional \textbf{FreeBSD 15.1-RELEASE} (arquitetura \texttt{amd64}).
+
 O protocolo experimental fundamenta-se nas seguintes diretrizes:
 
 \begin{enumerate}
-    \item \textbf{Isolamento Estrito do Tempo de CPU:} O tempo de CPU é medido com \lstinline{std::chrono::high_resolution_clock} (C++23), cronometrando exclusivamente a execução de \lstinline{max_flow()} ou \lstinline{min_cost_flow()}, desconsiderando operações de entrada e saída ($I/O$) e impressão.
+    \item \textbf{Isolamento Estrito do Tempo de CPU:} O tempo de CPU é medido com \lstinline{std::chrono::high_resolution_clock} (C++23), cronometrando exclusivamente a execução de \lstinline{max_flow()} ou \lstinline{min_cost_flow()}, desconsiderando operações de entrada e saída ($I/O$) e alocação de memória do parser.
 
-    \item \textbf{Parâmetros de Compilação e Otimização:} O código-fonte é compilado com GCC 13+ com suporte ao padrão ISO C++23, sob o nível de otimização \lstinline{-O2}. Adicionalmente, utiliza-se \lstinline{-Wl,-z,stack-size=268435456} para prevenir estouros de pilha em buscas profundas (DFS).
+    \item \textbf{Parâmetros de Compilação e Otimização:} O código-fonte é compilado com Clang/LLVM sob o padrão ISO C++23 com nível de otimização \lstinline{-O2}. Adicionalmente, utiliza-se \lstinline{-Wl,-z,stack-size=268435456} para prevenir estouros de pilha em buscas profundas (DFS).
 
     \item \textbf{Tratamento Estatístico e Controle de Timeout:} Cada instância é executada de forma independente por $N = 5$ repetições em regime estacionário (\textit{steady state}), descartando o ciclo de aquecimento de cache (\textit{warm-up}). Registram-se a média e o desvio-padrão. Fixa-se o tempo limite de 60 segundos por instância; execuções que excedem esse limiar são interrompidas como \textit{Time Limit Exceeded} (TLE).
 \end{enumerate}

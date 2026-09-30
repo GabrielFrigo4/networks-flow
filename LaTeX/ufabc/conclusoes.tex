@@ -16,7 +16,7 @@ Os resultados obtidos demonstram o cumprimento integral dos objetivos do plano d
 
     \item \textbf{Reduções Combinatórias e Aplicações:} Resolução de problemas clássicos (\textit{Maximum Bipartite Matching}, \textit{Minimum Vertex Cover}, \textit{Maximum Independent Set}, caminhos disjuntos e desconexão de redes) e implementação de \textbf{Segmentação Interativa de Imagens} baseada em corte mínimo via corte de grafos (\textit{Graph Cuts});
 
-    \item \textbf{Avaliação Experimental:} Protocolo experimental com instâncias da literatura (DIMACS Washington, Genrmf e Netgen), utilizando isolamento estrito de tempo de CPU e validação cruzada com 100\% de concordância entre os algoritmos implementados.
+    \item \textbf{Avaliação Experimental e Síntese de Desempenho:} Avaliação sistemática sobre instâncias canônicas (DIMACS Washington, Genrmf e Netgen) e sintéticas sob isolamento estrito de CPU, com validação cruzada atestando 100\% de concordância nas soluções ótimas ($f^*$ e $z^*$). Os ensaios comprovaram a superioridade prática do algoritmo de Dinic e do Push-Relabel com heurística de lacuna (\textit{Gap Heuristic}) em redes de grande escala (aceleração de até duas ordens de magnitude frente aos aumentos clássicos), bem como a eficiência do \textit{Network Simplex} e dos potenciais nodais no \textit{Successive Shortest Path} frente ao cancelamento de ciclos negativos.
 \end{enumerate}
 
 Como trabalhos futuros, destacam-se a avaliação empírica sobre instâncias esparsas massivas, a análise de diferentes regras de pivoteamento no \textit{Network Simplex} (como \textit{Candidate List Pricing}) e a preparação de artigo científico com a síntese dos resultados.

@@ -5,9 +5,11 @@
 
 Esta seção apresenta a avaliação experimental sistemática dos nove motores algorítmicos desenvolvidos em C++23, submetidos a testes de estresse em instâncias da literatura acadêmica.
 
-\subsection{Protocolo de Teste e Isolamento de CPU}
+\subsection{Protocolo de Teste, Hardware e Isolamento de CPU}
 
-Para garantir rigor científico e reprodutibilidade, adotaram-se os seguintes controles metodológicos:
+Os ensaios foram conduzidos em uma estação \textbf{Dell Vostro 3520} equipada com processador \textbf{Intel Core i7-1255U} (12 threads lógicos, frequência base de 1,7 GHz até 4,7 GHz Turbo), \textbf{16 GB de memória RAM} DDR4, sob o sistema operacional \textbf{FreeBSD 15.1-RELEASE} (arquitetura \texttt{amd64}). O código-fonte foi compilado com suporte a ISO C++23 e nível de otimização \lstinline{-O2}.
+
+Para assegurar rigor científico e reprodutibilidade, adotaram-se os seguintes controles:
 \begin{enumerate}[leftmargin=1.5em, itemsep=0.15em, topsep=0.2em, parsep=0em]
     \item \textbf{Isolamento Estrito de CPU:} A medição temporal utiliza o relógio monotônico de hardware \lstinline{std::chrono::high_resolution_clock}. As etapas de I/O em disco, leitura e parsing de arquivos DIMACS e alocação inicial de memória são estritamente excluídas do cronômetro; mede-se exclusivamente o método de cálculo;
     \item \textbf{Regime Estacionário (\textit{Steady State}):} Cada instância é executada de forma independente por $N = 5$ repetições sucessivas após aquecimento de cache, reportando-se a média amostral ($\bar{t}$ em milissegundos) e o desvio-padrão;
