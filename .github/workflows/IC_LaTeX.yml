@@ -20,7 +20,12 @@ jobs:
             - name: Fazer Checkout do código
               uses: actions/checkout@v7
 
-            - name: Compilar todos os arquivos LaTeX via Makefile
+            - name: Sincronizar Listings e Gerar Monólito
+              run: |
+                  python3 Scripts/sync_listings.py || true
+                  python3 Scripts/build_monolith.py || true
+
+            - name: Compilar todos os arquivos LaTeX
               uses: xu-cheng/latex-action@v4
               with:
                   root_file: |
@@ -30,8 +35,8 @@ jobs:
                       monolito.tex
                       projeto.tex
                   working_directory: LaTeX
-                  extra_system_packages: "make"
-                  pre_compile: "make all"
+                  latexmk_shell_escape: true
+                  extra_system_packages: "py3-pygments"
 
             - name: Deletar Release e Tag 'latest' antigas
               if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
@@ -48,13 +53,11 @@ jobs:
               id: meta_step
               if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
               run: |
-                  # Formatar data (Fuso Horário de São Paulo)
                   export TZ="America/Sao_Paulo"
                   RAW_DATE="${{ github.event.head_commit.timestamp }}"
                   FORMATTED_DATE=$(date -d "$RAW_DATE" +'%d/%m/%Y %H:%M')
                   echo "DATA_FORMATADA=$FORMATTED_DATE" >> "$GITHUB_OUTPUT"
 
-                  # Gerar links de download dinâmicos para cada PDF encontrado
                   {
                     echo 'PDF_LINKS<<EOF'
                     for pdf_path in LaTeX/*.pdf; do
