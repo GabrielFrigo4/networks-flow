@@ -15,7 +15,7 @@
 #include "image.hpp"
 #include "seeds.hpp"
 
-using FlowSolver = PushRelabelImproved;
+using FlowSolver = Dinic;
 
 struct SegmentationGraph
 {
