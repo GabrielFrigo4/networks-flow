@@ -98,9 +98,12 @@ def generate_maxflow_instances(wash_bin, rmf_bin, out_dir):
     wash_jobs = [
         (1, 16, 16, 1000, out_dir / "wash_mesh_16.max"),
         (1, 32, 32, 1000, out_dir / "wash_mesh_32.max"),
+        (1, 64, 64, 1000, out_dir / "wash_mesh_64.max"),
         (2, 16, 16, 1000, out_dir / "wash_rlg_16.max"),
         (2, 32, 32, 1000, out_dir / "wash_rlg_32.max"),
         (2, 64, 64, 1000, out_dir / "wash_rlg_64.max"),
+        (2, 128, 128, 1000, out_dir / "wash_rlg_128.max"),
+        (6, 20, 20, 4, out_dir / "wash_line_20.max"),
         (6, 50, 50, 4, out_dir / "wash_line_50.max"),
         (6, 100, 100, 4, out_dir / "wash_line_100.max"),
     ]
@@ -121,6 +124,7 @@ def generate_maxflow_instances(wash_bin, rmf_bin, out_dir):
         (8, 16, 10000, 1000, out_dir / "genrmf_medium.max"),
         (16, 4, 10000, 1000, out_dir / "genrmf_wide.max"),
         (4, 64, 10000, 1000, out_dir / "genrmf_long.max"),
+        (8, 64, 10000, 1000, out_dir / "genrmf_huge.max"),
     ]
     for a, b, c1, c2, path in rmf_jobs:
         if not path.exists():
@@ -180,15 +184,19 @@ Formato padronizado DIMACS `.max`:
 | :--- | :--- | :--- | :--- | :--- |
 | `wash_mesh_16.max` | Washington Mesh | `washington.c` | $16 \\times 16$, cap $\\in [0, 1000]$ | Grade 2D plana com capacidades aleatórias |
 | `wash_mesh_32.max` | Washington Mesh | `washington.c` | $32 \\times 32$, cap $\\in [0, 1000]$ | Escalabilidade em redes em malha |
+| `wash_mesh_64.max` | Washington Mesh | `washington.c` | $64 \\times 64$, cap $\\in [0, 1000]$ | Escalabilidade em grandes malhas bidimensionais |
 | `wash_rlg_16.max` | Washington RLG | `washington.c` | $16 \\times 16$, cap $\\in [0, 1000]$ | Random Level Graph (camadas aleatórias) |
 | `wash_rlg_32.max` | Washington RLG | `washington.c` | $32 \\times 32$, cap $\\in [0, 1000]$ | Desafio para métodos de caminhos aumentantes |
 | `wash_rlg_64.max` | Washington RLG | `washington.c` | $64 \\times 64$, cap $\\in [0, 1000]$ | Pior caso clássico do Ford-Fulkerson (TLE) |
+| `wash_rlg_128.max` | Washington RLG | `washington.c` | $128 \\times 128$, cap $\\in [0, 1000]$ | Random Level Graph em escala ampliada |
+| `wash_line_20.max` | Washington Line | `washington.c` | $20 \\times 20$, degree $d$ | Cadeia intermediária de gargalos |
 | `wash_line_50.max` | Washington Line | `washington.c` | $50 \\times 50$, degree $d$ | Cadeias longas de caminhos aumentantes |
 | `wash_line_100.max` | Washington Line | `washington.c` | $100 \\times 100$, degree $d$ | Estresse para BFSs sucessivas (Edmonds-Karp) |
 | `genrmf_small.max` | Genrmf (RMF) | `genrmf.c` | $a=4, b=16, c_1=10000, c_2=1000$ | Cubo 3D de planos sequenciais |
 | `genrmf_medium.max` | Genrmf (RMF) | `genrmf.c` | $a=8, b=16, c_1=10000, c_2=1000$ | Gargalos severos de corte mínimo ($s \\to t$) |
 | `genrmf_wide.max` | Genrmf Wide | `genrmf.c` | $a=16, b=4, c_1=10000, c_2=1000$ | Planos largos com poucos estágios |
 | `genrmf_long.max` | Genrmf Long | `genrmf.c` | $a=4, b=64, c_1=10000, c_2=1000$ | Planos estreitos com profundidade extrema |
+| `genrmf_huge.max` | Genrmf Huge | `genrmf.c` | $a=8, b=64, c_1=10000, c_2=1000$ | Cubo 3D de grande porte e profundidade extrema |
 
 ---
 

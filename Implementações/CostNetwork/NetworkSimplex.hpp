@@ -55,6 +55,7 @@ public:
 
 		depth[root] = 0;
 		potential[root] = 0;
+		bfs_q.resize(num_nodes);
 
 		for (Size v = 0; v < size; ++v)
 		{
@@ -68,33 +69,53 @@ public:
 			parent_edge[v] = art_id;
 			potential[v] = -big_m;
 			arc_state.push_back(ArcState::TREE);
-			tree_adj[root].push_back(v);
-			tree_adj[v].push_back(root);
+			tree_adj[root].push_back({v, art_id});
+			tree_adj[v].push_back({root, art_id});
 		}
+
+		Size search_cursor = 0;
+		const Size total_edges = edges.size();
+		const Size block_size = std::max<Size>(64, std::min<Size>(total_edges, 256));
 
 		while (true)
 		{
 			Size entering = MAX;
 			Long best_violation = 0;
+			Size scanned = 0;
 
-			for (Size i = 0; i < edges.size(); i += 2)
+			while (scanned < total_edges)
 			{
-				const Size arc_idx = i / 2;
-				if (arc_state[arc_idx] == ArcState::TREE)
-					continue;
+				const Size current_block = std::min(
+				    block_size, total_edges - scanned
+				);
+				for (Size k = 0; k < current_block; k += 2)
+				{
+					const Size i = search_cursor;
+					search_cursor += 2;
+					if (search_cursor >= total_edges)
+						search_cursor = 0;
+					scanned += 2;
 
-				const Long rc = reduced_cost(i);
-				if (arc_state[arc_idx] == ArcState::LOWER && rc < best_violation)
-				{
-					best_violation = rc;
-					entering = i;
+					const Size arc_idx = i / 2;
+					if (arc_state[arc_idx] == ArcState::TREE)
+						continue;
+
+					const Long rc = reduced_cost(i);
+					if (arc_state[arc_idx] == ArcState::LOWER && rc < best_violation)
+					{
+						best_violation = rc;
+						entering = i;
+					}
+					else if (arc_state[arc_idx] == ArcState::UPPER &&
+					         -rc < best_violation)
+					{
+						best_violation = -rc;
+						entering = i;
+					}
 				}
-				else if (arc_state[arc_idx] == ArcState::UPPER &&
-				         -rc < best_violation)
-				{
-					best_violation = -rc;
-					entering = i;
-				}
+
+				if (entering != MAX)
+					break;
 			}
 
 			if (entering == MAX)
@@ -129,12 +150,19 @@ private:
 		TREE
 	};
 
+	struct TreeEdge
+	{
+		Size neighbor;
+		Size edge_id;
+	};
+
 	std::vector<Size> parent;
 	std::vector<Size> depth;
 	std::vector<Long> potential;
 	std::vector<Size> parent_edge;
 	std::vector<ArcState> arc_state;
-	std::vector<std::vector<Size>> tree_adj;
+	std::vector<std::vector<TreeEdge>> tree_adj;
+	std::vector<Size> bfs_q;
 
 	[[nodiscard]] Long reduced_cost(const Size edge_id) const
 	{
@@ -269,49 +297,50 @@ private:
 		const Size lu = edges[leaving_edge].from;
 		const Size lv = edges[leaving_edge].to;
 		auto &adj_lu = tree_adj[lu];
-		adj_lu.erase(std::remove(adj_lu.begin(), adj_lu.end(), lv), adj_lu.end());
+		adj_lu.erase(
+		    std::remove_if(
+		        adj_lu.begin(),
+		        adj_lu.end(),
+		        [&](const TreeEdge &te) { return te.neighbor == lv; }
+		    ),
+		    adj_lu.end()
+		);
 		auto &adj_lv = tree_adj[lv];
-		adj_lv.erase(std::remove(adj_lv.begin(), adj_lv.end(), lu), adj_lv.end());
+		adj_lv.erase(
+		    std::remove_if(
+		        adj_lv.begin(),
+		        adj_lv.end(),
+		        [&](const TreeEdge &te) { return te.neighbor == lu; }
+		    ),
+		    adj_lv.end()
+		);
 
 		const Size orig_u = edges[entering].from;
 		const Size orig_v = edges[entering].to;
-		tree_adj[orig_u].push_back(orig_v);
-		tree_adj[orig_v].push_back(orig_u);
+		const Size canon_entering = entering & ~1ULL;
+		tree_adj[orig_u].push_back({orig_v, canon_entering});
+		tree_adj[orig_v].push_back({orig_u, canon_entering});
 
 		const Size root = size;
-		std::vector<bool> visited(size + 1, false);
-		std::queue<Size> q;
-		q.push(root);
-		visited[root] = true;
+		Size q_head = 0, q_tail = 0;
+		bfs_q[q_tail++] = root;
 		parent[root] = root;
 		depth[root] = 0;
 		parent_edge[root] = MAX;
 		potential[root] = 0;
 
-		while (!q.empty())
+		while (q_head < q_tail)
 		{
-			const Size curr = q.front();
-			q.pop();
+			const Size curr = bfs_q[q_head++];
+			const Size p = parent[curr];
 
-			for (const Size neighbor : tree_adj[curr])
+			for (const auto &[neighbor, eid] : tree_adj[curr])
 			{
-				if (visited[neighbor])
+				if (neighbor == p)
 					continue;
 
-				visited[neighbor] = true;
 				parent[neighbor] = curr;
 				depth[neighbor] = depth[curr] + 1;
-
-				Size eid = MAX;
-				for (const Size edge_id : adjacency[curr])
-				{
-					if (edges[edge_id].to == neighbor &&
-					    arc_state[edge_id / 2] == ArcState::TREE)
-					{
-						eid = edge_id;
-						break;
-					}
-				}
 				parent_edge[neighbor] = eid;
 
 				if (edges[eid].from == curr)
@@ -319,7 +348,7 @@ private:
 				else
 					potential[neighbor] = potential[curr] - edges[eid].cost;
 
-				q.push(neighbor);
+				bfs_q[q_tail++] = neighbor;
 			}
 		}
 	}

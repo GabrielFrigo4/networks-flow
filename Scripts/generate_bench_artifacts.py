@@ -38,6 +38,22 @@ COMPACT_MF_INSTANCES = [
     "wash_line_100.max",
 ]
 
+COMPACT_MC_INSTANCES = [
+    "netgen_01.min",
+    "netgen_04.min",
+    "netgen_08.min",
+    "netgen_11.min",
+    "netgen_15.min",
+    "netgen_16.min",
+    "netgen_22.min",
+    "netgen_26.min",
+    "netgen_28.min",
+    "netgen_32.min",
+    "netgen_35.min",
+    "netgen_38.min",
+    "netgen_40.min",
+]
+
 MF_ALGO_ORDER = [
     "FordFulkerson",
     "EdmondsKarp",
@@ -376,9 +392,7 @@ def generate_compact_mincost(rows, output_path):
     groups = group_by_instance(rows)
 
     selected = [
-        inst
-        for inst in groups
-        if inst.startswith("netgen_")
+        inst for inst in COMPACT_MC_INSTANCES if inst in groups
     ]
 
     with open(output_path, "w", encoding="utf-8") as f:
@@ -389,34 +403,17 @@ def generate_compact_mincost(rows, output_path):
             for a in MC_ALGO_ORDER
         )
 
-        f.write("\\begingroup\n")
+        f.write("\\begin{table}[!ht]\n")
+        f.write("\\centering\n")
         f.write("\\small\n")
         f.write("\\setlength{\\tabcolsep}{3.5pt}\n")
-        f.write(f"\\begin{{longtable}}{{{col_spec}}}\n")
-        f.write(
-            "\\caption{Comparação experimental dos motores de "
-            "fluxo de custo mínimo em instâncias Netgen.}\\label{tab:benchmarks_mincost}\\\\\n"
-        )
+        f.write(f"\\begin{{tabular}}{{{col_spec}}}\n")
         f.write("\\toprule\n")
         f.write(
             f"\\textbf{{Instância}} & $|V|$ & $|A|$ & "
             f"$f^*$ & $z^*$ & {algo_headers} \\\\\n"
         )
         f.write("\\midrule\n")
-        f.write("\\endfirsthead\n")
-        f.write(
-            "\\caption[]{Comparação experimental dos motores de "
-            "fluxo de custo mínimo em instâncias Netgen (continuação)}\\\\\n"
-        )
-        f.write("\\toprule\n")
-        f.write(
-            f"\\textbf{{Instância}} & $|V|$ & $|A|$ & "
-            f"$f^*$ & $z^*$ & {algo_headers} \\\\\n"
-        )
-        f.write("\\midrule\n")
-        f.write("\\endhead\n")
-        f.write("\\bottomrule\n")
-        f.write("\\endfoot\n")
 
         for inst in selected:
             recs = groups[inst]
@@ -457,8 +454,14 @@ def generate_compact_mincost(rows, output_path):
                 f"{times_str} \\\\\n"
             )
 
-        f.write("\\end{longtable}\n")
-        f.write("\\endgroup\n")
+        f.write("\\bottomrule\n")
+        f.write("\\end{tabular}\n")
+        f.write(
+            "\\caption{Comparação experimental dos motores de "
+            "fluxo de custo mínimo em instâncias Netgen representativas.}\n"
+        )
+        f.write("\\label{tab:benchmarks_mincost}\n")
+        f.write("\\end{table}\n")
     print(f"  Gerado: {output_path}")
 
 
@@ -469,8 +472,11 @@ EXHAUSTIVE_MF_GROUPS = [
             "wash_rlg_16.max",
             "wash_rlg_32.max",
             "wash_rlg_64.max",
+            "wash_rlg_128.max",
             "wash_mesh_16.max",
             "wash_mesh_32.max",
+            "wash_mesh_64.max",
+            "wash_line_20.max",
             "wash_line_50.max",
             "wash_line_100.max",
         ],
@@ -482,6 +488,7 @@ EXHAUSTIVE_MF_GROUPS = [
             "genrmf_medium.max",
             "genrmf_wide.max",
             "genrmf_long.max",
+            "genrmf_huge.max",
         ],
     ),
     (
@@ -983,17 +990,12 @@ def main():
         xlabel="Vértices $|V|$",
         ylabel="Tempo médio (ms)",
     )
-    mc_instances = [
-        inst
-        for inst in OrderedDict.fromkeys(r["instance"] for r in mc_rows)
-        if inst.startswith("netgen_")
-    ]
     plot_bars(
         mc_rows,
         MC_ALGO_ORDER,
         MC_ALGO_SHORT,
         os.path.join(FIGURAS_DIR, "bars_mincost.pdf"),
-        select=mc_instances,
+        select=COMPACT_MC_INSTANCES,
     )
 
     print("\nTodos os artefatos de benchmark gerados.")

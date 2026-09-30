@@ -18,14 +18,15 @@ Para assegurar rigor científico e reprodutibilidade, adotaram-se os seguintes c
 
 \subsection{Avaliação de Fluxo Máximo (Coleções DIMACS)}
 
-Os algoritmos de fluxo máximo foram avaliados sobre as coleções do \textit{First DIMACS Challenge}:
+Os algoritmos de fluxo máximo foram avaliados sobre as coleções canônicas do \textit{First DIMACS Challenge}:
 \begin{itemize}[leftmargin=1.5em, itemsep=0.15em, topsep=0.2em, parsep=0em]
-    \item \textbf{Washington (RLG, Mesh e Line):} Redes em malha retangular e redes lineares com gargalos induzidos para provocar caminhos aumentantes longos;
-    \item \textbf{Genrmf (small, medium, wide, long):} Grafos em grade tridimensional com planos transversais de corte pequeno;
-    \item \textbf{Grid (50$\times$50 e 100$\times$100):} Redes em grade bidimensional com capacidades aleatórias.
+    \item \textbf{Washington (RLG, Mesh e Line):} Redes em malha plana, grafos de camadas aleatórias (\textit{Random Level Graphs}) e redes lineares com gargalos induzidos para provocar caminhos aumentantes longos;
+    \item \textbf{Genrmf (small, medium, wide, long):} Grafos tridimensionais particionados em planos transversais conectados sequencialmente com capacidades aleatórias.
 \end{itemize}
 
-A Tabela~\ref{tab:benchmarks_maxflow} apresenta os tempos de execução médios obtidos pelos cinco algoritmos nas instâncias de referência de fluxo máximo. O menor tempo por instância está destacado em \textbf{negrito}.
+As redes sintéticas em grade bidimensional e famílias patológicas encontram-se detalhadas no Apêndice~\ref{ap:benchmarks_completos}.
+
+A Tabela~\ref{tab:benchmarks_maxflow} apresenta os tempos médios de execução obtidos pelos cinco algoritmos nas instâncias canônicas de fluxo máximo. O menor tempo por instância está destacado em \textbf{negrito}.
 
 \input{tabelas/table_max_flow_compact}
 
@@ -40,16 +41,16 @@ A Tabela~\ref{tab:benchmarks_maxflow} apresenta os tempos de execução médios 
 
 \noindent \textbf{Análise dos Resultados de Fluxo Máximo:}
 \begin{itemize}[leftmargin=1.5em, itemsep=0.15em, topsep=0.2em, parsep=0em]
-    \item \textbf{Impacto da Gap Heuristic no Push-Relabel:} O algoritmo \code{PushRelabelImproved} superou o \code{PushRelabel} convencional em todas as instâncias médias e grandes. Em \texttt{genrmf\_wide}, a aceleração atinge $\approx 41\times$ (2,88 ms vs. 119 ms) e em \texttt{grid\_100x100} atinge $\approx 273\times$ (35,1 ms vs. 9.589 ms), comprovando a eficácia da detecção precoce de rótulos mortos;
-    \item \textbf{Dinic vs. Edmonds-Karp:} O algoritmo de Dinic foi de $6\times$ a $42\times$ mais rápido que o Edmonds-Karp em redes de grande escala. Enquanto o Edmonds-Karp executa uma nova BFS global a cada aumento de fluxo ($O(nm^2)$), o Dinic constrói o digrafo de níveis uma única vez por fase e empurra múltiplos caminhos em fluxo bloqueador;
-    \item \textbf{TLE do Ford-Fulkerson:} Nas instâncias Washington Line com capacidades elevadas ($f^* > 10^7$), o Ford-Fulkerson excede o limite de 60 s, evidenciando sua dependência do valor de $f^*$ (complexidade $O(|f^*| m)$).
+    \item \textbf{Impacto da Gap Heuristic no Push-Relabel:} O algoritmo \code{PushRelabelImproved} superou o \code{PushRelabel} convencional em todas as instâncias de maior diâmetro. Em \texttt{wash\_rlg\_64}, a aceleração atinge $\approx 75\times$ (1.250 ms vs. 16,7 ms) e em \texttt{wash\_line\_100} atinge $\approx 444\times$ (18.952 ms vs. 42,7 ms), comprovando a eficácia da detecção precoce de rótulos desconectados do vertedouro (\textit{gap heuristic});
+    \item \textbf{Dinic vs. Edmonds-Karp:} O algoritmo de Dinic foi de $14\times$ a $100\times$ mais rápido que o Edmonds-Karp em redes de grande escala (destacando-se \texttt{wash\_line\_100}, com 51,4 ms vs. 5.118 ms). Enquanto o Edmonds-Karp executa uma nova BFS global a cada aumento de fluxo ($O(nm^2)$), o Dinic constrói o digrafo de níveis uma única vez por fase e envia fluxo através de caminhos bloqueadores;
+    \item \textbf{TLE do Ford-Fulkerson:} Nas instâncias Washington Line com capacidades elevadas ($f^* > 7 \times 10^7$ em \texttt{wash\_line\_50} e \texttt{wash\_line\_100}), o Ford-Fulkerson excede o limite de 60 s (TLE), confirmando a dependência assintótica $O(|f^*| m)$.
 \end{itemize}
 
 \subsection{Avaliação de Fluxo de Custo Mínimo (Coleção DIMACS Netgen)}
 
 Para avaliar os algoritmos de fluxo de custo mínimo, utilizou-se a família \textbf{Netgen}, gerada oficialmente pelo gerador DIMACS de Rutgers para redes de transporte com restrições balanceadas de oferta e demanda.
 
-A Tabela~\ref{tab:benchmarks_mincost} apresenta a comparação entre os quatro algoritmos de custo mínimo nas 40 instâncias da família Netgen.
+A Tabela~\ref{tab:benchmarks_mincost} apresenta a comparação entre os quatro algoritmos de custo mínimo em 13 instâncias representativas da família Netgen, cobrindo transbordo inicial, transporte de baixo fluxo, transporte de alta demanda, grande escala e escala máxima. A bateria experimental exaustiva com a totalidade das 40 instâncias Netgen está detalhada no Apêndice~\ref{ap:benchmarks_completos}.
 
 \input{tabelas/table_min_cost_compact}
 
@@ -64,7 +65,7 @@ A Tabela~\ref{tab:benchmarks_mincost} apresenta a comparação entre os quatro a
 
 \noindent \textbf{Análise dos Resultados de Custo Mínimo:}
 \begin{itemize}[leftmargin=1.5em, itemsep=0.15em, topsep=0.2em, parsep=0em]
-    \item \textbf{SSP (SPFA e Dijkstra):} Em instâncias com $|A| \le 2400$ (\texttt{netgen\_01} a \texttt{netgen\_04}), o SSP com SPFA apresenta menor tempo. À medida que $|A|$ cresce ($\ge 3100$), o SSP com Dijkstra e potenciais nodais ($\bar{w}_\pi \ge 0$) supera o SPFA, evidenciando a vantagem do heap de prioridades em redes densas;
-    \item \textbf{Proximidade SSP-Dijkstra vs. Network Simplex:} Os tempos do Network Simplex e do SSP-Dijkstra são próximos em todas as instâncias Netgen testadas (diferença $< 20\%$), com ligeira vantagem do SSP-Dijkstra nas instâncias maiores;
-    \item \textbf{Limitações do Cycle Canceling:} O cancelamento de ciclos negativos requer buscas completas por ciclos via Bellman-Ford ($O(nm)$ por iteração). Na instância \texttt{netgen\_08}, o Cycle Canceling consome 7.814 ms, $\approx 151\times$ mais lento que o SSP-Dijkstra (51,8 ms).
+    \item \textbf{SSP (SPFA vs. Dijkstra com Potenciais):} Em redes pequenas ($|A| \le 2400$, como \texttt{netgen\_01} e \texttt{netgen\_04}), o SSP com SPFA apresenta menor tempo (10,3 ms vs. 15,2 ms em \texttt{netgen\_01}), devido ao menor overhead constante da fila. À medida que $|A|$ cresce (\texttt{netgen\_08} em diante, e em particular nas instâncias de grande porte como \texttt{netgen\_38} e \texttt{netgen\_40}), o SSP com Dijkstra e potenciais nodais ($\bar{w}_\pi \ge 0$) supera o SPFA (1.994 ms vs. 3.403 ms em \texttt{netgen\_38}; 979 ms vs. 1.406 ms em \texttt{netgen\_40}), confirmando a eficiência assintótica do heap binário de prioridades ($O(m + n \log n)$);
+    \item \textbf{Network Simplex vs. Successive Shortest Path:} Nas instâncias de transbordo inicial (\texttt{netgen\_01} a \texttt{netgen\_08}), o Network Simplex é altamente competitivo (43,9 ms vs. 51,9 ms em \texttt{netgen\_08}). Com a expansão do grafo e das demandas (\texttt{netgen\_28} a \texttt{netgen\_35}), o SSP-Dijkstra amplia sua vantagem (28,7 ms vs. 467 ms em \texttt{netgen\_28}, aceleração de $\approx 16\times$; 74,0 ms vs. 1.624 ms em \texttt{netgen\_32}, aceleração de $\approx 22\times$). Nas instâncias com oferta extrema de 4 milhões de unidades e bases altamente degeneradas (\texttt{netgen\_36}, \texttt{netgen\_37} e \texttt{netgen\_39}), o Simplex atinge o limite de tempo (TLE);
+    \item \textbf{Limitações do Cycle Canceling:} O cancelamento de ciclos negativos requer buscas completas via Bellman-Ford ($O(nm)$ por iteração). Na instância \texttt{netgen\_08}, o Cycle Canceling consome 4.411 ms, sendo $\approx 85\times$ mais lento que o SSP-Dijkstra (51,9 ms). Em \texttt{netgen\_35}, atinge 8.174 ms ($\approx 77\times$ mais lento que os 106 ms do SSP-Dijkstra), excedendo o tempo limite nas instâncias de escala máxima (\texttt{netgen\_36} em diante).
 \end{itemize}
