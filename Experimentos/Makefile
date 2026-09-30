@@ -58,6 +58,10 @@ generate:
 	python3 generators/worst_case.py --type ford-fulkerson --param 10 > instances/synthetic/worst_ff_10.max
 	python3 generators/worst_case.py --type ford-fulkerson --param 15 > instances/synthetic/worst_ff_15.max
 	python3 generators/worst_case.py --type long-chain --param 100 > instances/synthetic/worst_chain_100.max
+	python3 generators/random_mcf.py --nodes 100 --density sparse --seed 20 > instances/synthetic/random_mcf_sparse_100.min
+	python3 generators/random_mcf.py --nodes 200 --density sparse --seed 21 > instances/synthetic/random_mcf_sparse_200.min
+	python3 generators/random_mcf.py --nodes 100 --density dense --seed 22 > instances/synthetic/random_mcf_dense_100.min
+	python3 generators/random_mcf.py --nodes 200 --density dense --seed 23 > instances/synthetic/random_mcf_dense_200.min
 	printf "%s\n" "Instâncias sintéticas geradas."
 
 dimacs:

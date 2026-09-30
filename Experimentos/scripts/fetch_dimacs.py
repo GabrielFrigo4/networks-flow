@@ -44,7 +44,7 @@ def build_washington(build_dir):
     bin_file = wash_dir / "washington"
     if not bin_file.exists():
         log("Compilando gerador Washington...")
-        compile_cmd("cc -std=gnu89 -w -O2 washington.c -o washington", wash_dir)
+        compile_cmd("cc -std=gnu89 -w -Wno-everything -O2 washington.c -o washington", wash_dir)
     return bin_file
 
 
@@ -61,7 +61,7 @@ def build_genrmf(build_dir):
     if not bin_file.exists():
         log("Compilando gerador Genrmf...")
         compile_cmd(
-            "cc -std=gnu89 -w -O2 genrmf.c genmain.c genio.c -lm -o genrmf", rmf_dir)
+            "cc -std=gnu89 -w -Wno-everything -O2 genrmf.c genmain.c genio.c -lm -o genrmf", rmf_dir)
     return bin_file
 
 
@@ -87,7 +87,7 @@ def build_netgen(build_dir):
     if not bin_file.exists():
         log("Compilando gerador Netgen...")
         compile_cmd(
-            "cc -std=gnu89 -w -DDIMACS -O2 netgen.c index.c random.c -o netgen", net_dir)
+            "cc -std=gnu89 -w -Wno-everything -DDIMACS -O2 netgen.c index.c random.c -o netgen", net_dir)
     return bin_file, net_dir / "problems"
 
 
@@ -138,7 +138,7 @@ def generate_mincost_instances(net_bin, problems_file, out_dir):
 
     i = 0
     prob_idx = 1
-    while i < len(lines) and prob_idx <= 8:
+    while i < len(lines) and prob_idx <= 40:
         seed_line = lines[i]
         parm_line = lines[i + 1]
         input_data = f"{seed_line}\n{parm_line}\n"
