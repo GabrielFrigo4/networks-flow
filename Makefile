@@ -28,6 +28,7 @@ help:
 	cmd "apps"             "Compila e executa as aplicações reais de fluxo"; \
 	cmd "impl"             "Valida a sintaxe dos headers de algoritmos (C++23)"; \
 	cmd "exp"              "Compila os drivers de benchmark"; \
+	cmd "generate"         "Cria instâncias com geradores customizados"; \
 	cmd "dimacs"           "Baixa geradores e cria instâncias DIMACS"; \
 	sec "Pipeline de Benchmarks:"; \
 	cmd "bench-smoke"      "Smoke-test: 1 instância .max e 1 .min (rápido)"; \
@@ -81,6 +82,9 @@ impl:
 
 exp:
 	$(MAKE) -C Experimentos all
+
+generate:
+	$(MAKE) -C Experimentos generate
 
 dimacs:
 	$(MAKE) -C Experimentos dimacs
