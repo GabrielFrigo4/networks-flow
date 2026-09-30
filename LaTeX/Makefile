@@ -20,7 +20,9 @@ BOOK_SRC  != find book -name "*.tex" 2> "/dev/null" || true
 UFABC_SRC != find ufabc -name "*.tex" 2> "/dev/null" || true
 IMAGENS   != find imagens -name "*.tex" 2> "/dev/null" || true
 
-.PHONY: help all ic relatorio monolito projeto book clean distclean sync-code
+.PHONY: default help all reports refresh ic relatorio monolito projeto book clean distclean sync-code format format-md
+
+default: help
 
 ### ================================
 ### HELP & DOCUMENTATION
@@ -31,15 +33,19 @@ help:
 	sub() { printf "  \033[1;34m  ── %s ──\033[0m\n" "$$1"; }; \
 	printf "\n  \033[1;37mNetwork Flow LaTeX — Editoração Científica & Relatórios\033[0m\n"; \
 	printf "  ============================================================\n"; \
-	sec "Compilação de Documentos:"; \
+	sec "Fluxos Batch & Sincronização:"; \
 	cmd "all"                 "Compila todos os documentos da suíte LaTeX"; \
+	cmd "reports"             "Compila exclusivamente os relatórios (ic.pdf, relatorio.pdf, monolito.pdf)"; \
+	cmd "refresh"             "Sincroniza apêndices de código e recompila todos os documentos"; \
+	cmd "sync-code"           "Sincroniza algoritmos das Implementações com o LaTeX e monólito"; \
+	sec "Compilação Individual:"; \
 	cmd "book"                "Compila a monografia principal do livro (book.pdf)"; \
 	cmd "relatorio"           "Compila o relatório técnico formal UFABC (relatorio.pdf)"; \
 	cmd "ic"                  "Compila o relatório de IC com leitura limpa (ic.pdf)"; \
 	cmd "monolito"            "Gera e compila o monólito autocontido (monolito.pdf)"; \
 	cmd "projeto"             "Compila a proposta do projeto de pesquisa (projeto.pdf)"; \
-	sec "Sincronização & Código:"; \
-	cmd "sync-code"           "Sincroniza algoritmos das Implementações com o LaTeX"; \
+	sec "Qualidade & Formatação:"; \
+	cmd "format"              "Formata documentação Markdown (prettier)"; \
 	sec "Limpeza:"; \
 	cmd "clean"               "Remove pasta build/ e arquivos temporários (.aux, .log)"; \
 	cmd "distclean"           "Limpeza profunda (remove temporários e PDFs gerados)"; \
@@ -47,6 +53,12 @@ help:
 
 all: $(TARGETS)
 	printf "\n==> Todos os documentos foram compilados com sucesso!\n"
+
+reports: ic.pdf relatorio.pdf monolito.pdf
+	printf "\n==> Todos os relatórios institucionais foram compilados com sucesso!\n"
+
+refresh: sync-code all
+	printf "\n==> Documentos atualizados e recompilados com sucesso!\n"
 
 ic: ic.pdf
 relatorio: relatorio.pdf
@@ -57,6 +69,14 @@ book: book.pdf
 sync-code:
 	$(PYTHON) ../Scripts/sync_listings.py
 	$(PYTHON) ../Scripts/build_monolith.py
+
+format: format-md
+
+format-md:
+	if command -v prettier > "/dev/null" 2>&1; then \
+		printf "%s\n" "Formatando documentação Markdown do LaTeX com prettier..."; \
+		prettier --write "**/*.md" > "/dev/null" 2>&1 || true; \
+	fi
 
 book.pdf: book.tex header.tex cit.bib $(CAPITULOS) $(APENDICES) $(BOOK_SRC) $(IMAGENS)
 	mkdir -p build

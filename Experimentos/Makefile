@@ -16,10 +16,51 @@ IMPL      = ../Implementações
 MAX_RUNNER = drivers/max_flow_runner
 MIN_RUNNER = drivers/min_cost_runner
 
-.PHONY: all deps drivers generate dimacs run bench bench-smoke tables bench-tables sync-tables sync-csv plots bench-plots sync-plots format clean clean-results
+.PHONY: default help all pipeline bench-all deps drivers generate dimacs run bench bench-smoke \
+        tables bench-tables sync-tables sync-csv plots bench-plots sync-plots \
+        format format-cpp format-md clean clean-results
 
+default: help
 all: drivers
-	printf "%s\n" "Drivers de benchmark compilados."
+
+### ================================
+### HELP & DOCUMENTATION
+### ================================
+help:
+	cmd() { printf "    \033[36mmake %-22s\033[0m %s\n" "$$1" "$$2"; }; \
+	sec() { printf "\n  \033[1;33m%s\033[0m\n" "$$1"; }; \
+	printf "\n  \033[1;37mNetwork Flow — Módulo de Experimentos & Benchmarks\033[0m\n"; \
+	printf "  ============================================================\n"; \
+	sec "Fluxos Completos & Batch:"; \
+	cmd "pipeline"         "Executa o fluxo completo: drivers + bench + tabelas + gráficos + sync"; \
+	cmd "bench-all"        "Sinônimo para pipeline completo de experimentos"; \
+	sec "Compilação de Drivers:"; \
+	cmd "drivers"          "Compila os runners C++23 (max_flow_runner e min_cost_runner)"; \
+	cmd "deps"             "Instala dependências do Python para gráficos (matplotlib, numpy)"; \
+	sec "Geração de Instâncias:"; \
+	cmd "dimacs"           "Baixa geradores canônicos e produz as instâncias DIMACS oficiais"; \
+	cmd "generate"         "Gera instâncias sintéticas (grade, esparsas, piores casos)"; \
+	sec "Execução de Benchmarks:"; \
+	cmd "run"              "Executa benchmarks em todas as instâncias e salva CSVs em results/"; \
+	cmd "bench"            "Sinônimo para run"; \
+	cmd "bench-smoke"      "Smoke-test rápido com instâncias mínimas (test_small.max/.min)"; \
+	sec "Processamento & Sincronização LaTeX:"; \
+	cmd "tables"           "Gera tabelas LaTeX a partir dos CSVs de medição e sincroniza"; \
+	cmd "plots"            "Gera gráficos (escalabilidade e barras em PDF) e sincroniza"; \
+	cmd "sync-tables"      "Copia tabelas de results/ para LaTeX/tabelas/"; \
+	cmd "sync-plots"       "Copia gráficos gerados de results/ para LaTeX/figuras/"; \
+	cmd "sync-csv"         "Copia CSVs de medição de results/ para LaTeX/tabelas/"; \
+	sec "Qualidade & Formatação:"; \
+	cmd "format"           "Formata códigos C++ (clang-format) e documentação (prettier)"; \
+	sec "Limpeza:"; \
+	cmd "clean"            "Remove binários, geradores baixados e artefatos temporários"; \
+	cmd "clean-results"    "Remove exclusivamente os CSVs, tabelas e gráficos gerados"; \
+	echo ""
+
+pipeline: drivers run tables plots sync-csv
+	printf "\n\033[1;32m==> Pipeline de Experimentos concluído e sincronizado com sucesso!\033[0m\n\n"
+
+bench-all: pipeline
 
 deps:
 	printf "%s\n" "Instalando dependências para benchmark..."
@@ -118,10 +159,18 @@ sync-plots:
 	done
 	printf "%s\n" "Gráficos copiados para LaTeX/figuras/"
 
-format:
+format: format-cpp format-md
+	printf "%s\n" "Formatação de Experimentos concluída!"
+
+format-cpp:
 	printf "%s\n" "Formatando códigos C++ de Experimentos..."
 	find . -type f \( -name "*.hpp" -o -name "*.cpp" \) -not -path "*/.*/*" -exec clang-format -i {} +
-	printf "%s\n" "Formatação de Experimentos concluída!"
+
+format-md:
+	if command -v prettier > "/dev/null" 2>&1; then \
+		printf "%s\n" "Formatando documentação Markdown de Experimentos com prettier..."; \
+		prettier --write "**/*.md" > "/dev/null" 2>&1 || true; \
+	fi
 
 clean:
 	rm -f $(MAX_RUNNER) $(MIN_RUNNER)

@@ -29,6 +29,8 @@ def generate_latex_table(results_file, output_file, is_min_cost=False):
     by_instance = defaultdict(list)
     for row in data:
         inst = row.get('Instance', row.get('instance', 'Unknown'))
+        if inst.startswith('test_') or inst.startswith('smoke_'):
+            continue
         if inst not in by_instance:
             instances.append(inst)
         by_instance[inst].append(row)
@@ -50,21 +52,38 @@ def generate_latex_table(results_file, output_file, is_min_cost=False):
         fastest[inst] = min_time
 
     with open(output_file, 'w', encoding='utf-8') as f:
-        f.write("\\begin{table}[!ht]\n")
-        f.write("\\centering\n")
+        f.write("\\begingroup\n")
         f.write("\\small\n")
         f.write("\\setlength{\\tabcolsep}{4pt}\n")
 
         if is_min_cost:
-            f.write("\\begin{tabular}{llrrrrrrl}\n")
+            f.write("\\begin{longtable}{llrrrrrrl}\n")
+            f.write("\\caption{Resultados experimentais dos motores de fluxo de custo m\\'inimo.}\\label{tab:results_mincost}\\\\\n")
             f.write("\\toprule\n")
             f.write("\\textbf{Inst\\^ancia} & \\textbf{Algoritmo} & $|V|$ & $|A|$ & $f^*$ & $z^*$ & $\\bar{t}$ (ms) & \\textbf{Status} \\\\\n")
+            f.write("\\midrule\n")
+            f.write("\\endfirsthead\n")
+            f.write("\\caption[]{Resultados experimentais dos motores de fluxo de custo m\\'inimo (continua\\c{c}\\~ao)}\\\\\n")
+            f.write("\\toprule\n")
+            f.write("\\textbf{Inst\\^ancia} & \\textbf{Algoritmo} & $|V|$ & $|A|$ & $f^*$ & $z^*$ & $\\bar{t}$ (ms) & \\textbf{Status} \\\\\n")
+            f.write("\\midrule\n")
+            f.write("\\endhead\n")
+            f.write("\\bottomrule\n")
+            f.write("\\endfoot\n")
         else:
-            f.write("\\begin{tabular}{llrrrrl}\n")
+            f.write("\\begin{longtable}{llrrrrl}\n")
+            f.write("\\caption{Resultados experimentais dos motores de fluxo m\\'aximo.}\\label{tab:results_maxflow}\\\\\n")
             f.write("\\toprule\n")
             f.write("\\textbf{Inst\\^ancia} & \\textbf{Algoritmo} & $|V|$ & $|A|$ & $f^*$ & $\\bar{t}$ (ms) & \\textbf{Status} \\\\\n")
-
-        f.write("\\midrule\n")
+            f.write("\\midrule\n")
+            f.write("\\endfirsthead\n")
+            f.write("\\caption[]{Resultados experimentais dos motores de fluxo m\\'aximo (continua\\c{c}\\~ao)}\\\\\n")
+            f.write("\\toprule\n")
+            f.write("\\textbf{Inst\\^ancia} & \\textbf{Algoritmo} & $|V|$ & $|A|$ & $f^*$ & $\\bar{t}$ (ms) & \\textbf{Status} \\\\\n")
+            f.write("\\midrule\n")
+            f.write("\\endhead\n")
+            f.write("\\bottomrule\n")
+            f.write("\\endfoot\n")
 
         for i, inst in enumerate(instances):
             rows = by_instance[inst]
@@ -103,17 +122,8 @@ def generate_latex_table(results_file, output_file, is_min_cost=False):
             if i < len(instances) - 1:
                 f.write("\\midrule\n")
 
-        f.write("\\bottomrule\n")
-        f.write("\\end{tabular}\n")
-
-        if is_min_cost:
-            f.write("\\caption{Resultados experimentais dos motores de fluxo de custo m\\'inimo.}\n")
-            f.write("\\label{tab:results_mincost}\n")
-        else:
-            f.write("\\caption{Resultados experimentais dos motores de fluxo m\\'aximo.}\n")
-            f.write("\\label{tab:results_maxflow}\n")
-
-        f.write("\\end{table}\n")
+        f.write("\\end{longtable}\n")
+        f.write("\\endgroup\n")
         print(f"Generated {output_file}")
 
 def main():

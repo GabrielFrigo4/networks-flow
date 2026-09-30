@@ -862,15 +862,17 @@ A Tabela~\ref{tab:benchmarks_maxflow} apresenta os tempos de execução médios 
 \toprule
 \textbf{Instância} & $|V|$ & $|A|$ & $f^*$ & \textbf{FF (ms)} & \textbf{EK (ms)} & \textbf{Dinic (ms)} & \textbf{PR (ms)} & \textbf{PR-Gap (ms)} \\
 \midrule
-\texttt{genrmf\_small} & 256 & 1.008 & 35.852 & 105 & 0,60 & \textbf{0,38} & 7,00 & 0,55 \\
-\texttt{genrmf\_medium} & 1.024 & 4.544 & 133.085 & 4.527 & 7,47 & 2,77 & 2,75 & \textbf{2,11} \\
-\texttt{genrmf\_wide} & 1.024 & 4.608 & 513.342 & 14.124 & 11,0 & 3,31 & \textbf{2,88} & 2,94 \\
-\texttt{genrmf\_long} & 1.024 & 4.080 & 40.958 & 1.169 & 8,40 & 3,02 & 114 & \textbf{2,38} \\
-\texttt{wash\_rlg\_16} & 258 & 752 & 11.940 & 54,8 & 2,18 & \textbf{0,33} & 1,57 & 0,50 \\
-\texttt{wash\_rlg\_32} & 1.026 & 3.040 & 22.142 & 668 & 34,8 & \textbf{1,97} & 37,9 & 3,08 \\
-\texttt{wash\_rlg\_64} & 4.098 & 12.224 & 46.000 & 6.672 & 695 & 20,6 & 201 & \textbf{18,6} \\
-\texttt{wash\_line\_50} & 2.502 & 9.692 & 76.426.382 & TLE & 247 & 6,36 & 943 & \textbf{5,88} \\
-\texttt{wash\_line\_100} & 10.002 & 39.398 & 157.298.106 & TLE & 5.032 & 53,6 & 19.315 & \textbf{45,1} \\
+\texttt{genrmf\_small} & 256 & 1.008 & 37.341 & 100 & 0,51 & 0,36 & 7,20 & \textbf{0,34} \\
+\texttt{genrmf\_medium} & 1.024 & 4.544 & 133.050 & 4.666 & 7,44 & 2,80 & 2,56 & \textbf{2,12} \\
+\texttt{genrmf\_wide} & 1.024 & 4.608 & 515.238 & 14.443 & 11,3 & 4,26 & 3,30 & \textbf{2,82} \\
+\texttt{genrmf\_long} & 1.024 & 4.080 & 35.123 & 974 & 5,92 & \textbf{1,90} & 116 & 4,00 \\
+\texttt{wash\_rlg\_16} & 258 & 752 & 11.058 & 50,6 & 1,97 & \textbf{0,31} & 4,58 & 0,88 \\
+\texttt{wash\_rlg\_32} & 1.026 & 3.040 & 22.224 & 643 & 35,0 & \textbf{2,16} & 41,0 & 2,82 \\
+\texttt{wash\_rlg\_64} & 4.098 & 12.224 & 44.336 & 6.379 & 662 & \textbf{16,3} & 1.250 & 16,7 \\
+\texttt{wash\_mesh\_16} & 258 & 752 & 15.933 & 29,7 & 2,48 & \textbf{0,40} & 0,61 & 0,58 \\
+\texttt{wash\_mesh\_32} & 1.026 & 3.040 & 28.336 & 501 & 30,2 & \textbf{2,08} & 44,2 & 2,57 \\
+\texttt{wash\_line\_50} & 2.502 & 9.714 & 76.861.360 & TLE & 223 & 6,53 & 932 & \textbf{5,97} \\
+\texttt{wash\_line\_100} & 10.002 & 39.396 & 158.751.535 & TLE & 5.118 & 51,4 & 18.952 & \textbf{42,7} \\
 \bottomrule
 \end{tabular}
 \caption{Comparação experimental dos motores de fluxo máximo em instâncias DIMACS.}
@@ -897,61 +899,66 @@ A Tabela~\ref{tab:benchmarks_maxflow} apresenta os tempos de execução médios 
 
 Para avaliar os algoritmos de fluxo de custo mínimo, utilizou-se a família \textbf{Netgen}, gerada oficialmente pelo gerador DIMACS de Rutgers para redes de transporte com restrições balanceadas de oferta e demanda.
 
-A Tabela~\ref{tab:benchmarks_mincost} apresenta a comparação entre os quatro algoritmos de custo mínimo nas instâncias \texttt{netgen\_01} a \texttt{netgen\_08}.
+A Tabela~\ref{tab:benchmarks_mincost} apresenta a comparação entre os quatro algoritmos de custo mínimo nas 40 instâncias da família Netgen.
 
-\begin{table}[!ht]
-\centering
+\begingroup
 \small
 \setlength{\tabcolsep}{3.5pt}
-\begin{tabular}{lrrrrrrrr}
+\begin{longtable}{lrrrrrrrr}
+\caption{Comparação experimental dos motores de fluxo de custo mínimo em instâncias Netgen.}\label{tab:benchmarks_mincost}\\
 \toprule
 \textbf{Instância} & $|V|$ & $|A|$ & $f^*$ & $z^*$ & \textbf{CC} & \textbf{SSP-SPFA} & \textbf{SSP-Dijk} & \textbf{Simplex} \\
 \midrule
-\texttt{netgen\_01} & 202 & 1.508 & 100.000 & 196.587.626 & 335 & \textbf{11,6} & 15,4 & 12,8 \\
-\texttt{netgen\_02} & 202 & 1.711 & 100.000 & 194.072.029 & 398 & \textbf{10,1} & 14,6 & 11,8 \\
-\texttt{netgen\_03} & 202 & 2.200 & 100.000 & 159.442.947 & 580 & 15,0 & 17,3 & \textbf{14,3} \\
-\texttt{netgen\_04} & 202 & 2.400 & 100.000 & 138.936.551 & 692 & 14,8 & 17,8 & \textbf{13,8} \\
-\texttt{netgen\_05} & 202 & 3.100 & 100.000 & 102.950.805 & 1.103 & 24,1 & 22,5 & \textbf{17,8} \\
-\texttt{netgen\_06} & 302 & 3.474 & 150.000 & 191.968.577 & 2.323 & 39,9 & 45,2 & \textbf{35,5} \\
-\texttt{netgen\_07} & 302 & 4.819 & 150.000 & 172.742.047 & 3.817 & 54,0 & 50,4 & \textbf{40,9} \\
-\texttt{netgen\_08} & 302 & 5.469 & 150.000 & 177.575.586 & 4.558 & 59,9 & 50,9 & \textbf{42,7} \\
-\texttt{netgen\_09} & 302 & 6.375 & 150.000 & 144.994.180 & 6.712 & 55,8 & 59,4 & \textbf{46,3} \\
-\texttt{netgen\_10} & 302 & 6.620 & 150.000 & 148.675.665 & 6.380 & 73,8 & 64,7 & \textbf{54,0} \\
-\texttt{netgen\_11} & 402 & 1.900 & 200 & 473.532 & 86,6 & \textbf{7,90} & 16,2 & 47,8 \\
-\texttt{netgen\_12} & 402 & 2.650 & 200 & 326.853 & 163 & \textbf{9,86} & 20,1 & 52,2 \\
-\texttt{netgen\_13} & 402 & 3.400 & 200 & 258.242 & 244 & \textbf{13,9} & 21,8 & 56,0 \\
-\texttt{netgen\_14} & 402 & 4.150 & 200 & 247.036 & 348 & \textbf{14,3} & 22,3 & 59,3 \\
-\texttt{netgen\_15} & 402 & 4.900 & 200 & 212.597 & 466 & \textbf{15,9} & 23,9 & 66,9 \\
-\texttt{netgen\_16} & 402 & 1.374 & 400.000 & 6.815.524.469 & 103 & \textbf{7,43} & 9,59 & 30,8 \\
-\texttt{netgen\_17} & 402 & 2.511 & 400.000 & 2.646.770.386 & 286 & \textbf{7,21} & 11,5 & 31,0 \\
-\texttt{netgen\_18} & 402 & 1.374 & 400.000 & 6.663.684.919 & 112 & \textbf{6,17} & 9,07 & 30,4 \\
-\texttt{netgen\_19} & 402 & 2.511 & 400.000 & 2.618.979.806 & 277 & \textbf{8,76} & 11,9 & 31,0 \\
-\texttt{netgen\_20} & 402 & 1.484 & 400.000 & 6.749.969.302 & 163 & \textbf{5,80} & 8,84 & 25,6 \\
-\texttt{netgen\_21} & 402 & 2.904 & 400.000 & 2.631.027.973 & 369 & \textbf{8,28} & 10,8 & 34,0 \\
-\texttt{netgen\_22} & 402 & 1.484 & 400.000 & 6.621.515.104 & 156 & \textbf{4,63} & 8,30 & 24,9 \\
-\texttt{netgen\_23} & 402 & 2.904 & 400.000 & 2.630.071.408 & 339 & \textbf{8,64} & 11,1 & 33,9 \\
-\texttt{netgen\_24} & 402 & 1.398 & 400.000 & 6.829.799.687 & 84,6 & \textbf{4,23} & 6,33 & 35,1 \\
-\texttt{netgen\_25} & 402 & 2.692 & 400.000 & 6.396.423.129 & 221 & \textbf{12,0} & 13,0 & 40,3 \\
-\texttt{netgen\_26} & 402 & 1.398 & 400.000 & 5.297.702.923 & 29,6 & \textbf{1,09} & 1,96 & 32,8 \\
-\texttt{netgen\_27} & 402 & 2.692 & 400.000 & 4.863.992.745 & 127 & \textbf{5,24} & 7,11 & 39,1 \\
-\texttt{netgen\_28} & 1.002 & 3.000 & 1.000.000 & 11.599.233.408 & 1.330 & \textbf{22,3} & 27,2 & 468 \\
-\texttt{netgen\_29} & 1.002 & 3.500 & 1.000.000 & 11.700.773.092 & 1.607 & \textbf{30,8} & 34,7 & 514 \\
-\texttt{netgen\_30} & 1.002 & 4.500 & 1.000.000 & 8.782.721.260 & 2.936 & \textbf{40,3} & 41,3 & 512 \\
-\texttt{netgen\_31} & 1.002 & 4.900 & 1.000.000 & 8.577.913.734 & 2.268 & \textbf{38,4} & 40,4 & 483 \\
-\texttt{netgen\_32} & 1.502 & 4.492 & 1.500.000 & 17.996.365.110 & 5.804 & \textbf{64,8} & 76,6 & 1.407 \\
-\texttt{netgen\_33} & 1.502 & 4.535 & 1.500.000 & 18.424.893.900 & 5.127 & 83,6 & \textbf{74,9} & 1.704 \\
-\texttt{netgen\_34} & 1.502 & 5.257 & 1.500.000 & 14.596.094.907 & 6.414 & 70,9 & \textbf{70,3} & 1.771 \\
-\texttt{netgen\_35} & 1.502 & 5.880 & 1.500.000 & 14.350.903.861 & 8.454 & 113 & \textbf{93,0} & 1.786 \\
-\texttt{netgen\_36} & 8.002 & 16.200 & --- & --- & --- & 5.255 & \textbf{3.581} & --- \\
-\texttt{netgen\_37} & 5.002 & 23.950 & --- & --- & --- & 4.728 & \textbf{3.121} & --- \\
-\texttt{netgen\_38} & 3.002 & 35.625 & --- & --- & --- & 3.320 & \textbf{1.956} & 17.299 \\
-\texttt{netgen\_39} & 5.002 & 15.880 & --- & --- & --- & 2.870 & \textbf{2.186} & --- \\
-\texttt{netgen\_40} & 3.002 & 23.400 & --- & --- & --- & 1.400 & \textbf{982} & 13.895 \\
+\endfirsthead
+\caption[]{Comparação experimental dos motores de fluxo de custo mínimo em instâncias Netgen (continuação)}\\
+\toprule
+\textbf{Instância} & $|V|$ & $|A|$ & $f^*$ & $z^*$ & \textbf{CC} & \textbf{SSP-SPFA} & \textbf{SSP-Dijk} & \textbf{Simplex} \\
+\midrule
+\endhead
 \bottomrule
-\end{tabular}
-\caption{Comparação experimental dos motores de fluxo de custo mínimo em instâncias Netgen.}
-\label{tab:benchmarks_mincost}
-\end{table}
+\endfoot
+\texttt{netgen\_01} & 202 & 1.508 & 100.000 & 196.587.626 & 333 & \textbf{10,3} & 15,2 & 12,7 \\
+\texttt{netgen\_02} & 202 & 1.711 & 100.000 & 194.072.029 & 398 & \textbf{11,0} & 14,9 & 12,1 \\
+\texttt{netgen\_03} & 202 & 2.200 & 100.000 & 159.442.947 & 581 & 15,4 & 18,0 & \textbf{14,9} \\
+\texttt{netgen\_04} & 202 & 2.400 & 100.000 & 138.936.551 & 695 & 15,5 & 17,8 & \textbf{14,3} \\
+\texttt{netgen\_05} & 202 & 3.100 & 100.000 & 102.950.805 & 1.106 & 24,5 & 23,3 & \textbf{17,7} \\
+\texttt{netgen\_06} & 302 & 3.474 & 150.000 & 191.968.577 & 2.252 & 41,4 & 46,1 & \textbf{36,0} \\
+\texttt{netgen\_07} & 302 & 4.819 & 150.000 & 172.742.047 & 3.958 & 51,7 & 52,9 & \textbf{42,0} \\
+\texttt{netgen\_08} & 302 & 5.469 & 150.000 & 177.575.586 & 4.411 & 56,4 & 51,9 & \textbf{43,9} \\
+\texttt{netgen\_09} & 302 & 6.375 & 150.000 & 144.994.180 & 6.544 & 60,3 & 53,9 & \textbf{46,3} \\
+\texttt{netgen\_10} & 302 & 6.620 & 150.000 & 148.675.665 & 6.322 & 76,9 & 66,7 & \textbf{53,9} \\
+\texttt{netgen\_11} & 402 & 1.900 & 200 & 473.532 & 86,7 & \textbf{8,19} & 17,7 & 47,7 \\
+\texttt{netgen\_12} & 402 & 2.650 & 200 & 326.853 & 164 & \textbf{9,97} & 19,8 & 52,0 \\
+\texttt{netgen\_13} & 402 & 3.400 & 200 & 258.242 & 243 & \textbf{13,1} & 21,7 & 57,0 \\
+\texttt{netgen\_14} & 402 & 4.150 & 200 & 247.036 & 353 & \textbf{13,3} & 22,6 & 59,8 \\
+\texttt{netgen\_15} & 402 & 4.900 & 200 & 212.597 & 468 & \textbf{16,1} & 24,6 & 67,6 \\
+\texttt{netgen\_16} & 402 & 1.374 & 400.000 & 6.815.524.469 & 104 & \textbf{6,24} & 8,86 & 31,2 \\
+\texttt{netgen\_17} & 402 & 2.511 & 400.000 & 2.646.770.386 & 286 & \textbf{7,36} & 11,3 & 31,1 \\
+\texttt{netgen\_18} & 402 & 1.374 & 400.000 & 6.663.684.919 & 109 & \textbf{7,02} & 9,17 & 31,3 \\
+\texttt{netgen\_19} & 402 & 2.511 & 400.000 & 2.618.979.806 & 267 & \textbf{9,28} & 12,3 & 30,8 \\
+\texttt{netgen\_20} & 402 & 1.484 & 400.000 & 6.749.969.302 & 165 & \textbf{5,83} & 8,97 & 25,3 \\
+\texttt{netgen\_21} & 402 & 2.904 & 400.000 & 2.631.027.973 & 369 & \textbf{8,66} & 12,0 & 34,1 \\
+\texttt{netgen\_22} & 402 & 1.484 & 400.000 & 6.621.515.104 & 155 & \textbf{4,07} & 9,83 & 24,5 \\
+\texttt{netgen\_23} & 402 & 2.904 & 400.000 & 2.630.071.408 & 349 & \textbf{8,26} & 12,4 & 35,1 \\
+\texttt{netgen\_24} & 402 & 1.398 & 400.000 & 6.829.799.687 & 82,6 & \textbf{4,10} & 6,05 & 33,9 \\
+\texttt{netgen\_25} & 402 & 2.692 & 400.000 & 6.396.423.129 & 221 & 12,1 & \textbf{12,0} & 40,9 \\
+\texttt{netgen\_26} & 402 & 1.398 & 400.000 & 5.297.702.923 & 29,4 & \textbf{1,15} & 2,08 & 32,7 \\
+\texttt{netgen\_27} & 402 & 2.692 & 400.000 & 4.863.992.745 & 127 & \textbf{5,54} & 7,12 & 38,4 \\
+\texttt{netgen\_28} & 1.002 & 3.000 & 1.000.000 & 11.599.233.408 & 1.375 & \textbf{22,5} & 28,7 & 467 \\
+\texttt{netgen\_29} & 1.002 & 3.500 & 1.000.000 & 11.700.773.092 & 1.423 & \textbf{31,3} & 33,7 & 515 \\
+\texttt{netgen\_30} & 1.002 & 4.500 & 1.000.000 & 8.782.721.260 & 2.615 & 40,5 & \textbf{38,4} & 532 \\
+\texttt{netgen\_31} & 1.002 & 4.900 & 1.000.000 & 8.577.913.734 & 2.191 & 38,8 & \textbf{37,4} & 484 \\
+\texttt{netgen\_32} & 1.502 & 4.492 & 1.500.000 & 17.996.365.110 & 5.781 & \textbf{67,0} & 74,0 & 1.624 \\
+\texttt{netgen\_33} & 1.502 & 4.535 & 1.500.000 & 18.424.893.900 & 5.249 & 80,5 & \textbf{70,2} & 1.604 \\
+\texttt{netgen\_34} & 1.502 & 5.257 & 1.500.000 & 14.596.094.907 & 6.275 & \textbf{70,3} & 72,7 & 1.658 \\
+\texttt{netgen\_35} & 1.502 & 5.880 & 1.500.000 & 14.350.903.861 & 8.174 & 113 & \textbf{106} & 1.817 \\
+\texttt{netgen\_36} & 8.002 & 16.200 & --- & --- & --- & 5.220 & \textbf{3.747} & --- \\
+\texttt{netgen\_37} & 5.002 & 23.950 & --- & --- & --- & 4.748 & \textbf{3.200} & --- \\
+\texttt{netgen\_38} & 3.002 & 35.625 & --- & --- & --- & 3.403 & \textbf{1.994} & 16.717 \\
+\texttt{netgen\_39} & 5.002 & 15.880 & --- & --- & --- & 2.888 & \textbf{2.099} & --- \\
+\texttt{netgen\_40} & 3.002 & 23.400 & --- & --- & --- & 1.406 & \textbf{979} & 13.408 \\
+\end{longtable}
+\endgroup
 
 \IfFileExists{figuras/bars_mincost.pdf}{
 \begin{figure}[!ht]
@@ -1213,33 +1220,23 @@ A Tabela~\ref{tab:benchmarks_maxflow_exhaustive} reporta os tempos médios de ex
 \midrule
 \multicolumn{9}{l}{\textbf{Família DIMACS Washington (Malhas e Linhas com Gargalos)}} \\
 \midrule
-\texttt{wash\_rlg\_16} & 258 & 752 & 11.940 & 54,8 & 2,18 & \textbf{0,33} & 1,57 & 0,50 \\
-\texttt{wash\_rlg\_32} & 1.026 & 3.040 & 22.142 & 668 & 34,8 & \textbf{1,97} & 37,9 & 3,08 \\
-\texttt{wash\_rlg\_64} & 4.098 & 12.224 & 46.000 & 6.672 & 695 & 20,6 & 201 & \textbf{18,6} \\
-\texttt{wash\_mesh\_16} & 258 & 752 & 12.296 & 29,6 & 1,83 & \textbf{0,18} & 2,64 & 0,61 \\
-\texttt{wash\_mesh\_32} & 1.026 & 3.040 & 26.912 & 450 & 28,5 & \textbf{0,87} & 12,2 & 2,01 \\
-\texttt{wash\_line\_50} & 2.502 & 9.692 & 76.426.382 & TLE & 247 & 6,36 & 943 & \textbf{5,88} \\
-\texttt{wash\_line\_100} & 10.002 & 39.398 & 157.298.106 & TLE & 5.032 & 53,6 & 19.315 & \textbf{45,1} \\
+\texttt{wash\_rlg\_16} & 258 & 752 & 11.058 & 50,6 & 1,97 & \textbf{0,31} & 4,58 & 0,88 \\
+\texttt{wash\_rlg\_32} & 1.026 & 3.040 & 22.224 & 643 & 35,0 & \textbf{2,16} & 41,0 & 2,82 \\
+\texttt{wash\_rlg\_64} & 4.098 & 12.224 & 44.336 & 6.379 & 662 & \textbf{16,3} & 1.250 & 16,7 \\
+\texttt{wash\_mesh\_16} & 258 & 752 & 15.933 & 29,7 & 2,48 & \textbf{0,40} & 0,61 & 0,58 \\
+\texttt{wash\_mesh\_32} & 1.026 & 3.040 & 28.336 & 501 & 30,2 & \textbf{2,08} & 44,2 & 2,57 \\
+\texttt{wash\_line\_50} & 2.502 & 9.714 & 76.861.360 & TLE & 223 & 6,53 & 932 & \textbf{5,97} \\
+\texttt{wash\_line\_100} & 10.002 & 39.396 & 158.751.535 & TLE & 5.118 & 51,4 & 18.952 & \textbf{42,7} \\
 \midrule
 \multicolumn{9}{l}{\textbf{Família DIMACS Genrmf (Planos Tridimensionais)}} \\
 \midrule
-\texttt{genrmf\_small} & 256 & 1.008 & 35.852 & 105 & 0,60 & \textbf{0,38} & 7,00 & 0,55 \\
-\texttt{genrmf\_medium} & 1.024 & 4.544 & 133.085 & 4.527 & 7,47 & 2,77 & 2,75 & \textbf{2,11} \\
-\texttt{genrmf\_wide} & 1.024 & 4.608 & 513.342 & 14.124 & 11,0 & 3,31 & \textbf{2,88} & 2,94 \\
-\texttt{genrmf\_long} & 1.024 & 4.080 & 40.958 & 1.169 & 8,40 & 3,02 & 114 & \textbf{2,38} \\
-\midrule
-\multicolumn{9}{l}{\textbf{Redes em Grade Bidimensional (Grid Graphs)}} \\
-\midrule
-\midrule
-\multicolumn{9}{l}{\textbf{Grafos Aleatórios Erdős-Rényi $G(n, p)$}} \\
-\midrule
-\midrule
-\multicolumn{9}{l}{\textbf{Instâncias Patológicas e Validação}} \\
-\midrule
-\texttt{test\_small} & 6 & 8 & 15 & 0,06 & 0,07 & 0,05 & \textbf{0,05} & 0,05 \\
+\texttt{genrmf\_small} & 256 & 1.008 & 37.341 & 100 & 0,51 & 0,36 & 7,20 & \textbf{0,34} \\
+\texttt{genrmf\_medium} & 1.024 & 4.544 & 133.050 & 4.666 & 7,44 & 2,80 & 2,56 & \textbf{2,12} \\
+\texttt{genrmf\_wide} & 1.024 & 4.608 & 515.238 & 14.443 & 11,3 & 4,26 & 3,30 & \textbf{2,82} \\
+\texttt{genrmf\_long} & 1.024 & 4.080 & 35.123 & 974 & 5,92 & \textbf{1,90} & 116 & 4,00 \\
 \bottomrule
 \end{tabular}
-\caption{Resultados experimentais exaustivos dos motores de fluxo máximo em todas as 23 instâncias avaliadas.}
+\caption{Resultados experimentais exaustivos dos motores de fluxo máximo nas instâncias avaliadas.}
 \label{tab:benchmarks_maxflow_exhaustive}
 \end{table}
 
@@ -1263,35 +1260,80 @@ As curvas experimentais evidenciam a diferenciação entre as classes assintóti
 
 \subsection{Tabela Exaustiva e Escalabilidade: Fluxo de Custo Mínimo}
 
-A Tabela~\ref{tab:benchmarks_mincost_exhaustive} reporta os dados experimentais completos dos quatro algoritmos de fluxo de custo mínimo, incluindo a instância de teste unitário.
+A Tabela~\ref{tab:benchmarks_mincost_exhaustive} reporta os dados experimentais completos dos quatro algoritmos de fluxo de custo mínimo na totalidade das 40 instâncias da família Netgen.
 
-\begin{table}[!ht]
-\centering
+\begingroup
 \small
 \setlength{\tabcolsep}{3.5pt}
-\begin{tabular}{lrrrrrrrr}
+\begin{longtable}{lrrrrrrrr}
+\caption{Resultados experimentais exaustivos dos motores de fluxo de custo mínimo nas instâncias Netgen.}\label{tab:benchmarks_mincost_exhaustive}\\
 \toprule
 \textbf{Instância} & $|V|$ & $|A|$ & $f^*$ & $z^*$ & \textbf{CC} & \textbf{SSP-SPFA} & \textbf{SSP-Dijk} & \textbf{Simplex} \\
 \midrule
-\multicolumn{9}{l}{\textbf{Família DIMACS Netgen (Transporte e Transbordo)}} \\
+\endfirsthead
+\caption[]{Resultados experimentais exaustivos dos motores de fluxo de custo mínimo nas instâncias Netgen (continuação)}\\
+\toprule
+\textbf{Instância} & $|V|$ & $|A|$ & $f^*$ & $z^*$ & \textbf{CC} & \textbf{SSP-SPFA} & \textbf{SSP-Dijk} & \textbf{Simplex} \\
 \midrule
-\texttt{netgen\_01} & 202 & 1.508 & 100.000 & 196.587.626 & 335 & \textbf{11,6} & 15,4 & 12,8 \\
-\texttt{netgen\_02} & 202 & 1.711 & 100.000 & 194.072.029 & 398 & \textbf{10,1} & 14,6 & 11,8 \\
-\texttt{netgen\_03} & 202 & 2.200 & 100.000 & 159.442.947 & 580 & 15,0 & 17,3 & \textbf{14,3} \\
-\texttt{netgen\_04} & 202 & 2.400 & 100.000 & 138.936.551 & 692 & 14,8 & 17,8 & \textbf{13,8} \\
-\texttt{netgen\_05} & 202 & 3.100 & 100.000 & 102.950.805 & 1.103 & 24,1 & 22,5 & \textbf{17,8} \\
-\texttt{netgen\_06} & 302 & 3.474 & 150.000 & 191.968.577 & 2.323 & 39,9 & 45,2 & \textbf{35,5} \\
-\texttt{netgen\_07} & 302 & 4.819 & 150.000 & 172.742.047 & 3.817 & 54,0 & 50,4 & \textbf{40,9} \\
-\texttt{netgen\_08} & 302 & 5.469 & 150.000 & 177.575.586 & 4.558 & 59,9 & 50,9 & \textbf{42,7} \\
-\midrule
-\multicolumn{9}{l}{\textbf{Instâncias de Validação Unitária}} \\
-\midrule
-\texttt{test\_small} & 4 & 5 & 6 & 24 & 0,12 & 0,05 & \textbf{0,04} & 0,06 \\
+\endhead
 \bottomrule
-\end{tabular}
-\caption{Resultados experimentais exaustivos dos motores de fluxo de custo mínimo.}
-\label{tab:benchmarks_mincost_exhaustive}
-\end{table}
+\endfoot
+\multicolumn{9}{l}{\textbf{Família DIMACS Netgen: Transbordo Inicial (01 a 10)}} \\
+\midrule
+\texttt{netgen\_01} & 202 & 1.508 & 100.000 & 196.587.626 & 333 & \textbf{10,3} & 15,2 & 12,7 \\
+\texttt{netgen\_02} & 202 & 1.711 & 100.000 & 194.072.029 & 398 & \textbf{11,0} & 14,9 & 12,1 \\
+\texttt{netgen\_03} & 202 & 2.200 & 100.000 & 159.442.947 & 581 & 15,4 & 18,0 & \textbf{14,9} \\
+\texttt{netgen\_04} & 202 & 2.400 & 100.000 & 138.936.551 & 695 & 15,5 & 17,8 & \textbf{14,3} \\
+\texttt{netgen\_05} & 202 & 3.100 & 100.000 & 102.950.805 & 1.106 & 24,5 & 23,3 & \textbf{17,7} \\
+\texttt{netgen\_06} & 302 & 3.474 & 150.000 & 191.968.577 & 2.252 & 41,4 & 46,1 & \textbf{36,0} \\
+\texttt{netgen\_07} & 302 & 4.819 & 150.000 & 172.742.047 & 3.958 & 51,7 & 52,9 & \textbf{42,0} \\
+\texttt{netgen\_08} & 302 & 5.469 & 150.000 & 177.575.586 & 4.411 & 56,4 & 51,9 & \textbf{43,9} \\
+\texttt{netgen\_09} & 302 & 6.375 & 150.000 & 144.994.180 & 6.544 & 60,3 & 53,9 & \textbf{46,3} \\
+\texttt{netgen\_10} & 302 & 6.620 & 150.000 & 148.675.665 & 6.322 & 76,9 & 66,7 & \textbf{53,9} \\
+\midrule
+\multicolumn{9}{l}{\textbf{Família DIMACS Netgen: Transporte com Baixo Fluxo (11 a 15)}} \\
+\midrule
+\texttt{netgen\_11} & 402 & 1.900 & 200 & 473.532 & 86,7 & \textbf{8,19} & 17,7 & 47,7 \\
+\texttt{netgen\_12} & 402 & 2.650 & 200 & 326.853 & 164 & \textbf{9,97} & 19,8 & 52,0 \\
+\texttt{netgen\_13} & 402 & 3.400 & 200 & 258.242 & 243 & \textbf{13,1} & 21,7 & 57,0 \\
+\texttt{netgen\_14} & 402 & 4.150 & 200 & 247.036 & 353 & \textbf{13,3} & 22,6 & 59,8 \\
+\texttt{netgen\_15} & 402 & 4.900 & 200 & 212.597 & 468 & \textbf{16,1} & 24,6 & 67,6 \\
+\midrule
+\multicolumn{9}{l}{\textbf{Família DIMACS Netgen: Transporte com Alta Demanda (16 a 27)}} \\
+\midrule
+\texttt{netgen\_16} & 402 & 1.374 & 400.000 & 6.815.524.469 & 104 & \textbf{6,24} & 8,86 & 31,2 \\
+\texttt{netgen\_17} & 402 & 2.511 & 400.000 & 2.646.770.386 & 286 & \textbf{7,36} & 11,3 & 31,1 \\
+\texttt{netgen\_18} & 402 & 1.374 & 400.000 & 6.663.684.919 & 109 & \textbf{7,02} & 9,17 & 31,3 \\
+\texttt{netgen\_19} & 402 & 2.511 & 400.000 & 2.618.979.806 & 267 & \textbf{9,28} & 12,3 & 30,8 \\
+\texttt{netgen\_20} & 402 & 1.484 & 400.000 & 6.749.969.302 & 165 & \textbf{5,83} & 8,97 & 25,3 \\
+\texttt{netgen\_21} & 402 & 2.904 & 400.000 & 2.631.027.973 & 369 & \textbf{8,66} & 12,0 & 34,1 \\
+\texttt{netgen\_22} & 402 & 1.484 & 400.000 & 6.621.515.104 & 155 & \textbf{4,07} & 9,83 & 24,5 \\
+\texttt{netgen\_23} & 402 & 2.904 & 400.000 & 2.630.071.408 & 349 & \textbf{8,26} & 12,4 & 35,1 \\
+\texttt{netgen\_24} & 402 & 1.398 & 400.000 & 6.829.799.687 & 82,6 & \textbf{4,10} & 6,05 & 33,9 \\
+\texttt{netgen\_25} & 402 & 2.692 & 400.000 & 6.396.423.129 & 221 & 12,1 & \textbf{12,0} & 40,9 \\
+\texttt{netgen\_26} & 402 & 1.398 & 400.000 & 5.297.702.923 & 29,4 & \textbf{1,15} & 2,08 & 32,7 \\
+\texttt{netgen\_27} & 402 & 2.692 & 400.000 & 4.863.992.745 & 127 & \textbf{5,54} & 7,12 & 38,4 \\
+\midrule
+\multicolumn{9}{l}{\textbf{Família DIMACS Netgen: Grande Escala (28 a 35)}} \\
+\midrule
+\texttt{netgen\_28} & 1.002 & 3.000 & 1.000.000 & 11.599.233.408 & 1.375 & \textbf{22,5} & 28,7 & 467 \\
+\texttt{netgen\_29} & 1.002 & 3.500 & 1.000.000 & 11.700.773.092 & 1.423 & \textbf{31,3} & 33,7 & 515 \\
+\texttt{netgen\_30} & 1.002 & 4.500 & 1.000.000 & 8.782.721.260 & 2.615 & 40,5 & \textbf{38,4} & 532 \\
+\texttt{netgen\_31} & 1.002 & 4.900 & 1.000.000 & 8.577.913.734 & 2.191 & 38,8 & \textbf{37,4} & 484 \\
+\texttt{netgen\_32} & 1.502 & 4.492 & 1.500.000 & 17.996.365.110 & 5.781 & \textbf{67,0} & 74,0 & 1.624 \\
+\texttt{netgen\_33} & 1.502 & 4.535 & 1.500.000 & 18.424.893.900 & 5.249 & 80,5 & \textbf{70,2} & 1.604 \\
+\texttt{netgen\_34} & 1.502 & 5.257 & 1.500.000 & 14.596.094.907 & 6.275 & \textbf{70,3} & 72,7 & 1.658 \\
+\texttt{netgen\_35} & 1.502 & 5.880 & 1.500.000 & 14.350.903.861 & 8.174 & 113 & \textbf{106} & 1.817 \\
+\midrule
+\multicolumn{9}{l}{\textbf{Família DIMACS Netgen: Escala Máxima (36 a 40)}} \\
+\midrule
+\texttt{netgen\_36} & 8.002 & 16.200 & --- & --- & --- & 5.220 & \textbf{3.747} & --- \\
+\texttt{netgen\_37} & 5.002 & 23.950 & --- & --- & --- & 4.748 & \textbf{3.200} & --- \\
+\texttt{netgen\_38} & 3.002 & 35.625 & --- & --- & --- & 3.403 & \textbf{1.994} & 16.717 \\
+\texttt{netgen\_39} & 5.002 & 15.880 & --- & --- & --- & 2.888 & \textbf{2.099} & --- \\
+\texttt{netgen\_40} & 3.002 & 23.400 & --- & --- & --- & 1.406 & \textbf{979} & 13.408 \\
+\end{longtable}
+\endgroup
 
 A Figura~\ref{fig:scalability_mincost_apendice} apresenta as curvas de tempo em função de $|V|$ para os algoritmos de custo mínimo na família Netgen.
 

@@ -52,7 +52,10 @@ def check_existing(csv_path, instance_name):
 
 
 def run_type(benchmark_type, instances_dir, output_dir, driver_path, ext, repeats, timeout, force):
-    instances = sorted(list(instances_dir.rglob(f"*{ext}")))
+    instances = sorted([
+        p for p in instances_dir.rglob(f"*{ext}")
+        if not p.name.startswith("test_") and not p.name.startswith("smoke_")
+    ])
     if not instances:
         print(
             f"No {benchmark_type} instances found in {instances_dir}", file=sys.stderr)

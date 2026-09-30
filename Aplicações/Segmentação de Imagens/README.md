@@ -74,14 +74,14 @@ Uma BFS no grafo residual a partir de Source classifica cada pixel: alcançável
 
 ## Compilação e Uso
 
-| Comando | Ação |
-| :--- | :--- |
+| Comando             | Ação                                                                                  |
+| :------------------ | :------------------------------------------------------------------------------------ |
 | `make` / `make all` | Compila todos os utilitários (`segment`, `seeds`, `ppm`) e gera os overlays de seeds. |
-| `make test` | Executa a validação automática comparando os outputs com os gabaritos em `samples/`. |
-| `make seed` | Gera imagens `seeds.ppm` a partir de `source.seeds` para cada amostra. |
-| `make run` | Executa o utilitário `segment` em modo interativo. |
-| `make example` | Executa uma demonstração rápida com a amostra `grid1`. |
-| `make clean` | Remove todos os executáveis e imagens geradas. |
+| `make test`         | Executa a validação automática comparando os outputs com os gabaritos em `samples/`.  |
+| `make seed`         | Gera imagens `seeds.ppm` a partir de `source.seeds` para cada amostra.                |
+| `make run`          | Executa o utilitário `segment` em modo interativo.                                    |
+| `make example`      | Executa uma demonstração rápida com a amostra `grid1`.                                |
+| `make clean`        | Remove todos os executáveis e imagens geradas.                                        |
 
 ```bash
 make
@@ -140,11 +140,13 @@ Options:
 **Exemplos de conversão:**
 
 Converter arquivo de seeds (texto) para imagem PPM com overlay:
+
 ```bash
 ./seeds --txt2ppm --input samples/duck/source.seeds --output seeds_preview.ppm --reference samples/duck/source.ppm
 ```
 
 Converter imagem PPM de overlay para arquivo de texto com as coordenadas:
+
 ```bash
 ./seeds --ppm2txt --input seeds_preview.ppm --output seeds_extraidas.txt
 ```

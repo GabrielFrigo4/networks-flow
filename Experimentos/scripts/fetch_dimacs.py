@@ -229,6 +229,11 @@ make dimacs
 ```
 """
     readme_path.write_text(content, encoding="utf-8")
+    try:
+        subprocess.run(["prettier", "--write", str(readme_path)],
+                       capture_output=True, check=False)
+    except FileNotFoundError:
+        pass
     log(f"Documentação de proveniência salva em {readme_path}")
 
 

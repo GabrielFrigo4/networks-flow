@@ -32,10 +32,10 @@ COMPACT_MF_INSTANCES = [
     "wash_rlg_16.max",
     "wash_rlg_32.max",
     "wash_rlg_64.max",
+    "wash_mesh_16.max",
+    "wash_mesh_32.max",
     "wash_line_50.max",
     "wash_line_100.max",
-    "grid_50x50.max",
-    "grid_100x100.max",
 ]
 
 MF_ALGO_ORDER = [
@@ -91,6 +91,9 @@ def load_csv(path):
     with open(path, "r", encoding="utf-8") as f:
         reader = csv.DictReader(f)
         for row in reader:
+            inst = row.get("instance", "")
+            if inst.startswith("test_") or inst.startswith("smoke_"):
+                continue
             rows.append(row)
     return rows
 
@@ -189,18 +192,36 @@ def generate_full_table_mincost(rows, output_path):
         fastest[inst] = min(times) if times else float("inf")
 
     with open(output_path, "w", encoding="utf-8") as f:
-        f.write("\\begin{table}[!ht]\n")
-        f.write("\\centering\n")
+        f.write("\\begingroup\n")
         f.write("\\small\n")
         f.write("\\setlength{\\tabcolsep}{4pt}\n")
-        f.write("\\begin{tabular}{llrrrrrrl}\n")
+        f.write("\\begin{longtable}{llrrrrrrl}\n")
+        f.write(
+            "\\caption{Resultados experimentais dos motores de "
+            "fluxo de custo mínimo.}\\label{tab:results_mincost}\\\\\n"
+        )
         f.write("\\toprule\n")
         f.write(
-            "\\textbf{Inst\\^ancia} & \\textbf{Algoritmo} & "
+            "\\textbf{Instância} & \\textbf{Algoritmo} & "
             "$|V|$ & $|A|$ & $f^*$ & $z^*$ & "
             "$\\bar{t}$ (ms) & \\textbf{Status} \\\\\n"
         )
         f.write("\\midrule\n")
+        f.write("\\endfirsthead\n")
+        f.write(
+            "\\caption[]{Resultados experimentais dos motores "
+            "de fluxo de custo mínimo (continuação)}\\\\\n"
+        )
+        f.write("\\toprule\n")
+        f.write(
+            "\\textbf{Instância} & \\textbf{Algoritmo} & "
+            "$|V|$ & $|A|$ & $f^*$ & $z^*$ & "
+            "$\\bar{t}$ (ms) & \\textbf{Status} \\\\\n"
+        )
+        f.write("\\midrule\n")
+        f.write("\\endhead\n")
+        f.write("\\bottomrule\n")
+        f.write("\\endfoot\n")
 
         inst_list = list(groups.keys())
         for idx, inst in enumerate(inst_list):
@@ -228,14 +249,8 @@ def generate_full_table_mincost(rows, output_path):
             if idx < len(inst_list) - 1:
                 f.write("\\midrule\n")
 
-        f.write("\\bottomrule\n")
-        f.write("\\end{tabular}\n")
-        f.write(
-            "\\caption{Resultados experimentais dos motores de "
-            "fluxo de custo m\\'inimo.}\n"
-        )
-        f.write("\\label{tab:results_mincost}\n")
-        f.write("\\end{table}\n")
+        f.write("\\end{longtable}\n")
+        f.write("\\endgroup\n")
     print(f"  Gerado: {output_path}")
 
 
@@ -374,17 +389,34 @@ def generate_compact_mincost(rows, output_path):
             for a in MC_ALGO_ORDER
         )
 
-        f.write("\\begin{table}[!ht]\n")
-        f.write("\\centering\n")
+        f.write("\\begingroup\n")
         f.write("\\small\n")
         f.write("\\setlength{\\tabcolsep}{3.5pt}\n")
-        f.write(f"\\begin{{tabular}}{{{col_spec}}}\n")
+        f.write(f"\\begin{{longtable}}{{{col_spec}}}\n")
+        f.write(
+            "\\caption{Comparação experimental dos motores de "
+            "fluxo de custo mínimo em instâncias Netgen.}\\label{tab:benchmarks_mincost}\\\\\n"
+        )
         f.write("\\toprule\n")
         f.write(
             f"\\textbf{{Instância}} & $|V|$ & $|A|$ & "
             f"$f^*$ & $z^*$ & {algo_headers} \\\\\n"
         )
         f.write("\\midrule\n")
+        f.write("\\endfirsthead\n")
+        f.write(
+            "\\caption[]{Comparação experimental dos motores de "
+            "fluxo de custo mínimo em instâncias Netgen (continuação)}\\\\\n"
+        )
+        f.write("\\toprule\n")
+        f.write(
+            f"\\textbf{{Instância}} & $|V|$ & $|A|$ & "
+            f"$f^*$ & $z^*$ & {algo_headers} \\\\\n"
+        )
+        f.write("\\midrule\n")
+        f.write("\\endhead\n")
+        f.write("\\bottomrule\n")
+        f.write("\\endfoot\n")
 
         for inst in selected:
             recs = groups[inst]
@@ -425,14 +457,8 @@ def generate_compact_mincost(rows, output_path):
                 f"{times_str} \\\\\n"
             )
 
-        f.write("\\bottomrule\n")
-        f.write("\\end{tabular}\n")
-        f.write(
-            "\\caption{Comparação experimental dos motores de "
-            "fluxo de custo mínimo em instâncias Netgen.}\n"
-        )
-        f.write("\\label{tab:benchmarks_mincost}\n")
-        f.write("\\end{table}\n")
+        f.write("\\end{longtable}\n")
+        f.write("\\endgroup\n")
     print(f"  Gerado: {output_path}")
 
 
@@ -477,41 +503,47 @@ EXHAUSTIVE_MF_GROUPS = [
         ],
     ),
     (
-        "Instâncias Patológicas e Validação",
+        "Instâncias Patológicas de Pior Caso",
         [
             "worst_ff_10.max",
             "worst_ff_15.max",
             "worst_chain_100.max",
-            "test_small.max",
         ],
     ),
 ]
 
 EXHAUSTIVE_MC_GROUPS = [
     (
-        "Família DIMACS Netgen (Transporte e Transbordo)",
-        [
-            "netgen_01.min",
-            "netgen_02.min",
-            "netgen_03.min",
-            "netgen_04.min",
-            "netgen_05.min",
-            "netgen_06.min",
-            "netgen_07.min",
-            "netgen_08.min",
-        ],
+        "Família DIMACS Netgen: Transbordo Inicial (01 a 10)",
+        [f"netgen_{i:02d}.min" for i in range(1, 11)],
     ),
     (
-        "Instâncias de Validação Unitária",
-        [
-            "test_small.min",
-        ],
+        "Família DIMACS Netgen: Transporte com Baixo Fluxo (11 a 15)",
+        [f"netgen_{i:02d}.min" for i in range(11, 16)],
+    ),
+    (
+        "Família DIMACS Netgen: Transporte com Alta Demanda (16 a 27)",
+        [f"netgen_{i:02d}.min" for i in range(16, 28)],
+    ),
+    (
+        "Família DIMACS Netgen: Grande Escala (28 a 35)",
+        [f"netgen_{i:02d}.min" for i in range(28, 36)],
+    ),
+    (
+        "Família DIMACS Netgen: Escala Máxima (36 a 40)",
+        [f"netgen_{i:02d}.min" for i in range(36, 41)],
     ),
 ]
 
 
 def generate_exhaustive_maxflow(rows, output_path):
     groups = group_by_instance(rows)
+
+    active_groups = []
+    for title, instances in EXHAUSTIVE_MF_GROUPS:
+        present = [inst for inst in instances if inst in groups]
+        if present:
+            active_groups.append((title, present))
 
     with open(output_path, "w", encoding="utf-8") as f:
         ncols = 4 + len(MF_ALGO_ORDER)
@@ -533,14 +565,12 @@ def generate_exhaustive_maxflow(rows, output_path):
         )
         f.write("\\midrule\n")
 
-        for g_idx, (group_title, instances) in enumerate(EXHAUSTIVE_MF_GROUPS):
+        for g_idx, (group_title, instances) in enumerate(active_groups):
             f.write(
                 f"\\multicolumn{{{ncols}}}{{l}}{{\\textbf{{{group_title}}}}} \\\\\n"
             )
             f.write("\\midrule\n")
             for inst in instances:
-                if inst not in groups:
-                    continue
                 recs = groups[inst]
                 by_algo = {r["algorithm"]: r for r in recs}
                 first = recs[0]
@@ -587,14 +617,14 @@ def generate_exhaustive_maxflow(rows, output_path):
                     f"{inst_tex} & {v} & {a} & {flow} & "
                     f"{times_str} \\\\\n"
                 )
-            if g_idx < len(EXHAUSTIVE_MF_GROUPS) - 1:
+            if g_idx < len(active_groups) - 1:
                 f.write("\\midrule\n")
 
         f.write("\\bottomrule\n")
         f.write("\\end{tabular}\n")
         f.write(
             "\\caption{Resultados experimentais exaustivos dos motores de "
-            "fluxo máximo em todas as 23 instâncias avaliadas.}\n"
+            "fluxo máximo nas instâncias avaliadas.}\n"
         )
         f.write("\\label{tab:benchmarks_maxflow_exhaustive}\n")
         f.write("\\end{table}\n")
@@ -604,6 +634,12 @@ def generate_exhaustive_maxflow(rows, output_path):
 def generate_exhaustive_mincost(rows, output_path):
     groups = group_by_instance(rows)
 
+    active_groups = []
+    for title, instances in EXHAUSTIVE_MC_GROUPS:
+        present = [inst for inst in instances if inst in groups]
+        if present:
+            active_groups.append((title, present))
+
     with open(output_path, "w", encoding="utf-8") as f:
         ncols = 5 + len(MC_ALGO_ORDER)
         col_spec = "l" + "r" * (ncols - 1)
@@ -612,26 +648,41 @@ def generate_exhaustive_mincost(rows, output_path):
             for a in MC_ALGO_ORDER
         )
 
-        f.write("\\begin{table}[!ht]\n")
-        f.write("\\centering\n")
+        f.write("\\begingroup\n")
         f.write("\\small\n")
         f.write("\\setlength{\\tabcolsep}{3.5pt}\n")
-        f.write(f"\\begin{{tabular}}{{{col_spec}}}\n")
+        f.write(f"\\begin{{longtable}}{{{col_spec}}}\n")
+        f.write(
+            "\\caption{Resultados experimentais exaustivos dos motores de "
+            "fluxo de custo mínimo nas instâncias Netgen.}\\label{tab:benchmarks_mincost_exhaustive}\\\\\n"
+        )
         f.write("\\toprule\n")
         f.write(
             f"\\textbf{{Instância}} & $|V|$ & $|A|$ & "
             f"$f^*$ & $z^*$ & {algo_headers} \\\\\n"
         )
         f.write("\\midrule\n")
+        f.write("\\endfirsthead\n")
+        f.write(
+            "\\caption[]{Resultados experimentais exaustivos dos motores de "
+            "fluxo de custo mínimo nas instâncias Netgen (continuação)}\\\\\n"
+        )
+        f.write("\\toprule\n")
+        f.write(
+            f"\\textbf{{Instância}} & $|V|$ & $|A|$ & "
+            f"$f^*$ & $z^*$ & {algo_headers} \\\\\n"
+        )
+        f.write("\\midrule\n")
+        f.write("\\endhead\n")
+        f.write("\\bottomrule\n")
+        f.write("\\endfoot\n")
 
-        for g_idx, (group_title, instances) in enumerate(EXHAUSTIVE_MC_GROUPS):
+        for g_idx, (group_title, instances) in enumerate(active_groups):
             f.write(
                 f"\\multicolumn{{{ncols}}}{{l}}{{\\textbf{{{group_title}}}}} \\\\\n"
             )
             f.write("\\midrule\n")
             for inst in instances:
-                if inst not in groups:
-                    continue
                 recs = groups[inst]
                 by_algo = {r["algorithm"]: r for r in recs}
                 first = recs[0]
@@ -669,17 +720,11 @@ def generate_exhaustive_mincost(rows, output_path):
                     f"{inst_tex} & {v} & {a} & {flow} & {cost} & "
                     f"{times_str} \\\\\n"
                 )
-            if g_idx < len(EXHAUSTIVE_MC_GROUPS) - 1:
+            if g_idx < len(active_groups) - 1:
                 f.write("\\midrule\n")
 
-        f.write("\\bottomrule\n")
-        f.write("\\end{tabular}\n")
-        f.write(
-            "\\caption{Resultados experimentais exaustivos dos motores de "
-            "fluxo de custo mínimo.}\n"
-        )
-        f.write("\\label{tab:benchmarks_mincost_exhaustive}\n")
-        f.write("\\end{table}\n")
+        f.write("\\end{longtable}\n")
+        f.write("\\endgroup\n")
     print(f"  Gerado: {output_path}")
 
 
