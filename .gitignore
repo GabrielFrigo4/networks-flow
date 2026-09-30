@@ -39,8 +39,9 @@ cmake-build-*/
 *.snm
 *.vrb
 *.pdf
-!Material/*.pdf
-!Material/**/*.pdf
+!Material/**
+!LaTeX/figuras/*.pdf
+!**/figuras/*.pdf
 
 # OS generated files
 .DS_Store

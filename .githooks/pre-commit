@@ -38,7 +38,7 @@ _is_artifact() {
 		*.aux|*.bbl|*.blg|*.log|*.toc|*.fls|*.fdb_latexmk|*.synctex.gz|*.bcf|*.run.xml|*.xdv|*.nav|*.snm|*.vrb)
 			return 0
 			;;
-		Material/*)
+		Material/*|LaTeX/figuras/*|*/figuras/*)
 			return 1
 			;;
 		*.pdf)
@@ -55,13 +55,19 @@ _is_artifact() {
 
 _staged_files=$(git -c core.quotepath=false diff --cached --name-only --diff-filter=ACM)
 if [ -n "${_staged_files}" ]; then
-	echo "${_staged_files}" | while IFS= read -r _target; do
+	while IFS= read -r _target; do
 		[ -z "${_target}" ] && continue
 		if _is_artifact "${_target}"; then
 			echo "❌ [pre-commit] Binary or LaTeX artifact detected: '${_target}'" >&2
-			exit 1
+			_has_error=1
 		fi
-	done
+	done <<-EOF
+		${_staged_files}
+	EOF
+
+	if [ "${_has_error}" -eq 1 ]; then
+		exit 1
+	fi
 fi
 
 ### ================================
@@ -91,15 +97,23 @@ fi
 if command -v prettier > "/dev/null" 2>&1; then
 	echo "  ↳ Validating staged Markdown files with Prettier..."
 	_unformatted_md=""
-	for _md_file in $(git diff --cached --name-only --diff-filter=d | grep '\.md$' || true); do
-		if [ -f "${_md_file}" ] && ! prettier --check "${_md_file}" > "/dev/null" 2>&1; then
-			_unformatted_md="${_unformatted_md} ${_md_file}"
+	_md_files=$(git -c core.quotepath=false diff --cached --name-only --diff-filter=ACM | grep '\.md$' || true)
+
+	if [ -n "${_md_files}" ]; then
+		while IFS= read -r _md_file; do
+			[ -z "${_md_file}" ] && continue
+			if [ -f "${_md_file}" ] && ! prettier --check "${_md_file}" > "/dev/null" 2>&1; then
+				_unformatted_md="${_unformatted_md} ${_md_file}"
+			fi
+		done <<EOF
+${_md_files}
+EOF
+
+		if [ -n "${_unformatted_md}" ]; then
+			echo "❌ [pre-commit] Unformatted Markdown files detected:${_unformatted_md}" >&2
+			echo "   Run 'prettier --write <file>'." >&2
+			exit 1
 		fi
-	done
-	if [ -n "${_unformatted_md}" ]; then
-		echo "❌ [pre-commit] Unformatted Markdown files detected:${_unformatted_md}" >&2
-		echo "   Run 'prettier --write <file>'." >&2
-		exit 1
 	fi
 fi
 
