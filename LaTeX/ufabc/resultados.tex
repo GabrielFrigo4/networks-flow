@@ -3,7 +3,7 @@
 % =========================================================================
 \section{Resultados Computacionais}\label{sec:resultados}
 
-Esta seção apresenta a avaliação experimental sistemática dos nove motores algorítmicos desenvolvidos em C++23, submetidos a testes de estresse em instâncias canônicas da literatura acadêmica.
+Esta seção apresenta a avaliação experimental sistemática dos nove motores algorítmicos desenvolvidos em C++23, submetidos a testes de estresse em instâncias da literatura acadêmica.
 
 \subsection{Protocolo de Teste e Isolamento de CPU}
 
@@ -11,47 +11,36 @@ Para garantir rigor científico e reprodutibilidade, adotaram-se os seguintes co
 \begin{enumerate}[leftmargin=1.5em, itemsep=0.15em, topsep=0.2em, parsep=0em]
     \item \textbf{Isolamento Estrito de CPU:} A medição temporal utiliza o relógio monotônico de hardware \lstinline{std::chrono::high_resolution_clock}. As etapas de I/O em disco, leitura e parsing de arquivos DIMACS e alocação inicial de memória são estritamente excluídas do cronômetro; mede-se exclusivamente o método de cálculo;
     \item \textbf{Regime Estacionário (\textit{Steady State}):} Cada instância é executada de forma independente por $N = 5$ repetições sucessivas após aquecimento de cache, reportando-se a média amostral ($\bar{t}$ em milissegundos) e o desvio-padrão;
-    \item \textbf{Validação Cruzada de Otimalidade:} Como os algoritmos operam sob paradigmas distintos (aumentos primais, pré-fluxos duais e pivoteamento em árvore), a suíte verifica automaticamente se todos os motores convergem exatamente para a mesma vazão máxima $f^*$ e custo mínimo $z^*$. Em 100\% dos testes, houve concordância exata de soluções ótimas.
+    \item \textbf{Validação Cruzada de Otimalidade:} Como os algoritmos operam sob paradigmas distintos (aumentos primais, pré-fluxos duais e pivoteamento em árvore), a suíte verifica automaticamente se todos os motores produzem exatamente a mesma vazão máxima $f^*$ e custo mínimo $z^*$. Em 100\% dos testes, houve concordância exata de soluções ótimas.
 \end{enumerate}
 
 \subsection{Avaliação de Fluxo Máximo (Coleções DIMACS)}
 
-Os motores de fluxo máximo foram avaliados sobre as coleções clássicas do \textit{First DIMACS Challenge}:
+Os motores de fluxo máximo foram avaliados sobre as coleções do \textit{First DIMACS Challenge}:
 \begin{itemize}[leftmargin=1.5em, itemsep=0.15em, topsep=0.2em, parsep=0em]
-    \item \textbf{Washington (RLG e Line):} Redes com gargalos induzidos para provocar caminhos aumentantes longos;
-    \item \textbf{Genrmf (small, medium, wide, long):} Grafos em grade tridimensional com planos transversais de corte severo, representando o pior cenário para métodos de pré-fluxo e caminhos aumentantes.
+    \item \textbf{Washington (RLG, Mesh e Line):} Redes em malha retangular e redes lineares com gargalos induzidos para provocar caminhos aumentantes longos;
+    \item \textbf{Genrmf (small, medium, wide, long):} Grafos em grade tridimensional com planos transversais de corte severo;
+    \item \textbf{Grid (50$\times$50 e 100$\times$100):} Redes em grade bidimensional com capacidades aleatórias.
 \end{itemize}
 
-A Tabela~\ref{tab:benchmarks_maxflow} apresenta os tempos de execução médios obtidos pelos cinco motores nas instâncias de referência de fluxo máximo.
+A Tabela~\ref{tab:benchmarks_maxflow} apresenta os tempos de execução médios obtidos pelos cinco motores nas instâncias de referência de fluxo máximo. O menor tempo por instância está destacado em \textbf{negrito}.
 
-\begin{table}[!ht]
-\centering
-\small
-\setlength{\tabcolsep}{3.5pt}
-\begin{tabular}{lrrrrrrrr}
-\toprule
-\textbf{Instância} & $|V|$ & $|A|$ & $f^*$ & \textbf{FF (ms)} & \textbf{EK (ms)} & \textbf{Dinic (ms)} & \textbf{PR (ms)} & \textbf{PR-Gap (ms)} \\
-\midrule
-\texttt{wash\_rlg\_16}  & 18    & 48    & 87    & 0,004 & 0,006 & \textbf{0,003} & 0,008 & \textbf{0,003} \\
-\texttt{wash\_rlg\_32}  & 34    & 96    & 134   & 0,012 & 0,015 & \textbf{0,006} & 0,019 & 0,007 \\
-\texttt{wash\_rlg\_64}  & 66    & 192   & 198   & 0,035 & 0,042 & \textbf{0,014} & 0,051 & 0,018 \\
-\texttt{wash\_line\_16} & 18    & 32    & 1     & 0,003 & 0,004 & \textbf{0,002} & 0,005 & \textbf{0,002} \\
-\texttt{wash\_line\_64} & 66    & 128   & 1     & 0,015 & 0,022 & \textbf{0,007} & 0,031 & 0,009 \\
-\texttt{genrmf\_small}  & 256   & 1.056 & 1.450 & 1,420 & 1,890 & 0,310 & 0,840 & \textbf{0,180} \\
-\texttt{genrmf\_med}    & 1.024 & 4.608 & 2.890 & 12,80 & 18,40 & 1,950 & 6,200 & \textbf{0,920} \\
-\texttt{genrmf\_wide}   & 4.096 & 19.456& 5.120 & 98,50 & 142,1 & 14,20 & 42,80 & \textbf{5,600} \\
-\texttt{genrmf\_long}   & 4.096 & 18.432& 1.820 & 185,2 & 280,4 & 18,90 & 68,50 & \textbf{7,100} \\
-\bottomrule
-\end{tabular}
-\caption{Comparação experimental dos motores de fluxo máximo em instâncias DIMACS.}
-\label{tab:benchmarks_maxflow}
-\end{table}
+\input{tabelas/table_max_flow_compact}
+
+\IfFileExists{figuras/bars_maxflow.pdf}{
+\begin{figure}[!ht]
+    \centering
+    \includegraphics[width=0.95\textwidth]{figuras/bars_maxflow}
+    \caption{Comparação direta dos tempos médios de execução por instância (algoritmos de fluxo máximo, escala logarítmica).}
+    \label{fig:bars_maxflow_ic}
+\end{figure}
+}{}
 
 \noindent \textbf{Análise dos Resultados de Fluxo Máximo:}
 \begin{itemize}[leftmargin=1.5em, itemsep=0.15em, topsep=0.2em, parsep=0em]
-    \item \textbf{Impacto da Gap Heuristic no Push-Relabel:} O motor \code{PushRelabelImproved} superou o \code{PushRelabel} convencional em todas as instâncias médias e grandes, atingindo uma aceleração de até \textbf{$9{,}7\times$} na instância \texttt{genrmf\_long} (7,10 ms vs. 68,50 ms), comprovando a eficácia da detecção precoce de rótulos mortos;
-    \item \textbf{Dinic vs. Edmonds-Karp:} O algoritmo de Dinic foi de \textbf{$6\times$ a $15\times$ mais rápido} que o Edmonds-Karp em redes de grande escala. Enquanto o Edmonds-Karp executa uma nova BFS global a cada aumento de fluxo ($O(n m^2)$), o Dinic constrói o digrafo de níveis uma única vez por fase e empurra múltiplos caminhos em fluxo bloqueador com eliminação de ponteiros mortos;
-    \item \textbf{Degradação sob Gargalos Profundos:} Em redes lineares e RMF longas, Ford-Fulkerson e Edmonds-Karp degradam acentuadamente em função do número de aumentos e do comprimento médio dos caminhos, enquanto os algoritmos baseados em alturas mantêm excelente estabilidade.
+    \item \textbf{Impacto da Gap Heuristic no Push-Relabel:} O motor \code{PushRelabelImproved} superou o \code{PushRelabel} convencional em todas as instâncias médias e grandes. Em \texttt{genrmf\_wide}, a aceleração atinge $\approx 41\times$ (2,88 ms vs. 119 ms) e em \texttt{grid\_100x100} atinge $\approx 273\times$ (35,1 ms vs. 9.589 ms), comprovando a eficácia da detecção precoce de rótulos mortos;
+    \item \textbf{Dinic vs. Edmonds-Karp:} O algoritmo de Dinic foi de $6\times$ a $42\times$ mais rápido que o Edmonds-Karp em redes de grande escala. Enquanto o Edmonds-Karp executa uma nova BFS global a cada aumento de fluxo ($O(nm^2)$), o Dinic constrói o digrafo de níveis uma única vez por fase e empurra múltiplos caminhos em fluxo bloqueador;
+    \item \textbf{TLE do Ford-Fulkerson:} Nas instâncias Washington Line com capacidades elevadas ($f^* > 10^7$), o Ford-Fulkerson excede o limite de 60 s, evidenciando sua dependência do valor de $f^*$ (complexidade $O(|f^*| m)$).
 \end{itemize}
 
 \subsection{Avaliação de Fluxo de Custo Mínimo (Coleção DIMACS Netgen)}
@@ -60,31 +49,20 @@ Para avaliar os motores de fluxo de custo mínimo, utilizou-se a família \textb
 
 A Tabela~\ref{tab:benchmarks_mincost} apresenta a comparação entre os quatro motores de custo mínimo nas instâncias \texttt{netgen\_01} a \texttt{netgen\_08}.
 
-\begin{table}[!ht]
-\centering
-\small
-\setlength{\tabcolsep}{3.5pt}
-\begin{tabular}{lrrrrrrrr}
-\toprule
-\textbf{Instância} & $|V|$ & $|A|$ & Fluxo ($f^*$) & Custo ($z^*$) & \textbf{CC (ms)} & \textbf{SSP-SPFA} & \textbf{SSP-Dijk} & \textbf{Simplex (ms)} \\
-\midrule
-\texttt{netgen\_01} & 100 & 500   & 5.000  & 142.800 & 42,10 & 18,50 & 5,20 & \textbf{0,62} \\
-\texttt{netgen\_02} & 150 & 800   & 7.500  & 289.400 & 128,4 & 45,20 & 11,80 & \textbf{1,15} \\
-\texttt{netgen\_03} & 200 & 1.200 & 10.000 & 481.200 & 310,5 & 92,10 & 22,40 & \textbf{1,80} \\
-\texttt{netgen\_04} & 250 & 1.500 & 12.500 & 672.100 & 580,2 & 165,4 & 38,10 & \textbf{2,45} \\
-\texttt{netgen\_05} & 300 & 2.000 & 15.000 & 915.000 & 1.120 & 280,3 & 59,20 & \textbf{3,50} \\
-\texttt{netgen\_06} & 400 & 3.000 & 20.000 & 1.450.200 & 2.890 & 540,1 & 112,0 & \textbf{5,80} \\
-\texttt{netgen\_07} & 500 & 4.000 & 25.000 & 2.120.400 & 5.420 & 980,5 & 195,4 & \textbf{8,90} \\
-\texttt{netgen\_08} & 600 & 5.000 & 30.000 & 2.980.100 & 9.850 & 1.620 & 310,2 & \textbf{12,40} \\
-\bottomrule
-\end{tabular}
-\caption{Comparação experimental dos motores de fluxo de custo mínimo em instâncias Netgen.}
-\label{tab:benchmarks_mincost}
-\end{table}
+\input{tabelas/table_min_cost_compact}
+
+\IfFileExists{figuras/bars_mincost.pdf}{
+\begin{figure}[!ht]
+    \centering
+    \includegraphics[width=0.95\textwidth]{figuras/bars_mincost}
+    \caption{Comparação direta dos tempos médios de execução por instância (algoritmos de fluxo de custo mínimo, escala logarítmica).}
+    \label{fig:bars_mincost_ic}
+\end{figure}
+}{}
 
 \noindent \textbf{Análise dos Resultados de Custo Mínimo:}
 \begin{itemize}[leftmargin=1.5em, itemsep=0.15em, topsep=0.2em, parsep=0em]
-    \item \textbf{Desempenho do Network Simplex:} O algoritmo \code{NetworkSimplex} apresentou menor tempo de execução que os demais métodos, sendo até \textbf{$25\times$ mais rápido que o SSP com Dijkstra} e aproximadamente \textbf{$800\times$ mais rápido que o Cycle Canceling} na instância \texttt{netgen\_08} (12,40 ms vs. 9.850 ms). A eficiência decorre da estrutura de árvore geradora: enquanto métodos de caminhos mínimos recalculam trajetos completos a cada iteração, o Network Simplex executa pivoteamentos locais em ciclos fundamentais, atualizando potenciais apenas na subárvore afetada;
-    \item \textbf{Potenciais Nodais no SSP (Dijkstra vs. SPFA):} O uso de potenciais nodais ($\bar{w}_\pi \ge 0$) reduziu o tempo de execução do \textit{Successive Shortest Path} em \textbf{$3{,}5\times$ a $5{,}2\times$} frente ao SSP com SPFA, confirmando a vantagem de Dijkstra com fila de prioridades;
-    \item \textbf{Limitações do Cycle Canceling:} O cancelamento de ciclos negativos requer buscas completas por ciclos via Bellman-Ford ou SPFA ($O(n m)$ por iteração). Em instâncias com muitas unidades de fluxo ou redes com mais de 500 vértices, o método apresenta tempos significativamente superiores aos demais.
+    \item \textbf{SSP (SPFA e Dijkstra):} Em instâncias com $|A| \le 2400$ (\texttt{netgen\_01} a \texttt{netgen\_04}), o SSP com SPFA apresenta menor tempo. À medida que $|A|$ cresce ($\ge 3100$), o SSP com Dijkstra e potenciais nodais ($\bar{w}_\pi \ge 0$) supera o SPFA, evidenciando a vantagem do heap de prioridades em redes densas;
+    \item \textbf{Proximidade SSP-Dijkstra vs. Network Simplex:} Os tempos do Network Simplex e do SSP-Dijkstra são próximos em todas as instâncias Netgen testadas (diferença $< 20\%$), com ligeira vantagem do SSP-Dijkstra nas instâncias maiores;
+    \item \textbf{Limitações do Cycle Canceling:} O cancelamento de ciclos negativos requer buscas completas por ciclos via Bellman-Ford ($O(nm)$ por iteração). Na instância \texttt{netgen\_08}, o Cycle Canceling consome 7.814 ms, $\approx 151\times$ mais lento que o SSP-Dijkstra (51,8 ms).
 \end{itemize}

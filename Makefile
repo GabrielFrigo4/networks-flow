@@ -7,7 +7,7 @@ MAKEFLAGS += --no-print-directory -s
 # Makefile: Network Flow Research Suite
 # ----------------------------------------------------------------
 
-.PHONY: help all latex book relatorio ic monolito apps impl exp dimacs bench bench-tables bench-plots format test setup clean clean-results sync-code
+.PHONY: help all latex book relatorio ic monolito apps impl exp dimacs bench bench-tables bench-plots bench-artifacts format test setup clean clean-results sync-code
 
 all: help
 
@@ -33,6 +33,7 @@ help:
 	cmd "bench"          "Executa a pipeline completa de benchmarks"; \
 	cmd "bench-tables"   "Gera tabelas LaTeX com resultados dos benchmarks"; \
 	cmd "bench-plots"    "Gera gráficos comparativos dos benchmarks"; \
+	cmd "bench-artifacts" "Gera tabelas (completas+compactas) e gráficos dos CSVs canônicos"; \
 	sec "Qualidade & Sincronização:"; \
 	cmd "test"           "Executa a suíte de testes de algoritmos e aplicações"; \
 	cmd "format"         "Formata todos os códigos C++ (.hpp/.cpp) com clang-format"; \
@@ -91,6 +92,9 @@ bench-tables:
 
 bench-plots:
 	$(MAKE) -C Experimentos plots
+
+bench-artifacts:
+	python3 Scripts/generate_bench_artifacts.py
 
 test:
 	$(MAKE) -C Implementações test

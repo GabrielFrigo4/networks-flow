@@ -1,0 +1,48 @@
+% =========================================================================
+% APÊNDICE: RESULTADOS EXPERIMENTAIS EXAUSTIVOS E ESCALABILIDADE
+% =========================================================================
+\apendice{Resultados Experimentais Exaustivos e Análise de Escalabilidade}
+\label{ap:benchmarks_completos}
+
+Este apêndice documenta os resultados computacionais obtidos na totalidade das 23 instâncias de teste avaliadas na pesquisa, complementando as sínteses apresentadas na Seção~\ref{sec:resultados}. Apresentam-se as medições completas para grafos esparsos e densos aleatórios, redes em grade e famílias sintéticas de pior caso, acompanhadas das curvas de escalabilidade assintótica em escala logarítmica dupla.
+
+\subsection{Tabela Exaustiva de Fluxo Máximo}
+
+A Tabela~\ref{tab:benchmarks_maxflow_exhaustive} reporta os tempos médios de execução ($\bar{t}$ em milissegundos) dos cinco motores de fluxo máximo sobre as 23 instâncias do protocolo experimental, categorizadas por família estrutural.
+
+\input{tabelas/table_max_flow_exhaustive}
+
+\subsection{Análise de Escalabilidade: Fluxo Máximo}
+
+A Figura~\ref{fig:scalability_maxflow_apendice} ilustra o comportamento assintótico dos algoritmos de fluxo máximo em função do número de vértices $|V|$, sob escala logarítmica dupla.
+
+\begin{figure}[!ht]
+    \centering
+    \includegraphics[width=0.92\textwidth]{figuras/scalability_maxflow}
+    \caption{Escalabilidade dos algoritmos de fluxo máximo em função de $|V|$ (escala log-log).}
+    \label{fig:scalability_maxflow_apendice}
+\end{figure}
+
+As curvas experimentais evidenciam a diferenciação entre as classes assintóticas:
+\begin{itemize}[leftmargin=1.5em, itemsep=0.15em, topsep=0.2em, parsep=0em]
+    \item \textbf{Ford-Fulkerson:} Apresenta forte sensibilidade às capacidades inteiras da rede. Nas instâncias lineares (\texttt{wash\_line\_50} e \texttt{wash\_line\_100}), onde $f^* > 7 \times 10^7$, o tempo de execução excede o limiar de 60 segundos (TLE), confirmando a dependência $O(|f^*| m)$;
+    \item \textbf{Edmonds-Karp:} Mantém taxa de crescimento compatível com $O(n m^2)$, degradando em redes com grande diâmetro topológico em razão do custo de sucessivas buscas em largura ($O(m)$ por aumento);
+    \item \textbf{Dinic e Push-Relabel com Heurística de Lacuna:} Apresentam as menores inclinações na escala log-log, indicando menor sensibilidade ao crescimento da rede e mantendo tempos inferiores a 70 ms mesmo em instâncias com mais de 10.000 vértices.
+\end{itemize}
+
+\subsection{Tabela Exaustiva e Escalabilidade: Fluxo de Custo Mínimo}
+
+A Tabela~\ref{tab:benchmarks_mincost_exhaustive} reporta os dados experimentais completos dos quatro motores de fluxo de custo mínimo, incluindo a instância de teste unitário.
+
+\input{tabelas/table_min_cost_exhaustive}
+
+A Figura~\ref{fig:scalability_mincost_apendice} apresenta as curvas de tempo em função de $|V|$ para os motores de custo mínimo na família Netgen.
+
+\begin{figure}[!ht]
+    \centering
+    \includegraphics[width=0.92\textwidth]{figuras/scalability_mincost}
+    \caption{Escalabilidade dos algoritmos de fluxo de custo mínimo em função de $|V|$ (escala log-log).}
+    \label{fig:scalability_mincost_apendice}
+\end{figure}
+
+Observa-se que a inclinação da curva do \textit{Cycle Canceling} é expressivamente superior à dos métodos \textit{Successive Shortest Path} e \textit{Network Simplex}, refletindo o custo de detecção global de ciclos negativos a cada iteração.
