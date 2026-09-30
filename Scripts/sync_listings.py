@@ -98,6 +98,7 @@ LISTING_DEFINITIONS = [
 def generate_appendix_content(title: str, label_appendix: str, caption: str, label_listing: str, source_code: str) -> str:
     separator = "% " + "=" * 73
     return (
+        f"\\newpage\n"
         f"{separator}\n"
         f"% {title.upper()}\n"
         f"{separator}\n"

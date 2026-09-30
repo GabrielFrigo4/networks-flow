@@ -9,7 +9,7 @@ Esta seção formaliza os modelos matemáticos, teoremas estruturais e mecanismo
 
 Uma rede de fluxo é representada por um digrafo $D = (V, A)$, onde $V$ denota o conjunto de vértices e $A$ o conjunto de arcos direcionados (veja~\cite{ahuja1993network, bondy2008graph}). A rede possui dois vértices terminais distinguidos: uma fonte $s \in V$ e um sumidouro $t \in V$. Cada arco $(u, v) \in A$ possui uma capacidade não negativa $c(u, v) \ge 0$, estipulada pela função $c: A \to \mathbb{R}_{\ge 0}$, que estabelece o limite superior de tráfego admissível no arco.
 
-Um fluxo na rede $D$ é uma função $f: A \to \mathbb{R}_{\ge 0}$ que associa a cada arco $(u, v)$ um escalar $f(u, v)$. O fluxo $f$ é dito viável se satisfaz duas condições axiomáticas (veja~\cite{ford1956maximal, cook1998combinatorial}):
+Um fluxo na rede $D$ é uma função $f: A \to \mathbb{R}_{\ge 0}$ que associa a cada arco $(u, v)$ um escalar $f(u, v)$. O fluxo $f$ é dito viável se satisfaz duas condições  (veja~\cite{ford1956maximal, cook1998combinatorial}):
 \begin{enumerate}
     \item \textbf{Restrição de Capacidade:} O fluxo em cada conexão é não negativo e não excede sua capacidade:
     \begin{equation}
@@ -21,7 +21,7 @@ Um fluxo na rede $D$ é uma função $f: A \to \mathbb{R}_{\ge 0}$ que associa a
     \end{equation}
 \end{enumerate}
 
-O valor total do fluxo, denotado por $|f|$, quantifica a taxa líquida que emerge da fonte $s$:
+O valor total do fluxo, denotado por $|f|$, quantifica a taxa de fluxo que sai da fonte $s$:
 \begin{equation}
     |f| = \sum_{\{v \mid (s, v) \in A\}} f(s, v) - \sum_{\{u \mid (u, s) \in A\}} f(u, s)
 \end{equation}
@@ -29,7 +29,7 @@ Pela conservação nodal, esse valor coincide rigorosamente com o fluxo líquido
 
 \subsection{Redes Residuais, Caminhos Aumentantes e Dualidade}
 
-Dado um fluxo viável $f$, a rede residual $D_f = (V, A_f)$ quantifica a capacidade ociosa dos arcos originais e a possibilidade de cancelamento de fluxos previamente despachados (veja~\cite{ahuja1993network}). A capacidade residual $c_f(u, v)$ é definida por:
+Dado um fluxo viável $f$, a rede residual $D_f = (V, A_f)$ quantifica a capacidade ociosa dos arcos originais e a possibilidade de cancelamento de fluxos já enviados (veja~\cite{ahuja1993network}). A capacidade residual $c_f(u, v)$ é definida por:
 \begin{equation}
     c_f(u, v) = c(u, v) - f(u, v) + f(v, u)
 \end{equation}
@@ -65,9 +65,9 @@ A preservação da integralidade sob capacidades inteiras é garantida pelo fato
 
 \subsection{Algoritmos de Caminhos Aumentantes}
 
-O algoritmo genérico de Ford-Fulkerson busca caminhos aumentantes via busca em profundidade (DFS). Sob capacidades inteiras, sua complexidade assintótica é $\mathcal{O}(|A| \cdot |f^*|)$, que depende do valor numérico das capacidades (pseudopolinomial). Para obter complexidade polinomial estrita, a literatura introduziu políticas estruturadas de seleção de caminhos.
+O algoritmo genérico de Ford-Fulkerson busca caminhos aumentantes via busca em profundidade (DFS). Sob capacidades inteiras, sua complexidade assintótica é $\mathcal{O}(|A| \cdot |f^*|)$, que depende do valor numérico das capacidades (pseudopolinomial). Para obter complexidade polinomial estrita, outros algoritmos escolhem os caminhos de forma mais cuidadosa.
 
-A Figura~\ref{fig:ford_fulkerson_patologico} ilustra a patologia clássica do método ingênuo com DFS: capacidades de grande magnitude ($M = 10^6$) nos arcos externos e uma conexão transversal unitária ($c=1$) provocam alternâncias sucessivas de aumento unitário ($\delta = 1$), exigindo $2 \times 10^6$ passos. Em contrapartida, algoritmos guiados por distâncias mínimas em arcos (BFS) priorizam caminhos diretos de comprimento 2 ($s \to u \to t$ e $s \to v \to t$), saturando a rede em 2 passos (Edmonds-Karp) ou em uma única fase de fluxo bloqueador (Dinic), desconsiderando o arco transversal por conectar nós no mesmo nível ($d(u) = d(v) = 1$).
+A Figura~\ref{fig:ford_fulkerson_patologico} ilustra um comportamento subótimo clássico do método ingênuo com DFS: capacidades de grande magnitude ($M = 10^6$) nos arcos externos e uma conexão transversal unitária ($c=1$) provocam alternâncias sucessivas de aumento unitário ($\delta = 1$), exigindo $2 \times 10^6$ passos. Em contrapartida, algoritmos guiados por distâncias mínimas em arcos (BFS) priorizam caminhos diretos de comprimento 2 ($s \to u \to t$ e $s \to v \to t$), saturando a rede em 2 passos (Edmonds-Karp) ou em uma única fase de fluxo bloqueador (Dinic), desconsiderando o arco transversal por conectar nós no mesmo nível ($d(u) = d(v) = 1$).
 
 \begin{figure}[!ht]
 \centering
@@ -91,7 +91,7 @@ A Figura~\ref{fig:ford_fulkerson_patologico} ilustra a patologia clássica do m�
 
 \subsection{Algoritmos de Pré-fluxo e Alturas (Push-Relabel)}
 
-A família de algoritmos de Goldberg e Tarjan~\cite{goldberg1988new} adota uma perspectiva dual: relaxa-se a restrição de conservação de fluxo durante o cálculo, mantendo a ausência de caminhos aumentantes como invariante contínua. Um pré-fluxo $f$ respeita as capacidades ($0 \le f(a) \le c(a)$) e admite excessos nodais não negativos $e(v) \ge 0$ para todo $v \in V \setminus \{s, t\}$:
+A família de algoritmos de Goldberg e Tarjan~\cite{goldberg1988new} adota uma abordagem dual: relaxa-se a restrição de conservação de fluxo durante o cálculo, mantendo a ausência de caminhos aumentantes como invariante. Um pré-fluxo $f$ respeita as capacidades ($0 \le f(a) \le c(a)$) e admite excessos nodais não negativos $e(v) \ge 0$ para todo $v \in V \setminus \{s, t\}$:
 \begin{equation}
     e(v) = \sum_{\{u \mid (u, v) \in A\}} f(u, v) - \sum_{\{w \mid (v, w) \in A\}} f(v, w) \ge 0
 \end{equation}
@@ -104,7 +104,7 @@ Um vértice com $e(v) > 0$ é denominado \textbf{ativo}. Para direcionar os exce
 
 Com política de seleção de vértices ativos em fila FIFO, a complexidade assintótica é $\mathcal{O}(|V|^3)$~\cite{goldberg1988new}.
 
-\paragraph{Heurística de Lacuna (\textit{Gap Heuristic}).} Mantendo um vetor de contagem do número de vértices em cada estrato de altura $count[h]$, detecta-se se algum nível $k < |V|$ esvaziou-se ($count[k] = 0$). Como a condição $h(u) \le h(v) + 1$ limita a inclinação dos arcos residuais, nenhum vértice com $h(u) > k$ consegue alcançar o sumidouro ($h(t) = 0$). O algoritmo eleva suas alturas para $|V| + 1$, eliminando operações redundantes de relabel e devolvendo o fluxo diretamente à fonte. Associada à seleção por Maior Altura (\textit{Highest Label}), atinge-se a complexidade $\mathcal{O}(|V|^2 \sqrt{|A|})$~\cite{goldberg1988new}.
+\paragraph{Heurística de Lacuna (\textit{Gap Heuristic}).} Mantendo um vetor de contagem do número de vértices em cada nível de altura $count[h]$, detecta-se se algum nível $k < |V|$ esvaziou-se ($count[k] = 0$). Como a condição $h(u) \le h(v) + 1$ limita a inclinação dos arcos residuais, nenhum vértice com $h(u) > k$ consegue alcançar o sumidouro ($h(t) = 0$). O algoritmo eleva suas alturas para $|V| + 1$, eliminando operações redundantes de relabel e devolvendo o fluxo diretamente à fonte. Associada à seleção por Maior Altura (\textit{Highest Label}), atinge-se a complexidade $\mathcal{O}(|V|^2 \sqrt{|A|})$~\cite{goldberg1988new}.
 
 \begin{figure}[!ht]
 \centering
@@ -169,7 +169,7 @@ Seja $\pi: V \to \mathbb{R}$ um vetor de potenciais nodais (variáveis duais das
 Um fluxo viável $f$ é ótimo se e somente se existe $\pi$ tal que $\bar{w}_\pi(u, v) \ge 0$ para todo $(u, v) \in A_f$.
 \end{prop}
 
-A não negatividade dos custos reduzidos corresponde às condições de Folga Complementar de Karush-Kuhn-Tucker (KKT). Mantendo os potenciais atualizados ao longo das iterações, viabiliza-se o uso do algoritmo de Dijkstra com fila de prioridades no lugar de algoritmos com suporte a custos negativos no método \textit{Successive Shortest Path} (SSP).
+A não negatividade dos custos reduzidos corresponde às condições de Folga Complementar de Karush-Kuhn-Tucker (KKT). Mantendo os potenciais atualizados ao longo das iterações, o que permite o uso do algoritmo de Dijkstra com fila de prioridades no lugar de algoritmos com suporte a custos negativos no método \textit{Successive Shortest Path} (SSP).
 
 \subsection{O Algoritmo Network Simplex}
 

@@ -3,10 +3,10 @@
 % =========================================================================
 \section{Conclusões}\label{sec:conclusoes}
 
-Os resultados obtidos demonstram o cumprimento integral dos objetivos do plano de trabalho, articulando teoria matemática, engenharia de software em C++23 e validação experimental:
+Apresentamos nesta seção as atividades realizadas de forma resumida e os resultados obtidos.
 
 \begin{enumerate}[leftmargin=1.5em, itemsep=0.2em, topsep=0.2em, parsep=0em]
-    \item \textbf{Fundamentação Teórica:} Demonstração formal dos teoremas centrais da teoria de fluxos: Fluxo Máximo e Corte Mínimo, Integralidade de Ford-Fulkerson, Decomposição de Fluxo, Teorema de Menger (arcos e vértices), Teorema de König e as Quatro Dualidades em grafos bipartidos. No domínio de custo mínimo: condição de otimalidade por ciclos negativos de Klein, equivalência dos custos reduzidos sob potenciais nodais, complementaridade de folgas KKT e Total Unimodularidade da matriz de incidência;
+    \item \textbf{Fundamentação Teórica:} Estudo da demonstração dos teoremas centrais da teoria de fluxos: Fluxo Máximo e Corte Mínimo, Integralidade de Ford-Fulkerson, Decomposição de Fluxo, Teorema de Menger (arcos e vértices), e Teorema de König. Quanto a fluxos de custo mínimo: condição de otimalidade por ciclos negativos de Klein, equivalência dos custos reduzidos sob potenciais, complementaridade de folgas KKT e Total Unimodularidade da matriz de incidência;
 
     \item \textbf{Arquitetura em C++23:} Desenvolvimento de classes organizadas em duas famílias polimórficas com representação de adjacência contígua e reversão em $\mathcal{O}(1)$:
     \begin{itemize}[leftmargin=1.5em, itemsep=0.1em, topsep=0.1em, parsep=0em]
@@ -16,7 +16,7 @@ Os resultados obtidos demonstram o cumprimento integral dos objetivos do plano d
 
     \item \textbf{Reduções Combinatórias e Aplicações:} Resolução de problemas clássicos (\textit{Maximum Bipartite Matching}, \textit{Minimum Vertex Cover}, \textit{Maximum Independent Set}, caminhos disjuntos e desconexão de redes) e implementação de \textbf{Segmentação Interativa de Imagens} baseada em corte mínimo via corte de grafos (\textit{Graph Cuts});
 
-    \item \textbf{Avaliação Experimental e Síntese de Desempenho:} Avaliação sistemática sobre instâncias canônicas (DIMACS Washington, Genrmf e Netgen) e sintéticas sob isolamento estrito de CPU, com validação cruzada atestando 100\% de concordância nas soluções ótimas ($f^*$ e $z^*$). Os ensaios comprovaram a superioridade prática do algoritmo de Dinic e do Push-Relabel com heurística de lacuna (\textit{Gap Heuristic}) em redes de grande escala (aceleração de até duas ordens de magnitude frente aos aumentos clássicos), bem como a eficiência do \textit{Network Simplex} e dos potenciais nodais no \textit{Successive Shortest Path} frente ao cancelamento de ciclos negativos.
+    \item \textbf{Avaliação Experimental:} Avaliação em instâncias canônicas (DIMACS Washington, Genrmf e Netgen) e sintéticas. Os experimentos apontam para performance prática melhor do algoritmo de Dinic e do Push-Relabel com heurística de lacuna (\textit{Gap Heuristic}) em redes de grande escala (aceleração de até duas ordens de magnitude frente aos aumentos clássicos), bem como a eficiência do \textit{Network Simplex} e dos potenciais no \textit{Successive Shortest Path} frente ao cancelamento de ciclos negativos.
 \end{enumerate}
 
 Como trabalhos futuros, destacam-se a avaliação empírica sobre instâncias esparsas massivas, a análise de diferentes regras de pivoteamento no \textit{Network Simplex} (como \textit{Candidate List Pricing}) e a preparação de artigo científico com a síntese dos resultados.
