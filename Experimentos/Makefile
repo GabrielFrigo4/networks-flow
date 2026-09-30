@@ -16,7 +16,7 @@ IMPL      = ../Implementações
 MAX_RUNNER = drivers/max_flow_runner
 MIN_RUNNER = drivers/min_cost_runner
 
-.PHONY: all deps drivers generate dimacs run bench tables bench-tables sync-tables plots bench-plots sync-plots format clean clean-results
+.PHONY: all deps drivers generate dimacs run bench bench-smoke tables bench-tables sync-tables sync-csv plots bench-plots sync-plots format clean clean-results
 
 all: drivers
 	printf "%s\n" "Drivers de benchmark compilados."
@@ -74,6 +74,13 @@ run: drivers
 
 bench: run
 
+bench-smoke: drivers
+	printf "%s\n" "Smoke-test do pipeline de benchmarks (instâncias mínimas)..."
+	mkdir -p results
+	$(MAX_RUNNER) instances/test_small.max --repeats 1 --timeout 30
+	$(MIN_RUNNER) instances/test_small.min --repeats 1 --timeout 30
+	printf "%s\n" "Smoke-test concluído: ambos os runners executaram corretamente."
+
 tables:
 	printf "%s\n" "Gerando tabelas LaTeX..."
 	python3 scripts/generate_tables.py
@@ -87,6 +94,13 @@ sync-tables:
 	cp -f results/table_max_flow.tex ../LaTeX/tabelas/table_max_flow.tex
 	cp -f results/table_min_cost.tex ../LaTeX/tabelas/table_min_cost.tex
 	printf "%s\n" "Tabelas copiadas para LaTeX/tabelas/"
+
+sync-csv:
+	printf "%s\n" "Sincronizando CSVs de resultados para LaTeX/tabelas/..."
+	mkdir -p ../LaTeX/tabelas
+	cp -f results/max_flow_results.csv ../LaTeX/tabelas/data_max_flow.csv 2> "/dev/null" || true
+	cp -f results/min_cost_results.csv ../LaTeX/tabelas/data_min_cost.csv 2> "/dev/null" || true
+	printf "%s\n" "CSVs sincronizados."
 
 plots:
 	printf "%s\n" "Gerando gráficos..."

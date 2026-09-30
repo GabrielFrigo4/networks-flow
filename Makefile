@@ -7,7 +7,7 @@ MAKEFLAGS += --no-print-directory -s
 # Makefile: Network Flow Research Suite
 # ----------------------------------------------------------------
 
-.PHONY: help all latex book relatorio ic monolito apps impl exp dimacs bench bench-tables bench-plots bench-artifacts format test setup clean clean-results sync-code
+.PHONY: help all latex book relatorio ic monolito apps impl exp dimacs bench bench-smoke bench-tables bench-plots bench-artifacts format test setup clean clean-results sync-code
 
 all: help
 
@@ -15,33 +15,34 @@ all: help
 ### HELP & DOCUMENTATION
 ### ================================
 help:
-	cmd() { printf "    \033[36mmake %-20s\033[0m %s\n" "$$1" "$$2"; }; \
+	cmd() { printf "    \033[36mmake %-22s\033[0m %s\n" "$$1" "$$2"; }; \
 	sec() { printf "\n  \033[1;33m%s\033[0m\n" "$$1"; }; \
-	sub() { printf "  \033[1;34m  ── %s ──\033[0m\n" "$$1"; }; \
 	printf "\n  \033[1;37mNetwork Flow — Suíte de Pesquisa & Implementações em Grafos\033[0m\n"; \
 	printf "  ============================================================\n"; \
-	sec "Fluxos de Compilação:"; \
-	cmd "latex"          "Compila todos os documentos da suíte LaTeX"; \
-	cmd "book"           "Compila especificamente a monografia do livro"; \
-	cmd "relatorio"      "Compila o relatório formal da UFABC (relatorio.pdf)"; \
-	cmd "ic"             "Compila o texto da IC com leitura limpa (ic.pdf)"; \
-	cmd "monolito"       "Gera e compila o monólito para Overleaf (monolito.pdf)"; \
-	cmd "apps"           "Compila e executa as aplicações reais de fluxo"; \
-	cmd "impl"           "Compila a biblioteca de algoritmos e problemas"; \
-	cmd "exp"            "Compila e executa os benchmarks e experimentos"; \
-	cmd "dimacs"         "Baixa os geradores oficiais e cria instâncias canônicas"; \
-	cmd "bench"          "Executa a pipeline completa de benchmarks"; \
-	cmd "bench-tables"   "Gera tabelas LaTeX com resultados dos benchmarks"; \
-	cmd "bench-plots"    "Gera gráficos comparativos dos benchmarks"; \
-	cmd "bench-artifacts" "Gera tabelas (completas+compactas) e gráficos dos CSVs canônicos"; \
+	sec "Compilação:"; \
+	cmd "latex"            "Compila todos os documentos da suíte LaTeX"; \
+	cmd "book"             "Compila especificamente a monografia do livro"; \
+	cmd "relatorio"        "Compila o relatório formal da UFABC (relatorio.pdf)"; \
+	cmd "ic"               "Compila o texto da IC com leitura limpa (ic.pdf)"; \
+	cmd "monolito"         "Gera e compila o monólito para Overleaf (monolito.pdf)"; \
+	cmd "apps"             "Compila e executa as aplicações reais de fluxo"; \
+	cmd "impl"             "Valida a sintaxe dos headers de algoritmos (C++23)"; \
+	cmd "exp"              "Compila os drivers de benchmark"; \
+	cmd "dimacs"           "Baixa geradores e cria instâncias DIMACS"; \
+	sec "Pipeline de Benchmarks:"; \
+	cmd "bench-smoke"      "Smoke-test: 1 instância .max e 1 .min (rápido)"; \
+	cmd "bench"            "Roda todos os benchmarks e salva CSVs em Experimentos/results/"; \
+	cmd "bench-tables"     "Gera tabelas LaTeX a partir dos CSVs de results/"; \
+	cmd "bench-plots"      "Gera gráficos a partir dos CSVs de results/"; \
+	cmd "bench-artifacts"  "Sincroniza CSVs para LaTeX e gera tabelas+gráficos finais"; \
 	sec "Qualidade & Sincronização:"; \
-	cmd "test"           "Executa a suíte de testes de algoritmos e aplicações"; \
-	cmd "format"         "Formata todos os códigos C++ (.hpp/.cpp) com clang-format"; \
-	cmd "sync-code"      "Sincroniza algoritmos das Implementações com o LaTeX"; \
-	cmd "setup"          "Configura os githooks e permissões de execução"; \
+	cmd "test"             "Executa a suíte de testes de algoritmos e aplicações"; \
+	cmd "format"           "Formata todos os códigos C++ (.hpp/.cpp) com clang-format"; \
+	cmd "sync-code"        "Sincroniza algoritmos das Implementações com o LaTeX"; \
+	cmd "setup"            "Configura os githooks e permissões de execução"; \
 	sec "Limpeza:"; \
-	cmd "clean"          "Limpa artefatos temporários em todos os submódulos"; \
-	cmd "clean-results"  "Remove resultados, tabelas e gráficos gerados pelos benchmarks"; \
+	cmd "clean"            "Limpa artefatos temporários em todos os submódulos"; \
+	cmd "clean-results"    "Remove resultados, tabelas e gráficos de benchmarks"; \
 	echo ""
 
 format:
@@ -87,6 +88,9 @@ dimacs:
 bench: exp
 	$(MAKE) -C Experimentos run
 
+bench-smoke: exp
+	$(MAKE) -C Experimentos bench-smoke
+
 bench-tables:
 	$(MAKE) -C Experimentos tables
 
@@ -94,6 +98,7 @@ bench-plots:
 	$(MAKE) -C Experimentos plots
 
 bench-artifacts:
+	$(MAKE) -C Experimentos sync-csv
 	python3 Scripts/generate_bench_artifacts.py
 
 test:

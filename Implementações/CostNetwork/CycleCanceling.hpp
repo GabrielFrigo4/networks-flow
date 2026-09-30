@@ -96,6 +96,7 @@ private:
 		std::fill(distance.begin(), distance.end(), 0);
 		std::fill(parent_edge.begin(), parent_edge.end(), MAX);
 
+		cycle_node = MAX;
 		for (Size iteration = 0; iteration < size; ++iteration)
 		{
 			cycle_node = MAX;
@@ -111,35 +112,42 @@ private:
 				{
 					distance[v] = distance[u] + edges[edge_id].cost;
 					parent_edge[v] = edge_id;
-					cycle_node = v;
+					if (iteration == size - 1)
+						cycle_node = v;
 				}
 			}
 		}
-		return cycle_node != MAX;
+
+		if (cycle_node == MAX)
+			return false;
+
+		for (Size i = 0; i < size; ++i)
+		{
+			if (parent_edge[cycle_node] == MAX)
+				return false;
+			cycle_node = edges[parent_edge[cycle_node]].from;
+		}
+		return true;
 	}
 
 	void cancel_cycle()
 	{
-		Size node = cycle_node;
-		for (Size i = 0; i < size; ++i)
-			node = edges[parent_edge[node]].from;
-
 		Long bottleneck = INF;
-		Size current = node;
+		Size current = cycle_node;
 		do
 		{
 			const Size edge_id = parent_edge[current];
 			bottleneck = std::min(bottleneck, get_residual_capacity(edge_id));
 			current = edges[edge_id].from;
-		} while (current != node);
+		} while (current != cycle_node);
 
-		current = node;
+		current = cycle_node;
 		do
 		{
 			const Size edge_id = parent_edge[current];
 			push_flow(edge_id, bottleneck);
 			current = edges[edge_id].from;
-		} while (current != node);
+		} while (current != cycle_node);
 	}
 };
 
