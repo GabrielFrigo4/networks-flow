@@ -14,70 +14,244 @@
 \endhead
 \bottomrule
 \endfoot
-genrmf\_long.max & FordFulkerson & 1024 & 4080 & 35123 & 974.17 & OK \\
-genrmf\_long.max & EdmondsKarp & 1024 & 4080 & 35123 & 5.92 & OK \\
-genrmf\_long.max & Dinic & 1024 & 4080 & 35123 & \textbf{1.90} & OK \\
-genrmf\_long.max & PushRelabel & 1024 & 4080 & 35123 & 116.37 & OK \\
-genrmf\_long.max & PushRelabelImproved & 1024 & 4080 & 35123 & 4.00 & OK \\
+genrmf\_cube\_10.max & FordFulkerson & 1000 & 4500 & 201395 & 6714.96 & OK \\
+genrmf\_cube\_10.max & EdmondsKarp & 1000 & 4500 & 201395 & 8.14 & OK \\
+genrmf\_cube\_10.max & Dinic & 1000 & 4500 & 201395 & 2.20 & OK \\
+genrmf\_cube\_10.max & PushRelabel & 1000 & 4500 & 201395 & 118.46 & OK \\
+genrmf\_cube\_10.max & PushRelabelImproved & 1000 & 4500 & 201395 & \textbf{2.08} & OK \\
 \midrule
-genrmf\_medium.max & FordFulkerson & 1024 & 4544 & 133050 & 4666.11 & OK \\
-genrmf\_medium.max & EdmondsKarp & 1024 & 4544 & 133050 & 7.44 & OK \\
-genrmf\_medium.max & Dinic & 1024 & 4544 & 133050 & 2.80 & OK \\
-genrmf\_medium.max & PushRelabel & 1024 & 4544 & 133050 & 2.56 & OK \\
-genrmf\_medium.max & PushRelabelImproved & 1024 & 4544 & 133050 & \textbf{2.12} & OK \\
+genrmf\_cube\_16.max & FordFulkerson & 4096 & 19200 & -1 & --- & TLE \\
+genrmf\_cube\_16.max & EdmondsKarp & 4096 & 19200 & 517005 & 155.71 & OK \\
+genrmf\_cube\_16.max & Dinic & 4096 & 19200 & 517005 & 15.94 & OK \\
+genrmf\_cube\_16.max & PushRelabel & 4096 & 19200 & 517005 & 2456.59 & OK \\
+genrmf\_cube\_16.max & PushRelabelImproved & 4096 & 19200 & 517005 & \textbf{11.45} & OK \\
 \midrule
-genrmf\_small.max & FordFulkerson & 256 & 1008 & 37341 & 100.33 & OK \\
-genrmf\_small.max & EdmondsKarp & 256 & 1008 & 37341 & 0.51 & OK \\
-genrmf\_small.max & Dinic & 256 & 1008 & 37341 & 0.36 & OK \\
-genrmf\_small.max & PushRelabel & 256 & 1008 & 37341 & 7.20 & OK \\
-genrmf\_small.max & PushRelabelImproved & 256 & 1008 & 37341 & \textbf{0.34} & OK \\
+genrmf\_deep\_32.max & FordFulkerson & 1152 & 4956 & 76978 & 2922.27 & OK \\
+genrmf\_deep\_32.max & EdmondsKarp & 1152 & 4956 & 76978 & 8.34 & OK \\
+genrmf\_deep\_32.max & Dinic & 1152 & 4956 & 76978 & \textbf{1.97} & OK \\
+genrmf\_deep\_32.max & PushRelabel & 1152 & 4956 & 76978 & 2.55 & OK \\
+genrmf\_deep\_32.max & PushRelabelImproved & 1152 & 4956 & 76978 & 3.19 & OK \\
 \midrule
-genrmf\_wide.max & FordFulkerson & 1024 & 4608 & 515238 & 14443.00 & OK \\
-genrmf\_wide.max & EdmondsKarp & 1024 & 4608 & 515238 & 11.33 & OK \\
-genrmf\_wide.max & Dinic & 1024 & 4608 & 515238 & 4.26 & OK \\
-genrmf\_wide.max & PushRelabel & 1024 & 4608 & 515238 & 3.30 & OK \\
-genrmf\_wide.max & PushRelabelImproved & 1024 & 4608 & 515238 & \textbf{2.82} & OK \\
+genrmf\_deep\_64.max & FordFulkerson & 2304 & 9948 & 76978 & 6508.36 & OK \\
+genrmf\_deep\_64.max & EdmondsKarp & 2304 & 9948 & 76978 & 31.54 & OK \\
+genrmf\_deep\_64.max & Dinic & 2304 & 9948 & 76978 & \textbf{5.00} & OK \\
+genrmf\_deep\_64.max & PushRelabel & 2304 & 9948 & 76978 & 8.76 & OK \\
+genrmf\_deep\_64.max & PushRelabelImproved & 2304 & 9948 & 76978 & 7.08 & OK \\
 \midrule
-wash\_line\_100.max & FordFulkerson & 10002 & 39396 & -1 & --- & TLE \\
-wash\_line\_100.max & EdmondsKarp & 10002 & 39396 & 158751535 & 5117.77 & OK \\
-wash\_line\_100.max & Dinic & 10002 & 39396 & 158751535 & 51.42 & OK \\
-wash\_line\_100.max & PushRelabel & 10002 & 39396 & 158751535 & 18952.10 & OK \\
-wash\_line\_100.max & PushRelabelImproved & 10002 & 39396 & 158751535 & \textbf{42.65} & OK \\
+genrmf\_huge.max & FordFulkerson & 4096 & 18368 & -1 & --- & TLE \\
+genrmf\_huge.max & EdmondsKarp & 4096 & 18368 & 134538 & 106.34 & OK \\
+genrmf\_huge.max & Dinic & 4096 & 18368 & 134538 & \textbf{11.03} & OK \\
+genrmf\_huge.max & PushRelabel & 4096 & 18368 & 134538 & 2260.78 & OK \\
+genrmf\_huge.max & PushRelabelImproved & 4096 & 18368 & 134538 & 17.46 & OK \\
 \midrule
-wash\_line\_50.max & FordFulkerson & 2502 & 9714 & -1 & --- & TLE \\
-wash\_line\_50.max & EdmondsKarp & 2502 & 9714 & 76861360 & 223.37 & OK \\
-wash\_line\_50.max & Dinic & 2502 & 9714 & 76861360 & 6.53 & OK \\
-wash\_line\_50.max & PushRelabel & 2502 & 9714 & 76861360 & 932.25 & OK \\
-wash\_line\_50.max & PushRelabelImproved & 2502 & 9714 & 76861360 & \textbf{5.97} & OK \\
+genrmf\_long.max & FordFulkerson & 1024 & 4080 & 34045 & 985.99 & OK \\
+genrmf\_long.max & EdmondsKarp & 1024 & 4080 & 34045 & 5.07 & OK \\
+genrmf\_long.max & Dinic & 1024 & 4080 & 34045 & \textbf{1.52} & OK \\
+genrmf\_long.max & PushRelabel & 1024 & 4080 & 34045 & 2.95 & OK \\
+genrmf\_long.max & PushRelabelImproved & 1024 & 4080 & 34045 & 2.14 & OK \\
 \midrule
-wash\_mesh\_16.max & FordFulkerson & 258 & 752 & 15933 & 29.71 & OK \\
-wash\_mesh\_16.max & EdmondsKarp & 258 & 752 & 15933 & 2.48 & OK \\
-wash\_mesh\_16.max & Dinic & 258 & 752 & 15933 & \textbf{0.40} & OK \\
-wash\_mesh\_16.max & PushRelabel & 258 & 752 & 15933 & 0.61 & OK \\
-wash\_mesh\_16.max & PushRelabelImproved & 258 & 752 & 15933 & 0.58 & OK \\
+genrmf\_medium.max & FordFulkerson & 1024 & 4544 & 129576 & 4671.22 & OK \\
+genrmf\_medium.max & EdmondsKarp & 1024 & 4544 & 129576 & 7.12 & OK \\
+genrmf\_medium.max & Dinic & 1024 & 4544 & 129576 & \textbf{1.85} & OK \\
+genrmf\_medium.max & PushRelabel & 1024 & 4544 & 129576 & 122.09 & OK \\
+genrmf\_medium.max & PushRelabelImproved & 1024 & 4544 & 129576 & 2.17 & OK \\
 \midrule
-wash\_mesh\_32.max & FordFulkerson & 1026 & 3040 & 28336 & 500.65 & OK \\
-wash\_mesh\_32.max & EdmondsKarp & 1026 & 3040 & 28336 & 30.21 & OK \\
-wash\_mesh\_32.max & Dinic & 1026 & 3040 & 28336 & \textbf{2.08} & OK \\
-wash\_mesh\_32.max & PushRelabel & 1026 & 3040 & 28336 & 44.20 & OK \\
-wash\_mesh\_32.max & PushRelabelImproved & 1026 & 3040 & 28336 & 2.57 & OK \\
+genrmf\_small.max & FordFulkerson & 256 & 1008 & 33166 & 69.94 & OK \\
+genrmf\_small.max & EdmondsKarp & 256 & 1008 & 33166 & 0.58 & OK \\
+genrmf\_small.max & Dinic & 256 & 1008 & 33166 & \textbf{0.40} & OK \\
+genrmf\_small.max & PushRelabel & 256 & 1008 & 33166 & 7.21 & OK \\
+genrmf\_small.max & PushRelabelImproved & 256 & 1008 & 33166 & 0.42 & OK \\
 \midrule
-wash\_rlg\_16.max & FordFulkerson & 258 & 752 & 11058 & 50.64 & OK \\
-wash\_rlg\_16.max & EdmondsKarp & 258 & 752 & 11058 & 1.97 & OK \\
-wash\_rlg\_16.max & Dinic & 258 & 752 & 11058 & \textbf{0.31} & OK \\
-wash\_rlg\_16.max & PushRelabel & 258 & 752 & 11058 & 4.58 & OK \\
-wash\_rlg\_16.max & PushRelabelImproved & 258 & 752 & 11058 & 0.88 & OK \\
+genrmf\_wide.max & FordFulkerson & 1024 & 4608 & 517266 & 14381.70 & OK \\
+genrmf\_wide.max & EdmondsKarp & 1024 & 4608 & 517266 & 10.47 & OK \\
+genrmf\_wide.max & Dinic & 1024 & 4608 & 517266 & 3.32 & OK \\
+genrmf\_wide.max & PushRelabel & 1024 & 4608 & 517266 & 2.50 & OK \\
+genrmf\_wide.max & PushRelabelImproved & 1024 & 4608 & 517266 & \textbf{2.50} & OK \\
 \midrule
-wash\_rlg\_32.max & FordFulkerson & 1026 & 3040 & 22224 & 642.72 & OK \\
-wash\_rlg\_32.max & EdmondsKarp & 1026 & 3040 & 22224 & 34.98 & OK \\
-wash\_rlg\_32.max & Dinic & 1026 & 3040 & 22224 & \textbf{2.16} & OK \\
-wash\_rlg\_32.max & PushRelabel & 1026 & 3040 & 22224 & 41.03 & OK \\
-wash\_rlg\_32.max & PushRelabelImproved & 1026 & 3040 & 22224 & 2.82 & OK \\
+genrmf\_wide\_8.max & FordFulkerson & 3200 & 14960 & -1 & --- & TLE \\
+genrmf\_wide\_8.max & EdmondsKarp & 3200 & 14960 & 807429 & 113.12 & OK \\
+genrmf\_wide\_8.max & Dinic & 3200 & 14960 & 807429 & 14.06 & OK \\
+genrmf\_wide\_8.max & PushRelabel & 3200 & 14960 & 807429 & 1399.60 & OK \\
+genrmf\_wide\_8.max & PushRelabelImproved & 3200 & 14960 & 807429 & \textbf{10.12} & OK \\
 \midrule
-wash\_rlg\_64.max & FordFulkerson & 4098 & 12224 & 44336 & 6378.56 & OK \\
-wash\_rlg\_64.max & EdmondsKarp & 4098 & 12224 & 44336 & 662.42 & OK \\
-wash\_rlg\_64.max & Dinic & 4098 & 12224 & 44336 & \textbf{16.30} & OK \\
-wash\_rlg\_64.max & PushRelabel & 4098 & 12224 & 44336 & 1249.81 & OK \\
-wash\_rlg\_64.max & PushRelabelImproved & 4098 & 12224 & 44336 & 16.70 & OK \\
+wash\_dinic\_bad\_250.max & FordFulkerson & 250 & 497 & 251 & 0.51 & OK \\
+wash\_dinic\_bad\_250.max & EdmondsKarp & 250 & 497 & 251 & 0.67 & OK \\
+wash\_dinic\_bad\_250.max & Dinic & 250 & 497 & 251 & 2.38 & OK \\
+wash\_dinic\_bad\_250.max & PushRelabel & 250 & 497 & 251 & \textbf{0.06} & OK \\
+wash\_dinic\_bad\_250.max & PushRelabelImproved & 250 & 497 & 251 & 0.06 & OK \\
+\midrule
+wash\_dinic\_bad\_500.max & FordFulkerson & 500 & 997 & 501 & 1.65 & OK \\
+wash\_dinic\_bad\_500.max & EdmondsKarp & 500 & 997 & 501 & 2.35 & OK \\
+wash\_dinic\_bad\_500.max & Dinic & 500 & 997 & 501 & 8.61 & OK \\
+wash\_dinic\_bad\_500.max & PushRelabel & 500 & 997 & 501 & \textbf{0.07} & OK \\
+wash\_dinic\_bad\_500.max & PushRelabelImproved & 500 & 997 & 501 & 0.09 & OK \\
+\midrule
+wash\_exp\_line\_10.max & FordFulkerson & 102 & 336 & 4852151 & 5.41 & OK \\
+wash\_exp\_line\_10.max & EdmondsKarp & 102 & 336 & 4852151 & 0.41 & OK \\
+wash\_exp\_line\_10.max & Dinic & 102 & 336 & 4852151 & 0.20 & OK \\
+wash\_exp\_line\_10.max & PushRelabel & 102 & 336 & 4852151 & \textbf{0.11} & OK \\
+wash\_exp\_line\_10.max & PushRelabelImproved & 102 & 336 & 4852151 & 0.16 & OK \\
+\midrule
+wash\_exp\_line\_20.max & FordFulkerson & 402 & 1492 & -1 & --- & TLE \\
+wash\_exp\_line\_20.max & EdmondsKarp & 402 & 1492 & 10476359 & 7.43 & OK \\
+wash\_exp\_line\_20.max & Dinic & 402 & 1492 & 10476359 & 1.12 & OK \\
+wash\_exp\_line\_20.max & PushRelabel & 402 & 1492 & 10476359 & 0.89 & OK \\
+wash\_exp\_line\_20.max & PushRelabelImproved & 402 & 1492 & 10476359 & \textbf{0.66} & OK \\
+\midrule
+wash\_exp\_line\_30.max & FordFulkerson & 902 & 3413 & -1 & --- & TLE \\
+wash\_exp\_line\_30.max & EdmondsKarp & 902 & 3413 & 15824725 & 48.10 & OK \\
+wash\_exp\_line\_30.max & Dinic & 902 & 3413 & 15824725 & 3.37 & OK \\
+wash\_exp\_line\_30.max & PushRelabel & 902 & 3413 & 15824725 & 111.70 & OK \\
+wash\_exp\_line\_30.max & PushRelabelImproved & 902 & 3413 & 15824725 & \textbf{2.69} & OK \\
+\midrule
+wash\_exp\_line\_50.max & FordFulkerson & 2502 & 9689 & -1 & --- & TLE \\
+wash\_exp\_line\_50.max & EdmondsKarp & 2502 & 9689 & 26429942 & 462.68 & OK \\
+wash\_exp\_line\_50.max & Dinic & 2502 & 9689 & 26429942 & 13.58 & OK \\
+wash\_exp\_line\_50.max & PushRelabel & 2502 & 9689 & 26429942 & 9.23 & OK \\
+wash\_exp\_line\_50.max & PushRelabelImproved & 2502 & 9689 & 26429942 & \textbf{7.53} & OK \\
+\midrule
+wash\_gold\_bad\_500.max & FordFulkerson & 1503 & 2001 & 500 & 6.28 & OK \\
+wash\_gold\_bad\_500.max & EdmondsKarp & 1503 & 2001 & 500 & 14.28 & OK \\
+wash\_gold\_bad\_500.max & Dinic & 1503 & 2001 & 500 & 4.43 & OK \\
+wash\_gold\_bad\_500.max & PushRelabel & 1503 & 2001 & 500 & \textbf{4.37} & OK \\
+wash\_gold\_bad\_500.max & PushRelabelImproved & 1503 & 2001 & 500 & 22.68 & OK \\
+\midrule
+wash\_line\_10.max & FordFulkerson & 102 & 338 & 16952533 & 8.34 & OK \\
+wash\_line\_10.max & EdmondsKarp & 102 & 338 & 16952533 & 0.40 & OK \\
+wash\_line\_10.max & Dinic & 102 & 338 & 16952533 & 0.14 & OK \\
+wash\_line\_10.max & PushRelabel & 102 & 338 & 16952533 & \textbf{0.13} & OK \\
+wash\_line\_10.max & PushRelabelImproved & 102 & 338 & 16952533 & 0.14 & OK \\
+\midrule
+wash\_line\_100.max & FordFulkerson & 10002 & 39403 & -1 & --- & TLE \\
+wash\_line\_100.max & EdmondsKarp & 10002 & 39403 & 154586273 & 4481.21 & OK \\
+wash\_line\_100.max & Dinic & 10002 & 39403 & 154586273 & 53.23 & OK \\
+wash\_line\_100.max & PushRelabel & 10002 & 39403 & -1 & --- & TLE \\
+wash\_line\_100.max & PushRelabelImproved & 10002 & 39403 & 154586273 & \textbf{52.75} & OK \\
+\midrule
+wash\_line\_20.max & FordFulkerson & 402 & 1469 & -1 & --- & TLE \\
+wash\_line\_20.max & EdmondsKarp & 402 & 1469 & 24785523 & 3.51 & OK \\
+wash\_line\_20.max & Dinic & 402 & 1469 & 24785523 & \textbf{0.55} & OK \\
+wash\_line\_20.max & PushRelabel & 402 & 1469 & 24785523 & 20.20 & OK \\
+wash\_line\_20.max & PushRelabelImproved & 402 & 1469 & 24785523 & 0.71 & OK \\
+\midrule
+wash\_line\_30.max & FordFulkerson & 902 & 3416 & -1 & --- & TLE \\
+wash\_line\_30.max & EdmondsKarp & 902 & 3416 & 45748649 & 28.87 & OK \\
+wash\_line\_30.max & Dinic & 902 & 3416 & 45748649 & 1.75 & OK \\
+wash\_line\_30.max & PushRelabel & 902 & 3416 & 45748649 & 107.92 & OK \\
+wash\_line\_30.max & PushRelabelImproved & 902 & 3416 & 45748649 & \textbf{1.57} & OK \\
+\midrule
+wash\_line\_50.max & FordFulkerson & 2502 & 9688 & -1 & --- & TLE \\
+wash\_line\_50.max & EdmondsKarp & 2502 & 9688 & 67817792 & 189.99 & OK \\
+wash\_line\_50.max & Dinic & 2502 & 9688 & 67817792 & \textbf{5.22} & OK \\
+wash\_line\_50.max & PushRelabel & 2502 & 9688 & 67817792 & 935.61 & OK \\
+wash\_line\_50.max & PushRelabelImproved & 2502 & 9688 & 67817792 & 5.35 & OK \\
+\midrule
+wash\_line\_75.max & FordFulkerson & 5627 & 22073 & -1 & --- & TLE \\
+wash\_line\_75.max & EdmondsKarp & 5627 & 22073 & 111578340 & 1220.83 & OK \\
+wash\_line\_75.max & Dinic & 5627 & 22073 & 111578340 & \textbf{20.52} & OK \\
+wash\_line\_75.max & PushRelabel & 5627 & 22073 & 111578340 & 5380.23 & OK \\
+wash\_line\_75.max & PushRelabelImproved & 5627 & 22073 & 111578340 & 20.63 & OK \\
+\midrule
+wash\_match\_1000.max & FordFulkerson & 2002 & 12000 & 1000 & 8.78 & OK \\
+wash\_match\_1000.max & EdmondsKarp & 2002 & 12000 & 1000 & 33.22 & OK \\
+wash\_match\_1000.max & Dinic & 2002 & 12000 & 1000 & 1.48 & OK \\
+wash\_match\_1000.max & PushRelabel & 2002 & 12000 & 1000 & 0.94 & OK \\
+wash\_match\_1000.max & PushRelabelImproved & 2002 & 12000 & 1000 & \textbf{0.77} & OK \\
+\midrule
+wash\_mesh\_128.max & FordFulkerson & 16386 & 49024 & -1 & --- & TLE \\
+wash\_mesh\_128.max & EdmondsKarp & 16386 & 49024 & 115039 & 12428.10 & OK \\
+wash\_mesh\_128.max & Dinic & 16386 & 49024 & 115039 & 442.72 & OK \\
+wash\_mesh\_128.max & PushRelabel & 16386 & 49024 & -1 & --- & TLE \\
+wash\_mesh\_128.max & PushRelabelImproved & 16386 & 49024 & 115039 & \textbf{153.96} & OK \\
+\midrule
+wash\_mesh\_16.max & FordFulkerson & 258 & 752 & 15283 & 29.68 & OK \\
+wash\_mesh\_16.max & EdmondsKarp & 258 & 752 & 15283 & 2.93 & OK \\
+wash\_mesh\_16.max & Dinic & 258 & 752 & 15283 & \textbf{0.44} & OK \\
+wash\_mesh\_16.max & PushRelabel & 258 & 752 & 15283 & 0.82 & OK \\
+wash\_mesh\_16.max & PushRelabelImproved & 258 & 752 & 15283 & 0.52 & OK \\
+\midrule
+wash\_mesh\_24.max & FordFulkerson & 578 & 1704 & 20567 & 192.04 & OK \\
+wash\_mesh\_24.max & EdmondsKarp & 578 & 1704 & 20567 & 9.57 & OK \\
+wash\_mesh\_24.max & Dinic & 578 & 1704 & 20567 & \textbf{0.62} & OK \\
+wash\_mesh\_24.max & PushRelabel & 578 & 1704 & 20567 & 7.21 & OK \\
+wash\_mesh\_24.max & PushRelabelImproved & 578 & 1704 & 20567 & 1.27 & OK \\
+\midrule
+wash\_mesh\_32.max & FordFulkerson & 1026 & 3040 & 29282 & 513.59 & OK \\
+wash\_mesh\_32.max & EdmondsKarp & 1026 & 3040 & 29282 & 31.90 & OK \\
+wash\_mesh\_32.max & Dinic & 1026 & 3040 & 29282 & \textbf{2.54} & OK \\
+wash\_mesh\_32.max & PushRelabel & 1026 & 3040 & 29282 & 59.58 & OK \\
+wash\_mesh\_32.max & PushRelabelImproved & 1026 & 3040 & 29282 & 2.61 & OK \\
+\midrule
+wash\_mesh\_48.max & FordFulkerson & 2306 & 6864 & 44507 & 2019.32 & OK \\
+wash\_mesh\_48.max & EdmondsKarp & 2306 & 6864 & 44507 & 171.90 & OK \\
+wash\_mesh\_48.max & Dinic & 2306 & 6864 & 44507 & 11.26 & OK \\
+wash\_mesh\_48.max & PushRelabel & 2306 & 6864 & 44507 & 294.25 & OK \\
+wash\_mesh\_48.max & PushRelabelImproved & 2306 & 6864 & 44507 & \textbf{7.51} & OK \\
+\midrule
+wash\_mesh\_64.max & FordFulkerson & 4098 & 12224 & 55981 & 5136.79 & OK \\
+wash\_mesh\_64.max & EdmondsKarp & 4098 & 12224 & 55981 & 550.84 & OK \\
+wash\_mesh\_64.max & Dinic & 4098 & 12224 & 55981 & 28.71 & OK \\
+wash\_mesh\_64.max & PushRelabel & 4098 & 12224 & 55981 & 482.98 & OK \\
+wash\_mesh\_64.max & PushRelabelImproved & 4098 & 12224 & 55981 & \textbf{15.93} & OK \\
+\midrule
+wash\_mesh\_80.max & FordFulkerson & 6402 & 19120 & 67470 & 10358.60 & OK \\
+wash\_mesh\_80.max & EdmondsKarp & 6402 & 19120 & 67470 & 1312.91 & OK \\
+wash\_mesh\_80.max & Dinic & 6402 & 19120 & 67470 & 32.18 & OK \\
+wash\_mesh\_80.max & PushRelabel & 6402 & 19120 & 67470 & 687.10 & OK \\
+wash\_mesh\_80.max & PushRelabelImproved & 6402 & 19120 & 67470 & \textbf{25.20} & OK \\
+\midrule
+wash\_mesh\_96.max & FordFulkerson & 9218 & 27552 & -1 & --- & TLE \\
+wash\_mesh\_96.max & EdmondsKarp & 9218 & 27552 & 85837 & 3596.41 & OK \\
+wash\_mesh\_96.max & Dinic & 9218 & 27552 & 85837 & 124.65 & OK \\
+wash\_mesh\_96.max & PushRelabel & 9218 & 27552 & 85837 & 6455.83 & OK \\
+wash\_mesh\_96.max & PushRelabelImproved & 9218 & 27552 & 85837 & \textbf{63.51} & OK \\
+\midrule
+wash\_rlg\_128.max & FordFulkerson & 16386 & 49024 & -1 & --- & TLE \\
+wash\_rlg\_128.max & EdmondsKarp & 16386 & 49024 & 95172 & 14454.80 & OK \\
+wash\_rlg\_128.max & Dinic & 16386 & 49024 & 95172 & 286.23 & OK \\
+wash\_rlg\_128.max & PushRelabel & 16386 & 49024 & -1 & --- & TLE \\
+wash\_rlg\_128.max & PushRelabelImproved & 16386 & 49024 & 95172 & \textbf{192.83} & OK \\
+\midrule
+wash\_rlg\_16.max & FordFulkerson & 258 & 752 & 12418 & 69.14 & OK \\
+wash\_rlg\_16.max & EdmondsKarp & 258 & 752 & 12418 & 2.66 & OK \\
+wash\_rlg\_16.max & Dinic & 258 & 752 & 12418 & \textbf{0.30} & OK \\
+wash\_rlg\_16.max & PushRelabel & 258 & 752 & 12418 & 0.63 & OK \\
+wash\_rlg\_16.max & PushRelabelImproved & 258 & 752 & 12418 & 0.39 & OK \\
+\midrule
+wash\_rlg\_24.max & FordFulkerson & 578 & 1704 & 15730 & 254.38 & OK \\
+wash\_rlg\_24.max & EdmondsKarp & 578 & 1704 & 15730 & 9.52 & OK \\
+wash\_rlg\_24.max & Dinic & 578 & 1704 & 15730 & \textbf{0.58} & OK \\
+wash\_rlg\_24.max & PushRelabel & 578 & 1704 & 15730 & 10.18 & OK \\
+wash\_rlg\_24.max & PushRelabelImproved & 578 & 1704 & 15730 & 1.16 & OK \\
+\midrule
+wash\_rlg\_32.max & FordFulkerson & 1026 & 3040 & 25758 & 753.16 & OK \\
+wash\_rlg\_32.max & EdmondsKarp & 1026 & 3040 & 25758 & 39.85 & OK \\
+wash\_rlg\_32.max & Dinic & 1026 & 3040 & 25758 & 3.68 & OK \\
+wash\_rlg\_32.max & PushRelabel & 1026 & 3040 & 25758 & 65.59 & OK \\
+wash\_rlg\_32.max & PushRelabelImproved & 1026 & 3040 & 25758 & \textbf{3.54} & OK \\
+\midrule
+wash\_rlg\_48.max & FordFulkerson & 2306 & 6864 & 36473 & 2606.56 & OK \\
+wash\_rlg\_48.max & EdmondsKarp & 2306 & 6864 & 36473 & 237.67 & OK \\
+wash\_rlg\_48.max & Dinic & 2306 & 6864 & 36473 & 12.55 & OK \\
+wash\_rlg\_48.max & PushRelabel & 2306 & 6864 & 36473 & 304.85 & OK \\
+wash\_rlg\_48.max & PushRelabelImproved & 2306 & 6864 & 36473 & \textbf{10.44} & OK \\
+\midrule
+wash\_rlg\_64.max & FordFulkerson & 4098 & 12224 & 44415 & 6616.14 & OK \\
+wash\_rlg\_64.max & EdmondsKarp & 4098 & 12224 & 44415 & 687.40 & OK \\
+wash\_rlg\_64.max & Dinic & 4098 & 12224 & 44415 & \textbf{18.25} & OK \\
+wash\_rlg\_64.max & PushRelabel & 4098 & 12224 & 44415 & 425.18 & OK \\
+wash\_rlg\_64.max & PushRelabelImproved & 4098 & 12224 & 44415 & 18.65 & OK \\
+\midrule
+wash\_rlg\_80.max & FordFulkerson & 6402 & 19120 & -1 & --- & TLE \\
+wash\_rlg\_80.max & EdmondsKarp & 6402 & 19120 & 56623 & 1676.24 & OK \\
+wash\_rlg\_80.max & Dinic & 6402 & 19120 & 56623 & 36.24 & OK \\
+wash\_rlg\_80.max & PushRelabel & 6402 & 19120 & 56623 & 2294.29 & OK \\
+wash\_rlg\_80.max & PushRelabelImproved & 6402 & 19120 & 56623 & \textbf{35.46} & OK \\
+\midrule
+wash\_rlg\_96.max & FordFulkerson & 9218 & 27552 & -1 & --- & TLE \\
+wash\_rlg\_96.max & EdmondsKarp & 9218 & 27552 & 72000 & 4374.52 & OK \\
+wash\_rlg\_96.max & Dinic & 9218 & 27552 & 72000 & 117.69 & OK \\
+wash\_rlg\_96.max & PushRelabel & 9218 & 27552 & 72000 & 1032.11 & OK \\
+wash\_rlg\_96.max & PushRelabelImproved & 9218 & 27552 & 72000 & \textbf{76.87} & OK \\
 \end{longtable}
 \endgroup
