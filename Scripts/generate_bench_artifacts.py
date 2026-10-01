@@ -25,17 +25,19 @@ MF_CSV = os.path.join(TABELAS_DIR, "data_max_flow.csv")
 MC_CSV = os.path.join(TABELAS_DIR, "data_min_cost.csv")
 
 COMPACT_MF_INSTANCES = [
+    "wash_mesh_16.max",
+    "wash_mesh_64.max",
+    "wash_rlg_16.max",
+    "wash_rlg_64.max",
+    "wash_line_20.max",
+    "wash_line_100.max",
+    "wash_exp_line_20.max",
+    "wash_dinic_bad_500.max",
+    "wash_gold_bad_500.max",
     "genrmf_small.max",
     "genrmf_medium.max",
     "genrmf_wide.max",
-    "genrmf_long.max",
-    "wash_rlg_16.max",
-    "wash_rlg_32.max",
-    "wash_rlg_64.max",
-    "wash_mesh_16.max",
-    "wash_mesh_32.max",
-    "wash_line_50.max",
-    "wash_line_100.max",
+    "genrmf_huge.max",
 ]
 
 COMPACT_MC_INSTANCES = [
