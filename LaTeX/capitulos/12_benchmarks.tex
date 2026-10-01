@@ -23,25 +23,25 @@ O protocolo experimental fundamenta-se nas seguintes diretrizes:
 
 \section{Famílias de Instâncias Padronizadas da Literatura (DIMACS)}\label{sec:bench_instancias}
 
-Para submeter os algoritmos a diferentes desafios estruturais de rede, empregam-se as coleções do \textit{First DIMACS International Algorithm Implementation Challenge} (veja~\cite{Jensen2022, ahuja1993network}):
+Para submeter os algoritmos a diferentes desafios estruturais de rede, a avaliação experimental adota 80 instâncias canônicas padronizadas do \textit{First DIMACS International Algorithm Implementation Challenge} (1990--1991)~\cite{Jensen2022, ahuja1993network}, distribuídas simetricamente entre Fluxo Máximo e Fluxo de Custo Mínimo:
 
 \begin{itemize}
-    \item \textbf{Família DIMACS Max-Flow:}
+    \item \textbf{Família DIMACS Max-Flow (40 instâncias):}
     \begin{itemize}
-        \item \textbf{Washington (RLG e Line):} Redes em malha retangular e redes lineares com gargalos induzidos para forçar caminhos aumentantes longos, desafiando a dependência do método de Ford-Fulkerson em relação às capacidades;
-        \item \textbf{Genrmf e RMF:} Grafos estruturados em grade tridimensional formados por planos bidimensionais interconectados com capacidades aleatórias, onde a fonte reside no primeiro plano e o sumidouro no último. Essa família impõe gargalos de corte mínimo, avaliando o comportamento de métodos de pré-fluxo e caminhos aumentantes em redes com múltiplos cortes estreitos.
+        \item \textbf{Washington Mesh (8 instâncias):} Redes em malha bidimensional plana de dimensão progressiva ($16 \times 16$ a $128 \times 128$) com capacidades aleatórias, avaliando escalabilidade em grafos planares;
+        \item \textbf{Washington RLG (8 instâncias):} Redes de camadas aleatórias (\textit{Random Level Graphs}) com conectividade direcionada por níveis;
+        \item \textbf{Washington Line (6 instâncias):} Cadeias lineares longas com gargalos induzidos para provocar caminhos aumentantes de comprimento $\Omega(|V|)$;
+        \item \textbf{Washington Exp-Line (4 instâncias):} Redes lineares com capacidades variando exponencialmente, projetadas para testar a dependência pseudo-polinomial em relação a $|f^*|$;
+        \item \textbf{Washington Adversariais e Emparelhamento (4 instâncias):} Topologias patológicas construídas especificamente para pior caso de Dinic (\texttt{bad\_dinic}) e de Goldberg (\texttt{bad\_gold}), além de emparelhamentos bipartidos densos (\texttt{wash\_match});
+        \item \textbf{Genrmf (10 instâncias):} Grafos tridimensionais formados por planos bidimensionais interconectados com capacidades aleatórias (\textit{small}, \textit{medium}, \textit{wide}, \textit{long}, \textit{huge}, \textit{cube} e \textit{deep}), onde a fonte reside no primeiro plano e o sumidouro no último, impondo cortes mínimos estreitos.
     \end{itemize}
 
-    \item \textbf{Família DIMACS Min-Cost Flow:}
+    \item \textbf{Família DIMACS Min-Cost Flow (40 instâncias):}
     \begin{itemize}
-        \item \textbf{Netgen:} Gerador para instâncias de transporte e transbordo com capacidades e custos distribuídos uniformemente;
-        \item \textbf{Grid (Toroidal e Planar):} Redes em grade bidimensional com conectividade espacial e custos correlacionados com distâncias euclidianas.
-    \end{itemize}
-
-    \item \textbf{Grafos Sintéticos e Aplicações Reais:}
-    \begin{itemize}
-        \item \textbf{Grafos Aleatórios Erdos-Rényi ($G(n, p)$):} Instâncias esparsas ($|A| \approx 4|V|$) e densas ($|A| \approx 0.1|V|^2$) para validação da sensibilidade à densidade de arestas;
-        \item \textbf{Redes de Segmentação de Imagens:} Grafos derivados da modelagem descrita na Subseção~\ref{sec:segmentacao}, com vizinhanças 4-conectadas e capacidades ponderadas por gradiente de intensidade luminosa.
+        \item \textbf{Netgen (Problemas 01 a 10):} Redes de transporte e transbordo esparsas ($|V| \approx 200 \dots 300$, $|A| \approx 1.500 \dots 6.600$) com oferta e demanda concentradas;
+        \item \textbf{Netgen (Problemas 11 a 20):} Redes com capacidades amplas e fontes distribuídas ($|V| \approx 400 \dots 500$), avaliando a robustez de métodos de cancelamento de ciclos e caminhos mínimos sucessivos;
+        \item \textbf{Netgen (Problemas 21 a 30):} Redes densas com custos uniformemente distribuídos ($|V| \approx 1.000$, $|A| \approx 3.000 \dots 9.000$);
+        \item \textbf{Netgen (Problemas 31 a 40):} Instâncias de grande porte e casos limites da literatura ($|V| \approx 1.500 \dots 3.000$, $|A| \approx 4.000 \dots 35.000$).
     \end{itemize}
 \end{itemize}
 
@@ -87,7 +87,7 @@ A Tabela~\ref{tab:benchmarks} sintetiza o comportamento operacional esperado de 
 \hyperref[ap:push_relabel]{Push-Relabel (FIFO)} & Redes densas com cortes mínimos próximos à fonte & Cadeias longas sem saturação imediata de excessos \\
 \hyperref[ap:push_relabel_improved]{Push-Relabel (Gap)} & Grafos de visão (grid 2D/3D) e instâncias DIMACS RMF & Gargalos com desconexões sucessivas do sumidouro (eliminadas por Gap) \\
 \midrule
-\multicolumn{3}{c}{\bannertext{\hyperref[sec:bench_instancias]{Motores de Fluxo de Custo Mínimo (Coleções DIMACS Netgen e Grid)}}} \\
+\multicolumn{3}{c}{\bannertext{\hyperref[sec:bench_instancias]{Motores de Fluxo de Custo Mínimo (Coleção DIMACS Netgen)}}} \\
 \midrule
 \hyperref[ap:cycle_canceling]{Cycle Canceling} & Redes pequenas com poucos ciclos de custo negativo & Custos residuais elevados com múltiplos ciclos de $-1$ \\
 \hyperref[ap:successive_shortest_dijkstra]{SSP (Dijkstra + $\pi$)} & Redes de transbordo com fluxo total moderado & Redes com fluxos massivos e capacidades unitárias \\
@@ -102,7 +102,7 @@ Os scripts no diretório \code{Experimentos/} automatizam a execução deste pro
 
 \section{Resultados Experimentais: Fluxo Máximo}\label{sec:bench_resultados_maxflow}
 
-A Tabela~\ref{tab:results_maxflow} apresenta os tempos médios de execução (2 repetições, $\bar{t}$ em ms) e o fluxo ótimo $f^*$ obtidos pelos algoritmos de fluxo máximo nas instâncias DIMACS e grafos sintéticos. O menor tempo por instância está destacado em \textbf{negrito}.
+A Tabela~\ref{tab:results_maxflow} apresenta os tempos médios de execução (2 repetições, $\bar{t}$ em ms) e o fluxo ótimo $f^*$ obtidos pelos algoritmos de fluxo máximo nas 40 instâncias canônicas DIMACS (Washington e Genrmf). O menor tempo por instância está destacado em \textbf{negrito}.
 
 \IfFileExists{tabelas/table_max_flow.tex}{
 \input{tabelas/table_max_flow}
@@ -129,7 +129,7 @@ A Tabela~\ref{tab:results_maxflow} apresenta os tempos médios de execução (2 
 
 \section{Resultados Experimentais: Fluxo de Custo Mínimo}\label{sec:bench_resultados_mincost}
 
-A Tabela~\ref{tab:results_mincost} apresenta os resultados para os algoritmos de fluxo de custo mínimo nas instâncias Netgen da suíte DIMACS, reportando o custo ótimo $z^*$.
+A Tabela~\ref{tab:results_mincost} apresenta os resultados para os algoritmos de fluxo de custo mínimo nas 40 instâncias canônicas Netgen da suíte DIMACS, reportando o custo ótimo $z^*$ e o menor tempo por instância em \textbf{negrito}.
 
 \IfFileExists{tabelas/table_min_cost.tex}{
 \input{tabelas/table_min_cost}
