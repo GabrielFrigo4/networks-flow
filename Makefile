@@ -10,8 +10,8 @@ MAKEFLAGS += --no-print-directory -s
 PYTHON = python3
 
 .PHONY: help all \
-        bench-all bench-pipeline bench-latex sync-all check-all \
-        latex book relatorio ic monolito projeto \
+        bench-all bench-pipeline bench-latex bench-publish bench-research sync-all check-all \
+        latex reports book relatorio ic monolito projeto \
         apps impl exp generate dimacs \
         bench bench-smoke bench-tables bench-plots bench-artifacts \
         format format-cpp format-md test setup clean clear clean-results sync-code
@@ -26,24 +26,25 @@ help:
 	sec() { printf "\n  \033[1;33m%s\033[0m\n" "$$1"; }; \
 	printf "\n  \033[1;37mNetwork Flow — Suíte de Pesquisa & Implementações em Grafos\033[0m\n"; \
 	printf "  ============================================================\n"; \
-	sec "Fluxos Completos & Comandos Batch:"; \
-	cmd "bench-all"        "Pipeline completo: exp + bench + tabelas + gráficos + artefatos + monólito"; \
-	cmd "bench-latex"      "Pipeline de benchmark completo + compilação de toda a suíte LaTeX"; \
+	sec "Pipelines de Benchmark & Publicação:"; \
+	cmd "bench-publish"    "Benchmark (80 instâncias) + gera artefatos + compila relatórios (PDFs)"; \
+	cmd "bench-research"   "Pipeline total do zero: DIMACS + benchmark + compila toda a suíte LaTeX"; \
+	cmd "bench-all"        "Benchmark completo + sincronização de tabelas/gráficos (sem compilar PDFs)"; \
 	cmd "sync-all"         "Sincroniza algoritmos C++, gera artefatos e reconstrói o monólito"; \
 	cmd "check-all"        "Valida headers C++23, compilação de drivers, testes e integridade de sync"; \
-	sec "Pipeline Individual de Benchmarks:"; \
-	cmd "bench"            "Executa todos os benchmarks em instâncias reais (salva CSVs em results/)"; \
-	cmd "bench-smoke"      "Smoke-test rápido: 1 instância .max e 1 .min (para depuração rápida)"; \
-	cmd "bench-tables"     "Gera tabelas LaTeX brutas a partir dos CSVs de results/"; \
-	cmd "bench-plots"      "Gera gráficos analíticos a partir dos CSVs de results/"; \
-	cmd "bench-artifacts"  "Gera tabelas finais (completas, compactas, exaustivas) e gráficos para LaTeX"; \
-	sec "Compilação de Documentos LaTeX:"; \
+	sec "Compilação de Relatórios & Livro:"; \
+	cmd "reports"          "Compila os relatórios institucionais (ic.pdf, relatorio.pdf, monolito.pdf)"; \
 	cmd "latex"            "Compila todos os documentos da suíte LaTeX (book, ic, relatorio, monolito)"; \
 	cmd "book"             "Compila exclusivamente a monografia do livro (book.pdf)"; \
 	cmd "relatorio"        "Compila o relatório formal institucional UFABC (relatorio.pdf)"; \
 	cmd "ic"               "Compila o texto da IC com leitura limpa (ic.pdf)"; \
 	cmd "monolito"         "Gera e compila o monólito autocontido para Overleaf (monolito.pdf)"; \
 	cmd "projeto"          "Compila a proposta do projeto de pesquisa (projeto.pdf)"; \
+	sec "Módulos Individuais & Experimentos:"; \
+	cmd "dimacs"           "Gera todas as 80 instâncias canônicas DIMACS (40 MaxFlow + 40 MinCost)"; \
+	cmd "bench"            "Executa todos os benchmarks nas 80 instâncias (salva CSVs em results/)"; \
+	cmd "bench-smoke"      "Smoke-test rápido: 1 instância .max e 1 .min (para depuração rápida)"; \
+	cmd "bench-artifacts"  "Gera tabelas finais (compactas, exaustivas) e gráficos para LaTeX"; \
 	sec "Módulos de Código & Experimentos:"; \
 	cmd "impl"             "Valida a sintaxe C++23 de todos os headers de algoritmos"; \
 	cmd "apps"             "Compila e executa as aplicações reais (Segmentação de Imagens)"; \
@@ -80,6 +81,12 @@ bench-pipeline: exp
 	printf "\n\033[1;34m==> [5/5] Reconstruindo monólito LaTeX integrado...\033[0m\n"
 	$(PYTHON) Scripts/build_monolith.py
 	printf "\n\033[1;32m==> Pipeline de benchmarks concluído com sucesso total!\033[0m\n\n"
+
+bench-publish: bench-all reports
+	printf "\n\033[1;32m==> Pipeline de benchmarks e publicação de relatórios concluído com sucesso!\033[0m\n\n"
+
+bench-research: dimacs bench-all latex
+	printf "\n\033[1;32m==> Pipeline de reprodução científica completa (DIMACS + Benchmarks + Suíte LaTeX) concluído com sucesso!\033[0m\n\n"
 
 bench-latex: bench-pipeline latex
 	printf "\n\033[1;32m==> Pipeline de benchmarks e compilação LaTeX concluídos com sucesso!\033[0m\n\n"
@@ -124,6 +131,9 @@ setup:
 ### ================================
 latex:
 	$(MAKE) -C LaTeX all
+
+reports:
+	$(MAKE) -C LaTeX reports
 
 book:
 	$(MAKE) -C LaTeX book
