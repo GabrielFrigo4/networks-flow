@@ -860,7 +860,7 @@ Os algoritmos de fluxo máximo foram avaliados sobre as coleções canônicas do
 
 As redes sintéticas em grade bidimensional e famílias patológicas encontram-se detalhadas no Apêndice~\ref{ap:benchmarks_completos}.
 
-A Tabela~\ref{tab:benchmarks_maxflow} apresenta os tempos médios de execução obtidos pelos cinco algoritmos nas instâncias canônicas de fluxo máximo. O menor tempo por instância está destacado em \textbf{negrito}.
+A Tabela~\ref{tab:benchmarks_maxflow} apresenta os tempos médios de execução obtidos pelos cinco algoritmos nas instâncias canônicas de fluxo máximo. O menor tempo por instância está destacado em \textbf{negrito}, e a indicação \textbf{TLE} (\textit{Time Limit Exceeded}) denota tempo de execução superior ao teto de 60 segundos.
 
 \begin{table}[!ht]
 \centering
@@ -907,7 +907,7 @@ A Tabela~\ref{tab:benchmarks_maxflow} apresenta os tempos médios de execução 
 
 Para avaliar os algoritmos de fluxo de custo mínimo, utilizou-se a família \textbf{Netgen}, gerada oficialmente pelo gerador DIMACS de Rutgers para redes de transporte com restrições balanceadas de oferta e demanda.
 
-A Tabela~\ref{tab:benchmarks_mincost} apresenta a comparação entre os quatro algoritmos de custo mínimo em 13 instâncias representativas da família Netgen, cobrindo transbordo inicial, transporte de baixo fluxo, transporte de alta demanda, grande escala e escala máxima. A bateria experimental exaustiva com a totalidade das 40 instâncias Netgen está detalhada no Apêndice~\ref{ap:benchmarks_completos}.
+A Tabela~\ref{tab:benchmarks_mincost} apresenta a comparação entre os quatro algoritmos de custo mínimo em 13 instâncias representativas da família Netgen, cobrindo transbordo inicial, transporte de baixo fluxo, transporte de alta demanda, grande escala e escala máxima. O menor tempo por instância está destacado em \textbf{negrito}, e a indicação \textbf{TLE} denota interrupção por limite de 60 segundos. A bateria experimental exaustiva com a totalidade das 40 instâncias Netgen está detalhada no Apêndice~\ref{ap:benchmarks_completos}.
 
 \begin{table}[!ht]
 \centering
@@ -928,8 +928,8 @@ A Tabela~\ref{tab:benchmarks_mincost} apresenta a comparação entre os quatro a
 \texttt{netgen\_28} & 1.002 & 3.000 & 1.000.000 & 11.599.233.408 & 1.375 & \textbf{22,5} & 28,7 & 467 \\
 \texttt{netgen\_32} & 1.502 & 4.492 & 1.500.000 & 17.996.365.110 & 5.781 & \textbf{67,0} & 74,0 & 1.624 \\
 \texttt{netgen\_35} & 1.502 & 5.880 & 1.500.000 & 14.350.903.861 & 8.174 & 113 & \textbf{106} & 1.817 \\
-\texttt{netgen\_38} & 3.002 & 35.625 & --- & --- & --- & 3.403 & \textbf{1.994} & 16.717 \\
-\texttt{netgen\_40} & 3.002 & 23.400 & --- & --- & --- & 1.406 & \textbf{979} & 13.408 \\
+\texttt{netgen\_38} & 3.002 & 35.625 & 2.000.000 & 7.265.734.372 & TLE & 3.403 & \textbf{1.994} & 16.717 \\
+\texttt{netgen\_40} & 3.002 & 23.400 & 2.000.000 & 11.068.572.024 & TLE & 1.406 & \textbf{979} & 13.408 \\
 \bottomrule
 \end{tabular}
 \caption{Comparação experimental dos motores de fluxo de custo mínimo em instâncias Netgen representativas.}
@@ -1189,7 +1189,7 @@ Este apêndice documenta os resultados computacionais obtidos na totalidade das 
 
 \subsection{Tabela Exaustiva de Fluxo Máximo}
 
-A Tabela~\ref{tab:benchmarks_maxflow_exhaustive} reporta os tempos médios de execução ($\bar{t}$ em milissegundos) dos cinco algoritmos de fluxo máximo sobre as 23 instâncias do protocolo experimental, categorizadas por família estrutural.
+A Tabela~\ref{tab:benchmarks_maxflow_exhaustive} reporta os tempos médios de execução ($\bar{t}$ em milissegundos) dos cinco algoritmos de fluxo máximo sobre as 23 instâncias do protocolo experimental, categorizadas por família estrutural. O menor tempo por instância está destacado em \textbf{negrito}, e a indicação \textbf{TLE} (\textit{Time Limit Exceeded}) denota interrupção por exceder o teto de 60 segundos.
 
 \begin{table}[!ht]
 \centering
@@ -1241,7 +1241,7 @@ As curvas experimentais evidenciam a diferenciação entre as classes assintóti
 
 \subsection{Tabela Exaustiva e Escalabilidade: Fluxo de Custo Mínimo}
 
-A Tabela~\ref{tab:benchmarks_mincost_exhaustive} reporta os dados experimentais completos dos quatro algoritmos de fluxo de custo mínimo na totalidade das 40 instâncias da família Netgen.
+A Tabela~\ref{tab:benchmarks_mincost_exhaustive} reporta os dados experimentais completos dos quatro algoritmos de fluxo de custo mínimo na totalidade das 40 instâncias da família Netgen. O menor tempo por instância está destacado em \textbf{negrito}, e a indicação \textbf{TLE} denota interrupção por limite de 60 segundos.
 
 \begingroup
 \small
@@ -1308,11 +1308,11 @@ A Tabela~\ref{tab:benchmarks_mincost_exhaustive} reporta os dados experimentais 
 \midrule
 \multicolumn{9}{l}{\textbf{Família DIMACS Netgen: Escala Máxima (36 a 40)}} \\
 \midrule
-\texttt{netgen\_36} & 8.002 & 16.200 & --- & --- & --- & 5.220 & \textbf{3.747} & --- \\
-\texttt{netgen\_37} & 5.002 & 23.950 & --- & --- & --- & 4.748 & \textbf{3.200} & --- \\
-\texttt{netgen\_38} & 3.002 & 35.625 & --- & --- & --- & 3.403 & \textbf{1.994} & 16.717 \\
-\texttt{netgen\_39} & 5.002 & 15.880 & --- & --- & --- & 2.888 & \textbf{2.099} & --- \\
-\texttt{netgen\_40} & 3.002 & 23.400 & --- & --- & --- & 1.406 & \textbf{979} & 13.408 \\
+\texttt{netgen\_36} & 8.002 & 16.200 & 4.000.000 & 87.957.673.940 & TLE & 5.220 & \textbf{3.747} & TLE \\
+\texttt{netgen\_37} & 5.002 & 23.950 & 4.000.000 & 35.607.266.430 & TLE & 4.748 & \textbf{3.200} & TLE \\
+\texttt{netgen\_38} & 3.002 & 35.625 & 2.000.000 & 7.265.734.372 & TLE & 3.403 & \textbf{1.994} & 16.717 \\
+\texttt{netgen\_39} & 5.002 & 15.880 & 4.000.000 & 48.660.418.428 & TLE & 2.888 & \textbf{2.099} & TLE \\
+\texttt{netgen\_40} & 3.002 & 23.400 & 2.000.000 & 11.068.572.024 & TLE & 1.406 & \textbf{979} & 13.408 \\
 \end{longtable}
 \endgroup
 

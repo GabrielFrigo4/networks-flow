@@ -26,7 +26,7 @@ Os algoritmos de fluxo máximo foram avaliados sobre as coleções canônicas do
 
 As redes sintéticas em grade bidimensional e famílias patológicas encontram-se detalhadas no Apêndice~\ref{ap:benchmarks_completos}.
 
-A Tabela~\ref{tab:benchmarks_maxflow} apresenta os tempos médios de execução obtidos pelos cinco algoritmos nas instâncias canônicas de fluxo máximo. O menor tempo por instância está destacado em \textbf{negrito}.
+A Tabela~\ref{tab:benchmarks_maxflow} apresenta os tempos médios de execução obtidos pelos cinco algoritmos nas instâncias canônicas de fluxo máximo. O menor tempo por instância está destacado em \textbf{negrito}, e a indicação \textbf{TLE} (\textit{Time Limit Exceeded}) denota tempo de execução superior ao teto de 60 segundos.
 
 \input{tabelas/table_max_flow_compact}
 
@@ -50,7 +50,7 @@ A Tabela~\ref{tab:benchmarks_maxflow} apresenta os tempos médios de execução 
 
 Para avaliar os algoritmos de fluxo de custo mínimo, utilizou-se a família \textbf{Netgen}, gerada oficialmente pelo gerador DIMACS de Rutgers para redes de transporte com restrições balanceadas de oferta e demanda.
 
-A Tabela~\ref{tab:benchmarks_mincost} apresenta a comparação entre os quatro algoritmos de custo mínimo em 13 instâncias representativas da família Netgen, cobrindo transbordo inicial, transporte de baixo fluxo, transporte de alta demanda, grande escala e escala máxima. A bateria experimental exaustiva com a totalidade das 40 instâncias Netgen está detalhada no Apêndice~\ref{ap:benchmarks_completos}.
+A Tabela~\ref{tab:benchmarks_mincost} apresenta a comparação entre os quatro algoritmos de custo mínimo em 13 instâncias representativas da família Netgen, cobrindo transbordo inicial, transporte de baixo fluxo, transporte de alta demanda, grande escala e escala máxima. O menor tempo por instância está destacado em \textbf{negrito}, e a indicação \textbf{TLE} denota interrupção por limite de 60 segundos. A bateria experimental exaustiva com a totalidade das 40 instâncias Netgen está detalhada no Apêndice~\ref{ap:benchmarks_completos}.
 
 \input{tabelas/table_min_cost_compact}
 

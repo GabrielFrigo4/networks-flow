@@ -421,8 +421,19 @@ def generate_compact_mincost(rows, output_path):
             first = recs[0]
             v = fmt_number(first["n"])
             a = fmt_number(first["m"])
-            flow = fmt_number(first["flow_value"])
-            cost = fmt_number(first["cost_value"])
+            flow_val = first["flow_value"]
+            cost_val = first["cost_value"]
+            if (
+                first["status"] != "OK"
+                and (int(first.get("flow_value", -1)) < 0 or int(first.get("cost_value", -1)) < 0)
+            ):
+                for r in recs:
+                    if r["status"] == "OK":
+                        flow_val = r["flow_value"]
+                        cost_val = r["cost_value"]
+                        break
+            flow = fmt_number(flow_val)
+            cost = fmt_number(cost_val)
 
             ok_times = []
             for algo in MC_ALGO_ORDER:
@@ -440,7 +451,7 @@ def generate_compact_mincost(rows, output_path):
             for algo in MC_ALGO_ORDER:
                 r = by_algo.get(algo)
                 if not r or r["status"] != "OK" or not r["mean_ms"]:
-                    time_cells.append("---")
+                    time_cells.append("TLE")
                 else:
                     t = float(r["mean_ms"])
                     cell = fmt_time(r["mean_ms"])
@@ -695,8 +706,19 @@ def generate_exhaustive_mincost(rows, output_path):
                 first = recs[0]
                 v = fmt_number(first["n"])
                 a = fmt_number(first["m"])
-                flow = fmt_number(first["flow_value"])
-                cost = fmt_number(first["cost_value"])
+                flow_val = first["flow_value"]
+                cost_val = first["cost_value"]
+                if (
+                    first["status"] != "OK"
+                    and (int(first.get("flow_value", -1)) < 0 or int(first.get("cost_value", -1)) < 0)
+                ):
+                    for r in recs:
+                        if r["status"] == "OK":
+                            flow_val = r["flow_value"]
+                            cost_val = r["cost_value"]
+                            break
+                flow = fmt_number(flow_val)
+                cost = fmt_number(cost_val)
 
                 ok_times = []
                 for algo in MC_ALGO_ORDER:
@@ -714,7 +736,7 @@ def generate_exhaustive_mincost(rows, output_path):
                 for algo in MC_ALGO_ORDER:
                     r = by_algo.get(algo)
                     if not r or r["status"] != "OK" or not r["mean_ms"]:
-                        time_cells.append("---")
+                        time_cells.append("TLE")
                     else:
                         t = float(r["mean_ms"])
                         cell = fmt_time(r["mean_ms"])
