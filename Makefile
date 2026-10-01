@@ -14,7 +14,7 @@ PYTHON = python3
         latex reports book relatorio ic monolito projeto \
         apps impl exp generate dimacs \
         bench bench-smoke bench-tables bench-plots bench-artifacts \
-        format format-cpp format-md test setup clean clear clean-results sync-code
+        format format-cpp format-md test setup clean clear distclean clean-results sync-code
 
 all: help
 
@@ -66,9 +66,9 @@ help:
 ### ================================
 ### BATCH & WORKFLOW COMMANDS
 ### ================================
-bench-all: bench-pipeline
+bench-all: dimacs exp bench-pipeline
 
-bench-pipeline: exp
+bench-pipeline: dimacs exp
 	printf "\n\033[1;34m==> [1/5] Executando benchmarks nas instâncias de referência...\033[0m\n"
 	$(MAKE) -C Experimentos run
 	printf "\n\033[1;34m==> [2/5] Gerando tabelas brutas de experimentos...\033[0m\n"
@@ -82,13 +82,13 @@ bench-pipeline: exp
 	$(PYTHON) Scripts/build_monolith.py
 	printf "\n\033[1;32m==> Pipeline de benchmarks concluído com sucesso total!\033[0m\n\n"
 
-bench-publish: bench-all reports
+bench-publish: dimacs exp bench-all reports
 	printf "\n\033[1;32m==> Pipeline de benchmarks e publicação de relatórios concluído com sucesso!\033[0m\n\n"
 
-bench-research: dimacs bench-all latex
+bench-research: dimacs exp bench-all latex
 	printf "\n\033[1;32m==> Pipeline de reprodução científica completa (DIMACS + Benchmarks + Suíte LaTeX) concluído com sucesso!\033[0m\n\n"
 
-bench-latex: bench-pipeline latex
+bench-latex: dimacs exp bench-pipeline latex
 	printf "\n\033[1;32m==> Pipeline de benchmarks e compilação LaTeX concluídos com sucesso!\033[0m\n\n"
 
 sync-all: sync-code bench-artifacts
@@ -202,6 +202,9 @@ clean:
 	$(MAKE) -C Experimentos clean
 
 clear: clean
+
+distclean: clean
+	$(MAKE) -C Experimentos distclean
 
 clean-results:
 	$(MAKE) -C Experimentos clean-results

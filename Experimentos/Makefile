@@ -21,7 +21,7 @@ TIMEOUT   ?= 16
 
 .PHONY: default help all pipeline bench-all deps drivers generate dimacs run bench bench-smoke \
         tables bench-tables sync-tables sync-csv plots bench-plots sync-plots \
-        format format-cpp format-md clean clear clean-results
+        format format-cpp format-md clean clear clean-results distclean
 
 default: help
 all: drivers
@@ -60,10 +60,10 @@ help:
 	cmd "clean-results"    "Remove exclusivamente os CSVs, tabelas e gráficos gerados"; \
 	echo ""
 
-pipeline: drivers run tables plots sync-csv
+pipeline: dimacs drivers run tables plots sync-csv
 	printf "\n\033[1;32m==> Pipeline de Experimentos concluído e sincronizado com sucesso!\033[0m\n\n"
 
-bench-all: pipeline
+bench-all: dimacs pipeline
 
 deps:
 	printf "%s\n" "Instalando dependências para benchmark..."
@@ -112,7 +112,7 @@ dimacs:
 	printf "%s\n" "Baixando e gerando coleções canônicas DIMACS..."
 	python3 scripts/fetch_dimacs.py
 
-run: drivers
+run: drivers dimacs
 	printf "%s\n" "Executando benchmarks..."
 	python3 scripts/run_benchmarks.py --type all --repeats $(REPEATS) --timeout $(TIMEOUT)
 
@@ -135,8 +135,8 @@ bench-tables: tables
 sync-tables:
 	printf "%s\n" "Sincronizando tabelas para LaTeX/tabelas/..."
 	mkdir -p ../LaTeX/tabelas
-	cp -f results/table_max_flow.tex ../LaTeX/tabelas/table_max_flow.tex
-	cp -f results/table_min_cost.tex ../LaTeX/tabelas/table_min_cost.tex
+	if [ -f results/table_max_flow.tex ]; then cp -f results/table_max_flow.tex ../LaTeX/tabelas/table_max_flow.tex; fi
+	if [ -f results/table_min_cost.tex ]; then cp -f results/table_min_cost.tex ../LaTeX/tabelas/table_min_cost.tex; fi
 	printf "%s\n" "Tabelas copiadas para LaTeX/tabelas/"
 
 sync-csv:
@@ -178,12 +178,14 @@ format-md:
 clean:
 	rm -f $(MAX_RUNNER) $(MIN_RUNNER)
 	rm -rf results/*.csv results/*.json results/*.pdf results/*.tex
-	rm -rf instances/synthetic
-	rm -rf instances/dimacs_maxflow instances/dimacs_mincost
 	rm -rf build_generators
-	printf "%s\n" "Limpeza completa concluída."
+	printf "%s\n" "Limpeza completa de executáveis e resultados concluída."
 
 clear: clean
+
+distclean: clean
+	rm -rf instances/dimacs_maxflow instances/dimacs_mincost instances/synthetic
+	printf "%s\n" "Instâncias e artefatos de benchmark expurgados."
 
 clean-results:
 	rm -rf results/*.csv results/*.json results/*.pdf results/*.tex
