@@ -14,7 +14,7 @@ PYTHON = python3
         latex book relatorio ic monolito projeto \
         apps impl exp generate dimacs \
         bench bench-smoke bench-tables bench-plots bench-artifacts \
-        format format-cpp format-md test setup clean clean-results sync-code
+        format format-cpp format-md test setup clean clear clean-results sync-code
 
 all: help
 
@@ -190,6 +190,8 @@ clean:
 	$(MAKE) -C Aplicações clean
 	$(MAKE) -C Implementações clean
 	$(MAKE) -C Experimentos clean
+
+clear: clean
 
 clean-results:
 	$(MAKE) -C Experimentos clean-results
