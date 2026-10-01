@@ -24,13 +24,37 @@ def resolve_inputs(content: str, latex_dir: Path) -> str:
         target_path = (latex_dir / input_file_str).resolve()
 
         if not target_path.exists():
-            sys.stderr.write(f"Aviso: arquivo referenciado em \\input não encontrado: {input_file_str} em {target_path}\n")
+            sys.stderr.write(
+                f"Aviso: arquivo referenciado em \\input não encontrado: {input_file_str} em {target_path}\n")
             return match.group(0)
 
         child_content = target_path.read_text(encoding="utf-8").strip()
         return resolve_inputs(child_content, latex_dir)
 
     return input_pattern.sub(replacer, content)
+
+
+def format_monolith_content(text: str) -> str:
+    text = re.sub(r"([^\n])\n*\\(newpage|clearpage)", r"\1\n\n\\\2", text)
+    text = re.sub(r"(\\(?:newpage|clearpage))\n([^\n])", r"\1\n\n\2", text)
+    text = re.sub(r"(\\end\{lstlisting\})\s*\n(?!\n)", r"\1\n\n", text)
+    lines = text.split("\n")
+
+    formatted_lines = []
+    for i, line in enumerate(lines):
+        if re.match(r"^\s*%\s*={10,}\s*$", line):
+            prev_idx = i - 1
+            while prev_idx >= 0 and not lines[prev_idx].strip():
+                prev_idx -= 1
+            if prev_idx >= 0 and not lines[prev_idx].strip().startswith("%"):
+                if formatted_lines and formatted_lines[-1] != "":
+                    formatted_lines.append("")
+        formatted_lines.append(line)
+
+    text = "\n".join(formatted_lines)
+    text = re.sub(r"\n{3,}", "\n\n", text)
+    text = re.sub(r"\n+\\end\{document\}", r"\n\n\\end{document}", text)
+    return text.strip()
 
 
 def generate_monolith(check_only: bool = False) -> bool:
@@ -52,10 +76,7 @@ def generate_monolith(check_only: bool = False) -> bool:
         "% =========================================================================\n\n"
     )
 
-    clean_monolith = monolith_content.strip()
-
-    clean_monolith = re.sub(r"\n{3,}", "\n\n", clean_monolith)
-    clean_monolith = re.sub(r"\n+\\end\{document\}", r"\n\n\\end{document}", clean_monolith)
+    clean_monolith = format_monolith_content(monolith_content)
 
     if clean_monolith.startswith("% ========================================================================="):
         final_content = clean_monolith + "\n"
@@ -64,11 +85,13 @@ def generate_monolith(check_only: bool = False) -> bool:
 
     if check_only:
         if not output_path.exists():
-            sys.stderr.write(f"Arquivo monolito não encontrado: {output_path}\n")
+            sys.stderr.write(
+                f"Arquivo monolito não encontrado: {output_path}\n")
             return False
         current_content = output_path.read_text(encoding="utf-8")
         if current_content != final_content:
-            sys.stderr.write(f"Monólito desatualizado em relação às fontes modulares!\n")
+            sys.stderr.write(
+                f"Monólito desatualizado em relação às fontes modulares!\n")
             return False
         return True
 

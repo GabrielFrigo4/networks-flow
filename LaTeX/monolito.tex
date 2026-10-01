@@ -11,6 +11,7 @@
 }
 
 \RequirePackage{fix-cm}
+
 % =========================================================================
 % CABEÇALHO UNIFICADO E DESIGN SYSTEM (NETWORKS FLOW)
 % =========================================================================
@@ -372,7 +373,7 @@
 \begin{center}
 \small
 \setstretch{1.15}
-\begin{tabular}{|p{0.32\textwidth}|p{0.60\textwidth}|}
+\begin{tabular}{|p{0.32\textwidth}|>{\raggedright\arraybackslash}p{0.60\textwidth}|}
 \hline
 \textbf{Título do Projeto:} & Problemas de Fluxos em Redes: Teoria, Algoritmos e Implementações \\ \hline
 \textbf{Edital Vinculado:} & Edital 01/2025 PIC/PIBIC/PIBITI/PIBIC-AF \\ \hline
@@ -402,6 +403,7 @@ Discente Pesquisador & & Docente Orientadora
 \end{center}
 
 \newpage
+
 % =========================================================================
 % SUMÁRIO (ANTES DO RESUMO)
 % =========================================================================
@@ -409,12 +411,14 @@ Discente Pesquisador & & Docente Orientadora
 \renewcommand{\contentsname}{Sumário}
 \setcounter{tocdepth}{1}
 \tableofcontents
+
 \clearpage
 
 % =========================================================================
 % RESUMO E INTRODUÇÃO (COMPARTILHAM UMA ÚNICA PÁGINA)
 % =========================================================================
 \pagestyle{textual}
+
 % =========================================================================
 % SEÇÃO 1: RESUMO
 % =========================================================================
@@ -436,6 +440,7 @@ O objetivo deste projeto é proporcionar uma formação sólida na área, integr
 O problema do $st$-fluxo máximo, onde se busca maximizar a quantidade de fluxo enviada de um vértice fonte $s$ para um vértice de destino $t$, é um dos pilares deste estudo (veja~\cite{ford1956maximal}). Foram analisados e implementados algoritmos clássicos e eficientes, como Ford-Fulkerson, Edmonds-Karp, Dinic e Push-Relabel com Heurística de Gap (veja~\cite{ford1956maximal, edmonds1972theoretical, dinic1970algorithm, goldberg1988new}).
 O projeto contempla também o problema de fluxo de custo mínimo, que busca minimizar o custo total enquanto satisfaz as demandas da rede, com destaque para os algoritmos de cancelamento de ciclos de Klein, caminhos sucessivos e o \textit{network simplex}, uma especialização do algoritmo simplex para redes (veja~\cite{dantzig1951application, ahuja1993network}).
 A fundamentação teórica desenvolvida reafirma que muitos problemas combinatórios, como o emparelhamento máximo em digrafos bipartidos, coberturas mínimas e segmentação de imagens via corte mínimo, podem ser resolvidos via reduções para problemas de fluxo (veja~\cite{ahuja1993network, boykov2001interactive}).
+
 \clearpage
 
 % =========================================================================
@@ -465,6 +470,7 @@ As atividades do projeto foram estruturadas e encontram-se no seguinte status:
     \item \textbf{Atividade 10:} Análise comparativa de desempenho dos algoritmos. \textbf{[Concluída]}
     \item \textbf{Atividade 11:} Aplicação prática em Segmentação Interativa de Imagens e consolidação dos resultados. \textbf{[Concluída]}
 \end{itemize}
+
 \clearpage
 
 % =========================================================================
@@ -825,6 +831,7 @@ Cada iteração do Network Simplex executa quatro passos: (i) \textbf{Pricing:} 
 \caption{Iteração do Network Simplex: (a) o arco não básico violador $(3,4)$ com $\bar{w}_\pi < 0$ fecha um ciclo fundamental em $T$; (b) o fluxo é aumentado por $\delta$ e o arco saturado $(2,4)$ deixa a base, restabelecendo a base em árvore.}
 \label{fig:simplex_pivoteamento}
 \end{figure}
+
 % =========================================================================
 % SEÇÃO 4: RESULTADOS COMPUTACIONAIS
 % =========================================================================
@@ -861,7 +868,7 @@ A Tabela~\ref{tab:benchmarks_maxflow} apresenta os tempos médios de execução 
 \setlength{\tabcolsep}{3.5pt}
 \begin{tabular}{lrrrrrrrr}
 \toprule
-\textbf{Instância} & $|V|$ & $|A|$ & $f^*$ & \textbf{FF (ms)} & \textbf{EK (ms)} & \textbf{Dinic (ms)} & \textbf{PR (ms)} & \textbf{PR-Gap (ms)} \\
+\textbf{Instância} & $|V|$ & $|A|$ & $f^*$ & \textbf{FF} & \textbf{EK} & \textbf{Dinic} & \textbf{PR} & \textbf{PR-Gap} \\
 \midrule
 \texttt{genrmf\_small} & 256 & 1.008 & 37.341 & 100 & 0,51 & 0,36 & 7,20 & \textbf{0,34} \\
 \texttt{genrmf\_medium} & 1.024 & 4.544 & 133.050 & 4.666 & 7,44 & 2,80 & 2,56 & \textbf{2,12} \\
@@ -876,7 +883,7 @@ A Tabela~\ref{tab:benchmarks_maxflow} apresenta os tempos médios de execução 
 \texttt{wash\_line\_100} & 10.002 & 39.396 & 158.751.535 & TLE & 5.118 & 51,4 & 18.952 & \textbf{42,7} \\
 \bottomrule
 \end{tabular}
-\caption{Comparação experimental dos motores de fluxo máximo em instâncias DIMACS.}
+\caption{Comparação experimental dos motores de fluxo máximo em instâncias DIMACS (tempos médios em milissegundos).}
 \label{tab:benchmarks_maxflow}
 \end{table}
 
@@ -944,6 +951,7 @@ A Tabela~\ref{tab:benchmarks_mincost} apresenta a comparação entre os quatro a
     \item \textbf{Network Simplex vs. Successive Shortest Path:} Nas instâncias de transbordo inicial (\texttt{netgen\_01} a \texttt{netgen\_08}), o Network Simplex é altamente competitivo (43,9 ms vs. 51,9 ms em \texttt{netgen\_08}). Com a expansão do grafo e das demandas (\texttt{netgen\_28} a \texttt{netgen\_35}), o SSP-Dijkstra amplia sua vantagem (28,7 ms vs. 467 ms em \texttt{netgen\_28}, aceleração de $\approx 16\times$; 74,0 ms vs. 1.624 ms em \texttt{netgen\_32}, aceleração de $\approx 22\times$). Nas instâncias com oferta extrema de 4 milhões de unidades e bases altamente degeneradas (\texttt{netgen\_36}, \texttt{netgen\_37} e \texttt{netgen\_39}), o Simplex atinge o limite de tempo (TLE);
     \item \textbf{Limitações do Cycle Canceling:} O cancelamento de ciclos negativos requer buscas completas via Bellman-Ford ($O(nm)$ por iteração). Na instância \texttt{netgen\_08}, o Cycle Canceling consome 4.411 ms, sendo $\approx 85\times$ mais lento que o SSP-Dijkstra (51,9 ms). Em \texttt{netgen\_35}, atinge 8.174 ms ($\approx 77\times$ mais lento que os 106 ms do SSP-Dijkstra), excedendo o tempo limite nas instâncias de escala máxima (\texttt{netgen\_36} em diante).
 \end{itemize}
+
 % =========================================================================
 % SEÇÃO 5: APLICAÇÃO EM SEGMENTAÇÃO DE IMAGENS
 % =========================================================================
@@ -1134,6 +1142,7 @@ A Tabela~\ref{tab:segmentacao_resultados} apresenta a escalabilidade do pipeline
 \end{table}
 
 Mesmo em redes com mais de 40.000 vértices e 270.000 arcos, o corte mínimo global é obtido em menos de 100 milissegundos.
+
 % =========================================================================
 % SEÇÃO 6: CONCLUSÕES
 % =========================================================================
@@ -1146,8 +1155,9 @@ Apresentamos nesta seção as atividades realizadas de forma resumida e os resul
 
     \item \textbf{Arquitetura em C++23:} Desenvolvimento de classes organizadas em duas famílias polimórficas com representação de adjacência contígua e reversão em $\mathcal{O}(1)$:
     \begin{itemize}[leftmargin=1.5em, itemsep=0.1em, topsep=0.1em, parsep=0em]
-        \item \textbf{Família \lstinline{FlowNetwork} (Fluxo Máximo):} Centralizada na classe base abstrata \lstinline{FlowNetwork} e implementada pelos algoritmos \lstinline{FordFulkerson}, \lstinline{EdmondsKarp}, \lstinline{Dinic}, \lstinline{PushRelabel} (FIFO) e \lstinline{PushRelabelImproved} (Gap Heuristic), documentados nos Apêndices~\ref{ap:flownetwork} a~\ref{ap:push_relabel_improved};
-        \item \textbf{Família \lstinline{CostNetwork} (Custo Mínimo):} Centralizada na classe base abstrata \lstinline{CostNetwork} e implementada pelos algoritmos \lstinline{CycleCanceling}, \lstinline{SuccessiveShortest} (SPFA), \lstinline{SuccessiveShortestDijkstra} (Potenciais) e \lstinline{NetworkSimplex}, documentados nos Apêndices~\ref{ap:costnetwork} a~\ref{ap:network_simplex};
+    \raggedright
+        \item \textbf{Família \lstinline{FlowNetwork} (Fluxo Máximo):} Centralizada na classe base abstrata e implementada pelos algoritmos \lstinline{FordFulkerson}, \lstinline{EdmondsKarp}, \lstinline{Dinic}, \lstinline{PushRelabel} (FIFO) e \lstinline{PushRelabelImproved} (Gap Heuristic), documentados nos Apêndices~\ref{ap:flownetwork} a~\ref{ap:push_relabel_improved};
+        \item \textbf{Família \lstinline{CostNetwork} (Custo Mínimo):} Centralizada na classe base abstrata e implementada pelos algoritmos \lstinline{CycleCanceling}, \lstinline{SuccessiveShortest} (SPFA), \lstinline{SuccessiveShortestDijkstra} (Potenciais) e \lstinline{NetworkSimplex}, documentados nos Apêndices~\ref{ap:costnetwork} a~\ref{ap:network_simplex};
     \end{itemize}
 
     \item \textbf{Reduções Combinatórias e Aplicações:} Resolução de problemas clássicos (\textit{Maximum Bipartite Matching}, \textit{Minimum Vertex Cover}, \textit{Maximum Independent Set}, caminhos disjuntos e desconexão de redes) e implementação de \textbf{Segmentação Interativa de Imagens} baseada em corte mínimo via corte de grafos (\textit{Graph Cuts});
@@ -1158,11 +1168,13 @@ Apresentamos nesta seção as atividades realizadas de forma resumida e os resul
 Como trabalhos futuros, destacam-se a avaliação empírica sobre instâncias esparsas massivas, a análise de diferentes regras de pivoteamento no \textit{Network Simplex} (como \textit{Candidate List Pricing}) e a preparação de artigo científico com a síntese dos resultados.
 
 \newpage
+
 \section{Bibliografia}
 \bibliographystyle{plain}
 \bibliography{cit}
 
 \newpage
+
 \appendix
 \renewcommand{\theHsection}{apendice.\arabic{section}}
 \providecommand{\apendice}[1]{\section{#1}}
@@ -1316,6 +1328,7 @@ A Figura~\ref{fig:scalability_mincost_apendice} apresenta as curvas de tempo em 
 Observa-se que a inclinação da curva do \textit{Cycle Canceling} é expressivamente superior à dos métodos \textit{Successive Shortest Path} e \textit{Network Simplex}, refletindo o custo de detecção global de ciclos negativos a cada iteração.
 
 \newpage
+
 \begin{center}{\Large\textbf{Apêndice Computacional: Implementações em C++23}}\end{center}
 
 % =========================================================================
@@ -1356,7 +1369,9 @@ A biblioteca organiza-se em duas famílias baseadas nos padrões \textit{Strateg
 \end{itemize}
 
 Os métodos virtuais \lstinline{make(n)} e \lstinline{clone()} permitem a instanciação e a clonagem profunda (\textit{deep copy}) de instâncias polimórficas preservando o estado residual, o que é fundamental em aplicações iterativas como corte mínimo e segmentação de imagens.
+
 \newpage
+
 % =========================================================================
 % IMPLEMENTAÇÃO DA INTERFACE BASE ``FLOW-NETWORK''
 % =========================================================================
@@ -1439,7 +1454,9 @@ protected:
 
 #endif // FLOW_NETWORK_HPP
 \end{lstlisting}
+
 \newpage
+
 % =========================================================================
 % IMPLEMENTAÇÃO DA CLASSE ``FORD-FULKERSON''
 % =========================================================================
@@ -1524,7 +1541,9 @@ private:
 
 #endif // FORD_FULKERSON_HPP
 \end{lstlisting}
+
 \newpage
+
 % =========================================================================
 % IMPLEMENTAÇÃO DA CLASSE ``EDMONDS-KARP''
 % =========================================================================
@@ -1622,7 +1641,9 @@ private:
 
 #endif // EDMONDS_KARP_HPP
 \end{lstlisting}
+
 \newpage
+
 % =========================================================================
 % IMPLEMENTAÇÃO DA CLASSE ``DINIC''
 % =========================================================================
@@ -1733,7 +1754,9 @@ private:
 
 #endif // DINIC_HPP
 \end{lstlisting}
+
 \newpage
+
 % =========================================================================
 % IMPLEMENTAÇÃO DA CLASSE ``PUSH-RELABEL''
 % =========================================================================
@@ -1889,7 +1912,9 @@ private:
 
 #endif // PUSH_RELABEL_HPP
 \end{lstlisting}
+
 \newpage
+
 % =========================================================================
 % IMPLEMENTAÇÃO DA CLASSE ``PUSH-RELABEL IMPROVED''
 % =========================================================================
@@ -2079,7 +2104,9 @@ private:
 
 #endif // PUSH_RELABEL_IMPROVED_HPP
 \end{lstlisting}
+
 \newpage
+
 % =========================================================================
 % IMPLEMENTAÇÃO DA INTERFACE BASE ``COST-NETWORK''
 % =========================================================================
@@ -2169,7 +2196,9 @@ protected:
 
 #endif // COST_NETWORK_HPP
 \end{lstlisting}
+
 \newpage
+
 % =========================================================================
 % IMPLEMENTAÇÃO DA CLASSE ``CYCLE-CANCELING''
 % =========================================================================
@@ -2332,7 +2361,9 @@ private:
 
 #endif // CYCLE_CANCELING_HPP
 \end{lstlisting}
+
 \newpage
+
 % =========================================================================
 % IMPLEMENTAÇÃO DA CLASSE ``SUCCESSIVE-SHORTEST-PATH''
 % =========================================================================
@@ -2445,7 +2476,9 @@ private:
 
 #endif // SUCCESSIVE_SHORTEST_HPP
 \end{lstlisting}
+
 \newpage
+
 % =========================================================================
 % IMPLEMENTAÇÃO DA CLASSE ``SUCCESSIVE-SHORTEST-PATH'' COM DIJKSTRA E POTENCIAIS
 % =========================================================================
@@ -2619,7 +2652,9 @@ private:
 
 #endif // SUCCESSIVE_SHORTEST_DIJKSTRA_HPP
 \end{lstlisting}
+
 \newpage
+
 % =========================================================================
 % IMPLEMENTAÇÃO DA CLASSE ``NETWORK-SIMPLEX''
 % =========================================================================
@@ -2985,10 +3020,12 @@ private:
 
 #endif // NETWORK_SIMPLEX_HPP
 \end{lstlisting}
+
+\newpage
+
 % =========================================================================
 % ACESSO AO CÓDIGO-FONTE E REPOSITÓRIO GITHUB
 % =========================================================================
-\newpage
 \apendice{Acesso ao Código-Fonte e Repositório GitHub}
 \label{ap:github}
 

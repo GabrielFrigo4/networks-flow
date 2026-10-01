@@ -10,7 +10,8 @@ Progresso das otimizações e refatorações de código no projeto, visando melh
 
 - 🔄 **Reler e analisar:** Auditoria final e revisão de texto do relatório institucional junto com a orientadora (Profa. Dra. Cristiane Sato)
 - 🔄 **Benchmarks empíricos:** Rodar as instâncias na máquina local e atualizar as tabelas do relatório (`make bench`, `make bench-tables`)
-- ❌ **Entrega e protocolo formal:** Colher assinaturas e submeter o relatório final da IC (UFABC / ProPes / CNPq)
+- ⏳ **Futuras Expansões (Pós-IC):** Avaliar a implementação do algoritmo MPM (Malhotra, Pramodh Kumar e Maheshwari, 1978) com complexidade $\mathcal{O}(|V|^3)$ estrita para fluxos bloqueadores em grafos densos
+- ✅ **Entrega e protocolo formal:** Colher assinaturas e submeter o relatório final da IC (UFABC / ProPes / CNPq)
 - ✅ Adequar a Seção de Resultados às normas da UFABC (máximo de 20 páginas — alcançado 13 páginas)
 - ✅ Implementar chave DRY para Opções 1A (relatório executivo) e 2A (relatório com apêndice teórico integral)
 - ✅ Criar o `book.tex` (Livro/Monografia independente de alta densidade teórica e editorial)
@@ -43,13 +44,14 @@ Acompanhamento da elaboração e manutenção do livro monográfico independente
 
 Progresso dos algoritmos de fluxo máximo implementados em C++ e documentados no [LaTeX](./LaTeX/ic.tex). O código-fonte de cada algoritmo pode ser encontrado no diretório de [Implementações](./Implementações/README.md), onde cada algoritmo herda da classe base abstrata [`FlowNetwork`](./Implementações/FlowNetwork/FlowNetwork.hpp).
 
-| Nome                                                                          | LaTeX | Implementação | Descrição                                                                              |
-| :---------------------------------------------------------------------------- | :---: | :-----------: | :------------------------------------------------------------------------------------- |
-| [Ford-Fulkerson](./Implementações/FlowNetwork/FordFulkerson.hpp)              |  ✅   |      ✅       | Método iterativo genérico baseado em caminhos aumentantes (pseudopolinomial).          |
-| [Edmonds-Karp](./Implementações/FlowNetwork/EdmondsKarp.hpp)                  |  ✅   |      ✅       | Especialização do Ford-Fulkerson com BFS. Complexidade $\mathcal{O}(V \cdot E^2)$.     |
-| [Dinic Algorithm](./Implementações/FlowNetwork/Dinic.hpp)                     |  ✅   |      ✅       | Digrafo de níveis + fluxo bloqueador via DFS. Complexidade $\mathcal{O}(V^2 \cdot E)$. |
-| [Push Relabel FIFO](./Implementações/FlowNetwork/PushRelabel.hpp)             |  ✅   |      ✅       | Família de pré-fluxo com fila FIFO. Complexidade $\mathcal{O}(V^3)$.                   |
-| [Push Relabel Improved](./Implementações/FlowNetwork/PushRelabelImproved.hpp) |  ✅   |      ✅       | Push-Relabel com Gap Heuristic para convergência acelerada.                            |
+| Nome                                                                          | LaTeX | Implementação | Descrição                                                                                                 |
+| :---------------------------------------------------------------------------- | :---: | :-----------: | :-------------------------------------------------------------------------------------------------------- |
+| [Ford-Fulkerson](./Implementações/FlowNetwork/FordFulkerson.hpp)              |  ✅   |      ✅       | Método iterativo genérico baseado em caminhos aumentantes (pseudopolinomial).                             |
+| [Edmonds-Karp](./Implementações/FlowNetwork/EdmondsKarp.hpp)                  |  ✅   |      ✅       | Especialização do Ford-Fulkerson com BFS. Complexidade $\mathcal{O}(V \cdot E^2)$.                        |
+| [Dinic Algorithm](./Implementações/FlowNetwork/Dinic.hpp)                     |  ✅   |      ✅       | Digrafo de níveis + fluxo bloqueador via DFS. Complexidade $\mathcal{O}(V^2 \cdot E)$.                    |
+| [Push Relabel FIFO](./Implementações/FlowNetwork/PushRelabel.hpp)             |  ✅   |      ✅       | Família de pré-fluxo com fila FIFO. Complexidade $\mathcal{O}(V^3)$.                                      |
+| [Push Relabel Improved](./Implementações/FlowNetwork/PushRelabelImproved.hpp) |  ✅   |      ✅       | Push-Relabel com Gap Heuristic para convergência acelerada.                                               |
+| [MPM (Malhotra, Kumar, Maheshwari)](./Implementações/FlowNetwork/MPM.hpp)     |  ❌   |      ❌       | Fluxo bloqueador via potencial de nós. Complexidade $\mathcal{O}(V^3)$ estrita (ideal para redes densas). |
 
 ---
 
@@ -190,32 +192,32 @@ Progresso dos experimentos computacionais e validação de desempenho dos algori
 
 ## 🏋️ Instâncias e Geradores Sintéticos
 
-| Nome                                    | LaTeX | Implementação | Descrição                                                                                           |
-| :-------------------------------------- | :---: | :-----------: | :-------------------------------------------------------------------------------------------------- |
-| Coleções DIMACS (Max Flow)              |  ❌   |      ✅       | Download e organização de instâncias canônicas da literatura (Washington, RMF, Genrmf).             |
-| Coleções DIMACS (Min Cost Flow)         |  ❌   |      ✅       | Download e organização de instâncias canônicas de custo mínimo (Netgen, Grid).                      |
-| Gerador: Grafos Aleatórios Esparsos     |  ❌   |      ✅       | Geração controlada de grafos com $                                                                  | A   | \approx 4 | V   | $ variando $                                       | V   | $ em escala logarítmica. |
-| Gerador: Grafos Aleatórios Densos       |  ❌   |      ✅       | Geração controlada de grafos com $                                                                  | A   | \approx   | V   | ^2 / 10$ para testar limites de algoritmos densos. |
-| Gerador: Redes em Grade (Grid 2D/3D)    |  ❌   |      ✅       | Topologia em grade simulando problemas de visão computacional / segmentação.                        |
-| Gerador: Casos Patológicos de Pior Caso |  ❌   |      ✅       | Redes desenhadas para induzir o pior caso de caminhos aumentantes (ex: Ford-Fulkerson exponencial). |
+| Nome                                    | LaTeX | Implementação | Descrição                                                                                               |
+| :-------------------------------------- | :---: | :-----------: | :------------------------------------------------------------------------------------------------------ |
+| Coleções DIMACS (Max Flow)              |  ✅   |      ✅       | Download e organização de instâncias canônicas da literatura (Washington, RMF, Genrmf).                 |
+| Coleções DIMACS (Min Cost Flow)         |  ✅   |      ✅       | Download e organização de instâncias canônicas de custo mínimo (Netgen, Grid).                          |
+| Gerador: Grafos Aleatórios Esparsos     |  ✅   |      ✅       | Geração controlada de grafos com $\|A\| \approx 4\|V\|$ variando $\|V\|$ em escala logarítmica.         |
+| Gerador: Grafos Aleatórios Densos       |  ✅   |      ✅       | Geração controlada de grafos com $\|A\| \approx \|V\|^2 / 10$ para testar limites de algoritmos densos. |
+| Gerador: Redes em Grade (Grid 2D/3D)    |  ✅   |      ✅       | Topologia em grade simulando problemas de visão computacional / segmentação.                            |
+| Gerador: Casos Patológicos de Pior Caso |  ✅   |      ✅       | Redes desenhadas para induzir o pior caso de caminhos aumentantes (ex: Ford-Fulkerson exponencial).     |
 
 ## ⚡ Bateria de Testes: Fluxo Máximo
 
-| Nome                             | LaTeX | Execução | Descrição                                                                                         |
-| :------------------------------- | :---: | :------: | :------------------------------------------------------------------------------------------------ |
-| Escalabilidade por Vértices ($   |   V   |    $)    | ❌                                                                                                | ✅  | Comparação de tempo (EK vs. Dinic vs. Push-Relabel FIFO vs. Push-Relabel Improved) variando $ | V   | $.  |
-| Escalabilidade por Arestas ($    |   A   |    $)    | ❌                                                                                                | ✅  | Teste de sensibilidade variando a densidade do grafo com número fixo de vértices.             |
-| Avaliação da Gap Heuristic       |  ❌   |    ✅    | Comparação direta de convergência entre Push-Relabel padrão e Push-Relabel Improved.              |
-| Verificação de Corretude Cruzada |  ❌   |    ✅    | Validação automática garantindo que todos os algoritmos encontram exatamente o mesmo valor $f^*$. |
+| Nome                                  | LaTeX | Execução | Descrição                                                                                            |
+| :------------------------------------ | :---: | :------: | :--------------------------------------------------------------------------------------------------- |
+| Escalabilidade por Vértices ($\|V\|$) |  ✅   |    ✅    | Comparação de tempo (EK vs. Dinic vs. Push-Relabel FIFO vs. Push-Relabel Improved) variando $\|V\|$. |
+| Escalabilidade por Arestas ($\|A\|$)  |  ✅   |    ✅    | Teste de sensibilidade variando a densidade do grafo com número fixo de vértices.                    |
+| Avaliação da Gap Heuristic            |  ✅   |    ✅    | Comparação direta de convergência entre Push-Relabel padrão e Push-Relabel Improved.                 |
+| Verificação de Corretude Cruzada      |  ✅   |    ✅    | Validação automática garantindo que todos os algoritmos encontram exatamente o mesmo valor $f^*$.    |
 
 ## 🧮 Bateria de Testes: Fluxo de Custo Mínimo
 
 | Nome                                  | LaTeX | Execução | Descrição                                                                                               |
 | :------------------------------------ | :---: | :------: | :------------------------------------------------------------------------------------------------------ |
-| Escalabilidade Esparsa vs. Densa      |  ❌   |    🔄    | Comparação entre Cycle Canceling, SSP (SPFA), SSP (Dijkstra + $\pi$) e Network Simplex.                 |
-| Sensibilidade a Custos e Capacidades  |  ❌   |    🔄    | Avaliação de desempenho variando a magnitude dos custos ($C$) e capacidades ($U$).                      |
-| Eficiência Prática do Network Simplex |  ❌   |    🔄    | Contagem empírica do número de pivoteamentos e tempo por iteração frente aos métodos de caminhos.       |
-| Verificação de Corretude Cruzada      |  ❌   |    ✅    | Validação automática garantindo que todas as soluções viáveis convergem para o mesmo custo ótimo $z^*$. |
+| Escalabilidade Esparsa vs. Densa      |  ✅   |    ✅    | Comparação entre Cycle Canceling, SSP (SPFA), SSP (Dijkstra + $\pi$) e Network Simplex.                 |
+| Sensibilidade a Custos e Capacidades  |  ✅   |    ✅    | Avaliação de desempenho variando a magnitude dos custos ($C$) e capacidades ($U$).                      |
+| Eficiência Prática do Network Simplex |  ✅   |    ✅    | Contagem empírica do número de pivoteamentos e tempo por iteração frente aos métodos de caminhos.       |
+| Verificação de Corretude Cruzada      |  ✅   |    ✅    | Validação automática garantindo que todas as soluções viáveis convergem para o mesmo custo ótimo $z^*$. |
 
 ## 📑 Integração com LaTeX e Relatório
 
@@ -223,4 +225,4 @@ Progresso dos experimentos computacionais e validação de desempenho dos algori
 | :------------------------------------------------ | :---: | :------: | :--------------------------------------------------------------------------------------------------- |
 | Seção de Resultados Experimentais (Subseção 5.16) |  ✅   |    —     | Redação da metodologia experimental, especificações da máquina de testes e discussão dos resultados. |
 | Tabelas Comparativas de Desempenho (Framework)    |  ✅   |    ✅    | Inclusão de tabelas formatadas em `booktabs` com tempo de CPU, desvio e número de operações.         |
-| Gráficos de Desempenho e Escalabilidade           |  ❌   |    🔄    | Curvas de complexidade assintótica empírica em escala log-log e gráficos de barras comparativos.     |
+| Gráficos de Desempenho e Escalabilidade           |  ✅   |    ✅    | Curvas de complexidade assintótica empírica em escala log-log e gráficos de barras comparativos.     |

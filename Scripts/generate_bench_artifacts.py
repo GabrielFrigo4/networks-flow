@@ -313,7 +313,7 @@ def generate_compact_maxflow(rows, output_path):
         ncols = 4 + len(MF_ALGO_ORDER)
         col_spec = "l" + "r" * (ncols - 1)
         algo_headers = " & ".join(
-            f"\\textbf{{{MF_ALGO_SHORT[a]} (ms)}}"
+            f"\\textbf{{{MF_ALGO_SHORT[a]}}}"
             for a in MF_ALGO_ORDER
         )
 
@@ -381,7 +381,7 @@ def generate_compact_maxflow(rows, output_path):
         f.write("\\end{tabular}\n")
         f.write(
             "\\caption{Comparação experimental dos motores de "
-            "fluxo máximo em instâncias DIMACS.}\n"
+            "fluxo máximo em instâncias DIMACS (tempos médios em milissegundos).}\n"
         )
         f.write("\\label{tab:benchmarks_maxflow}\n")
         f.write("\\end{table}\n")

@@ -147,7 +147,59 @@ A lista encadeada da travessia em pré-ordem (\lstinline{thread}) permite atuali
 \label{fig:simplex_pivoteamento}
 \end{figure}
 
-\paragraph{Complexidade e Desempenho Prático.}
-Embora o Network Simplex não apresente garantia de complexidade polinomial no pior caso sob regras de pivoteamento usuais, cada pivoteamento opera em $\mathcal{O}(|V|)$ e o algoritmo executa um número reduzido de iterações em instâncias práticas da literatura~\cite{ahuja1993network}. A implementação em C++ está detalhada no Código~\ref{lst:network_simplex} (Apêndice~\ref{ap:network_simplex}).
+\section{Estratégias de Otimização e Degenerescência em Redes Densas}\label{sec:simplex_otimizacoes}
+
+Embora a formulação conceitual do \textit{Network Simplex} seja direta, sua eficiência prática em redes de grande porte depende criticamente de decisões de projeto algorítmico e estruturas de dados~\cite{ahuja1993network}. A literatura classifica as estratégias de otimização em três níveis de sofisticação:
+
+\subsection{Nível 1: Otimizações Imediatas de Varredura e Memória (Implementadas em C++23)}
+
+Estas otimizações preservam a simplicidade didática do algoritmo, mas eliminam gargalos computacionais severos de CPU e alocação de memória:
+
+\begin{enumerate}
+    \item \textbf{Busca em Bloco Circular (\textit{Block Search Pivot Rule}):} A regra clássica de Dantzig varre todos os arcos $A \setminus T$ a cada passo para encontrar a maior violação $|\bar{w}_\pi|$, impondo custo $\mathcal{O}(|A|)$ por iteração. A busca em bloco particiona os arcos em blocos de tamanho fixo $B = \min(|A|, 256)$ mantendo um cursor circular permanente. Se o bloco corrente contiver arcos violadores, pivota-se imediatamente no melhor candidato local em $\mathcal{O}(B)$. Apenas na iteração final executa-se uma volta completa de $360^\circ$ para certificar a ausência global de violações e provar a otimalidade da base.
+    \item \textbf{Eliminação de Alocações na Travessia da Árvore:} Uma árvore geradora é acíclica. Consequentemente, para percorrer todos os vértices a partir da raiz, a condição $v \ne \text{parent}[u]$ é necessária e suficiente para impedir retornos e garantir que cada nó seja visitado exatamente uma vez. Elimina-se, assim, a necessidade de alocar vetores booleanos de visitação no \textit{heap} a cada iteração de pivoteamento.
+    \item \textbf{Indexação Canônica dos Arcos da Base:} Ao armazenar nas listas de adjacência da árvore pares estruturados compostos pelo vértice vizinho e pelo identificador canônico do arco correspondente (\lstinline{TreeEdge}), a recuperação da aresta da base passa a operar em tempo $\mathcal{O}(1)$, eliminando varreduras lineares na lista de adjacência geral do digrafo.
+    \item \textbf{Reutilização Estática de Memória:} A pré-alocação de vetores de tamanho $|V|+1$ na inicialização do algoritmo permite implementar filas lineares sem custo dinâmico de alocação de memória durante as iterações do método.
+\end{enumerate}
+
+\subsection{Nível 2: Atualização Restrita de Potenciais por Subárvore}
+
+Em implementações canônicas, cada pivoteamento reconstrói os potenciais de todos os nós via travessia global a partir da raiz em tempo $\mathcal{O}(|V|)$. Contudo, a estrutura combinatória do corte permite uma atualização substancialmente mais rápida:
+
+\begin{teorema}[Atualização Restrita de Potenciais por Subárvore][teo:subarvore_potencial]
+Seja $T$ uma árvore geradora com potenciais válidos $\pi$, e seja $e_{out} = (p,q)$ o arco que deixa a base, particionando $T$ em duas componentes conexas: $T_r$ (contendo a raiz $r$) e $T_s$ (a subárvore desconectada). Ao inserir o arco entrante $e_{in} = (u,v)$, os novos potenciais nodais válidos $\pi'$ satisfazem:
+\begin{equation}
+    \pi'(w) = \begin{cases}
+        \pi(w), & \text{se } w \in V(T_r) \\
+        \pi(w) \pm \bar{w}_\pi(e_{in}), & \text{se } w \in V(T_s)
+    \end{cases}
+\end{equation}
+onde o sinal $(\pm)$ depende exclusivamente da orientação de $e_{in}$ em relação ao corte $(V(T_r), V(T_s))$.
+\end{teorema}
+
+\begin{demonstracao}
+Como a raiz $r \in V(T_r)$ fixa $\pi'(r) = \pi(r) = 0$ e todos os arcos internos a $T_r$ mantêm-se inalterados na base, as condições de folgas complementares $\pi'(x) - \pi'(y) = w(x,y)$ continuam satisfeitas para todo $(x,y) \in T_r$, implicando $\pi'(w) = \pi(w)$ para todo $w \in V(T_r)$. Para a subárvore $T_s$, todos os seus arcos internos também permanecem na base; portanto, as diferenças de potencial entre pares de vértices em $T_s$ devem ser estritamente preservadas. O único arco da nova base que conecta $T_r$ a $T_s$ é o arco entrante $e_{in}$. Impondo que seu novo custo reduzido seja nulo ($\bar{w}_{\pi'}(e_{in}) = 0$), determina-se univocamente o deslocamento uniforme escalar $\Delta \pi = \pm \bar{w}_\pi(e_{in})$ aplicado a todos os vértices de $T_s$.
+\end{demonstracao}
+
+Esta propriedade reduz a atualização de potenciais de $\mathcal{O}(|V|)$ para $\mathcal{O}(|V(T_s)|)$, atingindo desempenho sublinear na grande maioria dos passos de pivoteamento práticos.
+
+\subsection{Nível 3: Otimizações de Escala Industrial (Thread Arrays e Cunningham)}
+
+Solvers de grande porte (como o pacote LEMON, o motor de Bixby e o CPLEX) levam a especialização do Simplex em redes ao estado-da-arte por meio de duas estruturas avançadas:
+
+\begin{enumerate}
+    \item \textbf{Ponteiros de Travessia Pré-Ordem (\textit{Thread Arrays}):} A árvore geradora é mantida como uma lista encadeada circular em profundidade via três vetores de suporte (Glover, Klingman e Stutz, 1974; Ahuja et al.~\cite{ahuja1993network}):
+    \begin{itemize}
+        \item \lstinline{thread[v]}: armazena o sucessor de $v$ na travessia em pré-ordem da árvore;
+        \item \lstinline{depth[v]}: registra a profundidade de $v$ em relação à raiz (permitindo calcular o ancestral comum mais próximo \textit{LCA} em tempo proporcional à profundidade);
+        \item \lstinline{subsize[v]}: registra o número de vértices pertencentes à subárvore enraizada em $v$.
+    \end{itemize}
+    Com essa estrutura, percorrer a subárvore $T_s$ para transladar seus potenciais consiste simplesmente em seguir o vetor \lstinline{thread} por exatamente \lstinline{subsize[v]} passos contíguos na memória, dispensando recursão, pilhas ou filas auxiliares.
+    \item \textbf{Árvores Fortemente Viáveis de Cunningham (\textit{Strongly Feasible Trees}):} Em redes de grande porte com ofertas e demandas concentradas, a degenerescência ($\delta = 0$) é pervasiva, provocando o fenômeno de \textit{stalling} (sequências de milhares de rotações de base sem alteração de fluxo nem redução de custo). Cunningham~\cite{cunningham1976network} introduziu uma regra construtiva de desempate: uma árvore $T$ é fortemente viável se todo arco básico com fluxo nulo aponta no sentido que se afasta da raiz, e todo arco com fluxo em capacidade máxima aponta em direção à raiz. Ao selecionar como arco sainte o primeiro arco que viola essa orientação ao longo do ciclo fundamental orientado, garante-se que todo pivô degenerado reconstrói a árvore de modo a estritamente aproximar a base de um aumento positivo de fluxo, eliminando matematicamente qualquer possibilidade de ciclagem infinita.
+\end{enumerate}
+
+\section{Complexidade e Desempenho Prático}\label{sec:simplex_complexidade}
+
+Embora o Network Simplex não apresente garantia de complexidade polinomial no pior caso sob regras de pivoteamento usuais, cada pivoteamento opera em $\mathcal{O}(|V|)$ (ou $\mathcal{O}(|V(T_s)|)$ com estruturas dedicadas) e o algoritmo executa um número reduzido de iterações em instâncias práticas da literatura~\cite{ahuja1993network}. A implementação em C++23 está detalhada no Código~\ref{lst:network_simplex} (Apêndice~\ref{ap:network_simplex}).
 
 
