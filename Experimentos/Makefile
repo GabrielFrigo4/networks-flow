@@ -21,7 +21,7 @@ TIMEOUT   ?= 16
 
 .PHONY: default help all pipeline bench-all deps drivers generate dimacs run bench bench-smoke \
         tables bench-tables sync-tables sync-csv plots bench-plots sync-plots \
-        format format-cpp format-md clean clean-results
+        format format-cpp format-md clean clear clean-results
 
 default: help
 all: drivers
@@ -36,15 +36,15 @@ help:
 	printf "  ============================================================\n"; \
 	sec "Fluxos Completos & Batch:"; \
 	cmd "pipeline"         "Executa o fluxo completo: drivers + bench + tabelas + gráficos + sync"; \
-	cmd "bench-all"        "Sinônimo para pipeline completo de experimentos"; \
+	cmd "bench-all"        "Pipeline completo: executa 80 instâncias e sincroniza artefatos"; \
 	sec "Compilação de Drivers:"; \
 	cmd "drivers"          "Compila os runners C++23 (max_flow_runner e min_cost_runner)"; \
 	cmd "deps"             "Instala dependências do Python para gráficos (matplotlib, numpy)"; \
 	sec "Geração de Instâncias:"; \
-	cmd "dimacs"           "Baixa geradores canônicos e produz as instâncias DIMACS oficiais"; \
-	cmd "generate"         "Gera instâncias sintéticas (grade, esparsas, piores casos)"; \
+	cmd "dimacs"           "Gera todas as 80 instâncias canônicas DIMACS (40 MaxFlow + 40 MinCost)"; \
+	cmd "generate"         "Gera instâncias sintéticas adicionais (grade, esparsas, piores casos)"; \
 	sec "Execução de Benchmarks:"; \
-	cmd "run"              "Executa benchmarks em todas as instâncias e salva CSVs em results/"; \
+	cmd "run"              "Executa benchmarks nas 80 instâncias e salva CSVs em results/"; \
 	cmd "bench"            "Sinônimo para run"; \
 	cmd "bench-smoke"      "Smoke-test rápido com instâncias mínimas (test_small.max/.min)"; \
 	sec "Processamento & Sincronização LaTeX:"; \
@@ -182,6 +182,8 @@ clean:
 	rm -rf instances/dimacs_maxflow instances/dimacs_mincost
 	rm -rf build_generators
 	printf "%s\n" "Limpeza completa concluída."
+
+clear: clean
 
 clean-results:
 	rm -rf results/*.csv results/*.json results/*.pdf results/*.tex

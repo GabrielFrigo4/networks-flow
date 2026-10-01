@@ -9,7 +9,7 @@ MAKEFLAGS += --no-print-directory -s
 
 SUBDIRS = "Segmentação de Imagens"
 
-.PHONY: default help all build verify test format format-cpp format-md clean
+.PHONY: default help all build apps verify test format format-cpp format-md clean clear
 
 default: help
 all: build
@@ -25,6 +25,7 @@ help:
 	sec "Fluxos Batch & Execução:"; \
 	cmd "verify"              "Compila todas as aplicações e executa suas baterias de teste"; \
 	cmd "build"               "Compila os binários de todas as aplicações"; \
+	cmd "apps"                "Sinônimo para build (compila todas as aplicações)"; \
 	cmd "test"                "Executa os testes de todas as aplicações (ex: Segmentação)"; \
 	sec "Qualidade & Formatação:"; \
 	cmd "format"              "Formata códigos C++ (clang-format) e documentação (prettier)"; \
@@ -39,6 +40,8 @@ build:
 	for dir in $(SUBDIRS); do \
 		$(MAKE) -C "$$dir" all; \
 	done
+
+apps: build
 
 format: format-cpp format-md
 
@@ -62,3 +65,5 @@ clean:
 	for dir in $(SUBDIRS); do \
 		$(MAKE) -C "$$dir" clean; \
 	done
+
+clear: clean

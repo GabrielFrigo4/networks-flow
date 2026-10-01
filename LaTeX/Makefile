@@ -20,7 +20,7 @@ BOOK_SRC  != find book -name "*.tex" 2> "/dev/null" || true
 UFABC_SRC != find ufabc -name "*.tex" 2> "/dev/null" || true
 IMAGENS   != find imagens -name "*.tex" 2> "/dev/null" || true
 
-.PHONY: default help all reports refresh ic relatorio monolito projeto book clean distclean sync-code format format-md
+.PHONY: default help all reports refresh ic relatorio monolito projeto book clean clear distclean sync-code format format-md latex publish
 
 default: help
 
@@ -56,6 +56,10 @@ all: $(TARGETS)
 
 reports: ic.pdf relatorio.pdf monolito.pdf
 	printf "\n==> Todos os relatórios institucionais foram compilados com sucesso!\n"
+
+publish: reports
+
+latex: all
 
 refresh: sync-code all
 	printf "\n==> Documentos atualizados e recompilados com sucesso!\n"
@@ -159,6 +163,8 @@ projeto.pdf: projeto.tex cit.bib
 clean:
 	rm -rf build
 	rm -f *.aux *.log *.out *.toc *.bbl *.blg *.synctex.gz *.fls *.fdb_latexmk */*.aux
+
+clear: clean
 
 distclean: clean
 	rm -f $(TARGETS) *.pdf

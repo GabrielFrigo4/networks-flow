@@ -12,7 +12,7 @@ EXE      = ./$(TARGET)
 CLIP     = wl-copy
 BUNDLE   = python3 ../../../bundle.py
 
-.PHONY: all run clean clip bundle
+.PHONY: all run clean clear clip bundle
 
 all: $(EXE) run
 
@@ -22,7 +22,7 @@ $(EXE): $(SRC)
 run:
 	"$(EXE)" < "$(INPUT)"
 
-clean:
+clean clear:
 	rm -f "$(EXE)"
 
 bundle:

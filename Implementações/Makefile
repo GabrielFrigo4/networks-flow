@@ -10,7 +10,7 @@ MAKEFLAGS += --no-print-directory -s
 CXX      = c++
 CXXFLAGS = -std=c++23 -fsyntax-only -Wall -Wextra
 
-.PHONY: default help all check test verify format format-cpp format-md clean
+.PHONY: default help all check impl test verify format format-cpp format-md clean clear
 
 default: help
 all: check
@@ -26,6 +26,7 @@ help:
 	sec "Fluxos Batch & Validação:"; \
 	cmd "verify"              "Executa checagem de sintaxe dos headers E todos os testes de problemas"; \
 	cmd "check"               "Verifica a sintaxe C++23 de todos os headers (FlowNetwork e CostNetwork)"; \
+	cmd "impl"                "Sinônimo para check (valida sintaxe C++23 dos headers)"; \
 	cmd "test"                "Executa os problemas de Fluxo Máximo e Fluxo de Custo Mínimo"; \
 	sec "Qualidade & Formatação:"; \
 	cmd "format"              "Formata códigos C++ (clang-format) e documentação (prettier)"; \
@@ -60,6 +61,8 @@ check:
 	done
 	printf "%s\n" "Todos os headers compilaram perfeitamente!"
 
+impl: check
+
 test:
 	printf "%s\n" "Executando testes dos problemas de Fluxo Máximo..."
 	for dir in Problemas/"Fluxo Máximo"/*/; do \
@@ -85,3 +88,5 @@ clean:
 			$(MAKE) -C "$$dir" clean; \
 		fi \
 	done
+
+clear: clean
