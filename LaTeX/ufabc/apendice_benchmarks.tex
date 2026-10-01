@@ -8,7 +8,7 @@ Este apêndice documenta os resultados computacionais obtidos na totalidade das 
 
 \subsection{Tabela Exaustiva de Fluxo Máximo}
 
-A Tabela~\ref{tab:benchmarks_maxflow_exhaustive} reporta os tempos médios de execução ($\bar{t}$ em milissegundos) dos cinco algoritmos de fluxo máximo sobre as 23 instâncias do protocolo experimental, categorizadas por família estrutural. O menor tempo por instância está destacado em \textbf{negrito}, e a indicação \textbf{TLE} (\textit{Time Limit Exceeded}) denota interrupção por exceder o teto de 60 segundos.
+A Tabela~\ref{tab:benchmarks_maxflow_exhaustive} reporta os tempos médios de execução ($\bar{t}$ em milissegundos) dos cinco algoritmos de fluxo máximo sobre as 23 instâncias do protocolo experimental, categorizadas por família estrutural. O menor tempo por instância está destacado em \textbf{negrito}, e a indicação \textbf{TLE} (\textit{Time Limit Exceeded}) denota interrupção por exceder o teto de 32 segundos.
 
 \input{tabelas/table_max_flow_exhaustive}
 
@@ -25,14 +25,14 @@ A Figura~\ref{fig:scalability_maxflow_apendice} ilustra o comportamento assintó
 
 As curvas experimentais evidenciam a diferenciação entre as classes assintóticas:
 \begin{itemize}[leftmargin=1.5em, itemsep=0.15em, topsep=0.2em, parsep=0em]
-    \item \textbf{Ford-Fulkerson:} Apresenta forte sensibilidade às capacidades inteiras da rede. Nas instâncias lineares (\texttt{wash\_line\_50} e \texttt{wash\_line\_100}), onde $f^* > 7 \times 10^7$, o tempo de execução excede o limiar de 60 segundos (TLE), confirmando a dependência $O(|f^*| m)$;
+    \item \textbf{Ford-Fulkerson:} Apresenta forte sensibilidade às capacidades inteiras da rede. Nas instâncias lineares (\texttt{wash\_line\_50} e \texttt{wash\_line\_100}), onde $f^* > 7 \times 10^7$, o tempo de execução excede o limiar de 32 segundos (TLE), confirmando a dependência $O(|f^*| m)$;
     \item \textbf{Edmonds-Karp:} Mantém taxa de crescimento compatível com $O(n m^2)$, degradando em redes com grande diâmetro topológico em razão do custo de sucessivas buscas em largura ($O(m)$ por aumento);
     \item \textbf{Dinic e Push-Relabel com Heurística de Lacuna:} Apresentam as menores inclinações na escala log-log, indicando menor sensibilidade ao crescimento da rede e mantendo tempos inferiores a 70 ms mesmo em instâncias com mais de 10.000 vértices.
 \end{itemize}
 
 \subsection{Tabela Exaustiva e Escalabilidade: Fluxo de Custo Mínimo}
 
-A Tabela~\ref{tab:benchmarks_mincost_exhaustive} reporta os dados experimentais completos dos quatro algoritmos de fluxo de custo mínimo na totalidade das 40 instâncias da família Netgen. O menor tempo por instância está destacado em \textbf{negrito}, e a indicação \textbf{TLE} denota interrupção por limite de 60 segundos.
+A Tabela~\ref{tab:benchmarks_mincost_exhaustive} reporta os dados experimentais completos dos quatro algoritmos de fluxo de custo mínimo na totalidade das 40 instâncias da família Netgen. O menor tempo por instância está destacado em \textbf{negrito}, e a indicação \textbf{TLE} denota interrupção por limite de 32 segundos.
 
 \input{tabelas/table_min_cost_exhaustive}
 

@@ -17,7 +17,7 @@ O protocolo experimental fundamenta-se nas seguintes diretrizes:
 
     \item \textbf{Parâmetros de Compilação e Otimização:} O código-fonte é compilado com Clang/LLVM sob o padrão ISO C++23 com nível de otimização \lstinline{-O2}. Adicionalmente, utiliza-se \lstinline{-Wl,-z,stack-size=268435456} para prevenir estouros de pilha em buscas profundas (DFS).
 
-    \item \textbf{Tratamento Estatístico e Controle de Timeout:} Cada instância é executada de forma independente por $N = 5$ repetições em regime estacionário (\textit{steady state}), descartando o ciclo de aquecimento de cache (\textit{warm-up}). Registram-se a média e o desvio-padrão. Fixa-se o tempo limite de 60 segundos por instância; execuções que excedem esse limiar são interrompidas como \textit{Time Limit Exceeded} (TLE).
+    \item \textbf{Tratamento Estatístico e Controle de Timeout:} Cada instância é executada de forma independente por $N = 2$ repetições em regime estacionário (\textit{steady state}), descartando o ciclo de aquecimento de cache (\textit{warm-up}). Registram-se a média e o desvio-padrão. Fixa-se o tempo limite de 32 segundos por instância; execuções que excedem esse limiar são interrompidas como \textit{Time Limit Exceeded} (TLE).
 \end{enumerate}
 
 
@@ -102,7 +102,7 @@ Os scripts no diretório \code{Experimentos/} automatizam a execução deste pro
 
 \section{Resultados Experimentais: Fluxo Máximo}\label{sec:bench_resultados_maxflow}
 
-A Tabela~\ref{tab:results_maxflow} apresenta os tempos médios de execução (5 repetições, $\bar{t}$ em ms) e o fluxo ótimo $f^*$ obtidos pelos algoritmos de fluxo máximo nas instâncias DIMACS e grafos sintéticos. O menor tempo por instância está destacado em \textbf{negrito}.
+A Tabela~\ref{tab:results_maxflow} apresenta os tempos médios de execução (2 repetições, $\bar{t}$ em ms) e o fluxo ótimo $f^*$ obtidos pelos algoritmos de fluxo máximo nas instâncias DIMACS e grafos sintéticos. O menor tempo por instância está destacado em \textbf{negrito}.
 
 \IfFileExists{tabelas/table_max_flow.tex}{
 \input{tabelas/table_max_flow}
