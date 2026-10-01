@@ -28,7 +28,7 @@ def parse_args():
                         help="Directory to save results")
     parser.add_argument("--repeats", type=int, default=2,
                         help="Number of repetitions per instance")
-    parser.add_argument("--timeout", type=int, default=32,
+    parser.add_argument("--timeout", type=int, default=16,
                         help="Timeout in seconds per driver execution")
     parser.add_argument("--max-driver", type=str, default="../drivers/max_flow_runner",
                         help="Path to max-flow driver binary")

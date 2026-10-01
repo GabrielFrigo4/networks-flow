@@ -478,54 +478,73 @@ def generate_compact_mincost(rows, output_path):
 
 EXHAUSTIVE_MF_GROUPS = [
     (
-        "Família DIMACS Washington (Malhas e Linhas com Gargalos)",
+        "Família DIMACS Washington: Malhas Bidimensionais (01 a 08)",
+        [
+            "wash_mesh_16.max",
+            "wash_mesh_24.max",
+            "wash_mesh_32.max",
+            "wash_mesh_48.max",
+            "wash_mesh_64.max",
+            "wash_mesh_80.max",
+            "wash_mesh_96.max",
+            "wash_mesh_128.max",
+        ],
+    ),
+    (
+        "Família DIMACS Washington: Camadas Aleatórias (RLG) (09 a 16)",
         [
             "wash_rlg_16.max",
+            "wash_rlg_24.max",
             "wash_rlg_32.max",
+            "wash_rlg_48.max",
             "wash_rlg_64.max",
+            "wash_rlg_80.max",
+            "wash_rlg_96.max",
             "wash_rlg_128.max",
-            "wash_mesh_16.max",
-            "wash_mesh_32.max",
-            "wash_mesh_64.max",
+        ],
+    ),
+    (
+        "Família DIMACS Washington: Cadeias com Gargalos (Line) (17 a 22)",
+        [
+            "wash_line_10.max",
             "wash_line_20.max",
+            "wash_line_30.max",
             "wash_line_50.max",
+            "wash_line_75.max",
             "wash_line_100.max",
         ],
     ),
     (
-        "Família DIMACS Genrmf (Planos Tridimensionais)",
+        "Família DIMACS Washington: Capacidades Exponenciais (23 a 26)",
+        [
+            "wash_exp_line_10.max",
+            "wash_exp_line_20.max",
+            "wash_exp_line_30.max",
+            "wash_exp_line_50.max",
+        ],
+    ),
+    (
+        "Família DIMACS Washington: Casos Adversariais e Estruturais (27 a 30)",
+        [
+            "wash_dinic_bad_250.max",
+            "wash_dinic_bad_500.max",
+            "wash_gold_bad_500.max",
+            "wash_match_1000.max",
+        ],
+    ),
+    (
+        "Família DIMACS Genrmf: Redes Tridimensionais e Cúbicas (31 a 40)",
         [
             "genrmf_small.max",
             "genrmf_medium.max",
             "genrmf_wide.max",
             "genrmf_long.max",
             "genrmf_huge.max",
-        ],
-    ),
-    (
-        "Redes em Grade Bidimensional (Grid Graphs)",
-        [
-            "grid_10x10.max",
-            "grid_50x50.max",
-            "grid_100x100.max",
-        ],
-    ),
-    (
-        "Grafos Aleatórios Erdős-Rényi $G(n, p)$",
-        [
-            "random_sparse_100.max",
-            "random_sparse_500.max",
-            "random_sparse_1000.max",
-            "random_dense_100.max",
-            "random_dense_500.max",
-        ],
-    ),
-    (
-        "Instâncias Patológicas de Pior Caso",
-        [
-            "worst_ff_10.max",
-            "worst_ff_15.max",
-            "worst_chain_100.max",
+            "genrmf_cube_10.max",
+            "genrmf_cube_16.max",
+            "genrmf_deep_32.max",
+            "genrmf_deep_64.max",
+            "genrmf_wide_8.max",
         ],
     ),
 ]
@@ -567,21 +586,38 @@ def generate_exhaustive_maxflow(rows, output_path):
         ncols = 4 + len(MF_ALGO_ORDER)
         col_spec = "l" + "r" * (ncols - 1)
         algo_headers = " & ".join(
-            f"\\textbf{{{MF_ALGO_SHORT[a]} (ms)}}"
+            f"\\textbf{{{MF_ALGO_SHORT[a]}}}"
             for a in MF_ALGO_ORDER
         )
 
-        f.write("\\begin{table}[!ht]\n")
-        f.write("\\centering\n")
-        f.write("\\footnotesize\n")
-        f.write("\\setlength{\\tabcolsep}{3pt}\n")
-        f.write(f"\\begin{{tabular}}{{{col_spec}}}\n")
+        f.write("\\begingroup\n")
+        f.write("\\small\n")
+        f.write("\\setlength{\\tabcolsep}{3.5pt}\n")
+        f.write(f"\\begin{{longtable}}{{{col_spec}}}\n")
+        f.write(
+            "\\caption{Resultados experimentais exaustivos dos motores de "
+            "fluxo máximo nas instâncias avaliadas.}\\label{tab:benchmarks_maxflow_exhaustive}\\\\\n"
+        )
         f.write("\\toprule\n")
         f.write(
             f"\\textbf{{Instância}} & $|V|$ & $|A|$ & "
             f"$f^*$ & {algo_headers} \\\\\n"
         )
         f.write("\\midrule\n")
+        f.write("\\endfirsthead\n")
+        f.write(
+            "\\caption[]{Resultados experimentais exaustivos dos motores de "
+            "fluxo máximo nas instâncias avaliadas (continuação)}\\\\\n"
+        )
+        f.write("\\toprule\n")
+        f.write(
+            f"\\textbf{{Instância}} & $|V|$ & $|A|$ & "
+            f"$f^*$ & {algo_headers} \\\\\n"
+        )
+        f.write("\\midrule\n")
+        f.write("\\endhead\n")
+        f.write("\\bottomrule\n")
+        f.write("\\endfoot\n")
 
         for g_idx, (group_title, instances) in enumerate(active_groups):
             f.write(
@@ -639,13 +675,8 @@ def generate_exhaustive_maxflow(rows, output_path):
                 f.write("\\midrule\n")
 
         f.write("\\bottomrule\n")
-        f.write("\\end{tabular}\n")
-        f.write(
-            "\\caption{Resultados experimentais exaustivos dos motores de "
-            "fluxo máximo nas instâncias avaliadas.}\n"
-        )
-        f.write("\\label{tab:benchmarks_maxflow_exhaustive}\n")
-        f.write("\\end{table}\n")
+        f.write("\\end{longtable}\n")
+        f.write("\\endgroup\n")
     print(f"  Gerado: {output_path}")
 
 

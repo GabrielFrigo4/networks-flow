@@ -96,16 +96,41 @@ def generate_maxflow_instances(wash_bin, rmf_bin, out_dir):
     log(f"Gerando instâncias DIMACS Max-Flow em {out_dir}...")
 
     wash_jobs = [
+        # Malhas Planas (Washington Mesh - 8 instâncias)
         (1, 16, 16, 1000, out_dir / "wash_mesh_16.max"),
+        (1, 24, 24, 1000, out_dir / "wash_mesh_24.max"),
         (1, 32, 32, 1000, out_dir / "wash_mesh_32.max"),
+        (1, 48, 48, 1000, out_dir / "wash_mesh_48.max"),
         (1, 64, 64, 1000, out_dir / "wash_mesh_64.max"),
+        (1, 80, 80, 1000, out_dir / "wash_mesh_80.max"),
+        (1, 96, 96, 1000, out_dir / "wash_mesh_96.max"),
+        (1, 128, 128, 1000, out_dir / "wash_mesh_128.max"),
+        # Grafos em Camadas Aleatórias (Washington RLG - 8 instâncias)
         (2, 16, 16, 1000, out_dir / "wash_rlg_16.max"),
+        (2, 24, 24, 1000, out_dir / "wash_rlg_24.max"),
         (2, 32, 32, 1000, out_dir / "wash_rlg_32.max"),
+        (2, 48, 48, 1000, out_dir / "wash_rlg_48.max"),
         (2, 64, 64, 1000, out_dir / "wash_rlg_64.max"),
+        (2, 80, 80, 1000, out_dir / "wash_rlg_80.max"),
+        (2, 96, 96, 1000, out_dir / "wash_rlg_96.max"),
         (2, 128, 128, 1000, out_dir / "wash_rlg_128.max"),
+        # Linhas com Gargalos (Washington Basic Line - 6 instâncias)
+        (6, 10, 10, 4, out_dir / "wash_line_10.max"),
         (6, 20, 20, 4, out_dir / "wash_line_20.max"),
+        (6, 30, 30, 4, out_dir / "wash_line_30.max"),
         (6, 50, 50, 4, out_dir / "wash_line_50.max"),
+        (6, 75, 75, 4, out_dir / "wash_line_75.max"),
         (6, 100, 100, 4, out_dir / "wash_line_100.max"),
+        # Linhas com Capacidades Exponenciais (Washington Exp-Line - 4 instâncias)
+        (7, 10, 10, 4, out_dir / "wash_exp_line_10.max"),
+        (7, 20, 20, 4, out_dir / "wash_exp_line_20.max"),
+        (7, 30, 30, 4, out_dir / "wash_exp_line_30.max"),
+        (7, 50, 50, 4, out_dir / "wash_exp_line_50.max"),
+        # Casos Adversariais e Estruturais Especiais (4 instâncias)
+        (9, 250, 0, 1000, out_dir / "wash_dinic_bad_250.max"),
+        (9, 500, 0, 1000, out_dir / "wash_dinic_bad_500.max"),
+        (10, 500, 0, 1000, out_dir / "wash_gold_bad_500.max"),
+        (4, 1000, 10, 0, out_dir / "wash_match_1000.max"),
     ]
     for fct, d1, d2, rng, path in wash_jobs:
         if not path.exists():
@@ -120,11 +145,17 @@ def generate_maxflow_instances(wash_bin, rmf_bin, out_dir):
                 sys.exit(1)
 
     rmf_jobs = [
+        # Redes Tridimensionais / Planos Sequenciais (Genrmf - 10 instâncias)
         (4, 16, 10000, 1000, out_dir / "genrmf_small.max"),
         (8, 16, 10000, 1000, out_dir / "genrmf_medium.max"),
         (16, 4, 10000, 1000, out_dir / "genrmf_wide.max"),
         (4, 64, 10000, 1000, out_dir / "genrmf_long.max"),
         (8, 64, 10000, 1000, out_dir / "genrmf_huge.max"),
+        (10, 10, 10000, 1000, out_dir / "genrmf_cube_10.max"),
+        (16, 16, 10000, 1000, out_dir / "genrmf_cube_16.max"),
+        (6, 32, 10000, 1000, out_dir / "genrmf_deep_32.max"),
+        (6, 64, 10000, 1000, out_dir / "genrmf_deep_64.max"),
+        (20, 8, 10000, 1000, out_dir / "genrmf_wide_8.max"),
     ]
     for a, b, c1, c2, path in rmf_jobs:
         if not path.exists():

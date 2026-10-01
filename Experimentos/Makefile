@@ -17,7 +17,7 @@ MAX_RUNNER = drivers/max_flow_runner
 MIN_RUNNER = drivers/min_cost_runner
 
 REPEATS   ?= 2
-TIMEOUT   ?= 32
+TIMEOUT   ?= 16
 
 .PHONY: default help all pipeline bench-all deps drivers generate dimacs run bench bench-smoke \
         tables bench-tables sync-tables sync-csv plots bench-plots sync-plots \

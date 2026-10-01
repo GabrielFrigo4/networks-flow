@@ -858,9 +858,9 @@ Os algoritmos de fluxo máximo foram avaliados sobre as coleções canônicas do
     \item \textbf{Genrmf (small, medium, wide, long):} Grafos tridimensionais particionados em planos transversais conectados sequencialmente com capacidades aleatórias.
 \end{itemize}
 
-As redes sintéticas em grade bidimensional e famílias patológicas encontram-se detalhadas no Apêndice~\ref{ap:benchmarks_completos}.
+A bateria experimental exaustiva contemplando a totalidade das 40 instâncias DIMACS de fluxo máximo encontra-se detalhada no Apêndice~\ref{ap:benchmarks_completos}.
 
-A Tabela~\ref{tab:benchmarks_maxflow} apresenta os tempos médios de execução obtidos pelos cinco algoritmos nas instâncias canônicas de fluxo máximo. O menor tempo por instância está destacado em \textbf{negrito}, e a indicação \textbf{TLE} (\textit{Time Limit Exceeded}) denota tempo de execução superior ao teto de 32 segundos.
+A Tabela~\ref{tab:benchmarks_maxflow} apresenta os tempos médios de execução obtidos pelos cinco algoritmos nas instâncias canônicas de fluxo máximo. O menor tempo por instância está destacado em \textbf{negrito}, e a indicação \textbf{TLE} (\textit{Time Limit Exceeded}) denota tempo de execução superior ao teto de 16 segundos.
 
 \begin{table}[!ht]
 \centering
@@ -900,14 +900,14 @@ A Tabela~\ref{tab:benchmarks_maxflow} apresenta os tempos médios de execução 
 \begin{itemize}[leftmargin=1.5em, itemsep=0.15em, topsep=0.2em, parsep=0em]
     \item \textbf{Impacto da Gap Heuristic no Push-Relabel:} O algoritmo \code{PushRelabelImproved} superou o \code{PushRelabel} convencional em todas as instâncias de maior diâmetro. Em \texttt{wash\_rlg\_64}, a aceleração atinge $\approx 75\times$ (1.250 ms vs. 16,7 ms) e em \texttt{wash\_line\_100} atinge $\approx 444\times$ (18.952 ms vs. 42,7 ms), comprovando a eficácia da detecção precoce de rótulos desconectados do vertedouro (\textit{gap heuristic});
     \item \textbf{Dinic vs. Edmonds-Karp:} O algoritmo de Dinic foi de $14\times$ a $100\times$ mais rápido que o Edmonds-Karp em redes de grande escala (destacando-se \texttt{wash\_line\_100}, com 51,4 ms vs. 5.118 ms). Enquanto o Edmonds-Karp executa uma nova BFS global a cada aumento de fluxo ($O(nm^2)$), o Dinic constrói o digrafo de níveis uma única vez por fase e envia fluxo através de caminhos bloqueadores;
-    \item \textbf{TLE do Ford-Fulkerson:} Nas instâncias Washington Line com capacidades elevadas ($f^* > 7 \times 10^7$ em \texttt{wash\_line\_50} e \texttt{wash\_line\_100}), o Ford-Fulkerson excede o limite de 32 s (TLE), confirmando a dependência assintótica $O(|f^*| m)$.
+    \item \textbf{TLE do Ford-Fulkerson:} Nas instâncias Washington Line com capacidades elevadas ($f^* > 7 \times 10^7$ em \texttt{wash\_line\_50} e \texttt{wash\_line\_100}), o Ford-Fulkerson excede o limite de 16 s (TLE), confirmando a dependência assintótica $O(|f^*| m)$.
 \end{itemize}
 
 \subsection{Avaliação de Fluxo de Custo Mínimo (Coleção DIMACS Netgen)}
 
 Para avaliar os algoritmos de fluxo de custo mínimo, utilizou-se a família \textbf{Netgen}, gerada oficialmente pelo gerador DIMACS de Rutgers para redes de transporte com restrições balanceadas de oferta e demanda.
 
-A Tabela~\ref{tab:benchmarks_mincost} apresenta a comparação entre os quatro algoritmos de custo mínimo em 13 instâncias representativas da família Netgen, cobrindo transbordo inicial, transporte de baixo fluxo, transporte de alta demanda, grande escala e escala máxima. O menor tempo por instância está destacado em \textbf{negrito}, e a indicação \textbf{TLE} denota interrupção por limite de 32 segundos. A bateria experimental exaustiva com a totalidade das 40 instâncias Netgen está detalhada no Apêndice~\ref{ap:benchmarks_completos}.
+A Tabela~\ref{tab:benchmarks_mincost} apresenta a comparação entre os quatro algoritmos de custo mínimo em 13 instâncias representativas da família Netgen, cobrindo transbordo inicial, transporte de baixo fluxo, transporte de alta demanda, grande escala e escala máxima. O menor tempo por instância está destacado em \textbf{negrito}, e a indicação \textbf{TLE} denota interrupção por limite de 16 segundos. A bateria experimental exaustiva com a totalidade das 40 instâncias Netgen está detalhada no Apêndice~\ref{ap:benchmarks_completos}.
 
 \begin{table}[!ht]
 \centering
@@ -1185,11 +1185,11 @@ Como trabalhos futuros, destacam-se a avaliação empírica sobre instâncias es
 \apendice{Resultados Experimentais Exaustivos e Análise de Escalabilidade}
 \label{ap:benchmarks_completos}
 
-Este apêndice documenta os resultados computacionais obtidos na totalidade das 23 instâncias de teste avaliadas na pesquisa, complementando as sínteses apresentadas na Seção~\ref{sec:resultados}. Apresentam-se as medições completas para grafos esparsos e densos aleatórios, redes em grade e famílias sintéticas de pior caso, acompanhadas das curvas de escalabilidade assintótica em escala logarítmica dupla.
+Este apêndice documenta os resultados computacionais obtidos na totalidade das 80 instâncias canônicas da suíte DIMACS avaliadas na pesquisa (40 para fluxo máximo e 40 para fluxo de custo mínimo), complementando as sínteses apresentadas na Seção~\ref{sec:resultados}. Apresentam-se as medições completas para as famílias Washington, Genrmf e Netgen, acompanhadas das curvas de escalabilidade assintótica em escala logarítmica dupla.
 
 \subsection{Tabela Exaustiva de Fluxo Máximo}
 
-A Tabela~\ref{tab:benchmarks_maxflow_exhaustive} reporta os tempos médios de execução ($\bar{t}$ em milissegundos) dos cinco algoritmos de fluxo máximo sobre as 23 instâncias do protocolo experimental, categorizadas por família estrutural. O menor tempo por instância está destacado em \textbf{negrito}, e a indicação \textbf{TLE} (\textit{Time Limit Exceeded}) denota interrupção por exceder o teto de 32 segundos.
+A Tabela~\ref{tab:benchmarks_maxflow_exhaustive} reporta os tempos médios de execução ($\bar{t}$ em milissegundos) dos cinco algoritmos de fluxo máximo sobre as 40 instâncias DIMACS do protocolo experimental, categorizadas por família estrutural. O menor tempo por instância está destacado em \textbf{negrito}, e a indicação \textbf{TLE} (\textit{Time Limit Exceeded}) denota interrupção por exceder o teto de 16 segundos.
 
 \begin{table}[!ht]
 \centering
@@ -1234,14 +1234,14 @@ A Figura~\ref{fig:scalability_maxflow_apendice} ilustra o comportamento assintó
 
 As curvas experimentais evidenciam a diferenciação entre as classes assintóticas:
 \begin{itemize}[leftmargin=1.5em, itemsep=0.15em, topsep=0.2em, parsep=0em]
-    \item \textbf{Ford-Fulkerson:} Apresenta forte sensibilidade às capacidades inteiras da rede. Nas instâncias lineares (\texttt{wash\_line\_50} e \texttt{wash\_line\_100}), onde $f^* > 7 \times 10^7$, o tempo de execução excede o limiar de 32 segundos (TLE), confirmando a dependência $O(|f^*| m)$;
+    \item \textbf{Ford-Fulkerson:} Apresenta forte sensibilidade às capacidades inteiras da rede. Nas instâncias lineares (\texttt{wash\_line\_50} e \texttt{wash\_line\_100}), onde $f^* > 7 \times 10^7$, o tempo de execução excede o limiar de 16 segundos (TLE), confirmando a dependência $O(|f^*| m)$;
     \item \textbf{Edmonds-Karp:} Mantém taxa de crescimento compatível com $O(n m^2)$, degradando em redes com grande diâmetro topológico em razão do custo de sucessivas buscas em largura ($O(m)$ por aumento);
     \item \textbf{Dinic e Push-Relabel com Heurística de Lacuna:} Apresentam as menores inclinações na escala log-log, indicando menor sensibilidade ao crescimento da rede e mantendo tempos inferiores a 70 ms mesmo em instâncias com mais de 10.000 vértices.
 \end{itemize}
 
 \subsection{Tabela Exaustiva e Escalabilidade: Fluxo de Custo Mínimo}
 
-A Tabela~\ref{tab:benchmarks_mincost_exhaustive} reporta os dados experimentais completos dos quatro algoritmos de fluxo de custo mínimo na totalidade das 40 instâncias da família Netgen. O menor tempo por instância está destacado em \textbf{negrito}, e a indicação \textbf{TLE} denota interrupção por limite de 32 segundos.
+A Tabela~\ref{tab:benchmarks_mincost_exhaustive} reporta os dados experimentais completos dos quatro algoritmos de fluxo de custo mínimo na totalidade das 40 instâncias da família Netgen. O menor tempo por instância está destacado em \textbf{negrito}, e a indicação \textbf{TLE} denota interrupção por limite de 16 segundos.
 
 \begingroup
 \small
