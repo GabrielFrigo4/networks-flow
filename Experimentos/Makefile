@@ -18,6 +18,7 @@ MIN_RUNNER = drivers/min_cost_runner
 
 REPEATS   ?= 2
 TIMEOUT   ?= 16
+WORKERS   ?= 1
 
 .PHONY: default help all pipeline bench-all deps drivers generate dimacs run bench bench-smoke \
         tables bench-tables sync-tables sync-csv plots bench-plots sync-plots \
@@ -114,7 +115,7 @@ dimacs:
 
 run: drivers dimacs
 	printf "%s\n" "Executando benchmarks..."
-	python3 scripts/run_benchmarks.py --type all --repeats $(REPEATS) --timeout $(TIMEOUT)
+	python3 scripts/run_benchmarks.py --type all --repeats $(REPEATS) --timeout $(TIMEOUT) --workers $(WORKERS)
 
 bench: run
 

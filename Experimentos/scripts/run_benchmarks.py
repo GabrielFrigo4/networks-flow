@@ -1,11 +1,13 @@
 #!/usr/bin/env python3
 
 import argparse
-import subprocess
-import os
-import sys
-from pathlib import Path
+import concurrent.futures
 import csv
+import os
+from pathlib import Path
+import subprocess
+import sys
+import threading
 
 USE_COLOR = os.environ.get(
     "NO_COLOR") is None and os.environ.get("TERM", "") != "dumb"
@@ -15,6 +17,9 @@ C_DIM = "\033[90m" if USE_COLOR else ""
 C_BLUE = "\033[1;34m" if USE_COLOR else ""
 C_YELLOW = "\033[1;33m" if USE_COLOR else ""
 C_GREEN = "\033[1;32m" if USE_COLOR else ""
+C_CYAN = "\033[1;36m" if USE_COLOR else ""
+
+io_lock = threading.Lock()
 
 
 def parse_args():
@@ -30,6 +35,8 @@ def parse_args():
                         help="Number of repetitions per instance")
     parser.add_argument("--timeout", type=int, default=16,
                         help="Timeout in seconds per driver execution")
+    parser.add_argument("--workers", "-j", type=int, default=1,
+                        help="Number of concurrent workers (default: 1 for maximum scientific rigor)")
     parser.add_argument("--max-driver", type=str, default="../drivers/max_flow_runner",
                         help="Path to max-flow driver binary")
     parser.add_argument("--min-driver", type=str, default="../drivers/min_cost_runner",
@@ -37,6 +44,48 @@ def parse_args():
     parser.add_argument("--force", action="store_true",
                         help="Re-run even if results exist")
     return parser.parse_args()
+
+
+def print_banner(args, max_count, min_count):
+    W = 60
+    hbar = "─" * W if USE_COLOR else "-" * W
+    title = "NETWORKS FLOW — PROTOCOLO EXPERIMENTAL DIMACS"
+    pad_title = max(0, (W - len(title)) // 2)
+
+    workers_str = (
+        "1 (Sequencial Estrito — Rigor Científico)"
+        if args.workers == 1
+        else f"{args.workers} (Workers Concorrentes)"
+    )
+
+    lines = [
+        ("Escopo:", f"{args.type} (DIMACS 1991)"),
+        ("Instâncias:", f"{max_count} MaxFlow + {min_count} MinCost ({max_count + min_count} total)"),
+        ("Repetições:", f"{args.repeats}x por algoritmo"),
+        ("Timeout:", f"{args.timeout}s (com short-circuit em TLE)"),
+        ("Workers:", workers_str),
+        ("Saída:", f"{Path(args.output_dir).name}/"),
+    ]
+
+    if not USE_COLOR:
+        print(f"+{hbar}+", file=sys.stderr)
+        print(f"|{' ' * pad_title}{title}{' ' * (W - pad_title - len(title))}|", file=sys.stderr)
+        print(f"+{hbar}+", file=sys.stderr)
+        for label, val in lines:
+            vis_len = 2 + 14 + 1 + len(val)
+            pad = max(0, W - vis_len)
+            print(f"|  {label:<14} {val}{' ' * pad}|", file=sys.stderr)
+        print(f"+{hbar}+\n", file=sys.stderr)
+        return
+
+    print(f"\n{C_CYAN}┌{hbar}┐{C_RESET}", file=sys.stderr)
+    print(f"{C_CYAN}│{C_RESET}{' ' * pad_title}{C_BOLD}{title}{C_RESET}{' ' * (W - pad_title - len(title))}{C_CYAN}│{C_RESET}", file=sys.stderr)
+    print(f"{C_CYAN}├{hbar}┤{C_RESET}", file=sys.stderr)
+    for label, val in lines:
+        vis_len = 2 + 14 + 1 + len(val)
+        pad = max(0, W - vis_len)
+        print(f"{C_CYAN}│{C_RESET}  {C_YELLOW}{label:<14}{C_RESET} {val}{' ' * pad}{C_CYAN}│{C_RESET}", file=sys.stderr)
+    print(f"{C_CYAN}└{hbar}┘{C_RESET}\n", file=sys.stderr)
 
 
 def check_existing(csv_path, instance_name):
@@ -51,7 +100,7 @@ def check_existing(csv_path, instance_name):
     return False
 
 
-def run_type(benchmark_type, instances_dir, output_dir, driver_path, ext, repeats, timeout, force):
+def run_type(benchmark_type, instances_dir, output_dir, driver_path, ext, repeats, timeout, workers, force):
     instances = sorted([
         p for p in instances_dir.rglob(f"*{ext}")
         if not p.name.startswith("test_") and not p.name.startswith("smoke_")
@@ -67,7 +116,6 @@ def run_type(benchmark_type, instances_dir, output_dir, driver_path, ext, repeat
         return 2
 
     csv_path = output_dir / f"{benchmark_type}_results.csv"
-
     needs_header = not csv_path.exists() or os.path.getsize(csv_path) == 0 or force
 
     failed_cross_val = False
@@ -85,49 +133,74 @@ def run_type(benchmark_type, instances_dir, output_dir, driver_path, ext, repeat
     num_engines = 5 if benchmark_type == "max_flow" else 4
     subprocess_timeout = int(num_engines * (timeout + 4))
 
-    with open(csv_path, "a", encoding="utf-8") as f:
-        for i, instance in enumerate(instances, 1):
-            if not force and check_existing(csv_path, instance.name):
+    def process_instance(i, total, instance, csv_handle):
+        nonlocal failed_cross_val, any_error
+
+        if not force and check_existing(csv_path, instance.name):
+            with io_lock:
                 print(
-                    f"{C_DIM}[{i}/{len(instances)}] Skipping {instance.name} (already exists)...{C_RESET}", file=sys.stderr)
-                continue
+                    f"{C_DIM}[{i}/{total}] Skipping {instance.name} (already exists)...{C_RESET}",
+                    file=sys.stderr,
+                )
+            return
 
-            print(f"{C_BLUE}[{i}/{len(instances)}]{C_RESET} Running {C_BOLD}{instance.name}{C_RESET}...",
-                  file=sys.stderr)
+        worker_tag = "" if workers == 1 else " [Worker]"
+        with io_lock:
+            print(
+                f"{C_BLUE}[{i}/{total}]{C_RESET}{worker_tag} Running {C_BOLD}{instance.name}{C_RESET}...",
+                file=sys.stderr,
+            )
 
-            cmd = [
-                str(driver_path),
-                str(instance),
-                "--repeats", str(repeats),
-                "--timeout", str(timeout),
-                "--no-header"
-            ]
+        cmd = [
+            str(driver_path),
+            str(instance),
+            "--repeats", str(repeats),
+            "--timeout", str(timeout),
+            "--no-header",
+        ]
 
-            try:
-                result = subprocess.run(cmd, capture_output=True, text=True,
-                                        timeout=subprocess_timeout)
-
+        try:
+            result = subprocess.run(
+                cmd, capture_output=True, text=True, timeout=subprocess_timeout
+            )
+            with io_lock:
                 if result.stdout:
-                    f.write(result.stdout)
-                    f.flush()
+                    csv_handle.write(result.stdout)
+                    csv_handle.flush()
                 if result.stderr:
                     print(result.stderr, file=sys.stderr, end="")
-
                 if result.returncode == 1:
                     failed_cross_val = True
                 elif result.returncode != 0:
                     any_error = True
-
-            except subprocess.TimeoutExpired:
+        except subprocess.TimeoutExpired:
+            with io_lock:
                 print(
-                    f"{C_YELLOW}[{i}/{len(instances)}] {instance.name} timed out after {subprocess_timeout}s (salvaguarda Python){C_RESET}", file=sys.stderr)
+                    f"{C_YELLOW}[{i}/{total}] {instance.name} timed out after {subprocess_timeout}s (salvaguarda Python){C_RESET}",
+                    file=sys.stderr,
+                )
                 if benchmark_type == "max_flow":
-                    f.write(
-                        f"{instance.name},TimeoutAll,0,0,0,{timeout*1000.0:.2f},0,TLE\n")
+                    csv_handle.write(
+                        f"{instance.name},TimeoutAll,0,0,0,{timeout*1000.0:.2f},0,TLE\n"
+                    )
                 else:
-                    f.write(
-                        f"{instance.name},TimeoutAll,0,0,0,0,{timeout*1000.0:.2f},0,TLE\n")
-                f.flush()
+                    csv_handle.write(
+                        f"{instance.name},TimeoutAll,0,0,0,0,{timeout*1000.0:.2f},0,TLE\n"
+                    )
+                csv_handle.flush()
+
+    with open(csv_path, "a", encoding="utf-8") as f:
+        total = len(instances)
+        if workers == 1:
+            for i, instance in enumerate(instances, 1):
+                process_instance(i, total, instance, f)
+        else:
+            with concurrent.futures.ThreadPoolExecutor(max_workers=workers) as executor:
+                futures = [
+                    executor.submit(process_instance, i, total, inst, f)
+                    for i, inst in enumerate(instances, 1)
+                ]
+                concurrent.futures.wait(futures)
 
     if any_error:
         return 2
@@ -136,27 +209,48 @@ def run_type(benchmark_type, instances_dir, output_dir, driver_path, ext, repeat
     return 0
 
 
+def resolve_path(p_str, script_dir):
+    p = Path(p_str)
+    if p.is_absolute():
+        return p
+    if (Path.cwd() / p).exists():
+        return (Path.cwd() / p).resolve()
+    return (script_dir / p).resolve()
+
+
 def main():
     args = parse_args()
-    script_dir = Path(__file__).resolve().parent
+    args.workers = max(1, args.workers)
 
-    instances_dir = (script_dir / args.instances_dir).resolve()
-    output_dir = (script_dir / args.output_dir).resolve()
-    max_driver = (script_dir / args.max_driver).resolve()
-    min_driver = (script_dir / args.min_driver).resolve()
+    script_dir = Path(__file__).resolve().parent
+    instances_dir = resolve_path(args.instances_dir, script_dir)
+    output_dir = resolve_path(args.output_dir, script_dir)
+    max_driver = resolve_path(args.max_driver, script_dir)
+    min_driver = resolve_path(args.min_driver, script_dir)
 
     os.makedirs(output_dir, exist_ok=True)
+
+    max_instances = [
+        p for p in instances_dir.rglob("*.max")
+        if not p.name.startswith("test_") and not p.name.startswith("smoke_")
+    ]
+    min_instances = [
+        p for p in instances_dir.rglob("*.min")
+        if not p.name.startswith("test_") and not p.name.startswith("smoke_")
+    ]
+
+    print_banner(args, len(max_instances), len(min_instances))
 
     ret_max = 0
     ret_min = 0
 
     if args.type in ["maxflow", "all"]:
         ret_max = run_type("max_flow", instances_dir, output_dir,
-                           max_driver, ".max", args.repeats, args.timeout, args.force)
+                           max_driver, ".max", args.repeats, args.timeout, args.workers, args.force)
 
     if args.type in ["mincost", "all"]:
         ret_min = run_type("min_cost", instances_dir, output_dir,
-                           min_driver, ".min", args.repeats, args.timeout, args.force)
+                           min_driver, ".min", args.repeats, args.timeout, args.workers, args.force)
 
     if ret_max == 2 or ret_min == 2:
         return 2

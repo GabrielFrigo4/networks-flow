@@ -7,7 +7,10 @@ MAKEFLAGS += --no-print-directory -s
 # Makefile: Network Flow Research Suite
 # ----------------------------------------------------------------
 
-PYTHON = python3
+PYTHON   = python3
+REPEATS ?= 2
+TIMEOUT ?= 16
+WORKERS ?= 1
 
 .PHONY: help all \
         bench-all bench-pipeline bench-latex bench-publish bench-research sync-all check-all \
@@ -60,7 +63,12 @@ help:
 	cmd "setup"            "Configura os githooks locais e permissões canônicas"; \
 	sec "Limpeza:"; \
 	cmd "clean"            "Limpa artefatos de compilação em todos os submódulos"; \
+	cmd "distclean"        "Expurga tudo incluindo instâncias DIMACS geradas"; \
 	cmd "clean-results"    "Remove resultados de medições, tabelas e gráficos gerados"; \
+	sec "Parâmetros de Benchmark (Customizáveis via CLI):"; \
+	printf "    \033[90m%-22s\033[0m %s\n" "WORKERS=1" "Trabalhadores concorrentes (padrão: 1, rigor científico)"; \
+	printf "    \033[90m%-22s\033[0m %s\n" "REPEATS=2" "Repetições por algoritmo em cada instância (padrão: 2)"; \
+	printf "    \033[90m%-22s\033[0m %s\n" "TIMEOUT=16" "Tempo limite em segundos por algoritmo (padrão: 16s)"; \
 	echo ""
 
 ### ================================
@@ -70,7 +78,7 @@ bench-all: dimacs exp bench-pipeline
 
 bench-pipeline: dimacs exp
 	printf "\n\033[1;34m==> [1/5] Executando benchmarks nas instâncias de referência...\033[0m\n"
-	$(MAKE) -C Experimentos run
+	$(MAKE) -C Experimentos run WORKERS=$(WORKERS) REPEATS=$(REPEATS) TIMEOUT=$(TIMEOUT)
 	printf "\n\033[1;34m==> [2/5] Gerando tabelas brutas de experimentos...\033[0m\n"
 	$(MAKE) -C Experimentos tables
 	printf "\n\033[1;34m==> [3/5] Gerando gráficos de desempenho...\033[0m\n"
@@ -173,7 +181,7 @@ dimacs:
 	$(MAKE) -C Experimentos dimacs
 
 bench: exp
-	$(MAKE) -C Experimentos run
+	$(MAKE) -C Experimentos run WORKERS=$(WORKERS) REPEATS=$(REPEATS) TIMEOUT=$(TIMEOUT)
 
 bench-smoke: exp
 	$(MAKE) -C Experimentos bench-smoke
