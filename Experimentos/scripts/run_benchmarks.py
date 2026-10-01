@@ -7,7 +7,6 @@ import os
 from pathlib import Path
 import subprocess
 import sys
-import threading
 
 USE_COLOR = os.environ.get(
     "NO_COLOR") is None and os.environ.get("TERM", "") != "dumb"
@@ -18,8 +17,6 @@ C_BLUE = "\033[1;34m" if USE_COLOR else ""
 C_YELLOW = "\033[1;33m" if USE_COLOR else ""
 C_GREEN = "\033[1;32m" if USE_COLOR else ""
 C_CYAN = "\033[1;36m" if USE_COLOR else ""
-
-io_lock = threading.Lock()
 
 
 def parse_args():
@@ -133,24 +130,7 @@ def run_type(benchmark_type, instances_dir, output_dir, driver_path, ext, repeat
     num_engines = 5 if benchmark_type == "max_flow" else 4
     subprocess_timeout = int(num_engines * (timeout + 4))
 
-    def process_instance(i, total, instance, csv_handle):
-        nonlocal failed_cross_val, any_error
-
-        if not force and check_existing(csv_path, instance.name):
-            with io_lock:
-                print(
-                    f"{C_DIM}[{i}/{total}] Skipping {instance.name} (already exists)...{C_RESET}",
-                    file=sys.stderr,
-                )
-            return
-
-        worker_tag = "" if workers == 1 else " [Worker]"
-        with io_lock:
-            print(
-                f"{C_BLUE}[{i}/{total}]{C_RESET}{worker_tag} Running {C_BOLD}{instance.name}{C_RESET}...",
-                file=sys.stderr,
-            )
-
+    def run_driver(instance):
         cmd = [
             str(driver_path),
             str(instance),
@@ -158,49 +138,86 @@ def run_type(benchmark_type, instances_dir, output_dir, driver_path, ext, repeat
             "--timeout", str(timeout),
             "--no-header",
         ]
-
         try:
             result = subprocess.run(
                 cmd, capture_output=True, text=True, timeout=subprocess_timeout
             )
-            with io_lock:
-                if result.stdout:
-                    csv_handle.write(result.stdout)
-                    csv_handle.flush()
-                if result.stderr:
-                    print(result.stderr, file=sys.stderr, end="")
-                if result.returncode == 1:
-                    failed_cross_val = True
-                elif result.returncode != 0:
-                    any_error = True
+            return {
+                "stdout": result.stdout,
+                "stderr": result.stderr,
+                "returncode": result.returncode,
+            }
         except subprocess.TimeoutExpired:
-            with io_lock:
-                print(
-                    f"{C_YELLOW}[{i}/{total}] {instance.name} timed out after {subprocess_timeout}s (salvaguarda Python){C_RESET}",
-                    file=sys.stderr,
-                )
-                if benchmark_type == "max_flow":
-                    csv_handle.write(
-                        f"{instance.name},TimeoutAll,0,0,0,{timeout*1000.0:.2f},0,TLE\n"
-                    )
-                else:
-                    csv_handle.write(
-                        f"{instance.name},TimeoutAll,0,0,0,0,{timeout*1000.0:.2f},0,TLE\n"
-                    )
-                csv_handle.flush()
+            if benchmark_type == "max_flow":
+                t_out = f"{instance.name},TimeoutAll,0,0,0,{timeout*1000.0:.2f},0,TLE\n"
+            else:
+                t_out = f"{instance.name},TimeoutAll,0,0,0,0,{timeout*1000.0:.2f},0,TLE\n"
+            return {
+                "stdout": t_out,
+                "stderr": f"{C_YELLOW}[Timeout] {instance.name} excedeu o limite de salvaguarda de {subprocess_timeout}s{C_RESET}\n",
+                "returncode": 0,
+            }
+
+    def commit_result(res, csv_handle):
+        nonlocal failed_cross_val, any_error
+        if res["stdout"]:
+            csv_handle.write(res["stdout"])
+            csv_handle.flush()
+        if res["stderr"]:
+            print(res["stderr"], file=sys.stderr, end="", flush=True)
+        if res["returncode"] == 1:
+            failed_cross_val = True
+        elif res["returncode"] != 0:
+            any_error = True
+
+    total = len(instances)
+    to_run = []
+    for i, instance in enumerate(instances, 1):
+        already_exists = not force and check_existing(csv_path, instance.name)
+        to_run.append((i, instance, already_exists))
 
     with open(csv_path, "a", encoding="utf-8") as f:
-        total = len(instances)
         if workers == 1:
-            for i, instance in enumerate(instances, 1):
-                process_instance(i, total, instance, f)
+            for i, instance, already_exists in to_run:
+                if already_exists:
+                    print(
+                        f"{C_DIM}[{i}/{total}] Skipping {instance.name} (already exists)...{C_RESET}",
+                        file=sys.stderr,
+                        flush=True,
+                    )
+                    continue
+
+                print(
+                    f"{C_BLUE}[{i}/{total}]{C_RESET} Running {C_BOLD}{instance.name}{C_RESET}...",
+                    file=sys.stderr,
+                    flush=True,
+                )
+                res = run_driver(instance)
+                commit_result(res, f)
         else:
             with concurrent.futures.ThreadPoolExecutor(max_workers=workers) as executor:
-                futures = [
-                    executor.submit(process_instance, i, total, inst, f)
-                    for i, inst in enumerate(instances, 1)
-                ]
-                concurrent.futures.wait(futures)
+                future_map = {
+                    instance.name: executor.submit(run_driver, instance)
+                    for _, instance, already_exists in to_run
+                    if not already_exists
+                }
+
+                for i, instance, already_exists in to_run:
+                    if already_exists:
+                        print(
+                            f"{C_DIM}[{i}/{total}] Skipping {instance.name} (already exists)...{C_RESET}",
+                            file=sys.stderr,
+                            flush=True,
+                        )
+                        continue
+
+                    print(
+                        f"{C_BLUE}[{i}/{total}]{C_RESET} Running {C_BOLD}{instance.name}{C_RESET}...",
+                        file=sys.stderr,
+                        flush=True,
+                    )
+                    res = future_map[instance.name].result()
+                    commit_result(res, f)
 
     if any_error:
         return 2
