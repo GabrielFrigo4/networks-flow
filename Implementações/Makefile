@@ -19,9 +19,10 @@ all: check
 ### HELP & DOCUMENTATION
 ### ================================
 help:
-	cmd() { printf "    \033[36mmake %-20s\033[0m %s\n" "$$1" "$$2"; }; \
-	sec() { printf "\n  \033[1;33m%s\033[0m\n" "$$1"; }; \
-	printf "\n  \033[1;37mNetwork Flow — Módulo de Implementações em C++23\033[0m\n"; \
+	_e=$$'\e'; \
+	cmd() { printf "    $${_e}[36mmake %-20s$${_e}[0m %s\n" "$$1" "$$2"; }; \
+	sec() { printf "\n  $${_e}[1;33m%s$${_e}[0m\n" "$$1"; }; \
+	printf "\n  $${_e}[1;37mNetwork Flow — Módulo de Implementações em C++23$${_e}[0m\n"; \
 	printf "  ============================================================\n"; \
 	sec "Fluxos Batch & Validação:"; \
 	cmd "verify"              "Executa checagem de sintaxe dos headers E todos os testes de problemas"; \
@@ -35,7 +36,7 @@ help:
 	echo ""
 
 verify: check test
-	printf "\n\033[1;32m==> Todas as implementações e problemas foram validados com sucesso!\033[0m\n\n"
+	printf "\n$${_e}[1;32m==> Todas as implementações e problemas foram validados com sucesso!$${_e}[0m\n\n"
 
 format: format-cpp format-md
 	printf "%s\n" "Formatação completa de Implementações concluída!"

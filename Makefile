@@ -17,7 +17,7 @@ WORKERS ?= 1
         latex reports book relatorio ic monolito projeto \
         apps impl exp generate dimacs \
         bench bench-smoke bench-tables bench-plots bench-artifacts \
-        format format-cpp format-md test setup clean clear distclean clean-results sync-code
+        format clang-format prettier format-cpp format-md test setup clean clear distclean clean-results sync-code
 
 all: help
 
@@ -25,9 +25,10 @@ all: help
 ### HELP & DOCUMENTATION
 ### ================================
 help:
-	cmd() { printf "    \033[36mmake %-22s\033[0m %s\n" "$$1" "$$2"; }; \
-	sec() { printf "\n  \033[1;33m%s\033[0m\n" "$$1"; }; \
-	printf "\n  \033[1;37mNetwork Flow — Suíte de Pesquisa & Implementações em Grafos\033[0m\n"; \
+	_e=$$'\e'; \
+	cmd() { printf "    $${_e}[36mmake %-22s$${_e}[0m %s\n" "$$1" "$$2"; }; \
+	sec() { printf "\n  $${_e}[1;33m%s$${_e}[0m\n" "$$1"; }; \
+	printf "\n  $${_e}[1;37mNetwork Flow — Suíte de Pesquisa & Implementações em Grafos$${_e}[0m\n"; \
 	printf "  ============================================================\n"; \
 	sec "Pipelines de Benchmark & Publicação:"; \
 	cmd "bench-publish"    "Benchmark (80 instâncias) + gera artefatos + compila relatórios (PDFs)"; \
@@ -57,8 +58,8 @@ help:
 	sec "Qualidade, Formatação & Git:"; \
 	cmd "test"             "Executa a suíte de testes de algoritmos e aplicações"; \
 	cmd "format"           "Formata todos os códigos C++ (clang-format) e documentação (prettier)"; \
-	cmd "format-cpp"       "Formata exclusivamente códigos C++ (.hpp/.cpp) com clang-format"; \
-	cmd "format-md"        "Formata exclusivamente arquivos Markdown (.md) com prettier"; \
+	cmd "clang-format"     "Formata exclusivamente códigos C++ (.hpp/.cpp) com clang-format"; \
+	cmd "prettier"         "Formata exclusivamente arquivos Markdown (.md) com prettier"; \
 	cmd "sync-code"        "Sincroniza algoritmos das Implementações com o LaTeX e monólito"; \
 	cmd "setup"            "Configura os githooks locais e permissões canônicas"; \
 	sec "Limpeza:"; \
@@ -66,9 +67,9 @@ help:
 	cmd "distclean"        "Expurga tudo incluindo instâncias DIMACS geradas"; \
 	cmd "clean-results"    "Remove resultados de medições, tabelas e gráficos gerados"; \
 	sec "Parâmetros de Benchmark (Customizáveis via CLI):"; \
-	printf "    \033[90m%-22s\033[0m %s\n" "WORKERS=1" "Trabalhadores concorrentes (padrão: 1, rigor científico)"; \
-	printf "    \033[90m%-22s\033[0m %s\n" "REPEATS=2" "Repetições por algoritmo em cada instância (padrão: 2)"; \
-	printf "    \033[90m%-22s\033[0m %s\n" "TIMEOUT=16" "Tempo limite em segundos por algoritmo (padrão: 16s)"; \
+	printf "    $${_e}[90m%-22s$${_e}[0m %s\n" "WORKERS=1" "Trabalhadores concorrentes (padrão: 1, rigor científico)"; \
+	printf "    $${_e}[90m%-22s$${_e}[0m %s\n" "REPEATS=2" "Repetições por algoritmo em cada instância (padrão: 2)"; \
+	printf "    $${_e}[90m%-22s$${_e}[0m %s\n" "TIMEOUT=16" "Tempo limite em segundos por algoritmo (padrão: 16s)"; \
 	echo ""
 
 ### ================================
@@ -77,27 +78,27 @@ help:
 bench-all: dimacs exp bench-pipeline
 
 bench-pipeline: dimacs exp
-	printf "\n\033[1;34m==> [1/5] Executando benchmarks nas instâncias de referência...\033[0m\n"
+	printf "\n$${_e}[1;34m==> [1/5] Executando benchmarks nas instâncias de referência...$${_e}[0m\n"
 	$(MAKE) -C Experimentos run WORKERS=$(WORKERS) REPEATS=$(REPEATS) TIMEOUT=$(TIMEOUT)
-	printf "\n\033[1;34m==> [2/5] Gerando tabelas brutas de experimentos...\033[0m\n"
+	printf "\n$${_e}[1;34m==> [2/5] Gerando tabelas brutas de experimentos...$${_e}[0m\n"
 	$(MAKE) -C Experimentos tables
-	printf "\n\033[1;34m==> [3/5] Gerando gráficos de desempenho...\033[0m\n"
+	printf "\n$${_e}[1;34m==> [3/5] Gerando gráficos de desempenho...$${_e}[0m\n"
 	$(MAKE) -C Experimentos plots
-	printf "\n\033[1;34m==> [4/5] Sincronizando CSVs e gerando artefatos finais consolidados para o LaTeX...\033[0m\n"
+	printf "\n$${_e}[1;34m==> [4/5] Sincronizando CSVs e gerando artefatos finais consolidados para o LaTeX...$${_e}[0m\n"
 	$(MAKE) -C Experimentos sync-csv
 	$(PYTHON) Scripts/generate_bench_artifacts.py
-	printf "\n\033[1;34m==> [5/5] Reconstruindo monólito LaTeX integrado...\033[0m\n"
+	printf "\n$${_e}[1;34m==> [5/5] Reconstruindo monólito LaTeX integrado...$${_e}[0m\n"
 	$(PYTHON) Scripts/build_monolith.py
-	printf "\n\033[1;32m==> Pipeline de benchmarks concluído com sucesso total!\033[0m\n\n"
+	printf "\n$${_e}[1;32m==> Pipeline de benchmarks concluído com sucesso total!$${_e}[0m\n\n"
 
 bench-publish: dimacs exp bench-all reports
-	printf "\n\033[1;32m==> Pipeline de benchmarks e publicação de relatórios concluído com sucesso!\033[0m\n\n"
+	printf "\n$${_e}[1;32m==> Pipeline de benchmarks e publicação de relatórios concluído com sucesso!$${_e}[0m\n\n"
 
 bench-research: dimacs exp bench-all latex
-	printf "\n\033[1;32m==> Pipeline de reprodução científica completa (DIMACS + Benchmarks + Suíte LaTeX) concluído com sucesso!\033[0m\n\n"
+	printf "\n$${_e}[1;32m==> Pipeline de reprodução científica completa (DIMACS + Benchmarks + Suíte LaTeX) concluído com sucesso!$${_e}[0m\n\n"
 
 bench-latex: dimacs exp bench-pipeline latex
-	printf "\n\033[1;32m==> Pipeline de benchmarks e compilação LaTeX concluídos com sucesso!\033[0m\n\n"
+	printf "\n$${_e}[1;32m==> Pipeline de benchmarks e compilação LaTeX concluídos com sucesso!$${_e}[0m\n\n"
 
 sync-all: sync-code bench-artifacts
 	$(PYTHON) Scripts/build_monolith.py
@@ -107,13 +108,16 @@ check-all: impl exp test
 	printf "%s\n" "Verificando integridade da sincronização de apêndices e monólito..."
 	$(PYTHON) Scripts/sync_listings.py --check
 	$(PYTHON) Scripts/build_monolith.py --check
-	printf "\n\033[1;32m==> Todas as verificações de integridade e qualidade passaram com sucesso!\033[0m\n\n"
+	printf "\n$${_e}[1;32m==> Todas as verificações de integridade e qualidade passaram com sucesso!$${_e}[0m\n\n"
 
 ### ================================
 ### FORMATTING & PRETTIER
 ### ================================
 format: format-cpp format-md
 	printf "%s\n" "Formatação completa (C++ e Markdown) concluída com sucesso!"
+
+clang-format: format-cpp
+prettier: format-md
 
 format-cpp:
 	printf "%s\n" "Formatando todos os códigos C++ (.hpp, .cpp, .h, .c) com clang-format..."

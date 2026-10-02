@@ -129,7 +129,7 @@ O assunto (Otimização Combinatória, Teoria dos Grafos, Dualidade Linear e An�
 
 - **Não complexa:** Períodos curtos ou médios, ordem direta (sujeito-verbo-objeto), estrutura sintática limpa. Evitar orações subordinadas excessivamente aninhadas ou construções convolutas.
 - **Acadêmica:** Tom estritamente formal, neutro, impessoal (terceira pessoa ou voz passiva sintética) e preciso.
-- **Sem florear / Sem florear muito:** Proibição absoluta de linguagem poética, metafórica, dramática ou emocional (ex.: "tobogã de custos", "queda livre", "guilhotina", "redemoinhos", "essência física", "calibrado com exatidão cirúrgica", "toda gota de fluido").
+- **Sem florear / Sem florear muito:** Evite linguagem poética, metafórica, dramática ou emocional (ex.: "tobogã de custos", "queda livre", "guilhotina", "redemoinhos", "essência física", "calibrado com exatidão cirúrgica", "toda gota de fluido").
 - **Pouco rebuscada:** Vocabulário culto, porém simples e moderno. Eliminar termos arcaicos ou pretensiosos (ex.: "outrossim", "peremptório", "precípuo", "hodierno", "fulcral", "assenta-se sobre", "perpassamos").
 - **Sem palavras extras (Economia Textual):** Eliminar clichês e expressões de enchimento ("vale ressaltar que", "cabe salientar que", "é importante notar que", "com o intuito de", "não se trata de uma mera...", "longe de se restringir a..."). Cortar redundâncias.
 - **Mais matemática:** Privilegiar a linguagem matemática formal — definições precisas, notação simbólica, equações, inequações, invariantes de corte e formulações algébricas — em vez de longas paráfrases verbais aproximadas.

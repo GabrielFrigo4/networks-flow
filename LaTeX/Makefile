@@ -28,10 +28,11 @@ default: help
 ### HELP & DOCUMENTATION
 ### ================================
 help:
-	cmd() { printf "    \033[36mmake %-20s\033[0m %s\n" "$$1" "$$2"; }; \
-	sec() { printf "\n  \033[1;33m%s\033[0m\n" "$$1"; }; \
-	sub() { printf "  \033[1;34m  ── %s ──\033[0m\n" "$$1"; }; \
-	printf "\n  \033[1;37mNetwork Flow LaTeX — Editoração Científica & Relatórios\033[0m\n"; \
+	_e=$$'\e'; \
+	cmd() { printf "    $${_e}[36mmake %-20s$${_e}[0m %s\n" "$$1" "$$2"; }; \
+	sec() { printf "\n  $${_e}[1;33m%s$${_e}[0m\n" "$$1"; }; \
+	sub() { printf "  $${_e}[1;34m  ── %s ──$${_e}[0m\n" "$$1"; }; \
+	printf "\n  $${_e}[1;37mNetwork Flow LaTeX — Editoração Científica & Relatórios$${_e}[0m\n"; \
 	printf "  ============================================================\n"; \
 	sec "Fluxos Batch & Sincronização:"; \
 	cmd "all"                 "Compila todos os documentos da suíte LaTeX"; \

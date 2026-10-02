@@ -31,9 +31,10 @@ all: drivers
 ### HELP & DOCUMENTATION
 ### ================================
 help:
-	cmd() { printf "    \033[36mmake %-22s\033[0m %s\n" "$$1" "$$2"; }; \
-	sec() { printf "\n  \033[1;33m%s\033[0m\n" "$$1"; }; \
-	printf "\n  \033[1;37mNetwork Flow — Módulo de Experimentos & Benchmarks\033[0m\n"; \
+	_e=$$'\e'; \
+	cmd() { printf "    $${_e}[36mmake %-22s$${_e}[0m %s\n" "$$1" "$$2"; }; \
+	sec() { printf "\n  $${_e}[1;33m%s$${_e}[0m\n" "$$1"; }; \
+	printf "\n  $${_e}[1;37mNetwork Flow — Módulo de Experimentos & Benchmarks$${_e}[0m\n"; \
 	printf "  ============================================================\n"; \
 	sec "Fluxos Completos & Batch:"; \
 	cmd "pipeline"         "Executa o fluxo completo: drivers + bench + tabelas + gráficos + sync"; \
@@ -62,7 +63,7 @@ help:
 	echo ""
 
 pipeline: dimacs drivers run tables plots sync-csv
-	printf "\n\033[1;32m==> Pipeline de Experimentos concluído e sincronizado com sucesso!\033[0m\n\n"
+	printf "\n$${_e}[1;32m==> Pipeline de Experimentos concluído e sincronizado com sucesso!$${_e}[0m\n\n"
 
 bench-all: dimacs pipeline
 

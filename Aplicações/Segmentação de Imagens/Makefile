@@ -17,9 +17,10 @@ all: build seed
 ### HELP & DOCUMENTATION
 ### ================================
 help:
-	cmd() { printf "    \033[36mmake %-20s\033[0m %s\n" "$$1" "$$2"; }; \
-	sec() { printf "\n  \033[1;33m%s\033[0m\n" "$$1"; }; \
-	printf "\n  \033[1;37mSegmentação de Imagens via Corte Mínimo (C++23)\033[0m\n"; \
+	_e=$$'\e'; \
+	cmd() { printf "    $${_e}[36mmake %-20s$${_e}[0m %s\n" "$$1" "$$2"; }; \
+	sec() { printf "\n  $${_e}[1;33m%s$${_e}[0m\n" "$$1"; }; \
+	printf "\n  $${_e}[1;37mSegmentação de Imagens via Corte Mínimo (C++23)$${_e}[0m\n"; \
 	printf "  ============================================================\n"; \
 	sec "Fluxos Batch & Execução:"; \
 	cmd "verify"              "Compila executáveis, gera seeds PPM e roda bateria de testes"; \
@@ -34,7 +35,7 @@ help:
 	echo ""
 
 verify: build seed test
-	printf "\n\033[1;32m==> Segmentação de Imagens compilada e testada com sucesso!\033[0m\n\n"
+	printf "\n$${_e}[1;32m==> Segmentação de Imagens compilada e testada com sucesso!$${_e}[0m\n\n"
 
 build: $(SEG_EXE) $(SEED_EXE) $(PPM_EXE)
 

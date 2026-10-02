@@ -10,13 +10,13 @@ import sys
 
 USE_COLOR = os.environ.get(
     "NO_COLOR") is None and os.environ.get("TERM", "") != "dumb"
-C_RESET = "\033[0m" if USE_COLOR else ""
-C_BOLD = "\033[1m" if USE_COLOR else ""
-C_DIM = "\033[90m" if USE_COLOR else ""
-C_BLUE = "\033[1;34m" if USE_COLOR else ""
-C_YELLOW = "\033[1;33m" if USE_COLOR else ""
-C_GREEN = "\033[1;32m" if USE_COLOR else ""
-C_CYAN = "\033[1;36m" if USE_COLOR else ""
+C_RESET = "\x1b[0m" if USE_COLOR else ""
+C_BOLD = "\x1b[1m" if USE_COLOR else ""
+C_DIM = "\x1b[90m" if USE_COLOR else ""
+C_BLUE = "\x1b[1;34m" if USE_COLOR else ""
+C_YELLOW = "\x1b[1;33m" if USE_COLOR else ""
+C_GREEN = "\x1b[1;32m" if USE_COLOR else ""
+C_CYAN = "\x1b[1;36m" if USE_COLOR else ""
 
 
 def parse_args():
