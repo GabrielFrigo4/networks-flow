@@ -39,7 +39,7 @@ O projeto abrange a interseção entre Ciência da Computação e Otimização C
     - `apendices/`: Listagens de código C++ espelhadas automaticamente da pasta `Implementações/`.
     - `cit.bib`: Base bibliográfica BibTeX.
 - `Experimentos/`: Infraestrutura de benchmarks empíricos (DIMACS, geradores, medição de tempo/memória com Python/C++).
-- `Scripts/`: Ferramentas auxiliares:
+- `.scripts/`: Ferramentas auxiliares:
     - `sync_listings.py`: Script de sincronização automática entre `Implementações/` e `LaTeX/apendices/`.
 - `Material/`: Artigos de referência, livros em PDF e insumos teóricos de apoio.
 - `.githooks/`: Hooks de versionamento Git (ex.: `pre-commit` para verificação de artefatos e sincronia de código).
@@ -89,9 +89,9 @@ MAKEFLAGS += --no-print-directory -s
 
 ### 4.2 Sincronização C++ ↔ LaTeX
 
-- O script `Scripts/sync_listings.py` espelha o código de `Implementações/` para os apêndices em `LaTeX/apendices/`.
+- O script `.scripts/sync_listings.py` espelha o código de `Implementações/` para os apêndices em `LaTeX/apendices/`.
 - **Sempre que alterar qualquer header ou código C++:** execute `make sync-code` antes de comitar.
-- O script suporta o modo checagem: `python3 Scripts/sync_listings.py --check` (utilizado pelo hook de pre-commit).
+- O script suporta o modo checagem: `python3 .scripts/sync_listings.py --check` (utilizado pelo hook de pre-commit).
 
 ### 4.3 Higiene do Git e Pre-commit Hook
 

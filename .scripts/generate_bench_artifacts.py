@@ -8,7 +8,7 @@ and generates:
   - Scalability charts (log-log) and grouped bar charts (PDF)
 
 Usage:
-    python3 Scripts/generate_bench_artifacts.py
+    python3 .scripts/generate_bench_artifacts.py
 """
 
 import csv

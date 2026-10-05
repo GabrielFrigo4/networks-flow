@@ -86,9 +86,9 @@ bench-pipeline: dimacs exp
 	$(MAKE) -C Experimentos plots
 	printf "\n$${_e}[1;34m==> [4/5] Sincronizando CSVs e gerando artefatos finais consolidados para o LaTeX...$${_e}[0m\n"
 	$(MAKE) -C Experimentos sync-csv
-	$(PYTHON) Scripts/generate_bench_artifacts.py
+	$(PYTHON) .scripts/generate_bench_artifacts.py
 	printf "\n$${_e}[1;34m==> [5/5] Reconstruindo monólito LaTeX integrado...$${_e}[0m\n"
-	$(PYTHON) Scripts/build_monolith.py
+	$(PYTHON) .scripts/build_monolith.py
 	printf "\n$${_e}[1;32m==> Pipeline de benchmarks concluído com sucesso total!$${_e}[0m\n\n"
 
 bench-publish: dimacs exp bench-all reports
@@ -101,13 +101,13 @@ bench-latex: dimacs exp bench-pipeline latex
 	printf "\n$${_e}[1;32m==> Pipeline de benchmarks e compilação LaTeX concluídos com sucesso!$${_e}[0m\n\n"
 
 sync-all: sync-code bench-artifacts
-	$(PYTHON) Scripts/build_monolith.py
+	$(PYTHON) .scripts/build_monolith.py
 	printf "%s\n" "Todos os códigos, artefatos de benchmark e monólito sincronizados!"
 
 check-all: impl exp test
 	printf "%s\n" "Verificando integridade da sincronização de apêndices e monólito..."
-	$(PYTHON) Scripts/sync_listings.py --check
-	$(PYTHON) Scripts/build_monolith.py --check
+	$(PYTHON) .scripts/sync_listings.py --check
+	$(PYTHON) .scripts/build_monolith.py --check
 	printf "\n$${_e}[1;32m==> Todas as verificações de integridade e qualidade passaram com sucesso!$${_e}[0m\n\n"
 
 ### ================================
@@ -163,8 +163,8 @@ projeto:
 	$(MAKE) -C LaTeX projeto
 
 sync-code:
-	$(PYTHON) Scripts/sync_listings.py
-	$(PYTHON) Scripts/build_monolith.py
+	$(PYTHON) .scripts/sync_listings.py
+	$(PYTHON) .scripts/build_monolith.py
 
 ### ================================
 ### IMPLEMENTATIONS & EXPERIMENTS
@@ -198,7 +198,7 @@ bench-plots:
 
 bench-artifacts:
 	$(MAKE) -C Experimentos sync-csv
-	$(PYTHON) Scripts/generate_bench_artifacts.py
+	$(PYTHON) .scripts/generate_bench_artifacts.py
 
 test:
 	$(MAKE) -C Implementações test

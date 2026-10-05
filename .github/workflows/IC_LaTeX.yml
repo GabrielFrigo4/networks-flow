@@ -22,8 +22,8 @@ jobs:
 
             - name: Sincronizar Listings e Gerar Monólito
               run: |
-                  python3 Scripts/sync_listings.py || true
-                  python3 Scripts/build_monolith.py || true
+                  python3 .scripts/sync_listings.py || true
+                  python3 .scripts/build_monolith.py || true
 
             - name: Compilar todos os arquivos LaTeX
               uses: xu-cheng/latex-action@v4

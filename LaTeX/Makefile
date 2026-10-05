@@ -72,8 +72,8 @@ projeto: projeto.pdf
 book: book.pdf
 
 sync-code:
-	$(PYTHON) ../Scripts/sync_listings.py
-	$(PYTHON) ../Scripts/build_monolith.py
+	$(PYTHON) ../.scripts/sync_listings.py
+	$(PYTHON) ../.scripts/build_monolith.py
 
 format: format-md
 
@@ -129,7 +129,7 @@ relatorio.pdf: relatorio.tex header.tex cit.bib $(APENDICES) $(UFABC_SRC) $(IMAG
 	printf "%s\n" "[OK]"
 
 monolito.tex: relatorio.tex header.tex $(UFABC_SRC) $(APENDICES) $(IMAGENS)
-	$(PYTHON) ../Scripts/build_monolith.py
+	$(PYTHON) ../.scripts/build_monolith.py
 
 monolito.pdf: monolito.tex cit.bib
 	mkdir -p build

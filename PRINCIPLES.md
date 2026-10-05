@@ -52,7 +52,7 @@ O projeto de pesquisa de Iniciação Científica **"Problemas de Fluxos em Redes
 
 > _Projete para a visibilidade para tornar inspeção e depuração fáceis._
 
-- Script `Scripts/sync_listings.py` espelha o código-fonte C++ diretamente nos apêndices do livro LaTeX, tornando o código auditável e transparente no texto da monografia.
+- Script `.scripts/sync_listings.py` espelha o código-fonte C++ diretamente nos apêndices do livro LaTeX, tornando o código auditável e transparente no texto da monografia.
 
 ### 8. Regra da Robustez (_Rule of Robustness_)
 
@@ -143,7 +143,7 @@ O projeto de pesquisa de Iniciação Científica **"Problemas de Fluxos em Redes
 
 > _O que é frágil quebra com variações de ambiente; o que é antifrágil adapta-se, auto-cura e gera resultados reprodutíveis em qualquer plataforma._
 
-- Scripts de automação e sincronização de listagens (`Scripts/sync_listings.py`) verificam caminhos defensivamente, tratam encodings e suportam execução limpa em múltiplos sistemas.
+- Scripts de automação e sincronização de listagens (`.scripts/sync_listings.py`) verificam caminhos defensivamente, tratam encodings e suportam execução limpa em múltiplos sistemas.
 
 ---
 
