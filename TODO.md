@@ -226,3 +226,8 @@ Progresso dos experimentos computacionais e validação de desempenho dos algori
 | Seção de Resultados Experimentais (Subseção 5.16) |  ✅   |    —     | Redação da metodologia experimental, especificações da máquina de testes e discussão dos resultados. |
 | Tabelas Comparativas de Desempenho (Framework)    |  ✅   |    ✅    | Inclusão de tabelas formatadas em `booktabs` com tempo de CPU, desvio e número de operações.         |
 | Gráficos de Desempenho e Escalabilidade           |  ✅   |    ✅    | Curvas de complexidade assintótica empírica em escala log-log e gráficos de barras comparativos.     |
+
+---
+
+> [!TIP]
+> Para detalhes sobre convenções de código e diretrizes de engenharia, consulte o [PRINCIPLES.md](PRINCIPLES.md).
