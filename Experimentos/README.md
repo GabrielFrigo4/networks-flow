@@ -63,7 +63,7 @@ Experimentos/
 1. **Tempo de CPU (ms):** Mensurado através de `std::chrono::high_resolution_clock` no driver C++, isolando o tempo de leitura de arquivo (I/O) do tempo de resolução algorítmica.
 2. **Número de Operações:** Contagem de aumentações, cancelamentos de ciclos, operações de _push/relabel_ e pivoteamentos no _Network Simplex_.
 3. **Pico de Memória:** Aferição do consumo de memória residente (RSS) para avaliar overhead estrutural.
-4. **Verificação de Corretude:** Comparação cruzada automática do valor ótimo $f^*$ ou $z^*$ entre todos os algoritmos para assegurar integridade dos resultados.
+4. **Verificação de Corretude:** Comparação cruzada automática do valor ótimo $f^_$ ou $z^_$ entre todos os algoritmos para assegurar integridade dos resultados.
 5. **Critério Estatístico:** Cada instância é executada múltiplas vezes (ex: $N=5$ repetições) para cálculo de média e desvio-padrão, com controle de _timeout_ (ex: 60s).
 
 ---
