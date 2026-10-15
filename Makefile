@@ -126,10 +126,10 @@ format-cpp:
 format-md:
 	if command -v prettier > "/dev/null" 2>&1; then \
 		printf "%s\n" "Formatando documentação e configurações com prettier..."; \
-		prettier --write "**/*.{md,json,yml,yaml}" --ignore-path .gitignore > "/dev/null" 2>&1 || true; \
+		prettier --write "**/*.{md,json,jsonc,yml,yaml,html,css}" --ignore-path .gitignore > "/dev/null" 2>&1 || true; \
 	elif command -v npx > "/dev/null" 2>&1; then \
 		printf "%s\n" "Formatando documentação e configurações com prettier..."; \
-		npx --yes prettier --write "**/*.{md,json,yml,yaml}" --ignore-path .gitignore > "/dev/null" 2>&1 || true; \
+		npx --yes prettier --write "**/*.{md,json,jsonc,yml,yaml,html,css}" --ignore-path .gitignore > "/dev/null" 2>&1 || true; \
 	else \
 		printf "%s\n" "Aviso: prettier não encontrado no sistema. Formatação ignorada."; \
 	fi
