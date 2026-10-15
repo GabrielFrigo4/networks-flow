@@ -61,40 +61,13 @@ Backlog de desenvolvimento algorítmico e pesquisa teórica planejado para a con
 | **Algoritmo Húngaro (Kuhn-Munkres)**  | Kuhn (1955), Munkres (1957) |      $\mathcal{O}(\|V\|^3)$       |  ✅   |   ⏳ Pós-IC   | Atribuição de custo mínimo (emparelhamento com pesos) via potenciais duais e folgas complementares.         |
 | **Harness de Benchmark Bipartido**    | Suíte Comparativa Dedicada  |        Benchmark Empírico         |  ✅   |   ⏳ Pós-IC   | Avaliação empírica: reduções genéricas via `FlowNetwork`/`CostNetwork` vs. algoritmos dedicados bipartidos. |
 
-### ⚡ Algoritmo MPM (Fluxo Máximo em Digrafos Densos)
+### 📋 Tarefas Planejadas (Pós-IC)
 
-O algoritmo MPM (Malhotra, Pramodh Kumar e Maheshwari, 1978) substitui a busca em profundidade (DFS) com retrocesso do Dinic pelo cômputo de potenciais nodais de vazão (_throughput potential_), otimizando a saturação de redes densas onde $\|E\| = \Theta(\|V\|^2)$.
-
-- **Conceito de Potenciais Nodais:** Para cada vértice $v \in V \setminus \{s, t\}$ no digrafo de níveis, o potencial $p(v)$ é o gargalo entre capacidade residual incidente e emergente:
-  $$p(v) = \min \left( \sum_{u \in \text{in}(v)} c_f(u, v), \sum_{w \in \text{out}(v)} c_f(v, w) \right)$$
-- **Mecânica da Fase:** Localiza-se o nó crítico de menor potencial $v^* = \arg\min_v p(v)$. Propagam-se $p(v^*)$ unidades de fluxo para frente (Push em direção a $t$) e para trás (Pull a partir de $s$). Removem-se os nós saturados e atualizam-se os potenciais até que nenhum caminho $s-t$ reste no digrafo de níveis.
-- **Complexidade:** Cada fase requer $\mathcal{O}(\|V\|^2)$ e ocorrem no máximo $\|V\|-1$ fases, garantindo cota temporal determinística estrita de $\mathcal{O}(\|V\|^3)$.
-- **Tarefas de Implementação:**
-    - [ ] Implementar a classe `MPM` herdando de [`FlowNetwork`](./Implementações/FlowNetwork/FlowNetwork.hpp).
-    - [ ] Criar estruturas auxiliares de fila/lista para atualização dinâmica de graus residuais e potenciais nodais.
-    - [ ] Validar corretude cruzada com `Dinic` e `PushRelabel` em instâncias densas da literatura DIMACS.
-
-### 🧩 Algoritmos Especializados em Grafos Bipartidos
-
-As reduções combinatórias apresentadas no [Capítulo 5 (`05_grafos_bipartidos.tex`)](./LaTeX/capitulos/05_grafos_bipartidos.tex#L294-L311) e no [Capítulo 9 (`09_algoritmos_mcf.tex`)](./LaTeX/capitulos/09_algoritmos_mcf.tex#L186-L192) estabelecem correspondência direta entre métodos de fluxo em redes unitárias e algoritmos clássicos dedicados. As implementações dedicadas eliminam vértices auxiliares ($s$ e $t$) e exploram a simplificação residual com arcos reversos determinísticos (`match[v]`).
-
-- **Hopcroft-Karp (1973):**
-    - Especialização de Dinic em redes unitárias bipartidas $G = (L \cup R, E)$.
-    - Emprega BFS global a partir de vértices livres em $L$ para determinar as distâncias mínimas até vértices livres em $R$, seguida de DFS para encontrar uma coleção maximal de caminhos aumentantes disjuntos nos vértices.
-    - Complexidade temporal de $\mathcal{O}(\|E\| \sqrt{\|V\|})$ garantida pelo limite de $\mathcal{O}(\sqrt{\|V\|})$ fases.
-    - [ ] Implementar classe dedicada de Hopcroft-Karp em C++23.
-- **Kuhn (1955):**
-    - Especialização do método de Ford-Fulkerson com capacidades unitárias.
-    - Executa busca em profundidade (DFS) procurando caminhos aumentantes alternantes diretamente sobre o vetor de emparelhamento `match[v]`.
-    - Complexidade temporal de $\mathcal{O}(\|V\| \cdot \|E\|)$, de implementação enxuta e com excelente constante em instâncias esparsas moderadas.
-    - [ ] Implementar classe ou função utilitária do algoritmo de Kuhn em C++23.
-- **Algoritmo Húngaro / Kuhn-Munkres (1955, 1957):**
-    - Especialização primal-dual do método _Successive Shortest Path_ (SSP) sobre o problema de atribuição bipartida de custo mínimo.
-    - Mantém potenciais duais nos vértices ($u_i + v_j \le c_{ij}$) para operar no subgrafo de igualdade com custos reduzidos não-negativos ($\bar{c}_{ij} = c_{ij} - u_i - v_j = 0$).
-    - Complexidade temporal de $\mathcal{O}(\|V\|^3)$ sobre matriz de custos/pesos.
-    - [ ] Implementar o algoritmo Húngaro em C++23 com complexidade cúbica estrita.
-- **Validação Experimental e Comparação de Desempenho:**
-    - [ ] Comparar tempo de CPU e consumo de memória entre as implementações dedicadas e as reduções via `Dinic`, `PushRelabel` e `NetworkSimplex` nos problemas [`School Dance`](./Implementações/Problemas/Fluxo%20M%C3%A1ximo/School%20Dance/) e [`Task Assignment`](./Implementações/Problemas/Fluxo%20de%20Custo%20M%C3%ADnimo/Task%20Assignment/).
+- [ ] **MPM (Malhotra, Kumar, Maheshwari):** Implementar classe `MPM` herdando de [`FlowNetwork`](./Implementações/FlowNetwork/FlowNetwork.hpp) com fluxo bloqueador em $\mathcal{O}(\|V\|^3)$ e validar em instâncias densas da literatura DIMACS.
+- [ ] **Hopcroft-Karp:** Implementar motor dedicado de emparelhamento bipartido máximo em C++23 com complexidade $\mathcal{O}(\|E\| \sqrt{\|V\|})$.
+- [ ] **Kuhn:** Implementar algoritmo de Kuhn em C++23 para emparelhamento bipartido via caminhos alternantes em $\mathcal{O}(\|V\| \cdot \|E\|)$.
+- [ ] **Algoritmo Húngaro (Kuhn-Munkres):** Implementar algoritmo Húngaro em C++23 para problema de atribuição de custo mínimo em $\mathcal{O}(\|V\|^3)$.
+- [ ] **Benchmark Bipartido:** Avaliar tempo de CPU e consumo de memória entre as implementações dedicadas vs. reduções genéricas via `Dinic`, `PushRelabel` e `NetworkSimplex`.
 
 ---
 

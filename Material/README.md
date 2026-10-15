@@ -35,17 +35,28 @@ Lista de referências externas cruciais, principalmente do [CP-Algorithms](https
 
 - 🔗 [Fluxo Máximo e Corte Mínimo (IME-USP)](https://www.ime.usp.br/~pf/otimizacao-combinatoria/aulas/max-flow.html)
 
-### 🧑‍💻 Algoritmos de Fluxo Máximo
+### ⚡ Algoritmos de Fluxo Máximo
 
 - 🔗 [Edmonds-Karp Algorithm](https://cp-algorithms.com/graph/edmonds_karp.html)
 - 🔗 [Dinic's Algorithm](https://cp-algorithms.com/graph/dinic.html)
 - 🔗 [Push-Relabel Algorithm](https://cp-algorithms.com/graph/push-relabel.html)
 - 🔗 [Push-Relabel Improved (Highest Label / Gap Heuristic)](https://cp-algorithms.com/graph/push-relabel-faster.html)
+- 🔗 [MPM Algorithm (Malhotra, Pramodh Kumar e Maheshwari)](https://cp-algorithms.com/graph/mpm.html)
 
-### 🚀 Extensões e Problemas Avançados
+### 🧮 Algoritmos de Fluxo de Custo Mínimo
 
-- 🔗 [Flows with Demands (Circulação com Demandas)](https://cp-algorithms.com/graph/flow_with_demands.html)
-- 🔗 [Minimum-Cost Flow (Fluxo de Custo Mínimo)](https://cp-algorithms.com/graph/min_cost_flow.html)
+- 🔗 [Minimum-Cost Flow (Successive Shortest Path com Potenciais)](https://cp-algorithms.com/graph/min_cost_flow.html)
+- 🔗 [Assignment Problem using Min-Cost-Flow](https://cp-algorithms.com/graph/Assignment-problem-min-flow.html)
+
+### 🧩 Algoritmos em Grafos Bipartidos (Matching e Atribuição)
+
+- 🔗 [Kuhn's Algorithm (Maximum Bipartite Matching)](https://cp-algorithms.com/graph/kuhn_maximum_bipartite_matching.html)
+- 🔗 [Hungarian Algorithm (Kuhn-Munkres)](https://cp-algorithms.com/graph/hungarian-algorithm.html)
+- 🔗 [Hopcroft-Karp Algorithm (Wikipedia / Referência Clássica)](https://en.wikipedia.org/wiki/Hopcroft%E2%80%93Karp_algorithm)
+
+### 🚀 Extensões e Modelagens de Fluxo
+
+- 🔗 [Flows with Demands (Circulação com Demandas e Limites Inferiores)](https://cp-algorithms.com/graph/flow_with_demands.html)
 
 > [!TIP]
 > Se você deseja entender a fundo a implementação C++ dos algoritmos linkados acima, visite o nosso diretório principal de [**Implementações**](../Implementações/)!
