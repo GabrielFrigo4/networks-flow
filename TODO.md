@@ -55,18 +55,18 @@ Backlog de desenvolvimento algorítmico e pesquisa teórica planejado para a con
 
 | Algoritmo / Componente                | Referência Teórica          |           Complexidade            | LaTeX | Implementação | Foco e Descrição Técnica                                                                                    |
 | :------------------------------------ | :-------------------------- | :-------------------------------: | :---: | :-----------: | :---------------------------------------------------------------------------------------------------------- |
-| **MPM (Malhotra, Kumar, Maheshwari)** | Malhotra et al. (1978)      |      $\mathcal{O}(\|V\|^3)$       |  ❌   |   ⏳ Pós-IC   | Fluxo bloqueador via potenciais nodais de passagem em digrafos densos.                                      |
-| **Hopcroft-Karp**                     | Hopcroft e Karp (1973)      | $\mathcal{O}(\|E\| \sqrt{\|V\|})$ |  ✅   |   ⏳ Pós-IC   | Emparelhamento máximo bipartido não ponderado (fases de BFS global e DFS bloqueadora).                      |
 | **Kuhn**                              | Kuhn (1955)                 | $\mathcal{O}(\|V\| \cdot \|E\|)$  |  ✅   |   ⏳ Pós-IC   | Emparelhamento bipartido clássico via busca em profundidade (DFS) de caminhos alternantes.                  |
+| **Hopcroft-Karp**                     | Hopcroft e Karp (1973)      | $\mathcal{O}(\|E\| \sqrt{\|V\|})$ |  ✅   |   ⏳ Pós-IC   | Emparelhamento máximo bipartido não ponderado (fases de BFS global e DFS bloqueadora).                      |
 | **Algoritmo Húngaro (Kuhn-Munkres)**  | Kuhn (1955), Munkres (1957) |      $\mathcal{O}(\|V\|^3)$       |  ✅   |   ⏳ Pós-IC   | Atribuição de custo mínimo (emparelhamento com pesos) via potenciais duais e folgas complementares.         |
+| **MPM (Malhotra, Kumar, Maheshwari)** | Malhotra et al. (1978)      |      $\mathcal{O}(\|V\|^3)$       |  ❌   |   ⏳ Pós-IC   | Fluxo bloqueador via potenciais nodais de passagem em digrafos densos.                                      |
 | **Harness de Benchmark Bipartido**    | Suíte Comparativa Dedicada  |        Benchmark Empírico         |  ✅   |   ⏳ Pós-IC   | Avaliação empírica: reduções genéricas via `FlowNetwork`/`CostNetwork` vs. algoritmos dedicados bipartidos. |
 
 ### 📋 Tarefas Planejadas (Pós-IC)
 
-- [ ] **MPM (Malhotra, Kumar, Maheshwari):** Implementar classe `MPM` herdando de [`FlowNetwork`](./Implementações/FlowNetwork/FlowNetwork.hpp) com fluxo bloqueador em $\mathcal{O}(\|V\|^3)$ e validar em instâncias densas da literatura DIMACS.
-- [ ] **Hopcroft-Karp:** Implementar motor dedicado de emparelhamento bipartido máximo em C++23 com complexidade $\mathcal{O}(\|E\| \sqrt{\|V\|})$.
 - [ ] **Kuhn:** Implementar algoritmo de Kuhn em C++23 para emparelhamento bipartido via caminhos alternantes em $\mathcal{O}(\|V\| \cdot \|E\|)$.
+- [ ] **Hopcroft-Karp:** Implementar motor dedicado de emparelhamento bipartido máximo em C++23 com complexidade $\mathcal{O}(\|E\| \sqrt{\|V\|})$.
 - [ ] **Algoritmo Húngaro (Kuhn-Munkres):** Implementar algoritmo Húngaro em C++23 para problema de atribuição de custo mínimo em $\mathcal{O}(\|V\|^3)$.
+- [ ] **MPM (Malhotra, Kumar, Maheshwari):** Implementar classe `MPM` herdando de [`FlowNetwork`](./Implementações/FlowNetwork/FlowNetwork.hpp) com fluxo bloqueador em $\mathcal{O}(\|V\|^3)$ e validar em instâncias densas da literatura DIMACS.
 - [ ] **Benchmark Bipartido:** Avaliar tempo de CPU e consumo de memória entre as implementações dedicadas vs. reduções genéricas via `Dinic`, `PushRelabel` e `NetworkSimplex`.
 
 ---
@@ -145,9 +145,9 @@ Progresso dos conceitos, mecânicas e reduções de rede documentadas no [LaTeX]
 
 | Nome                             | LaTeX | Implementação | Descrição                                                                                       |
 | :------------------------------- | :---: | :-----------: | :---------------------------------------------------------------------------------------------- |
-| Custos Reduzidos (Reduced Costs) |  ✅   |      ✅       | Técnica de usar potenciais nos nós ($\pi$) para garantir custos de arestas não-negativos.       |
-| Ciclos de Custo Negativo         |  ✅   |      ✅       | Condição de otimalidade: um fluxo é de custo mínimo se e somente se não há ciclos negativos.    |
 | Grafo Residual com Custos        |  ✅   |      ✅       | Extensão do grafo residual com custos nos arcos diretos e custos negativos nos arcos reversos.  |
+| Ciclos de Custo Negativo         |  ✅   |      ✅       | Condição de otimalidade: um fluxo é de custo mínimo se e somente se não há ciclos negativos.    |
+| Custos Reduzidos (Reduced Costs) |  ✅   |      ✅       | Técnica de usar potenciais nos nós ($\pi$) para garantir custos de arestas não-negativos.       |
 | Transformação Min Cost Max Flow  |  ✅   |      ✅       | Adaptação do MCF para quando desejamos empurrar o _máximo de fluxo_ com o menor custo possível. |
 
 ### Modelagens Avançadas de Fluxo
@@ -181,19 +181,19 @@ A suíte de problemas clássicos implementada no repositório valida todas as re
 | Problema            | Juiz Online                                                                       | Código Local                                                                                       | Técnica de Fluxo Empregada                                    |
 | :------------------ | :-------------------------------------------------------------------------------- | :------------------------------------------------------------------------------------------------- | :------------------------------------------------------------ |
 | **Download Speed**  | [CSES 1694](https://cses.fi/problemset/task/1694)                                 | [`main.cpp`](./Implementações/Problemas/Fluxo%20M%C3%A1ximo/Download%20Speed/main.cpp)             | $s-t$ Fluxo Máximo canônico sobre rede residual.              |
-| **School Dance**    | [CSES 1696](https://cses.fi/problemset/task/1696)                                 | [`main.cpp`](./Implementações/Problemas/Fluxo%20M%C3%A1ximo/School%20Dance/main.cpp)               | Emparelhamento Máximo Bipartido via capacidades unitárias.    |
-| **Distinct Routes** | [CSES 1711](https://cses.fi/problemset/task/1711)                                 | [`main.cpp`](./Implementações/Problemas/Fluxo%20M%C3%A1ximo/Distinct%20Routes/main.cpp)            | Caminhos disjuntos por arestas e decomposição de fluxo.       |
 | **Police Chase**    | [CSES 1695](https://cses.fi/problemset/task/1695)                                 | [`main.cpp`](./Implementações/Problemas/Fluxo%20M%C3%A1ximo/Police%20Chase/main.cpp)               | Corte Mínimo $s-t$ (Max-Flow Min-Cut) em arcos bidirecionais. |
 | **Time Travel**     | [Beecrowd 2082](https://judge.beecrowd.com/en/problems/view/2082)                 | [`main.cpp`](./Implementações/Problemas/Fluxo%20M%C3%A1ximo/Time%20Travel/main.cpp)                | Corte Mínimo Global via fixação iterativa de fontes.          |
+| **School Dance**    | [CSES 1696](https://cses.fi/problemset/task/1696)                                 | [`main.cpp`](./Implementações/Problemas/Fluxo%20M%C3%A1ximo/School%20Dance/main.cpp)               | Emparelhamento Máximo Bipartido via capacidades unitárias.    |
 | **Coin Grid**       | [CSES 1709](https://cses.fi/problemset/task/1709)                                 | [`main.cpp`](./Implementações/Problemas/Fluxo%20M%C3%A1ximo/Coin%20Grid/main.cpp)                  | Cobertura Mínima de Vértices via Teorema de König.            |
 | **Edição de Rede**  | [CF Gym 106679E](https://codeforces.com/gym/106679/problem/E) (Maratona SBC 2026) | [`main.cpp`](./Implementações/Problemas/Fluxo%20M%C3%A1ximo/Edi%C3%A7%C3%A3o%20de%20Rede/main.cpp) | Redução para Emparelhamento Bipartido Máximo com fórmula.     |
+| **Distinct Routes** | [CSES 1711](https://cses.fi/problemset/task/1711)                                 | [`main.cpp`](./Implementações/Problemas/Fluxo%20M%C3%A1ximo/Distinct%20Routes/main.cpp)            | Caminhos disjuntos por arestas e decomposição de fluxo.       |
 
 ### 🧮 Problemas de Fluxo de Custo Mínimo
 
 | Problema                 | Juiz Online                                                                       | Código Local                                                                                                    | Técnica de Fluxo Empregada                                 |
 | :----------------------- | :-------------------------------------------------------------------------------- | :-------------------------------------------------------------------------------------------------------------- | :--------------------------------------------------------- |
-| **Task Assignment**      | [CSES 2129](https://cses.fi/problemset/task/2129)                                 | [`main.cpp`](./Implementações/Problemas/Fluxo%20de%20Custo%20M%C3%ADnimo/Task%20Assignment/main.cpp)            | Atribuição Bipartida de Custo Mínimo (Assignment Problem). |
 | **Parcel Delivery**      | [CSES 2121](https://cses.fi/problemset/task/2121)                                 | [`main.cpp`](./Implementações/Problemas/Fluxo%20de%20Custo%20M%C3%ADnimo/Parcel%20Delivery/main.cpp)            | Fluxo de Custo Mínimo com Demanda Exata $k$.               |
+| **Task Assignment**      | [CSES 2129](https://cses.fi/problemset/task/2129)                                 | [`main.cpp`](./Implementações/Problemas/Fluxo%20de%20Custo%20M%C3%ADnimo/Task%20Assignment/main.cpp)            | Atribuição Bipartida de Custo Mínimo (Assignment Problem). |
 | **Distinct Routes II**   | [CSES 2130](https://cses.fi/problemset/task/2130)                                 | [`main.cpp`](./Implementações/Problemas/Fluxo%20de%20Custo%20M%C3%ADnimo/Distinct%20Routes%20II/main.cpp)       | Min-Cost $k$-Disjoint Paths e decomposição de caminhos.    |
 | **Edição de Rede (MCF)** | [CF Gym 106679E](https://codeforces.com/gym/106679/problem/E) (Maratona SBC 2026) | [`main.cpp`](./Implementações/Problemas/Fluxo%20de%20Custo%20M%C3%ADnimo/Edi%C3%A7%C3%A3o%20de%20Rede/main.cpp) | Otimização de Custos de Topologia com Min Cost Flow.       |
 
@@ -219,11 +219,11 @@ Progresso dos teoremas, axiomas e provas formais documentados no [LaTeX](./LaTeX
 
 ## ⚖️ Axiomas e Leis Fundamentais
 
-| Nome                        | LaTeX | Formalização | Descrição                                                                                            |
-| :-------------------------- | :---: | :----------: | :--------------------------------------------------------------------------------------------------- |
-| Conservação de Fluxo        |  ✅   |      ✅      | Axioma de conservação estrita de fluxo líquido em nós intermediários ($\sum f_{in} = \sum f_{out}$). |
-| Restrição de Capacidade     |  ✅   |      ✅      | Condição de admissibilidade do fluxo respeitando os limites dos arcos ($0 \le f(u,v) \le c(u,v)$).   |
-| Dualidade de Ford-Fulkerson |  ✅   |      ✅      | Teorema fundamental que iguala o valor do Fluxo Máximo à capacidade do Corte Mínimo ($               | f^* | = c(S,T)$). |
+| Nome                        | LaTeX | Formalização | Descrição                                                                                                 |
+| :-------------------------- | :---: | :----------: | :-------------------------------------------------------------------------------------------------------- |
+| Conservação de Fluxo        |  ✅   |      ✅      | Axioma de conservação estrita de fluxo líquido em nós intermediários ($\sum f_{in} = \sum f_{out}$).      |
+| Restrição de Capacidade     |  ✅   |      ✅      | Condição de admissibilidade do fluxo respeitando os limites dos arcos ($0 \le f(u,v) \le c(u,v)$).        |
+| Dualidade de Ford-Fulkerson |  ✅   |      ✅      | Teorema fundamental que iguala o valor do Fluxo Máximo à capacidade do Corte Mínimo ($\|f^*\| = c(S,T)$). |
 
 ## 🎓 Teoremas de Conectividade e Estrutura
 
@@ -236,10 +236,10 @@ Progresso dos teoremas, axiomas e provas formais documentados no [LaTeX](./LaTeX
 
 ## 🧩 Teoria em Grafos Bipartidos
 
-| Nome                        | LaTeX | Prova Formal | Descrição                                                                                                          |
-| :-------------------------- | :---: | :----------: | :----------------------------------------------------------------------------------------------------------------- |
-| Teorema de König            |  ✅   |      ✅      | Prova da igualdade entre o tamanho do Emparelhamento Máximo e a Cobertura de Vértices Mínima ($\nu(G) = \tau(G)$). |
-| Teorema de Hall (Condition) |  ✅   |      ✅      | Critério necessário e suficiente para a existência de um emparelhamento saturante em grafos bipartidos ($          | N(S) | \ge | S   | $). |
+| Nome                        | LaTeX | Prova Formal | Descrição                                                                                                                      |
+| :-------------------------- | :---: | :----------: | :----------------------------------------------------------------------------------------------------------------------------- |
+| Teorema de König            |  ✅   |      ✅      | Prova da igualdade entre o tamanho do Emparelhamento Máximo e a Cobertura de Vértices Mínima ($\nu(G) = \tau(G)$).             |
+| Teorema de Hall (Condition) |  ✅   |      ✅      | Critério necessário e suficiente para a existência de um emparelhamento saturante em grafos bipartidos ($\|N(S)\| \ge \|S\|$). |
 
 ## 💸 Teoremas de Fluxo de Custo Mínimo
 
@@ -261,7 +261,7 @@ Todos os conceitos fundamentais do Network Simplex estão completamente formaliz
 | Arcos Básicos, Não-Básicos e Limitados           |  ✅   |      ✅       | Partição dos arcos da rede nas classes $T$ (árvore), $L$ (não-básicos livres) e $U$ (não-básicos saturados). |
 | Regra de Pricing (Entering Arc)                  |  ✅   |      ✅       | Critério de seleção do arco com custo reduzido violador para entrar na base viável.                          |
 | Ciclo Fundamental e Arco Limitante (Leaving Arc) |  ✅   |      ✅       | Identificação do ciclo único formado pela inserção do arco e do arco gargalo que deixa a base.               |
-| Pivoteamento e Atualização da Árvore             |  ✅   |      ✅       | Atualização da árvore geradora, do fluxo residual e dos potenciais nodais duais em $\mathcal{O}(             | V   | )$. |
+| Pivoteamento e Atualização da Árvore             |  ✅   |      ✅       | Atualização da árvore geradora, do fluxo residual e dos potenciais nodais duais em $\mathcal{O}(\|V\|)$.     |
 
 ---
 
