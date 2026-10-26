@@ -852,7 +852,7 @@ Para assegurar rigor científico e reprodutibilidade, adotaram-se os seguintes c
 
 \subsection{Avaliação de Fluxo Máximo (Coleções DIMACS)}
 
-Os algoritmos de fluxo máximo foram avaliados sobre as coleções canônicas do \textit{First DIMACS Challenge}:
+Os algoritmos de fluxo máximo foram avaliados sobre as coleções padronizadas do \textit{First DIMACS Challenge}:
 \begin{itemize}[leftmargin=1.5em, itemsep=0.15em, topsep=0.2em, parsep=0em]
     \item \textbf{Washington (RLG, Mesh e Line):} Redes em malha plana, grafos de camadas aleatórias (\textit{Random Level Graphs}) e redes lineares com gargalos induzidos para provocar caminhos aumentantes longos;
     \item \textbf{Genrmf (small, medium, wide, long):} Grafos tridimensionais particionados em planos transversais conectados sequencialmente com capacidades aleatórias.
@@ -860,7 +860,7 @@ Os algoritmos de fluxo máximo foram avaliados sobre as coleções canônicas do
 
 A bateria experimental exaustiva contemplando a totalidade das 40 instâncias DIMACS de fluxo máximo encontra-se detalhada no Apêndice~\ref{ap:benchmarks_completos}.
 
-A Tabela~\ref{tab:benchmarks_maxflow} apresenta os tempos médios de execução obtidos pelos cinco algoritmos em 13 instâncias canônicas representativas de fluxo máximo. O menor tempo por instância está destacado em \textbf{negrito}, e a indicação \textbf{TLE} (\textit{Time Limit Exceeded}) denota tempo de execução superior ao teto de 16 segundos.
+A Tabela~\ref{tab:benchmarks_maxflow} apresenta os tempos médios de execução obtidos pelos cinco algoritmos em 13 instâncias de referência representativas de fluxo máximo. O menor tempo por instância está destacado em \textbf{negrito}, e a indicação \textbf{TLE} (\textit{Time Limit Exceeded}) denota tempo de execução superior ao teto de 16 segundos.
 
 \begin{table}[!ht]
 \centering
@@ -889,10 +889,10 @@ A Tabela~\ref{tab:benchmarks_maxflow} apresenta os tempos médios de execução 
 \label{tab:benchmarks_maxflow}
 \end{table}
 
-\IfFileExists{figuras/bars_maxflow.pdf}{
+\IfFileExists{figuras/ic/bars_maxflow.pdf}{
 \begin{figure}[!ht]
     \centering
-    \includegraphics[width=0.95\textwidth]{figuras/bars_maxflow}
+    \includegraphics[width=0.95\textwidth]{figuras/ic/bars_maxflow}
     \caption{Comparação direta dos tempos médios de execução por instância (algoritmos de fluxo máximo, escala logarítmica).}
     \label{fig:bars_maxflow_ic}
 \end{figure}
@@ -938,10 +938,10 @@ A Tabela~\ref{tab:benchmarks_mincost} apresenta a comparação entre os quatro a
 \label{tab:benchmarks_mincost}
 \end{table}
 
-\IfFileExists{figuras/bars_mincost.pdf}{
+\IfFileExists{figuras/ic/bars_mincost.pdf}{
 \begin{figure}[!ht]
     \centering
-    \includegraphics[width=0.95\textwidth]{figuras/bars_mincost}
+    \includegraphics[width=0.95\textwidth]{figuras/ic/bars_mincost}
     \caption{Comparação direta dos tempos médios de execução por instância (algoritmos de fluxo de custo mínimo, escala logarítmica).}
     \label{fig:bars_mincost_ic}
 \end{figure}
@@ -1164,7 +1164,7 @@ Apresentamos nesta seção as atividades realizadas de forma resumida e os resul
 
     \item \textbf{Reduções Combinatórias e Aplicações:} Resolução de problemas clássicos (\textit{Maximum Bipartite Matching}, \textit{Minimum Vertex Cover}, \textit{Maximum Independent Set}, caminhos disjuntos e desconexão de redes) e implementação de \textbf{Segmentação Interativa de Imagens} baseada em corte mínimo via corte de grafos (\textit{Graph Cuts});
 
-    \item \textbf{Avaliação Experimental:} Avaliação em instâncias canônicas (DIMACS Washington, Genrmf e Netgen) e sintéticas. Os experimentos apontam para performance prática melhor do algoritmo de Dinic e do Push-Relabel com heurística de lacuna (\textit{Gap Heuristic}) em redes de grande escala (aceleração de até duas ordens de magnitude frente aos aumentos clássicos), bem como a eficiência do \textit{Network Simplex} e dos potenciais no \textit{Successive Shortest Path} frente ao cancelamento de ciclos negativos.
+    \item \textbf{Avaliação Experimental:} Avaliação em instâncias de referência (DIMACS Washington, Genrmf e Netgen) e sintéticas. Os experimentos apontam para performance prática melhor do algoritmo de Dinic e do Push-Relabel com heurística de lacuna (\textit{Gap Heuristic}) em redes de grande escala (aceleração de até duas ordens de magnitude frente aos aumentos clássicos), bem como a eficiência do \textit{Network Simplex} e dos potenciais no \textit{Successive Shortest Path} frente ao cancelamento de ciclos negativos.
 \end{enumerate}
 
 Como trabalhos futuros, destacam-se a avaliação empírica sobre instâncias esparsas massivas, a análise de diferentes regras de pivoteamento no \textit{Network Simplex} (como \textit{Candidate List Pricing}) e a preparação de artigo científico com a síntese dos resultados.
@@ -1187,7 +1187,7 @@ Como trabalhos futuros, destacam-se a avaliação empírica sobre instâncias es
 \apendice{Resultados Experimentais Exaustivos e Análise de Escalabilidade}
 \label{ap:benchmarks_completos}
 
-Este apêndice documenta os resultados computacionais obtidos na totalidade das 80 instâncias canônicas da suíte DIMACS avaliadas na pesquisa (40 para fluxo máximo e 40 para fluxo de custo mínimo), complementando as sínteses apresentadas na Seção~\ref{sec:resultados}. Apresentam-se as medições completas para as famílias Washington, Genrmf e Netgen, acompanhadas das curvas de escalabilidade assintótica em escala logarítmica dupla.
+Este apêndice documenta os resultados computacionais obtidos na totalidade das 80 instâncias padronizadas da suíte DIMACS avaliadas na pesquisa (40 para fluxo máximo e 40 para fluxo de custo mínimo), complementando as sínteses apresentadas na Seção~\ref{sec:resultados}. Apresentam-se as medições completas para as famílias Washington, Genrmf e Netgen, acompanhadas das curvas de escalabilidade assintótica em escala logarítmica dupla.
 
 \subsection{Tabela Exaustiva de Fluxo Máximo}
 
@@ -1276,7 +1276,7 @@ A Figura~\ref{fig:scalability_maxflow_apendice} ilustra o comportamento assintó
 
 \begin{figure}[!ht]
     \centering
-    \includegraphics[width=0.92\textwidth]{figuras/scalability_maxflow}
+    \includegraphics[width=0.92\textwidth]{figuras/ic/scalability_maxflow}
     \caption{Escalabilidade dos algoritmos de fluxo máximo em função de $|V|$ (escala log-log).}
     \label{fig:scalability_maxflow_apendice}
 \end{figure}
@@ -1284,7 +1284,7 @@ A Figura~\ref{fig:scalability_maxflow_apendice} ilustra o comportamento assintó
 As curvas experimentais evidenciam a diferenciação entre as classes assintóticas:
 \begin{itemize}[leftmargin=1.5em, itemsep=0.15em, topsep=0.2em, parsep=0em]
     \item \textbf{Ford-Fulkerson:} Apresenta forte sensibilidade às capacidades inteiras da rede. Nas instâncias lineares (\texttt{wash\_line\_50} e \texttt{wash\_line\_100}), onde $f^* > 7 \times 10^7$, o tempo de execução excede o limiar de 16 segundos (TLE), confirmando a dependência $O(|f^*| m)$;
-    \item \textbf{Edmonds-Karp:} Mantém taxa de crescimento compatível com $O(n m^2)$, degradando em redes com grande diâmetro topológico em razão do custo de sucessivas buscas em largura ($O(m)$ por aumento);
+    \item \textbf{Edmonds-Karp:} Mantém taxa de crescimento compatível com $O(n m^2)$, degradando em redes com grande diâmetro em razão do custo de sucessivas buscas em largura ($O(m)$ por aumento);
     \item \textbf{Dinic e Push-Relabel com Heurística de Lacuna:} Apresentam as menores inclinações na escala log-log, indicando menor sensibilidade ao crescimento da rede e mantendo tempos inferiores a 70 ms mesmo em instâncias com mais de 10.000 vértices.
 \end{itemize}
 
@@ -1369,7 +1369,7 @@ A Figura~\ref{fig:scalability_mincost_apendice} apresenta as curvas de tempo em 
 
 \begin{figure}[!ht]
     \centering
-    \includegraphics[width=0.92\textwidth]{figuras/scalability_mincost}
+    \includegraphics[width=0.92\textwidth]{figuras/ic/scalability_mincost}
     \caption{Escalabilidade dos algoritmos de fluxo de custo mínimo em função de $|V|$ (escala log-log).}
     \label{fig:scalability_mincost_apendice}
 \end{figure}
@@ -1389,14 +1389,14 @@ Observa-se que a inclinação da curva do \textit{Cycle Canceling} é expressiva
 A implementação dos modelos matemáticos abstratos em algoritmos computacionais de alto desempenho foi realizada no paradigma da Orientação a Objetos através do padrão ISO C++23.
 
 \paragraph{Tipagem e Margem de Segurança Numérica.}
-A biblioteca adota apelidos de tipo (\textit{Type Aliases}) canônicos: \lstinline{Long} (\lstinline{long long}) para capacidades e fluxos, e \lstinline{Size} (\lstinline{std::size_t}) para identificadores nodais e dimensionamento de estruturas de dados. Para mitigar o risco de estouro de inteiros (\textit{Integer Overflow}) em somas cumulativas de capacidades infinitas, as constantes de saturação são definidas com deslocamento defensivo de 8 bits à direita:
+A biblioteca adota apelidos de tipo (\textit{Type Aliases}) padronizados: \lstinline{Long} (\lstinline{long long}) para capacidades e fluxos, e \lstinline{Size} (\lstinline{std::size_t}) para identificadores nodais e dimensionamento de estruturas de dados. Para mitigar o risco de estouro de inteiros (\textit{Integer Overflow}) em somas cumulativas de capacidades infinitas, as constantes de saturação são definidas com deslocamento defensivo de 8 bits à direita:
 \begin{lstlisting}[language=C++, numbers=none, basicstyle=\ttfamily\footnotesize, frame=none, backgroundcolor=\color{white}]
 constexpr Long INF = std::numeric_limits<Long>::max() >> 8;
 constexpr Size MAX = std::numeric_limits<Size>::max() >> 8;
 \end{lstlisting}
 
 \paragraph{Representação Contígua de Grafo Residual e Emparelhamento XOR.}
-Para favorecer a localidade de cache da CPU e eliminar o overhead de alocações dinâmicas dispersas, a topologia da rede é mantida em duas estruturas integradas:
+Para favorecer a localidade de cache da CPU e eliminar o overhead de alocações dinâmicas dispersas, a estrutura de adjacência da rede é mantida em duas estruturas integradas:
 \begin{enumerate}
     \item \lstinline{std::vector<Edge> edges}: vetor contíguo na memória contendo todas as conexões da rede (\lstinline{from}, \lstinline{to}, \lstinline{capacity}, \lstinline{flow});
     \item \lstinline{std::vector<std::vector<Size>> adj}: lista de adjacência onde cada entrada armazena apenas os índices numéricos dos arcos no vetor principal \lstinline{edges}.
@@ -1413,8 +1413,8 @@ void push_flow(const Size edge_id, const Long flow_amount) {
 \paragraph{Hierarquia Polimórfica e Padrões de Projeto.}
 A biblioteca organiza-se em duas famílias baseadas nos padrões \textit{Strategy}, \textit{Factory Method} e \textit{Prototype}~\cite{gamma1994design}:
 \begin{itemize}
-    \item \textbf{Família \lstinline{FlowNetwork} (Fluxo Máximo):} Interface base abstrata com o método virtual puro \lstinline{compute_max_flow(source, sink)}. Os algoritmos concretos (\lstinline{FordFulkerson}, \lstinline{EdmondsKarp}, \lstinline{Dinic}, \lstinline{PushRelabel} e \lstinline{PushRelabelImproved}) implementam estratégias de busca distintas mantendo total intercambialidade;
-    \item \textbf{Família \lstinline{CostNetwork} (Custo Mínimo):} Interface base abstrata que incorpora o custo linear unitário $w$ aos arcos, com o método virtual puro \lstinline{compute_min_cost(source, sink)} implementado por \lstinline{CycleCanceling}, \lstinline{SuccessiveShortest}, \lstinline{SuccessiveShortestDijkstra} e \lstinline{NetworkSimplex}.
+    \item \textbf{Família \lstinline{FlowNetwork} (Fluxo Máximo):} Interface base abstrata com o método virtual puro \lstinline{compute_max_flow(source, sink)}. Os algoritmos concretos (\lstinline{FordFulkerson}, \lstinline{EdmondsKarp}, \lstinline{Dinic}, \lstinline{MPM}, \lstinline{PushRelabel}, \lstinline{PushRelabelImproved}, \lstinline{Kuhn} e \lstinline{HopcroftKarp}) implementam estratégias de busca distintas mantendo total intercambialidade;
+    \item \textbf{Família \lstinline{CostNetwork} (Custo Mínimo):} Interface base abstrata que incorpora o custo linear unitário $w$ aos arcos, com o método virtual puro \lstinline{compute_min_cost_max_flow(source, sink)} implementado por \lstinline{CycleCanceling}, \lstinline{SuccessiveShortest}, \lstinline{SuccessiveShortestDijkstra}, \lstinline{NetworkSimplex} e \lstinline{KuhnMunkres}.
 \end{itemize}
 
 Os métodos virtuais \lstinline{make(n)} e \lstinline{clone()} permitem a instanciação e a clonagem profunda (\textit{deep copy}) de instâncias polimórficas preservando o estado residual, o que é fundamental em aplicações iterativas como corte mínimo e segmentação de imagens.

@@ -1,16 +1,16 @@
 #!/usr/bin/env python3
-"""Generate benchmark tables (full + compact) and charts from canonical CSVs.
+"""Generate benchmark tables (full + compact + exhaustive) and charts from CSVs.
 
-This script reads the canonical benchmark data from LaTeX/tabelas/data_*.csv
-and generates:
-  - Full tables for the book (longtable format, all instances)
-  - Compact pivot tables for the IC report (one column per algorithm)
-  - Scalability charts (log-log) and grouped bar charts (PDF)
-
-Usage:
-    python3 .scripts/generate_bench_artifacts.py
+Supports strict separation between:
+  - IC suite (`LaTeX/tabelas/ic`, `LaTeX/figuras/ic`):
+      5 Max-Flow algorithms and 4 Min-Cost Flow algorithms.
+  - Book / Pós-IC suite (`LaTeX/tabelas/book`, `LaTeX/figuras/book`):
+      6 Max-Flow algorithms (including MPM), 4 Min-Cost Flow algorithms,
+      plus Bipartite Matching (Kuhn, Hopcroft-Karp vs Max-Flow) and
+      Bipartite Assignment (Kuhn-Munkres vs Min-Cost Flow).
 """
 
+import argparse
 import csv
 import os
 import sys
@@ -18,11 +18,8 @@ from collections import OrderedDict, defaultdict
 
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 ROOT_DIR = os.path.dirname(SCRIPT_DIR)
-TABELAS_DIR = os.path.join(ROOT_DIR, "LaTeX", "tabelas")
-FIGURAS_DIR = os.path.join(ROOT_DIR, "LaTeX", "figuras")
-
-MF_CSV = os.path.join(TABELAS_DIR, "data_max_flow.csv")
-MC_CSV = os.path.join(TABELAS_DIR, "data_min_cost.csv")
+TABELAS_BASE = os.path.join(ROOT_DIR, "LaTeX", "tabelas")
+FIGURAS_BASE = os.path.join(ROOT_DIR, "LaTeX", "figuras")
 
 COMPACT_MF_INSTANCES = [
     "wash_mesh_16.max",
@@ -56,10 +53,19 @@ COMPACT_MC_INSTANCES = [
     "netgen_40.min",
 ]
 
-MF_ALGO_ORDER = [
+MF_ALGO_ORDER_IC = [
     "FordFulkerson",
     "EdmondsKarp",
     "Dinic",
+    "PushRelabel",
+    "PushRelabelImproved",
+]
+
+MF_ALGO_ORDER_BOOK = [
+    "FordFulkerson",
+    "EdmondsKarp",
+    "Dinic",
+    "MPM",
     "PushRelabel",
     "PushRelabelImproved",
 ]
@@ -68,6 +74,7 @@ MF_ALGO_SHORT = {
     "FordFulkerson": "FF",
     "EdmondsKarp": "EK",
     "Dinic": "Dinic",
+    "MPM": "MPM",
     "PushRelabel": "PR",
     "PushRelabelImproved": "PR-Gap",
 }
@@ -86,6 +93,44 @@ MC_ALGO_SHORT = {
     "NetworkSimplex": "Simplex",
 }
 
+BM_ALGO_ORDER = [
+    "HopcroftKarp",
+    "Kuhn",
+    "Dinic",
+    "PushRelabelImproved",
+    "MPM",
+    "PushRelabel",
+    "EdmondsKarp",
+    "FordFulkerson",
+]
+
+BM_ALGO_SHORT = {
+    "HopcroftKarp": "HK",
+    "Kuhn": "Kuhn",
+    "Dinic": "Dinic",
+    "PushRelabelImproved": "PR-Gap",
+    "MPM": "MPM",
+    "PushRelabel": "PR",
+    "EdmondsKarp": "EK",
+    "FordFulkerson": "FF",
+}
+
+BA_ALGO_ORDER = [
+    "KuhnMunkres",
+    "NetworkSimplex",
+    "SuccessiveShortestDijkstra",
+    "SuccessiveShortest",
+    "CycleCanceling",
+]
+
+BA_ALGO_SHORT = {
+    "KuhnMunkres": "Húngaro",
+    "NetworkSimplex": "Simplex",
+    "SuccessiveShortestDijkstra": "SSP-Dijk",
+    "SuccessiveShortest": "SSP-SPFA",
+    "CycleCanceling": "CC",
+}
+
 try:
     import matplotlib
 
@@ -98,9 +143,6 @@ except ImportError:
     HAS_MATPLOTLIB = False
 
 
-# ----------------------------------------------------------------
-# Data loading
-# ----------------------------------------------------------------
 def load_csv(path):
     if not os.path.exists(path):
         print(f"Erro: arquivo não encontrado: {path}", file=sys.stderr)
@@ -126,17 +168,39 @@ def group_by_instance(rows):
     return groups
 
 
-# ----------------------------------------------------------------
-# Full table generation (book — longtable)
-# ----------------------------------------------------------------
+def fmt_number(n):
+    try:
+        val = int(n)
+        if val < 0:
+            return "---"
+        return f"{val:,}".replace(",", ".")
+    except (ValueError, TypeError):
+        return str(n)
+
+
+def fmt_time(t_str):
+    if not t_str or t_str == "---":
+        return "---"
+    try:
+        t = float(t_str)
+        if t >= 100:
+            return f"{t:,.0f}".replace(",", ".")
+        if t >= 10:
+            return f"{t:.1f}".replace(".", ",")
+        return f"{t:.2f}".replace(".", ",")
+    except ValueError:
+        return t_str
+
+
 def generate_full_table_maxflow(rows, output_path):
     groups = group_by_instance(rows)
     fastest = {}
     for inst, recs in groups.items():
-        times = []
-        for r in recs:
-            if r["status"] == "OK" and r["mean_ms"]:
-                times.append(float(r["mean_ms"]))
+        times = [
+            float(r["mean_ms"])
+            for r in recs
+            if r["status"] == "OK" and r.get("mean_ms")
+        ]
         fastest[inst] = min(times) if times else float("inf")
 
     with open(output_path, "w", encoding="utf-8") as f:
@@ -181,7 +245,7 @@ def generate_full_table_maxflow(rows, output_path):
                 a = r["m"]
                 flow = r["flow_value"]
                 status = r["status"]
-                if status == "OK" and r["mean_ms"]:
+                if status == "OK" and r.get("mean_ms"):
                     t = float(r["mean_ms"])
                     time_str = f"{t:.2f}"
                     if t == fastest[inst]:
@@ -203,10 +267,11 @@ def generate_full_table_mincost(rows, output_path):
     groups = group_by_instance(rows)
     fastest = {}
     for inst, recs in groups.items():
-        times = []
-        for r in recs:
-            if r["status"] == "OK" and r["mean_ms"]:
-                times.append(float(r["mean_ms"]))
+        times = [
+            float(r["mean_ms"])
+            for r in recs
+            if r["status"] == "OK" and r.get("mean_ms")
+        ]
         fastest[inst] = min(times) if times else float("inf")
 
     with open(output_path, "w", encoding="utf-8") as f:
@@ -252,7 +317,7 @@ def generate_full_table_mincost(rows, output_path):
                 flow = r["flow_value"]
                 cost = r["cost_value"]
                 status = r["status"]
-                if status == "OK" and r["mean_ms"]:
+                if status == "OK" and r.get("mean_ms"):
                     t = float(r["mean_ms"])
                     time_str = f"{t:.2f}"
                     if t == fastest[inst]:
@@ -261,8 +326,7 @@ def generate_full_table_mincost(rows, output_path):
                     time_str = "---"
                 f.write(
                     f"{inst_tex} & {algo_tex} & {v} & {a} "
-                    f"& {flow} & {cost} & {time_str} & "
-                    f"{status} \\\\\n"
+                    f"& {flow} & {cost} & {time_str} & {status} \\\\\n"
                 )
             if idx < len(inst_list) - 1:
                 f.write("\\midrule\n")
@@ -272,51 +336,15 @@ def generate_full_table_mincost(rows, output_path):
     print(f"  Gerado: {output_path}")
 
 
-# ----------------------------------------------------------------
-# Compact pivot table generation (report)
-# ----------------------------------------------------------------
-def fmt_number(n):
-    """Format integer with dot separator (pt-BR)."""
-    try:
-        val = int(n)
-        if val < 0:
-            return "---"
-        s = f"{val:,}".replace(",", ".")
-        return s
-    except (ValueError, TypeError):
-        return str(n)
-
-
-def fmt_time(t_str):
-    """Format time value with comma decimal (pt-BR)."""
-    if not t_str or t_str == "---":
-        return "---"
-    try:
-        t = float(t_str)
-        if t >= 100:
-            formatted = f"{t:,.0f}".replace(",", ".")
-        elif t >= 10:
-            formatted = f"{t:.1f}".replace(".", ",")
-        else:
-            formatted = f"{t:.2f}".replace(".", ",")
-        return formatted
-    except ValueError:
-        return t_str
-
-
-def generate_compact_maxflow(rows, output_path):
+def generate_compact_maxflow(rows, algo_order, output_path):
     groups = group_by_instance(rows)
-
-    selected = [
-        inst for inst in COMPACT_MF_INSTANCES if inst in groups
-    ]
+    selected = [inst for inst in COMPACT_MF_INSTANCES if inst in groups]
 
     with open(output_path, "w", encoding="utf-8") as f:
-        ncols = 4 + len(MF_ALGO_ORDER)
+        ncols = 4 + len(algo_order)
         col_spec = "l" + "r" * (ncols - 1)
         algo_headers = " & ".join(
-            f"\\textbf{{{MF_ALGO_SHORT[a]}}}"
-            for a in MF_ALGO_ORDER
+            f"\\textbf{{{MF_ALGO_SHORT[a]}}}" for a in algo_order
         )
 
         f.write("\\begin{table}[!ht]\n")
@@ -339,32 +367,29 @@ def generate_compact_maxflow(rows, output_path):
             a = fmt_number(first["m"])
 
             flow_val = first["flow_value"]
-            if (
-                first["status"] != "OK"
-                and int(first.get("flow_value", -1)) < 0
-            ):
+            if first["status"] != "OK" and int(first.get("flow_value", -1)) < 0:
                 for r in recs:
                     if r["status"] == "OK":
                         flow_val = r["flow_value"]
                         break
             flow = fmt_number(flow_val)
 
-            ok_times = []
-            for algo in MF_ALGO_ORDER:
-                r = by_algo.get(algo)
-                if r and r["status"] == "OK" and r["mean_ms"]:
-                    ok_times.append(float(r["mean_ms"]))
+            ok_times = [
+                float(by_algo[algo]["mean_ms"])
+                for algo in algo_order
+                if algo in by_algo
+                and by_algo[algo]["status"] == "OK"
+                and by_algo[algo].get("mean_ms")
+            ]
             min_time = min(ok_times) if ok_times else float("inf")
 
             inst_short = inst.replace(".max", "")
-            inst_tex = (
-                "\\texttt{" + inst_short.replace("_", "\\_") + "}"
-            )
+            inst_tex = "\\texttt{" + inst_short.replace("_", "\\_") + "}"
 
             time_cells = []
-            for algo in MF_ALGO_ORDER:
+            for algo in algo_order:
                 r = by_algo.get(algo)
-                if not r or r["status"] != "OK" or not r["mean_ms"]:
+                if not r or r["status"] != "OK" or not r.get("mean_ms"):
                     time_cells.append("TLE")
                 else:
                     t = float(r["mean_ms"])
@@ -374,10 +399,7 @@ def generate_compact_maxflow(rows, output_path):
                     time_cells.append(cell)
 
             times_str = " & ".join(time_cells)
-            f.write(
-                f"{inst_tex} & {v} & {a} & {flow} & "
-                f"{times_str} \\\\\n"
-            )
+            f.write(f"{inst_tex} & {v} & {a} & {flow} & {times_str} \\\\\n")
 
         f.write("\\bottomrule\n")
         f.write("\\end{tabular}\n")
@@ -392,17 +414,13 @@ def generate_compact_maxflow(rows, output_path):
 
 def generate_compact_mincost(rows, output_path):
     groups = group_by_instance(rows)
-
-    selected = [
-        inst for inst in COMPACT_MC_INSTANCES if inst in groups
-    ]
+    selected = [inst for inst in COMPACT_MC_INSTANCES if inst in groups]
 
     with open(output_path, "w", encoding="utf-8") as f:
         ncols = 5 + len(MC_ALGO_ORDER)
         col_spec = "l" + "r" * (ncols - 1)
         algo_headers = " & ".join(
-            f"\\textbf{{{MC_ALGO_SHORT[a]}}}"
-            for a in MC_ALGO_ORDER
+            f"\\textbf{{{MC_ALGO_SHORT[a]}}}" for a in MC_ALGO_ORDER
         )
 
         f.write("\\begin{table}[!ht]\n")
@@ -425,9 +443,9 @@ def generate_compact_mincost(rows, output_path):
             a = fmt_number(first["m"])
             flow_val = first["flow_value"]
             cost_val = first["cost_value"]
-            if (
-                first["status"] != "OK"
-                and (int(first.get("flow_value", -1)) < 0 or int(first.get("cost_value", -1)) < 0)
+            if first["status"] != "OK" and (
+                int(first.get("flow_value", -1)) < 0
+                or int(first.get("cost_value", -1)) < 0
             ):
                 for r in recs:
                     if r["status"] == "OK":
@@ -437,22 +455,22 @@ def generate_compact_mincost(rows, output_path):
             flow = fmt_number(flow_val)
             cost = fmt_number(cost_val)
 
-            ok_times = []
-            for algo in MC_ALGO_ORDER:
-                r = by_algo.get(algo)
-                if r and r["status"] == "OK" and r["mean_ms"]:
-                    ok_times.append(float(r["mean_ms"]))
+            ok_times = [
+                float(by_algo[algo]["mean_ms"])
+                for algo in MC_ALGO_ORDER
+                if algo in by_algo
+                and by_algo[algo]["status"] == "OK"
+                and by_algo[algo].get("mean_ms")
+            ]
             min_time = min(ok_times) if ok_times else float("inf")
 
             inst_short = inst.replace(".min", "")
-            inst_tex = (
-                "\\texttt{" + inst_short.replace("_", "\\_") + "}"
-            )
+            inst_tex = "\\texttt{" + inst_short.replace("_", "\\_") + "}"
 
             time_cells = []
             for algo in MC_ALGO_ORDER:
                 r = by_algo.get(algo)
-                if not r or r["status"] != "OK" or not r["mean_ms"]:
+                if not r or r["status"] != "OK" or not r.get("mean_ms"):
                     time_cells.append("TLE")
                 else:
                     t = float(r["mean_ms"])
@@ -463,8 +481,7 @@ def generate_compact_mincost(rows, output_path):
 
             times_str = " & ".join(time_cells)
             f.write(
-                f"{inst_tex} & {v} & {a} & {flow} & {cost} & "
-                f"{times_str} \\\\\n"
+                f"{inst_tex} & {v} & {a} & {flow} & {cost} & {times_str} \\\\\n"
             )
 
         f.write("\\bottomrule\n")
@@ -575,9 +592,8 @@ EXHAUSTIVE_MC_GROUPS = [
 ]
 
 
-def generate_exhaustive_maxflow(rows, output_path):
+def generate_exhaustive_maxflow(rows, algo_order, output_path):
     groups = group_by_instance(rows)
-
     active_groups = []
     for title, instances in EXHAUSTIVE_MF_GROUPS:
         present = [inst for inst in instances if inst in groups]
@@ -585,11 +601,10 @@ def generate_exhaustive_maxflow(rows, output_path):
             active_groups.append((title, present))
 
     with open(output_path, "w", encoding="utf-8") as f:
-        ncols = 4 + len(MF_ALGO_ORDER)
+        ncols = 4 + len(algo_order)
         col_spec = "l" + "r" * (ncols - 1)
         algo_headers = " & ".join(
-            f"\\textbf{{{MF_ALGO_SHORT[a]}}}"
-            for a in MF_ALGO_ORDER
+            f"\\textbf{{{MF_ALGO_SHORT[a]}}}" for a in algo_order
         )
 
         f.write("\\begingroup\n")
@@ -644,22 +659,22 @@ def generate_exhaustive_maxflow(rows, output_path):
                             break
                 flow = fmt_number(flow_val)
 
-                ok_times = []
-                for algo in MF_ALGO_ORDER:
-                    r = by_algo.get(algo)
-                    if r and r["status"] == "OK" and r["mean_ms"]:
-                        ok_times.append(float(r["mean_ms"]))
+                ok_times = [
+                    float(by_algo[algo]["mean_ms"])
+                    for algo in algo_order
+                    if algo in by_algo
+                    and by_algo[algo]["status"] == "OK"
+                    and by_algo[algo].get("mean_ms")
+                ]
                 min_time = min(ok_times) if ok_times else float("inf")
 
                 inst_short = inst.replace(".max", "")
-                inst_tex = (
-                    "\\texttt{" + inst_short.replace("_", "\\_") + "}"
-                )
+                inst_tex = "\\texttt{" + inst_short.replace("_", "\\_") + "}"
 
                 time_cells = []
-                for algo in MF_ALGO_ORDER:
+                for algo in algo_order:
                     r = by_algo.get(algo)
-                    if not r or r["status"] != "OK" or not r["mean_ms"]:
+                    if not r or r["status"] != "OK" or not r.get("mean_ms"):
                         time_cells.append("TLE")
                     else:
                         t = float(r["mean_ms"])
@@ -670,8 +685,7 @@ def generate_exhaustive_maxflow(rows, output_path):
 
                 times_str = " & ".join(time_cells)
                 f.write(
-                    f"{inst_tex} & {v} & {a} & {flow} & "
-                    f"{times_str} \\\\\n"
+                    f"{inst_tex} & {v} & {a} & {flow} & {times_str} \\\\\n"
                 )
             if g_idx < len(active_groups) - 1:
                 f.write("\\midrule\n")
@@ -684,7 +698,6 @@ def generate_exhaustive_maxflow(rows, output_path):
 
 def generate_exhaustive_mincost(rows, output_path):
     groups = group_by_instance(rows)
-
     active_groups = []
     for title, instances in EXHAUSTIVE_MC_GROUPS:
         present = [inst for inst in instances if inst in groups]
@@ -695,8 +708,7 @@ def generate_exhaustive_mincost(rows, output_path):
         ncols = 5 + len(MC_ALGO_ORDER)
         col_spec = "l" + "r" * (ncols - 1)
         algo_headers = " & ".join(
-            f"\\textbf{{{MC_ALGO_SHORT[a]}}}"
-            for a in MC_ALGO_ORDER
+            f"\\textbf{{{MC_ALGO_SHORT[a]}}}" for a in MC_ALGO_ORDER
         )
 
         f.write("\\begingroup\n")
@@ -741,9 +753,9 @@ def generate_exhaustive_mincost(rows, output_path):
                 a = fmt_number(first["m"])
                 flow_val = first["flow_value"]
                 cost_val = first["cost_value"]
-                if (
-                    first["status"] != "OK"
-                    and (int(first.get("flow_value", -1)) < 0 or int(first.get("cost_value", -1)) < 0)
+                if first["status"] != "OK" and (
+                    int(first.get("flow_value", -1)) < 0
+                    or int(first.get("cost_value", -1)) < 0
                 ):
                     for r in recs:
                         if r["status"] == "OK":
@@ -753,22 +765,22 @@ def generate_exhaustive_mincost(rows, output_path):
                 flow = fmt_number(flow_val)
                 cost = fmt_number(cost_val)
 
-                ok_times = []
-                for algo in MC_ALGO_ORDER:
-                    r = by_algo.get(algo)
-                    if r and r["status"] == "OK" and r["mean_ms"]:
-                        ok_times.append(float(r["mean_ms"]))
+                ok_times = [
+                    float(by_algo[algo]["mean_ms"])
+                    for algo in MC_ALGO_ORDER
+                    if algo in by_algo
+                    and by_algo[algo]["status"] == "OK"
+                    and by_algo[algo].get("mean_ms")
+                ]
                 min_time = min(ok_times) if ok_times else float("inf")
 
                 inst_short = inst.replace(".min", "")
-                inst_tex = (
-                    "\\texttt{" + inst_short.replace("_", "\\_") + "}"
-                )
+                inst_tex = "\\texttt{" + inst_short.replace("_", "\\_") + "}"
 
                 time_cells = []
                 for algo in MC_ALGO_ORDER:
                     r = by_algo.get(algo)
-                    if not r or r["status"] != "OK" or not r["mean_ms"]:
+                    if not r or r["status"] != "OK" or not r.get("mean_ms"):
                         time_cells.append("TLE")
                     else:
                         t = float(r["mean_ms"])
@@ -790,44 +802,117 @@ def generate_exhaustive_mincost(rows, output_path):
     print(f"  Gerado: {output_path}")
 
 
+def generate_bipartite_pivot_table(
+    rows, algo_order, algo_short, output_path, caption, label, obj_col, obj_hdr
+):
+    groups = group_by_instance(rows)
+    with open(output_path, "w", encoding="utf-8") as f:
+        ncols = 4 + len(algo_order)
+        col_spec = "l" + "r" * (ncols - 1)
+        algo_headers = " & ".join(
+            f"\\textbf{{{algo_short[a]}}}" for a in algo_order
+        )
 
-# ----------------------------------------------------------------
-# Chart generation
-# ----------------------------------------------------------------
+        f.write("\\begin{table}[!ht]\n")
+        f.write("\\centering\n")
+        f.write("\\small\n")
+        f.write("\\setlength{\\tabcolsep}{3.5pt}\n")
+        f.write(f"\\begin{{tabular}}{{{col_spec}}}\n")
+        f.write("\\toprule\n")
+        f.write(
+            f"\\textbf{{Instância}} & $|V|$ & $|A|$ & "
+            f"{obj_hdr} & {algo_headers} \\\\\n"
+        )
+        f.write("\\midrule\n")
+
+        for inst, recs in groups.items():
+            by_algo = {r["algorithm"]: r for r in recs}
+            first = recs[0]
+            v = fmt_number(first["n"])
+            a = fmt_number(first["m"])
+            obj = fmt_number(first[obj_col])
+
+            ok_times = [
+                float(by_algo[algo]["mean_ms"])
+                for algo in algo_order
+                if algo in by_algo
+                and by_algo[algo]["status"] == "OK"
+                and by_algo[algo].get("mean_ms")
+            ]
+            min_time = min(ok_times) if ok_times else float("inf")
+
+            inst_short = inst.replace(".max", "").replace(".min", "")
+            inst_tex = "\\texttt{" + inst_short.replace("_", "\\_") + "}"
+
+            time_cells = []
+            for algo in algo_order:
+                r = by_algo.get(algo)
+                if not r or r["status"] != "OK" or not r.get("mean_ms"):
+                    time_cells.append("TLE")
+                else:
+                    t = float(r["mean_ms"])
+                    cell = fmt_time(r["mean_ms"])
+                    if t == min_time:
+                        cell = f"\\textbf{{{cell}}}"
+                    time_cells.append(cell)
+
+            times_str = " & ".join(time_cells)
+            f.write(f"{inst_tex} & {v} & {a} & {obj} & {times_str} \\\\\n")
+
+        f.write("\\bottomrule\n")
+        f.write("\\end{tabular}\n")
+        f.write(f"\\caption{{{caption}}}\n")
+        f.write(f"\\label{{{label}}}\n")
+        f.write("\\end{table}\n")
+    print(f"  Gerado: {output_path}")
+
+
 ALGO_COLORS = {
     "FordFulkerson": "#d62728",
     "EdmondsKarp": "#ff7f0e",
     "Dinic": "#2ca02c",
+    "MPM": "#8c564b",
     "PushRelabel": "#1f77b4",
     "PushRelabelImproved": "#9467bd",
+    "HopcroftKarp": "#17becf",
+    "Kuhn": "#bcbd22",
     "CycleCanceling": "#d62728",
     "SuccessiveShortest": "#ff7f0e",
     "SuccessiveShortestDijkstra": "#2ca02c",
     "NetworkSimplex": "#1f77b4",
+    "KuhnMunkres": "#9467bd",
 }
 
 ALGO_MARKERS = {
     "FordFulkerson": "s",
     "EdmondsKarp": "^",
     "Dinic": "o",
+    "MPM": "v",
     "PushRelabel": "D",
     "PushRelabelImproved": "P",
+    "HopcroftKarp": "*",
+    "Kuhn": "X",
     "CycleCanceling": "s",
     "SuccessiveShortest": "^",
     "SuccessiveShortestDijkstra": "o",
     "NetworkSimplex": "D",
+    "KuhnMunkres": "P",
 }
 
 ALGO_LABELS = {
     "FordFulkerson": "Ford-Fulkerson",
     "EdmondsKarp": "Edmonds-Karp",
     "Dinic": "Dinic",
+    "MPM": "MPM",
     "PushRelabel": "Push-Relabel FIFO",
     "PushRelabelImproved": "Push-Relabel Gap",
+    "HopcroftKarp": "Hopcroft-Karp",
+    "Kuhn": "Kuhn",
     "CycleCanceling": "Cycle Canceling",
     "SuccessiveShortest": "SSP (SPFA)",
     "SuccessiveShortestDijkstra": "SSP (Dijkstra)",
     "NetworkSimplex": "Network Simplex",
+    "KuhnMunkres": "Kuhn-Munkres (Húngaro)",
 }
 
 
@@ -901,7 +986,7 @@ def plot_scalability(rows, algo_order, output_path, xlabel, ylabel):
     print(f"  Gerado: {output_path}")
 
 
-def plot_bars(rows, algo_order, algo_short, output_path, select=None):
+def plot_bars(rows, algo_order, output_path, select=None):
     parsed = OrderedDict()
     algos_found = set()
 
@@ -931,7 +1016,7 @@ def plot_bars(rows, algo_order, algo_short, output_path, select=None):
     fig, ax = plt.subplots(figsize=(10, 5))
 
     x = np.arange(len(instances))
-    width = 0.75 / len(algos)
+    width = 0.78 / len(algos)
 
     for i, algo in enumerate(algos):
         means = []
@@ -950,9 +1035,7 @@ def plot_bars(rows, algo_order, algo_short, output_path, select=None):
     ax.set_yscale("log")
     ax.set_xticks(x)
     inst_labels = [
-        inst.replace(".max", "")
-        .replace(".min", "")
-        .replace("_", "\n")
+        inst.replace(".max", "").replace(".min", "").replace("_", "\n")
         for inst in instances
     ]
     ax.set_xticklabels(inst_labels, rotation=45, ha="right", fontsize=7)
@@ -966,94 +1049,125 @@ def plot_bars(rows, algo_order, algo_short, output_path, select=None):
     print(f"  Gerado: {output_path}")
 
 
-# ----------------------------------------------------------------
-# Main
-# ----------------------------------------------------------------
-def main():
-    print("Gerando artefatos de benchmark...")
+def process_suite(suite):
+    tab_dir = os.path.join(TABELAS_BASE, suite)
+    fig_dir = os.path.join(FIGURAS_BASE, suite)
+    os.makedirs(tab_dir, exist_ok=True)
+    os.makedirs(fig_dir, exist_ok=True)
 
-    mf_rows = load_csv(MF_CSV)
-    mc_rows = load_csv(MC_CSV)
+    mf_csv = os.path.join(tab_dir, "data_max_flow.csv")
+    mc_csv = os.path.join(tab_dir, "data_min_cost.csv")
 
-    os.makedirs(TABELAS_DIR, exist_ok=True)
-    os.makedirs(FIGURAS_DIR, exist_ok=True)
+    mf_rows = load_csv(mf_csv)
+    mc_rows = load_csv(mc_csv)
+    mf_order = MF_ALGO_ORDER_IC if suite == "ic" else MF_ALGO_ORDER_BOOK
 
-    print("\n[1/6] Tabela completa de fluxo máximo (livro)...")
     generate_full_table_maxflow(
-        mf_rows, os.path.join(TABELAS_DIR, "table_max_flow.tex")
+        mf_rows, os.path.join(tab_dir, "table_max_flow.tex")
     )
-
-    print("[2/6] Tabela completa de custo mínimo (livro)...")
     generate_full_table_mincost(
-        mc_rows, os.path.join(TABELAS_DIR, "table_min_cost.tex")
+        mc_rows, os.path.join(tab_dir, "table_min_cost.tex")
     )
-
-    print("[3/8] Tabela compacta de fluxo máximo (relatório)...")
     generate_compact_maxflow(
-        mf_rows,
-        os.path.join(TABELAS_DIR, "table_max_flow_compact.tex"),
+        mf_rows, mf_order, os.path.join(tab_dir, "table_max_flow_compact.tex")
     )
-
-    print("[4/8] Tabela compacta de custo mínimo (relatório)...")
     generate_compact_mincost(
-        mc_rows,
-        os.path.join(TABELAS_DIR, "table_min_cost_compact.tex"),
+        mc_rows, os.path.join(tab_dir, "table_min_cost_compact.tex")
     )
-
-    print("[5/8] Tabela exaustiva de fluxo máximo (apêndice)...")
     generate_exhaustive_maxflow(
         mf_rows,
-        os.path.join(TABELAS_DIR, "table_max_flow_exhaustive.tex"),
+        mf_order,
+        os.path.join(tab_dir, "table_max_flow_exhaustive.tex"),
     )
-
-    print("[6/8] Tabela exaustiva de custo mínimo (apêndice)...")
     generate_exhaustive_mincost(
-        mc_rows,
-        os.path.join(TABELAS_DIR, "table_min_cost_exhaustive.tex"),
+        mc_rows, os.path.join(tab_dir, "table_min_cost_exhaustive.tex")
     )
 
-    if not HAS_MATPLOTLIB:
-        print(
-            "\nAviso: matplotlib não instalado. "
-            "Gráficos PDF não gerados.",
-            file=sys.stderr,
+    if HAS_MATPLOTLIB:
+        plot_scalability(
+            mf_rows,
+            mf_order,
+            os.path.join(fig_dir, "scalability_maxflow.pdf"),
+            xlabel="Vértices $|V|$",
+            ylabel="Tempo médio (ms)",
         )
-        print("  Instale com: pip install matplotlib numpy")
-        return
+        plot_bars(
+            mf_rows,
+            mf_order,
+            os.path.join(fig_dir, "bars_maxflow.pdf"),
+            select=COMPACT_MF_INSTANCES,
+        )
+        plot_scalability(
+            mc_rows,
+            MC_ALGO_ORDER,
+            os.path.join(fig_dir, "scalability_mincost.pdf"),
+            xlabel="Vértices $|V|$",
+            ylabel="Tempo médio (ms)",
+        )
+        plot_bars(
+            mc_rows,
+            MC_ALGO_ORDER,
+            os.path.join(fig_dir, "bars_mincost.pdf"),
+            select=COMPACT_MC_INSTANCES,
+        )
 
-    print("[7/8] Gráficos de fluxo máximo...")
-    plot_scalability(
-        mf_rows,
-        MF_ALGO_ORDER,
-        os.path.join(FIGURAS_DIR, "scalability_maxflow.pdf"),
-        xlabel="Vértices $|V|$",
-        ylabel="Tempo médio (ms)",
-    )
-    plot_bars(
-        mf_rows,
-        MF_ALGO_ORDER,
-        MF_ALGO_SHORT,
-        os.path.join(FIGURAS_DIR, "bars_maxflow.pdf"),
-        select=COMPACT_MF_INSTANCES,
-    )
+    if suite == "book":
+        bm_csv = os.path.join(tab_dir, "data_bipartite_matching.csv")
+        ba_csv = os.path.join(tab_dir, "data_bipartite_assignment.csv")
+        if os.path.exists(bm_csv):
+            bm_rows = load_csv(bm_csv)
+            generate_bipartite_pivot_table(
+                bm_rows,
+                BM_ALGO_ORDER,
+                BM_ALGO_SHORT,
+                os.path.join(tab_dir, "table_bipartite_matching.tex"),
+                "Comparação experimental entre algoritmos dedicados (Kuhn e Hopcroft-Karp) e motores gerais de fluxo máximo em instâncias de emparelhamento bipartido (tempos médios em ms).",
+                "tab:benchmarks_bipartite_matching",
+                "flow_value",
+                "$|M^*|$",
+            )
+            if HAS_MATPLOTLIB:
+                plot_bars(
+                    bm_rows,
+                    BM_ALGO_ORDER,
+                    os.path.join(fig_dir, "bars_bipartite_matching.pdf"),
+                )
+        if os.path.exists(ba_csv):
+            ba_rows = load_csv(ba_csv)
+            generate_bipartite_pivot_table(
+                ba_rows,
+                BA_ALGO_ORDER,
+                BA_ALGO_SHORT,
+                os.path.join(tab_dir, "table_bipartite_assignment.tex"),
+                "Comparação experimental entre o algoritmo Húngaro (Kuhn-Munkres) e motores gerais de fluxo de custo mínimo em instâncias de atribuição bipartida (tempos médios em ms).",
+                "tab:benchmarks_bipartite_assignment",
+                "cost_value",
+                "$z^*$",
+            )
+            if HAS_MATPLOTLIB:
+                plot_bars(
+                    ba_rows,
+                    BA_ALGO_ORDER,
+                    os.path.join(fig_dir, "bars_bipartite_assignment.pdf"),
+                )
 
-    print("[8/8] Gráficos de custo mínimo...")
-    plot_scalability(
-        mc_rows,
-        MC_ALGO_ORDER,
-        os.path.join(FIGURAS_DIR, "scalability_mincost.pdf"),
-        xlabel="Vértices $|V|$",
-        ylabel="Tempo médio (ms)",
-    )
-    plot_bars(
-        mc_rows,
-        MC_ALGO_ORDER,
-        MC_ALGO_SHORT,
-        os.path.join(FIGURAS_DIR, "bars_mincost.pdf"),
-        select=COMPACT_MC_INSTANCES,
-    )
 
-    print("\nTodos os artefatos de benchmark gerados.")
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        "--suite",
+        choices=["ic", "book", "all"],
+        default="all",
+        help="Qual suíte de artefatos gerar (ic, book ou all)",
+    )
+    args = parser.parse_args()
+
+    if args.suite in ("ic", "all"):
+        print("\n=== Gerando artefatos da IC (tabelas/ic, figuras/ic) ===")
+        process_suite("ic")
+    if args.suite in ("book", "all"):
+        print("\n=== Gerando artefatos do Livro / Pós-IC (tabelas/book, figuras/book) ===")
+        process_suite("book")
 
 
 if __name__ == "__main__":

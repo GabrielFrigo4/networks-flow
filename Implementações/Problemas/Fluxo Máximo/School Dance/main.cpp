@@ -1,11 +1,14 @@
 #include "../../../FlowNetwork/Dinic.hpp"
 #include "../../../FlowNetwork/EdmondsKarp.hpp"
 #include "../../../FlowNetwork/FordFulkerson.hpp"
+#include "../../../FlowNetwork/HopcroftKarp.hpp"
+#include "../../../FlowNetwork/Kuhn.hpp"
+#include "../../../FlowNetwork/MPM.hpp"
 #include "../../../FlowNetwork/PushRelabel.hpp"
 #include "../../../FlowNetwork/PushRelabelImproved.hpp"
 #include <iostream>
 
-using FlowSolver = PushRelabelImproved;
+using FlowSolver = HopcroftKarp;
 
 void print_matches(
     const std::unique_ptr<FlowNetwork> &fn, const Size num_boys, const Size num_girls

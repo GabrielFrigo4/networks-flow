@@ -92,6 +92,38 @@ LISTING_DEFINITIONS = [
         "caption": "Implementação em C++ do algoritmo \\textit{Network Simplex}.",
         "label_listing": "lst:network_simplex",
     },
+    {
+        "source": "Implementações/FlowNetwork/MPM.hpp",
+        "output": "LaTeX/apendices/12_mpm.tex",
+        "title": "Implementação da Classe ``MPM''",
+        "label_appendix": "ap:mpm",
+        "caption": "Implementação em C++ do algoritmo de Malhotra, Kumar e Maheshwari (MPM).",
+        "label_listing": "lst:mpm",
+    },
+    {
+        "source": "Implementações/FlowNetwork/Kuhn.hpp",
+        "output": "LaTeX/apendices/13_kuhn.tex",
+        "title": "Implementação da Classe ``Kuhn''",
+        "label_appendix": "ap:kuhn",
+        "caption": "Implementação em C++ do algoritmo de Kuhn para emparelhamento bipartido máximo.",
+        "label_listing": "lst:kuhn",
+    },
+    {
+        "source": "Implementações/FlowNetwork/HopcroftKarp.hpp",
+        "output": "LaTeX/apendices/14_hopcroft_karp.tex",
+        "title": "Implementação da Classe ``Hopcroft-Karp''",
+        "label_appendix": "ap:hopcroft_karp",
+        "caption": "Implementação em C++ do algoritmo de Hopcroft-Karp para emparelhamento bipartido máximo.",
+        "label_listing": "lst:hopcroft_karp",
+    },
+    {
+        "source": "Implementações/CostNetwork/KuhnMunkres.hpp",
+        "output": "LaTeX/apendices/15_kuhn_munkres.tex",
+        "title": "Implementação da Classe ``Kuhn-Munkres''",
+        "label_appendix": "ap:kuhn_munkres",
+        "caption": "Implementação em C++ do algoritmo Húngaro (Kuhn-Munkres) para atribuição bipartida de custo mínimo.",
+        "label_listing": "lst:kuhn_munkres",
+    },
 ]
 
 

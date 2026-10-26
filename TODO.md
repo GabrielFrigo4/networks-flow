@@ -44,30 +44,31 @@ Progresso das tarefas, correções e direcionamentos solicitados pela orientador
 
 Progresso das etapas finais para conclusão institucional da iniciação científica junto à orientadora e refinamento dos artefatos de entrega.
 
-- 🔄 **Auditoria e Revisão de Texto:** Leitura final e refinamento do relatório institucional e monografia em conjunto com a orientadora (Profa. Dra. Cristiane Sato).
-- 🔄 **Execução de Benchmarks Locais:** Execução final das baterias de testes na máquina de referência e atualização das tabelas no relatório (`make bench`, `make bench-tables`).
+- ✅ **Auditoria e Revisão de Texto:** Leitura final e refinamento do relatório institucional e monografia em conjunto com a orientadora (Profa. Dra. Cristiane Sato).
+- ✅ **Execução de Benchmarks Locais:** Execução final das baterias de testes na máquina de referência e atualização das tabelas no relatório (`make bench-ic`).
+- ✅ **Pôster Científico Institucional (`LaTeX/poster.tex`):** Conversão e editoração completa do pôster 90×120 cm com galeria visual da segmentação de imagens por corte mínimo e resultados experimentais DIMACS da IC.
 
 ---
 
 ## 🚀 Futuras Expansões (Pós-IC)
 
-Backlog de desenvolvimento algorítmico e pesquisa teórica planejado para a continuidade do projeto após a conclusão do ciclo formal da Iniciação Científica (UFABC). Concentra novos motores de fluxo para digrafos densos e algoritmos especializados em estruturas bipartidas discutidos no livro monográfico ([`LaTeX/book.tex`](./LaTeX/book.tex)) e no relatório técnico ([`LaTeX/ic.tex`](./LaTeX/ic.tex)).
+Desenvolvimento algorítmico e pesquisa teórica concluídos na fase Pós-IC e integrados exclusivamente ao livro monográfico ([`LaTeX/book.tex`](./LaTeX/book.tex)), mantendo os artefatos institucionais da Iniciação Científica ([`LaTeX/ic.tex`](./LaTeX/ic.tex), [`LaTeX/relatorio.tex`](./LaTeX/relatorio.tex) e [`LaTeX/poster.tex`](./LaTeX/poster.tex)) congelados no escopo original entregue.
 
-| Algoritmo / Componente                | Referência Teórica          |           Complexidade            | LaTeX | Implementação | Foco e Descrição Técnica                                                                                    |
-| :------------------------------------ | :-------------------------- | :-------------------------------: | :---: | :-----------: | :---------------------------------------------------------------------------------------------------------- |
-| **Kuhn**                              | Kuhn (1955)                 | $\mathcal{O}(\|V\| \cdot \|E\|)$  |  ✅   |   ⏳ Pós-IC   | Emparelhamento bipartido clássico via busca em profundidade (DFS) de caminhos alternantes.                  |
-| **Hopcroft-Karp**                     | Hopcroft e Karp (1973)      | $\mathcal{O}(\|E\| \sqrt{\|V\|})$ |  ✅   |   ⏳ Pós-IC   | Emparelhamento máximo bipartido não ponderado (fases de BFS global e DFS bloqueadora).                      |
-| **Algoritmo Húngaro (Kuhn-Munkres)**  | Kuhn (1955), Munkres (1957) |      $\mathcal{O}(\|V\|^3)$       |  ✅   |   ⏳ Pós-IC   | Atribuição de custo mínimo (emparelhamento com pesos) via potenciais duais e folgas complementares.         |
-| **MPM (Malhotra, Kumar, Maheshwari)** | Malhotra et al. (1978)      |      $\mathcal{O}(\|V\|^3)$       |  ❌   |   ⏳ Pós-IC   | Fluxo bloqueador via potenciais nodais de passagem em digrafos densos.                                      |
-| **Harness de Benchmark Bipartido**    | Suíte Comparativa Dedicada  |        Benchmark Empírico         |  ✅   |   ⏳ Pós-IC   | Avaliação empírica: reduções genéricas via `FlowNetwork`/`CostNetwork` vs. algoritmos dedicados bipartidos. |
+| Algoritmo / Componente                                                               | Referência Teórica          |           Complexidade            | LaTeX (Livro) | Implementação | Foco e Descrição Técnica                                                                                    |
+| :----------------------------------------------------------------------------------- | :-------------------------- | :-------------------------------: | :-----------: | :-----------: | :---------------------------------------------------------------------------------------------------------- |
+| [**Kuhn**](./Implementações/FlowNetwork/Kuhn.hpp)                                    | Kuhn (1955)                 | $\mathcal{O}(\|V\| \cdot \|E\|)$  |      ✅       |      ✅       | Emparelhamento bipartido clássico via busca em profundidade (DFS) de caminhos alternantes.                  |
+| [**Hopcroft-Karp**](./Implementações/FlowNetwork/HopcroftKarp.hpp)                   | Hopcroft e Karp (1973)      | $\mathcal{O}(\|E\| \sqrt{\|V\|})$ |      ✅       |      ✅       | Emparelhamento máximo bipartido não ponderado (fases de BFS global e DFS bloqueadora).                      |
+| [**Algoritmo Húngaro (Kuhn-Munkres)**](./Implementações/CostNetwork/KuhnMunkres.hpp) | Kuhn (1955), Munkres (1957) |      $\mathcal{O}(\|V\|^3)$       |      ✅       |      ✅       | Atribuição de custo mínimo (emparelhamento com pesos) via potenciais duais e folgas complementares.         |
+| [**MPM (Malhotra, Kumar, Maheshwari)**](./Implementações/FlowNetwork/MPM.hpp)        | Malhotra et al. (1978)      |      $\mathcal{O}(\|V\|^3)$       |      ✅       |      ✅       | Fluxo bloqueador via potenciais nodais de passagem em digrafos densos.                                      |
+| [**Harness de Benchmark Bipartido**](./Experimentos/drivers/bipartite_runner.cpp)    | Suíte Comparativa Dedicada  |        Benchmark Empírico         |      ✅       |      ✅       | Avaliação empírica: reduções genéricas via `FlowNetwork`/`CostNetwork` vs. algoritmos dedicados bipartidos. |
 
-### 📋 Tarefas Planejadas (Pós-IC)
+### 📋 Tarefas Concluídas (Pós-IC)
 
-- [ ] **Kuhn:** Implementar algoritmo de Kuhn em C++23 para emparelhamento bipartido via caminhos alternantes em $\mathcal{O}(\|V\| \cdot \|E\|)$.
-- [ ] **Hopcroft-Karp:** Implementar motor dedicado de emparelhamento bipartido máximo em C++23 com complexidade $\mathcal{O}(\|E\| \sqrt{\|V\|})$.
-- [ ] **Algoritmo Húngaro (Kuhn-Munkres):** Implementar algoritmo Húngaro em C++23 para problema de atribuição de custo mínimo em $\mathcal{O}(\|V\|^3)$.
-- [ ] **MPM (Malhotra, Kumar, Maheshwari):** Implementar classe `MPM` herdando de [`FlowNetwork`](./Implementações/FlowNetwork/FlowNetwork.hpp) com fluxo bloqueador em $\mathcal{O}(\|V\|^3)$ e validar em instâncias densas da literatura DIMACS.
-- [ ] **Benchmark Bipartido:** Avaliar tempo de CPU e consumo de memória entre as implementações dedicadas vs. reduções genéricas via `Dinic`, `PushRelabel` e `NetworkSimplex`.
+- [x] **Kuhn:** Implementar algoritmo de Kuhn em C++23 ([`Kuhn.hpp`](./Implementações/FlowNetwork/Kuhn.hpp)) herdando de [`FlowNetwork`](./Implementações/FlowNetwork/FlowNetwork.hpp) para emparelhamento bipartido via caminhos alternantes em $\mathcal{O}(\|V\| \cdot \|E\|)$.
+- [x] **Hopcroft-Karp:** Implementar motor dedicado de emparelhamento bipartido máximo em C++23 ([`HopcroftKarp.hpp`](./Implementações/FlowNetwork/HopcroftKarp.hpp)) herdando de [`FlowNetwork`](./Implementações/FlowNetwork/FlowNetwork.hpp) com complexidade $\mathcal{O}(\|E\| \sqrt{\|V\|})$.
+- [x] **Algoritmo Húngaro (Kuhn-Munkres):** Implementar algoritmo Húngaro em C++23 ([`KuhnMunkres.hpp`](./Implementações/CostNetwork/KuhnMunkres.hpp)) herdando de [`CostNetwork`](./Implementações/CostNetwork/CostNetwork.hpp) para problema de atribuição de custo mínimo em $\mathcal{O}(\|V\|^3)$.
+- [x] **MPM (Malhotra, Kumar, Maheshwari):** Implementar classe `MPM` ([`MPM.hpp`](./Implementações/FlowNetwork/MPM.hpp)) herdando de [`FlowNetwork`](./Implementações/FlowNetwork/FlowNetwork.hpp) com fluxo bloqueador em $\mathcal{O}(\|V\|^3)$ e validar nas 40 instâncias DIMACS.
+- [x] **Benchmark Bipartido e Separação IC vs. Livro:** Separar os artefatos experimentais da IC (`LaTeX/tabelas/ic/`, `LaTeX/figuras/ic/`, `make bench-ic`) dos artefatos expandidos do Livro Pós-IC (`LaTeX/tabelas/book/`, `LaTeX/figuras/book/`, `make bench-book`).
 
 ---
 
@@ -75,22 +76,24 @@ Backlog de desenvolvimento algorítmico e pesquisa teórica planejado para a con
 
 ## ⚡ Algoritmos de Fluxo Máximo
 
-Progresso dos algoritmos de fluxo máximo implementados em C++ e documentados no [LaTeX](./LaTeX/ic.tex). O código-fonte de cada algoritmo pode ser encontrado no diretório de [Implementações](./Implementações/README.md), onde cada algoritmo herda da classe base abstrata [`FlowNetwork`](./Implementações/FlowNetwork/FlowNetwork.hpp).
+Progresso dos algoritmos de fluxo máximo implementados em C++ e documentados no [LaTeX](./LaTeX/book.tex). O código-fonte de cada algoritmo pode ser encontrado no diretório de [Implementações](./Implementações/README.md), onde cada algoritmo herda da classe base abstrata [`FlowNetwork`](./Implementações/FlowNetwork/FlowNetwork.hpp).
 
-| Nome                                                                          | LaTeX | Implementação | Descrição                                                                                                                                |
-| :---------------------------------------------------------------------------- | :---: | :-----------: | :--------------------------------------------------------------------------------------------------------------------------------------- |
-| [Ford-Fulkerson](./Implementações/FlowNetwork/FordFulkerson.hpp)              |  ✅   |      ✅       | Método iterativo genérico baseado em caminhos aumentantes (pseudopolinomial).                                                            |
-| [Edmonds-Karp](./Implementações/FlowNetwork/EdmondsKarp.hpp)                  |  ✅   |      ✅       | Especialização do Ford-Fulkerson com BFS. Complexidade $\mathcal{O}(\|V\| \cdot \|E\|^2)$.                                               |
-| [Dinic Algorithm](./Implementações/FlowNetwork/Dinic.hpp)                     |  ✅   |      ✅       | Digrafo de níveis + fluxo bloqueador via DFS. Complexidade $\mathcal{O}(\|V\|^2 \cdot \|E\|)$.                                           |
-| [Push Relabel FIFO](./Implementações/FlowNetwork/PushRelabel.hpp)             |  ✅   |      ✅       | Família de pré-fluxo com fila FIFO. Complexidade $\mathcal{O}(\|V\|^3)$.                                                                 |
-| [Push Relabel Improved](./Implementações/FlowNetwork/PushRelabelImproved.hpp) |  ✅   |      ✅       | Push-Relabel com Gap Heuristic para terminação acelerada via descarte de nós inalcançáveis.                                              |
-| MPM (Malhotra, Kumar, Maheshwari)                                             |  ❌   |   ⏳ Pós-IC   | Fluxo bloqueador via potenciais nodais. Complexidade $\mathcal{O}(\|V\|^3)$ estrita (detalhado em [Pós-IC](#-futuras-expansões-pós-ic)). |
+| Nome                                                                          | LaTeX | Implementação | Descrição                                                                                                                            |
+| :---------------------------------------------------------------------------- | :---: | :-----------: | :----------------------------------------------------------------------------------------------------------------------------------- |
+| [Ford-Fulkerson](./Implementações/FlowNetwork/FordFulkerson.hpp)              |  ✅   |      ✅       | Método iterativo genérico baseado em caminhos aumentantes (pseudopolinomial).                                                        |
+| [Edmonds-Karp](./Implementações/FlowNetwork/EdmondsKarp.hpp)                  |  ✅   |      ✅       | Especialização do Ford-Fulkerson com BFS. Complexidade $\mathcal{O}(\|V\| \cdot \|E\|^2)$.                                           |
+| [Dinic Algorithm](./Implementações/FlowNetwork/Dinic.hpp)                     |  ✅   |      ✅       | Digrafo de níveis + fluxo bloqueador via DFS. Complexidade $\mathcal{O}(\|V\|^2 \cdot \|E\|)$.                                       |
+| [MPM (Malhotra, Kumar, Maheshwari)](./Implementações/FlowNetwork/MPM.hpp)     |  ✅   |      ✅       | Fluxo bloqueador via potenciais nodais de passagem em redes niveladas. Complexidade $\mathcal{O}(\|V\|^3)$ estrita (Pós-IC / Livro). |
+| [Push Relabel FIFO](./Implementações/FlowNetwork/PushRelabel.hpp)             |  ✅   |      ✅       | Família de pré-fluxo com fila FIFO. Complexidade $\mathcal{O}(\|V\|^3)$.                                                             |
+| [Push Relabel Improved](./Implementações/FlowNetwork/PushRelabelImproved.hpp) |  ✅   |      ✅       | Push-Relabel com Gap Heuristic para terminação acelerada via descarte de nós inalcançáveis.                                          |
+| [Kuhn](./Implementações/FlowNetwork/Kuhn.hpp)                                 |  ✅   |      ✅       | Emparelhamento máximo bipartido via DFS de caminhos aumentantes em $\mathcal{O}(\|V\| \cdot \|E\|)$ (Pós-IC / Livro).                |
+| [Hopcroft-Karp](./Implementações/FlowNetwork/HopcroftKarp.hpp)                |  ✅   |      ✅       | Emparelhamento máximo bipartido via fases de BFS e DFS disjunta em $\mathcal{O}(\|E\|\sqrt{\|V\|})$ (Pós-IC / Livro).                |
 
 ---
 
 ## 🧮 Algoritmos de Fluxo de Custo Mínimo
 
-Progresso dos algoritmos de fluxo de custo mínimo documentados no [LaTeX](./LaTeX/ic.tex) e implementados no diretório [Implementações](./Implementações/README.md), onde cada algoritmo herda da classe base abstrata [`CostNetwork`](./Implementações/CostNetwork/CostNetwork.hpp).
+Progresso dos algoritmos de fluxo de custo mínimo documentados no [LaTeX](./LaTeX/book.tex) e implementados no diretório [Implementações](./Implementações/README.md), onde cada algoritmo herda da classe base abstrata [`CostNetwork`](./Implementações/CostNetwork/CostNetwork.hpp).
 
 | Nome                                                                                          | LaTeX | Implementação | Descrição                                                                                             |
 | :-------------------------------------------------------------------------------------------- | :---: | :-----------: | :---------------------------------------------------------------------------------------------------- |
@@ -98,6 +101,7 @@ Progresso dos algoritmos de fluxo de custo mínimo documentados no [LaTeX](./LaT
 | [Successive Shortest Path (SPFA)](./Implementações/CostNetwork/SuccessiveShortest.hpp)        |  ✅   |      ✅       | Roteamento de fluxo por caminhos mais baratos via aumentações sucessivas com SPFA/Bellman-Ford.       |
 | [Successive Shortest (Dijkstra)](./Implementações/CostNetwork/SuccessiveShortestDijkstra.hpp) |  ✅   |      ✅       | Aumentações sucessivas utilizando Dijkstra com potenciais nodais ($\pi$) para manter $\bar{c} \ge 0$. |
 | [Network Simplex](./Implementações/CostNetwork/NetworkSimplex.hpp)                            |  ✅   |      ✅       | Algoritmo primal baseado em árvores geradoras com pivoteamento eficiente de bases.                    |
+| [Kuhn-Munkres (Algoritmo Húngaro)](./Implementações/CostNetwork/KuhnMunkres.hpp)              |  ✅   |      ✅       | Atribuição bipartida de custo mínimo via potenciais duais em $\mathcal{O}(\|V\|^3)$ (Pós-IC / Livro). |
 
 ---
 
@@ -199,17 +203,17 @@ A suíte de problemas clássicos implementada no repositório valida todas as re
 
 ---
 
-## 📋 Backlog de Problemas Complementares
+## 📋 Problemas Complementares Avançados (Concluídos Pós-IC)
 
 Problemas selecionados para validação avançada de técnicas específicas de modelagem de fluxo:
 
-| Problema                                                                | Plataforma / ID                                                      | Técnica de Fluxo Alvo                                           |   Status   |
-| :---------------------------------------------------------------------- | :------------------------------------------------------------------- | :-------------------------------------------------------------- | :--------: |
-| [Fast Maximum Flow](https://www.spoj.com/problems/FASTFLOW/)            | [SPOJ FASTFLOW](https://www.spoj.com/problems/FASTFLOW/)             | Benchmark extremo de vazão em digrafos densos e esparsos.       | ⏳ A Fazer |
-| [Petya and Graph](https://codeforces.com/problemset/problem/1082/G)     | [Codeforces 1082G](https://codeforces.com/problemset/problem/1082/G) | Fechamento de Peso Máximo (_Project Selection_) via Min-Cut.    | ⏳ A Fazer |
-| [Array and Operations](https://codeforces.com/problemset/problem/498/C) | [Codeforces 498C](https://codeforces.com/problemset/problem/498/C)   | Emparelhamento Bipartido Máximo indexado por fatores primos.    | ⏳ A Fazer |
-| [Maximum Flow](https://codeforces.com/problemset/problem/843/E)         | [Codeforces 843E](https://codeforces.com/problemset/problem/843/E)   | Reconstrução de capacidades compatíveis a partir de corte.      | ⏳ A Fazer |
-| [Red-Blue Graph](https://codeforces.com/contest/1288/problem/f)         | [Codeforces 1288F](https://codeforces.com/contest/1288/problem/f)    | Circulação com Demandas e Limites Inferiores ($l \le f \le c$). | ⏳ A Fazer |
+| Problema                                                                | Plataforma / ID                                                      | Código Local                                                                                        | Técnica de Fluxo Alvo                                           |    Status    |
+| :---------------------------------------------------------------------- | :------------------------------------------------------------------- | :-------------------------------------------------------------------------------------------------- | :-------------------------------------------------------------- | :----------: |
+| [Fast Maximum Flow](https://www.spoj.com/problems/FASTFLOW/)            | [SPOJ FASTFLOW](https://www.spoj.com/problems/FASTFLOW/)             | [`main.cpp`](./Implementações/Problemas/Fluxo%20M%C3%A1ximo/Fast%20Maximum%20Flow/main.cpp)         | Benchmark extremo de vazão em digrafos densos e esparsos.       | ✅ Resolvido |
+| [Petya and Graph](https://codeforces.com/problemset/problem/1082/G)     | [Codeforces 1082G](https://codeforces.com/problemset/problem/1082/G) | [`main.cpp`](./Implementações/Problemas/Fluxo%20M%C3%A1ximo/Petya%20and%20Graph/main.cpp)           | Fechamento de Peso Máximo (_Project Selection_) via Min-Cut.    | ✅ Resolvido |
+| [Array and Operations](https://codeforces.com/problemset/problem/498/C) | [Codeforces 498C](https://codeforces.com/problemset/problem/498/C)   | [`main.cpp`](./Implementações/Problemas/Fluxo%20M%C3%A1ximo/Array%20and%20Operations/main.cpp)      | Emparelhamento Bipartido Máximo indexado por fatores primos.    | ✅ Resolvido |
+| [Maximum Flow](https://codeforces.com/problemset/problem/843/E)         | [Codeforces 843E](https://codeforces.com/problemset/problem/843/E)   | [`main.cpp`](./Implementações/Problemas/Fluxo%20M%C3%A1ximo/Maximum%20Flow/main.cpp)                | Reconstrução de capacidades compatíveis a partir de corte.      | ✅ Resolvido |
+| [Red-Blue Graph](https://codeforces.com/contest/1288/problem/f)         | [Codeforces 1288F](https://codeforces.com/contest/1288/problem/f)    | [`main.cpp`](./Implementações/Problemas/Fluxo%20de%20Custo%20M%C3%ADnimo/Red-Blue%20Graph/main.cpp) | Circulação com Demandas e Limites Inferiores ($l \le f \le c$). | ✅ Resolvido |
 
 ---
 

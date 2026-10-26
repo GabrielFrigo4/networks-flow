@@ -18,7 +18,7 @@ Para assegurar rigor científico e reprodutibilidade, adotaram-se os seguintes c
 
 \subsection{Avaliação de Fluxo Máximo (Coleções DIMACS)}
 
-Os algoritmos de fluxo máximo foram avaliados sobre as coleções canônicas do \textit{First DIMACS Challenge}:
+Os algoritmos de fluxo máximo foram avaliados sobre as coleções padronizadas do \textit{First DIMACS Challenge}:
 \begin{itemize}[leftmargin=1.5em, itemsep=0.15em, topsep=0.2em, parsep=0em]
     \item \textbf{Washington (RLG, Mesh e Line):} Redes em malha plana, grafos de camadas aleatórias (\textit{Random Level Graphs}) e redes lineares com gargalos induzidos para provocar caminhos aumentantes longos;
     \item \textbf{Genrmf (small, medium, wide, long):} Grafos tridimensionais particionados em planos transversais conectados sequencialmente com capacidades aleatórias.
@@ -26,14 +26,14 @@ Os algoritmos de fluxo máximo foram avaliados sobre as coleções canônicas do
 
 A bateria experimental exaustiva contemplando a totalidade das 40 instâncias DIMACS de fluxo máximo encontra-se detalhada no Apêndice~\ref{ap:benchmarks_completos}.
 
-A Tabela~\ref{tab:benchmarks_maxflow} apresenta os tempos médios de execução obtidos pelos cinco algoritmos em 13 instâncias canônicas representativas de fluxo máximo. O menor tempo por instância está destacado em \textbf{negrito}, e a indicação \textbf{TLE} (\textit{Time Limit Exceeded}) denota tempo de execução superior ao teto de 16 segundos.
+A Tabela~\ref{tab:benchmarks_maxflow} apresenta os tempos médios de execução obtidos pelos cinco algoritmos em 13 instâncias de referência representativas de fluxo máximo. O menor tempo por instância está destacado em \textbf{negrito}, e a indicação \textbf{TLE} (\textit{Time Limit Exceeded}) denota tempo de execução superior ao teto de 16 segundos.
 
-\input{tabelas/table_max_flow_compact}
+\input{tabelas/ic/table_max_flow_compact}
 
-\IfFileExists{figuras/bars_maxflow.pdf}{
+\IfFileExists{figuras/ic/bars_maxflow.pdf}{
 \begin{figure}[!ht]
     \centering
-    \includegraphics[width=0.95\textwidth]{figuras/bars_maxflow}
+    \includegraphics[width=0.95\textwidth]{figuras/ic/bars_maxflow}
     \caption{Comparação direta dos tempos médios de execução por instância (algoritmos de fluxo máximo, escala logarítmica).}
     \label{fig:bars_maxflow_ic}
 \end{figure}
@@ -52,12 +52,12 @@ Para avaliar os algoritmos de fluxo de custo mínimo, utilizou-se a família \te
 
 A Tabela~\ref{tab:benchmarks_mincost} apresenta a comparação entre os quatro algoritmos de custo mínimo em 13 instâncias representativas da família Netgen, cobrindo transbordo inicial, transporte de baixo fluxo, transporte de alta demanda, grande escala e escala máxima. O menor tempo por instância está destacado em \textbf{negrito}, e a indicação \textbf{TLE} denota interrupção por limite de 16 segundos. A bateria experimental exaustiva com a totalidade das 40 instâncias Netgen está detalhada no Apêndice~\ref{ap:benchmarks_completos}.
 
-\input{tabelas/table_min_cost_compact}
+\input{tabelas/ic/table_min_cost_compact}
 
-\IfFileExists{figuras/bars_mincost.pdf}{
+\IfFileExists{figuras/ic/bars_mincost.pdf}{
 \begin{figure}[!ht]
     \centering
-    \includegraphics[width=0.95\textwidth]{figuras/bars_mincost}
+    \includegraphics[width=0.95\textwidth]{figuras/ic/bars_mincost}
     \caption{Comparação direta dos tempos médios de execução por instância (algoritmos de fluxo de custo mínimo, escala logarítmica).}
     \label{fig:bars_mincost_ic}
 \end{figure}

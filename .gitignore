@@ -41,7 +41,9 @@ cmake-build-*/
 *.pdf
 !Material/**
 !LaTeX/figuras/*.pdf
+!LaTeX/figuras/**/*.pdf
 !**/figuras/*.pdf
+!**/figuras/**/*.pdf
 
 # OS generated files
 .DS_Store

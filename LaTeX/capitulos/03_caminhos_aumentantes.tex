@@ -135,3 +135,40 @@ A classe correspondente está estruturada como \lstinline{Dinic} (Código~\ref{l
 \end{figure}
 
 
+\section{O Algoritmo de Malhotra, Kumar e Maheshwari (MPM)}\label{sec:mpm}
+
+\paragraph{Potenciais de Vazão em Vértices.}
+O algoritmo de Malhotra, Kumar e Maheshwari (MPM)~\cite{malhotra1978algorithm} calcula um fluxo bloqueador no Digrafo de Níveis $D_L = (V_L, A_L)$ em tempo $\mathcal{O}(|V|^2)$ por fase, substituindo a busca por caminhos individuais em profundidade (DFS) de Dinic pela seleção de vértices de capacidade residual mínima.
+
+Para cada vértice ativo $v \in V_L$, definem-se a capacidade de entrada admissível $c_{\text{in}}(v)$, a capacidade de saída admissível $c_{\text{out}}(v)$ e o potencial de vazão $\rho(v)$:
+\begin{equation}
+    c_{\text{in}}(v) = \sum_{(u,v) \in A_L} c_f(u,v), \qquad
+    c_{\text{out}}(v) = \sum_{(v,w) \in A_L} c_f(v,w)
+\end{equation}
+\begin{equation}
+    \rho(v) = \begin{cases}
+        c_{\text{out}}(s), & \text{se } v = s, \\
+        c_{\text{in}}(t), & \text{se } v = t, \\
+        \min\bigl(c_{\text{in}}(v),\, c_{\text{out}}(v)\bigr), & \text{se } v \in V_L \setminus \{s, t\}.
+    \end{cases}
+\end{equation}
+
+\paragraph{Procedimento de Fase por Nó de Referência.}
+Em cada passo dentro de uma fase sobre $D_L$:
+\begin{enumerate}
+    \item \textbf{Poda de Potencial Nulo:} Todo vértice $u \in V_L$ com $\rho(u) = 0$ não pode transportar fluxo adicional entre $s$ e $t$ na fase atual; tais vértices e seus arcos incidentes são removidos em cascata, atualizando-se $c_{\text{in}}$ e $c_{\text{out}}$ dos vizinhos.
+    \item \textbf{Seleção do Vértice de Referência:} Seleciona-se $v^* = \arg\min_{v \in V_L} \rho(v)$, com potencial positivo $\Delta = \rho(v^*) > 0$.
+    \item \textbf{Propagação para o Sorvedouro e Recuo para a Fonte:} Pela minimalidade de $\Delta = \rho(v^*)$, todo vértice ativo intermediário dispõe de capacidade residual suficiente ($\ge \Delta$) tanto de entrada quanto de saída. O algoritmo empurra $\Delta$ unidades de fluxo de $v^*$ até $t$ avançando camada por camada ($d(w) = d(u) + 1$) e puxa $\Delta$ unidades de fluxo de $v^*$ até $s$ retrocedendo camada por camada ($d(u) = d(w) - 1$).
+    \item \textbf{Saturação Nodal:} Após o envio de $\Delta$ unidades, ao menos um dos somatórios $c_{\text{in}}(v^*)$ ou $c_{\text{out}}(v^*)$ anula-se. O vértice $v^*$ é removido de $D_L$ e o laço repete-se até que $s$ ou $t$ seja desconectado.
+\end{enumerate}
+
+\begin{teorema}[Complexidade do Algoritmo MPM, 1978][teo:mpm]
+O algoritmo MPM determina um fluxo bloqueador em cada fase em tempo $\mathcal{O}(|V|^2)$ e resolve o Problema do Fluxo Máximo em tempo $\mathcal{O}(|V|^3)$.
+\end{teorema}
+
+\begin{demonstracao}
+Em cada fase sobre $D_L$, cada iteração do laço principal remove definitivamente o vértice de referência $v^*$ (além de eventuais vértices podados com $\rho = 0$), ocorrendo no máximo $|V|$ seleções de vértice de referência por fase. A busca do mínimo $\rho(v^*)$ consome $\mathcal{O}(|V|)$ por iteração, totalizando $\mathcal{O}(|V|^2)$ na fase. Durante a propagação em camadas por fila FIFO deduplicada, em cada arco $(u, w) \in A_L$ o envio de fluxo ou satura completamente o arco — caso em que o ponteiro de adjacência avança definitivamente, ocorrendo no máximo $|A|$ vezes em toda a fase — ou esgota o excesso acumulado em $u$ sem saturar o arco, o que ocorre no máximo uma vez por vértice em cada iteração, somando $\mathcal{O}(|V|^2)$ empurrões não saturantes por fase. Portanto, cada fase executa em $\mathcal{O}(|V|^2 + |A|) = \mathcal{O}(|V|^2)$. Como o número de fases de níveis é limitado por $|V| - 1$, o tempo total é $\mathcal{O}(|V|^3)$.
+\end{demonstracao}
+
+\paragraph{Implementação em C++.}
+O motor correspondente encontra-se implementado na classe \lstinline{MPM} (Código~\ref{lst:mpm}, Apêndice~\ref{ap:mpm}), herdando polimorficamente de \lstinline{FlowNetwork}.

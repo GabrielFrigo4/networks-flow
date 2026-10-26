@@ -1,12 +1,15 @@
 #include "../../../FlowNetwork/Dinic.hpp"
 #include "../../../FlowNetwork/EdmondsKarp.hpp"
 #include "../../../FlowNetwork/FordFulkerson.hpp"
+#include "../../../FlowNetwork/HopcroftKarp.hpp"
+#include "../../../FlowNetwork/Kuhn.hpp"
+#include "../../../FlowNetwork/MPM.hpp"
 #include "../../../FlowNetwork/PushRelabel.hpp"
 #include "../../../FlowNetwork/PushRelabelImproved.hpp"
 #include <iostream>
 #include <string>
 
-using FlowSolver = PushRelabelImproved;
+using FlowSolver = HopcroftKarp;
 
 void print_minimum_vertex_cover(const std::unique_ptr<FlowNetwork> &fn, const Size n)
 {

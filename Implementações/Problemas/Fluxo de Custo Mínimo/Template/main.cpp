@@ -1,4 +1,5 @@
 #include "../../../CostNetwork/CycleCanceling.hpp"
+#include "../../../CostNetwork/KuhnMunkres.hpp"
 #include "../../../CostNetwork/NetworkSimplex.hpp"
 #include "../../../CostNetwork/SuccessiveShortest.hpp"
 #include "../../../CostNetwork/SuccessiveShortestDijkstra.hpp"

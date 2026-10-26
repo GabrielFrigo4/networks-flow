@@ -23,7 +23,7 @@ O protocolo experimental fundamenta-se nas seguintes diretrizes:
 
 \section{Famílias de Instâncias Padronizadas da Literatura (DIMACS)}\label{sec:bench_instancias}
 
-Para submeter os algoritmos a diferentes desafios estruturais de rede, a avaliação experimental adota 80 instâncias canônicas padronizadas do \textit{First DIMACS International Algorithm Implementation Challenge} (1990--1991)~\cite{Jensen2022, ahuja1993network}, distribuídas simetricamente entre Fluxo Máximo e Fluxo de Custo Mínimo:
+Para submeter os algoritmos a diferentes desafios estruturais de rede, a avaliação experimental adota 80 instâncias padronizadas de referência do \textit{First DIMACS International Algorithm Implementation Challenge} (1990--1991)~\cite{Jensen2022, ahuja1993network}, distribuídas simetricamente entre Fluxo Máximo e Fluxo de Custo Mínimo, acrescidas de uma suíte específica para Grafos Bipartidos:
 
 \begin{itemize}
     \item \textbf{Família DIMACS Max-Flow (40 instâncias):}
@@ -32,7 +32,7 @@ Para submeter os algoritmos a diferentes desafios estruturais de rede, a avalia�
         \item \textbf{Washington RLG (8 instâncias):} Redes de camadas aleatórias (\textit{Random Level Graphs}) com conectividade direcionada por níveis;
         \item \textbf{Washington Line (6 instâncias):} Cadeias lineares longas com gargalos induzidos para provocar caminhos aumentantes de comprimento $\Omega(|V|)$;
         \item \textbf{Washington Exp-Line (4 instâncias):} Redes lineares com capacidades variando exponencialmente, projetadas para testar a dependência pseudo-polinomial em relação a $|f^*|$;
-        \item \textbf{Washington Adversariais e Emparelhamento (4 instâncias):} Topologias patológicas construídas especificamente para pior caso de Dinic (\texttt{bad\_dinic}) e de Goldberg (\texttt{bad\_gold}), além de emparelhamentos bipartidos densos (\texttt{wash\_match});
+        \item \textbf{Washington Adversariais e Emparelhamento (4 instâncias):} Estruturas adversariais construídas especificamente para pior caso de Dinic (\texttt{bad\_dinic}) e de Goldberg (\texttt{bad\_gold}), além de emparelhamentos bipartidos densos (\texttt{wash\_match});
         \item \textbf{Genrmf (10 instâncias):} Grafos tridimensionais formados por planos bidimensionais interconectados com capacidades aleatórias (\textit{small}, \textit{medium}, \textit{wide}, \textit{long}, \textit{huge}, \textit{cube} e \textit{deep}), onde a fonte reside no primeiro plano e o sumidouro no último, impondo cortes mínimos estreitos.
     \end{itemize}
 
@@ -42,6 +42,12 @@ Para submeter os algoritmos a diferentes desafios estruturais de rede, a avalia�
         \item \textbf{Netgen (Problemas 11 a 20):} Redes com capacidades amplas e fontes distribuídas ($|V| \approx 400 \dots 500$), avaliando a robustez de métodos de cancelamento de ciclos e caminhos mínimos sucessivos;
         \item \textbf{Netgen (Problemas 21 a 30):} Redes densas com custos uniformemente distribuídos ($|V| \approx 1.000$, $|A| \approx 3.000 \dots 9.000$);
         \item \textbf{Netgen (Problemas 31 a 40):} Instâncias de grande porte e casos limites da literatura ($|V| \approx 1.500 \dots 3.000$, $|A| \approx 4.000 \dots 35.000$).
+    \end{itemize}
+
+    \item \textbf{Suíte Bipartida de Emparelhamento e Atribuição (18 instâncias):}
+    \begin{itemize}
+        \item \textbf{Emparelhamento Bipartido (10 instâncias):} Grafos bipartidos esparsos (\texttt{bip\_sparse}), densos (\texttt{bip\_dense}), regulares (\texttt{bip\_regular}) e com longos caminhos alternantes (\texttt{bip\_trap}), comparando \lstinline{Kuhn} e \lstinline{HopcroftKarp} aos seis motores gerais de fluxo máximo;
+        \item \textbf{Atribuição Bipartida Ponderada (8 instâncias):} Matrizes de atribuição com custos uniformes (\texttt{assign\_uniform}), custos de grande magnitude (\texttt{assign\_highcost}) e distâncias euclidianas (\texttt{assign\_euclid}), comparando \lstinline{KuhnMunkres} aos quatro motores gerais de custo mínimo.
     \end{itemize}
 \end{itemize}
 
@@ -84,14 +90,17 @@ A Tabela~\ref{tab:benchmarks} sintetiza o comportamento operacional esperado de 
 \hyperref[ap:ford_fulkerson]{Ford-Fulkerson} & Capacidades pequenas e caminhos curtos & Capacidades exponenciais e redes com ciclos \\
 \hyperref[ap:edmonds_karp]{Edmonds-Karp} & Redes esparsas com poucos aumentos globais & Redes em camadas profundas (custo de BFSs sucessivas) \\
 \hyperref[ap:dinic]{Dinic} & Redes unitárias, grafos bipartidos e redes densas & Gargalos múltiplos em níveis sucessivos da rede \\
+\hyperref[ap:mpm]{MPM} & Digrafos em níveis densos com grau elevado & Varredura de potenciais nodais $\mathcal{O}(|V|^2)$ em grafos muito esparsos \\
 \hyperref[ap:push_relabel]{Push-Relabel (FIFO)} & Redes densas com cortes mínimos próximos à fonte & Cadeias longas sem saturação imediata de excessos \\
 \hyperref[ap:push_relabel_improved]{Push-Relabel (Gap)} & Grafos de visão (grid 2D/3D) e instâncias DIMACS RMF & Gargalos com desconexões sucessivas do sumidouro (eliminadas por Gap) \\
+\hyperref[ap:kuhn]{Kuhn} / \hyperref[ap:hopcroft_karp]{Hopcroft-Karp} & Emparelhamento bipartido unitário ($s \to L \to R \to t$) & Restritos a redes bipartidas unitárias (fallback residual nos demais casos) \\
 \midrule
 \multicolumn{3}{c}{\bannertext{\hyperref[sec:bench_instancias]{Motores de Fluxo de Custo Mínimo (Coleção DIMACS Netgen)}}} \\
 \midrule
 \hyperref[ap:cycle_canceling]{Cycle Canceling} & Redes pequenas com poucos ciclos de custo negativo & Custos residuais elevados com múltiplos ciclos de $-1$ \\
 \hyperref[ap:successive_shortest_dijkstra]{SSP (Dijkstra + $\pi$)} & Redes de transbordo com fluxo total moderado & Redes com fluxos massivos e capacidades unitárias \\
 \hyperref[ap:network_simplex]{Network Simplex} & Grafos em grade, instâncias Netgen e redes logísticas & Degenerescência cíclica severa (controlada por Cunningham) \\
+\hyperref[ap:kuhn_munkres]{Kuhn-Munkres (Húngaro)} & Atribuição bipartida densa ($|L| = |R|$) & Matrizes densas $\mathcal{O}(|V|^3)$ frente a grafos muito esparsos \\
 \bottomrule\end{tabular}
 \caption{Quadro de análise comparativa dos motores algorítmicos e sensibilidade estrutural frente aos conjuntos de teste.}
 \label{tab:benchmarks}
@@ -102,25 +111,25 @@ Os scripts no diretório \code{Experimentos/} automatizam a execução deste pro
 
 \section{Resultados Experimentais: Fluxo Máximo}\label{sec:bench_resultados_maxflow}
 
-A Tabela~\ref{tab:results_maxflow} apresenta os tempos médios de execução (2 repetições, $\bar{t}$ em ms) e o fluxo ótimo $f^*$ obtidos pelos algoritmos de fluxo máximo nas 40 instâncias canônicas DIMACS (Washington e Genrmf). O menor tempo por instância está destacado em \textbf{negrito}.
+A Tabela~\ref{tab:results_maxflow} apresenta os tempos médios de execução ($\bar{t}$ em ms) e o fluxo ótimo $f^*$ obtidos pelos seis algoritmos de fluxo máximo (\lstinline{FordFulkerson}, \lstinline{EdmondsKarp}, \lstinline{Dinic}, \lstinline{MPM}, \lstinline{PushRelabel} e \lstinline{PushRelabelImproved}) nas 40 instâncias de referência DIMACS (Washington e Genrmf). O menor tempo por instância está destacado em \textbf{negrito}.
 
-\IfFileExists{tabelas/table_max_flow.tex}{
-\input{tabelas/table_max_flow}
+\IfFileExists{tabelas/book/table_max_flow.tex}{
+\input{tabelas/book/table_max_flow}
 }{}
 
-\IfFileExists{figuras/scalability_maxflow.pdf}{
+\IfFileExists{figuras/book/scalability_maxflow.pdf}{
 \begin{figure}[!ht]
     \centering
-    \includegraphics[width=0.92\textwidth]{figuras/scalability_maxflow}
+    \includegraphics[width=0.92\textwidth]{figuras/book/scalability_maxflow}
     \caption{Escalabilidade dos algoritmos de fluxo máximo em função de $|V|$ (escala log-log).}
     \label{fig:scalability_maxflow}
 \end{figure}
 }{}
 
-\IfFileExists{figuras/bars_maxflow.pdf}{
+\IfFileExists{figuras/book/bars_maxflow.pdf}{
 \begin{figure}[!ht]
     \centering
-    \includegraphics[width=0.98\textwidth]{figuras/bars_maxflow}
+    \includegraphics[width=0.98\textwidth]{figuras/book/bars_maxflow}
     \caption{Comparação direta dos tempos médios de execução por instância (algoritmos de fluxo máximo).}
     \label{fig:bars_maxflow}
 \end{figure}
@@ -129,26 +138,59 @@ A Tabela~\ref{tab:results_maxflow} apresenta os tempos médios de execução (2 
 
 \section{Resultados Experimentais: Fluxo de Custo Mínimo}\label{sec:bench_resultados_mincost}
 
-A Tabela~\ref{tab:results_mincost} apresenta os resultados para os algoritmos de fluxo de custo mínimo nas 40 instâncias canônicas Netgen da suíte DIMACS, reportando o custo ótimo $z^*$ e o menor tempo por instância em \textbf{negrito}.
+A Tabela~\ref{tab:results_mincost} apresenta os resultados para os algoritmos de fluxo de custo mínimo nas 40 instâncias de referência Netgen da suíte DIMACS, reportando o custo ótimo $z^*$ e o menor tempo por instância em \textbf{negrito}.
 
-\IfFileExists{tabelas/table_min_cost.tex}{
-\input{tabelas/table_min_cost}
+\IfFileExists{tabelas/book/table_min_cost.tex}{
+\input{tabelas/book/table_min_cost}
 }{}
 
-\IfFileExists{figuras/scalability_mincost.pdf}{
+\IfFileExists{figuras/book/scalability_mincost.pdf}{
 \begin{figure}[!ht]
     \centering
-    \includegraphics[width=0.92\textwidth]{figuras/scalability_mincost}
+    \includegraphics[width=0.92\textwidth]{figuras/book/scalability_mincost}
     \caption{Escalabilidade dos algoritmos de fluxo de custo mínimo em função de $|V|$ (escala log-log).}
     \label{fig:scalability_mincost}
 \end{figure}
 }{}
 
-\IfFileExists{figuras/bars_mincost.pdf}{
+\IfFileExists{figuras/book/bars_mincost.pdf}{
 \begin{figure}[!ht]
     \centering
-    \includegraphics[width=0.98\textwidth]{figuras/bars_mincost}
+    \includegraphics[width=0.98\textwidth]{figuras/book/bars_mincost}
     \caption{Comparação direta dos tempos médios de execução por instância (algoritmos de fluxo de custo mínimo).}
     \label{fig:bars_mincost}
 \end{figure}
 }{}
+
+
+\section{Resultados Experimentais: Emparelhamento e Atribuição Bipartida}\label{sec:bench_resultados_bipartite}
+
+Para quantificar o ganho prático das estruturas dedicadas em relação às reduções gerais de fluxo, avaliaram-se os motores \lstinline{Kuhn} e \lstinline{HopcroftKarp} frente aos seis motores de fluxo máximo nas 10 instâncias de emparelhamento bipartido (Tabela~\ref{tab:benchmarks_bipartite_matching} e Figura~\ref{fig:bars_bipartite_matching}), bem como o algoritmo Húngaro (\lstinline{KuhnMunkres}) frente aos quatro motores de custo mínimo nas 8 instâncias de atribuição ponderada (Tabela~\ref{tab:benchmarks_bipartite_assignment} e Figura~\ref{fig:bars_bipartite_assignment}).
+
+\IfFileExists{tabelas/book/table_bipartite_matching.tex}{
+\input{tabelas/book/table_bipartite_matching}
+}{}
+
+\IfFileExists{figuras/book/bars_bipartite_matching.pdf}{
+\begin{figure}[!ht]
+    \centering
+    \includegraphics[width=0.95\textwidth]{figuras/book/bars_bipartite_matching}
+    \caption{Tempos médios de execução nas instâncias de emparelhamento bipartido máximo: algoritmos dedicados (\texttt{HopcroftKarp} e \texttt{Kuhn}) versus motores gerais de fluxo máximo.}
+    \label{fig:bars_bipartite_matching}
+\end{figure}
+}{}
+
+\IfFileExists{tabelas/book/table_bipartite_assignment.tex}{
+\input{tabelas/book/table_bipartite_assignment}
+}{}
+
+\IfFileExists{figuras/book/bars_bipartite_assignment.pdf}{
+\begin{figure}[!ht]
+    \centering
+    \includegraphics[width=0.95\textwidth]{figuras/book/bars_bipartite_assignment}
+    \caption{Tempos médios de execução nas instâncias de atribuição bipartida ponderada: algoritmo Húngaro (\texttt{KuhnMunkres}) versus motores gerais de fluxo de custo mínimo.}
+    \label{fig:bars_bipartite_assignment}
+\end{figure}
+}{}
+
+Observa-se que \lstinline{HopcroftKarp} atinge os menores tempos em todas as instâncias de emparelhamento bipartido, beneficiando-se da ausência de manipulação explícita dos arcos da fonte e do sorvedouro durante as fases de busca, seguido de perto por \lstinline{Dinic}. Analogamente, nas instâncias densas de atribuição bipartida, \lstinline{KuhnMunkres} supera os algoritmos gerais de fluxo de custo mínimo ao atualizar os potenciais duais diretamente sobre a matriz compacta em $\mathcal{O}(|V|^3)$.

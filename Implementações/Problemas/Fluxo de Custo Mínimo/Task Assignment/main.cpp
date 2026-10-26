@@ -1,10 +1,11 @@
 #include "../../../CostNetwork/CycleCanceling.hpp"
+#include "../../../CostNetwork/KuhnMunkres.hpp"
 #include "../../../CostNetwork/NetworkSimplex.hpp"
 #include "../../../CostNetwork/SuccessiveShortest.hpp"
 #include "../../../CostNetwork/SuccessiveShortestDijkstra.hpp"
 #include <iostream>
 
-using CostSolver = NetworkSimplex;
+using CostSolver = KuhnMunkres;
 
 void print_assignment(const std::unique_ptr<CostNetwork> &cn, const Size n)
 {

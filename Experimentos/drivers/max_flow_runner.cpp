@@ -1,306 +1,191 @@
-// ----------------------------------------------------------------
-// Driver: Max-Flow Benchmark Runner
-// ----------------------------------------------------------------
-#include <algorithm>
+#include "../../Implementações/FlowNetwork/Dinic.hpp"
+#include "../../Implementações/FlowNetwork/EdmondsKarp.hpp"
+#include "../../Implementações/FlowNetwork/FordFulkerson.hpp"
+#include "../../Implementações/FlowNetwork/MPM.hpp"
+#include "../../Implementações/FlowNetwork/PushRelabel.hpp"
+#include "../../Implementações/FlowNetwork/PushRelabelImproved.hpp"
+
 #include <chrono>
-#include <cmath>
-#include <cstdlib>
 #include <fstream>
-#include <future>
 #include <iomanip>
 #include <iostream>
-#include <memory>
-#include <numeric>
 #include <sstream>
 #include <string>
-#include <string_view>
-#include <thread>
+#include <sys/resource.h>
 #include <vector>
 
-#include "../Experimentos/parsers/dimacs_max.hpp"
-#include "FlowNetwork/Dinic.hpp"
-#include "FlowNetwork/EdmondsKarp.hpp"
-#include "FlowNetwork/FordFulkerson.hpp"
-#include "FlowNetwork/PushRelabel.hpp"
-#include "FlowNetwork/PushRelabelImproved.hpp"
-
-namespace Term
+struct RawArc
 {
-static bool use_color()
-{
-	static const bool enabled = [] {
-		if (std::getenv("NO_COLOR") != nullptr)
-			return false;
-		const char *term = std::getenv("TERM");
-		return term != nullptr && std::string_view(term) != "dumb";
-	}();
-	return enabled;
-}
-
-inline const char *reset()
-{
-	return use_color() ? "\033[0m" : "";
-}
-inline const char *bold()
-{
-	return use_color() ? "\033[1m" : "";
-}
-inline const char *dim()
-{
-	return use_color() ? "\033[90m" : "";
-}
-inline const char *cyan()
-{
-	return use_color() ? "\033[36m" : "";
-}
-inline const char *green()
-{
-	return use_color() ? "\033[1;32m" : "";
-}
-inline const char *yellow()
-{
-	return use_color() ? "\033[1;33m" : "";
-}
-inline const char *red()
-{
-	return use_color() ? "\033[1;31m" : "";
-}
-} // namespace Term
-
-struct EngineEntry
-{
-	std::string name;
-	std::unique_ptr<FlowNetwork> (*create)(Size);
+	Size u, v;
+	Long cap;
 };
 
-static const std::vector<EngineEntry> &get_engines()
+struct GraphData
 {
-	static const auto engines = [] {
-		std::vector<EngineEntry> v;
-		v.push_back({"FordFulkerson", FordFulkerson::create});
-		v.push_back({"EdmondsKarp", EdmondsKarp::create});
-		v.push_back({"Dinic", Dinic::create});
-		v.push_back({"PushRelabel", PushRelabel::create});
-		v.push_back({"PushRelabelImproved", PushRelabelImproved::create});
-		return v;
-	}();
-	return engines;
-}
-
-static std::unique_ptr<FlowNetwork> build_network(
-    const EngineEntry &engine, const DimacsMaxFlow &inst
-)
-{
-	auto net = engine.create(inst.num_nodes);
-	for (const auto &arc : inst.arcs)
-		net->add_edge(arc.from, arc.to, arc.capacity);
-	return net;
-}
-
-struct RunResult
-{
-	Long flow_value;
-	double elapsed_ms;
-	bool timeout;
+	Size num_nodes = 0;
+	Size source = 0;
+	Size sink = 0;
+	std::vector<RawArc> arcs;
 };
 
-static RunResult run_once(
-    const EngineEntry &engine, const DimacsMaxFlow &inst, double timeout_s
-)
+static long get_max_rss_kb()
 {
-	auto net = build_network(engine, inst);
+	struct rusage usage{};
+	if (getrusage(RUSAGE_SELF, &usage) == 0)
+		return usage.ru_maxrss;
+	return 0;
+}
 
-	std::packaged_task<Long()> task([n = std::move(net), &inst]() mutable {
-		return n->compute_max_flow(inst.source, inst.sink);
-	});
-	auto future = task.get_future();
-
-	auto t0 = std::chrono::high_resolution_clock::now();
-	std::thread worker(std::move(task));
-
-	if (future.wait_for(std::chrono::duration<double>(timeout_s)) ==
-	    std::future_status::timeout)
+static GraphData load_dimacs_max_flow(const std::string &filepath)
+{
+	std::ifstream in(filepath);
+	if (!in.is_open())
 	{
-		worker.detach();
-		auto t1 = std::chrono::high_resolution_clock::now();
-		double ms = std::chrono::duration<double, std::milli>(t1 - t0).count();
-		return {-1, ms, true};
+		std::cerr << "Erro ao abrir arquivo: " << filepath << "\n";
+		std::exit(1);
 	}
 
-	worker.join();
-	auto t1 = std::chrono::high_resolution_clock::now();
-	double ms = std::chrono::duration<double, std::milli>(t1 - t0).count();
-	return {future.get(), ms, false};
-}
-
-struct BenchResult
-{
-	std::string algorithm;
-	Size n, m;
-	Long flow_value;
-	double mean_ms;
-	double stddev_ms;
-	std::string status;
-};
-
-static BenchResult benchmark_engine(
-    const EngineEntry &engine, const DimacsMaxFlow &inst, int repeats,
-    double timeout_s
-)
-{
-	BenchResult res{};
-	res.algorithm = engine.name;
-	res.n = inst.num_nodes;
-	res.m = inst.arcs.size();
-	res.flow_value = 0;
-	res.mean_ms = 0;
-	res.stddev_ms = 0;
-
-	std::vector<double> times;
-	times.reserve(static_cast<Size>(repeats));
-
-	for (int r = 0; r < repeats; ++r)
+	GraphData data;
+	std::string line;
+	while (std::getline(in, line))
 	{
-		auto result = run_once(engine, inst, timeout_s);
+		if (line.empty() || line[0] == 'c')
+			continue;
 
-		if (result.timeout)
+		std::istringstream iss(line);
+		char type = 0;
+		iss >> type;
+
+		if (type == 'p')
 		{
-			res.flow_value = result.flow_value;
-			res.mean_ms = result.elapsed_ms;
-			res.stddev_ms = 0;
-			res.status = "TLE";
-			return res;
+			std::string problem;
+			Size num_arcs = 0;
+			iss >> problem >> data.num_nodes >> num_arcs;
+			data.arcs.reserve(num_arcs);
 		}
-
-		res.flow_value = result.flow_value;
-		times.push_back(result.elapsed_ms);
+		else if (type == 'n')
+		{
+			Size id = 0;
+			char role = 0;
+			iss >> id >> role;
+			if (role == 's')
+				data.source = id - 1;
+			else if (role == 't')
+				data.sink = id - 1;
+		}
+		else if (type == 'a')
+		{
+			Size u = 0, v = 0;
+			Long cap = 0;
+			iss >> u >> v >> cap;
+			data.arcs.push_back({u - 1, v - 1, cap});
+		}
 	}
 
-	double sum = std::accumulate(times.begin(), times.end(), 0.0);
-	res.mean_ms = sum / static_cast<double>(times.size());
-
-	double sq_sum = 0.0;
-	for (double t : times)
-	{
-		double diff = t - res.mean_ms;
-		sq_sum += diff * diff;
-	}
-	res.stddev_ms = std::sqrt(sq_sum / static_cast<double>(times.size()));
-	res.status = "OK";
-
-	return res;
+	return data;
 }
 
-static std::string extract_filename(const std::string &path)
+template <typename Solver>
+static void run_solver(
+    const std::string &instance_name, const std::string &algo_name,
+    const GraphData &data, Long &reference_flow, bool &has_reference
+)
 {
-	auto pos = path.find_last_of("/\\");
-	if (pos == std::string::npos)
-		return path;
-	return path.substr(pos + 1);
-}
+	const long rss_before = get_max_rss_kb();
+	const auto t0 = std::chrono::steady_clock::now();
 
-int main(int argc, char *argv[])
-{
-	int repeats = 5;
-	double timeout_s = 60.0;
-	bool csv_header = true;
-	std::string filepath;
+	auto net = Solver::create(data.num_nodes);
+	for (const auto &arc : data.arcs)
+		net->add_edge(arc.u, arc.v, arc.cap);
 
-	for (int i = 1; i < argc; ++i)
+	const Long flow = net->compute_max_flow(data.source, data.sink);
+
+	const auto t1 = std::chrono::steady_clock::now();
+	const long rss_after = get_max_rss_kb();
+	const double elapsed_ms = std::chrono::duration<double, std::milli>(t1 - t0)
+	                              .count();
+
+	if (!has_reference)
 	{
-		std::string arg = argv[i];
-		if (arg == "--repeats" && i + 1 < argc)
-			repeats = std::atoi(argv[++i]);
-		else if (arg == "--timeout" && i + 1 < argc)
-			timeout_s = std::atof(argv[++i]);
-		else if (arg == "--no-header")
-			csv_header = false;
-		else
-			filepath = arg;
+		reference_flow = flow;
+		has_reference = true;
+	}
+	else if (flow != reference_flow)
+	{
+		std::cerr << "[ERRO DE CONSISTENCIA] " << algo_name << " obteve fluxo "
+		          << flow << " != referencia " << reference_flow << " em "
+		          << instance_name << "\n";
+		std::exit(2);
 	}
 
-	if (filepath.empty())
+	const long mem_kb = std::max(rss_before, rss_after);
+
+	std::cout << instance_name << "," << algo_name << "," << data.num_nodes << ","
+	          << data.arcs.size() << "," << flow << "," << std::fixed
+	          << std::setprecision(3) << elapsed_ms << "," << mem_kb << ",OK\n";
+}
+
+int main(int argc, char **argv)
+{
+	if (argc < 2)
 	{
-		std::cerr << "Uso: max_flow_runner <arquivo.max> "
-		          << "[--repeats N] [--timeout S] [--no-header]\n";
+		std::cerr << "Uso: " << argv[0]
+		          << " <arquivo.max> [nome_instancia] [--suite ic|book] [--algo "
+		             "nome]\n";
 		return 1;
 	}
 
-	std::ifstream file(filepath);
-	if (!file.is_open())
+	const std::string filepath = argv[1];
+	std::string instance_name = filepath;
+	std::string suite = "book";
+	std::string only_algo;
+
+	for (int i = 2; i < argc; ++i)
 	{
-		std::cerr << "Erro: não foi possível abrir '" << filepath << "'\n";
-		return 1;
+		const std::string arg = argv[i];
+		if (arg == "--suite" && i + 1 < argc)
+			suite = argv[++i];
+		else if (arg == "--algo" && i + 1 < argc)
+			only_algo = argv[++i];
+		else if (!arg.empty() && arg[0] != '-')
+			instance_name = arg;
 	}
 
-	DimacsMaxFlow inst = parse_dimacs_max(file);
-	file.close();
+	const GraphData data = load_dimacs_max_flow(filepath);
 
-	std::string instance_name = extract_filename(filepath);
+	Long reference_flow = 0;
+	bool has_reference = false;
 
-	if (csv_header)
-	{
-		std::cout << "instance,algorithm,n,m,flow_value,"
-		          << "mean_ms,stddev_ms,status\n";
-	}
+	auto should_run = [&](const std::string &name) {
+		if (!only_algo.empty())
+			return only_algo == name;
+		if (name == "MPM")
+			return suite == "book";
+		return true;
+	};
 
-	Long reference_flow = -1;
-	bool cross_validation_ok = true;
-
-	Size max_name_len = 0;
-	for (const auto &engine : get_engines())
-		max_name_len = std::max(max_name_len, engine.name.size());
-	const Size col_width = max_name_len + 4;
-
-	for (const auto &engine : get_engines())
-	{
-		std::string label = engine.name + "...";
-		std::string padding(
-		    col_width > label.size() ? col_width - label.size() : 1, ' '
+	if (should_run("Dinic"))
+		run_solver<Dinic>(
+		    instance_name, "Dinic", data, reference_flow, has_reference
 		);
+	if (should_run("PushRelabelImproved"))
+		run_solver<PushRelabelImproved>(
+		    instance_name, "PushRelabelImproved", data, reference_flow, has_reference
+		);
+	if (should_run("PushRelabel"))
+		run_solver<PushRelabel>(
+		    instance_name, "PushRelabel", data, reference_flow, has_reference
+		);
+	if (should_run("EdmondsKarp"))
+		run_solver<EdmondsKarp>(
+		    instance_name, "EdmondsKarp", data, reference_flow, has_reference
+		);
+	if (should_run("FordFulkerson"))
+		run_solver<FordFulkerson>(
+		    instance_name, "FordFulkerson", data, reference_flow, has_reference
+		);
+	if (should_run("MPM"))
+		run_solver<MPM>(instance_name, "MPM", data, reference_flow, has_reference);
 
-		std::cerr << "  " << Term::cyan() << "[" << instance_name << "]"
-		          << Term::reset() << " " << engine.name << Term::dim() << "..."
-		          << padding << Term::reset() << std::flush;
-
-		auto res = benchmark_engine(engine, inst, repeats, timeout_s);
-
-		std::ostringstream time_ss;
-		time_ss << res.mean_ms;
-		std::string time_str = time_ss.str();
-
-		std::cerr << std::setw(10) << std::right << time_str << " " << Term::dim()
-		          << "ms" << Term::reset() << " ";
-
-		if (res.status == "OK")
-			std::cerr << Term::green() << "[OK]" << Term::reset() << "\n";
-		else if (res.status == "TLE")
-			std::cerr << Term::yellow() << "[TLE]" << Term::reset() << "\n";
-		else
-			std::cerr << Term::red() << "[" << res.status << "]" << Term::reset()
-			          << "\n";
-
-		std::cout << instance_name << "," << res.algorithm << "," << res.n << ","
-		          << res.m << "," << res.flow_value << "," << res.mean_ms << ","
-		          << res.stddev_ms << "," << res.status << "\n";
-
-		if (res.status == "OK")
-		{
-			if (reference_flow < 0)
-				reference_flow = res.flow_value;
-			else if (res.flow_value != reference_flow)
-				cross_validation_ok = false;
-		}
-	}
-
-	if (!cross_validation_ok)
-	{
-		std::cerr << "  " << Term::red() << "ERRO: Verificação cruzada falhou! "
-		          << "Valores de f* divergentes." << Term::reset() << "\n";
-		return 2;
-	}
-
-	std::cerr << "  Verificação cruzada: " << Term::green() << "OK" << Term::reset()
-	          << " (f* = " << reference_flow << ")\n";
 	return 0;
 }

@@ -11,21 +11,22 @@
 
 ## 📚 Documentação e Relatórios da Pesquisa
 
-[![Baixar Livro (Monografia)][baixar_pdf_book_icon]][baixar_pdf_book] [![Baixar PDF do Projeto][baixar_pdf_projeto_icon]][baixar_pdf_projeto]
+[![Baixar Livro (Monografia)][baixar_pdf_book_icon]][baixar_pdf_book] [![Baixar Pôster IC][baixar_pdf_poster_icon]][baixar_pdf_poster]
 
 [![Baixar PDF do Relatório][baixar_pdf_relatorio_icon]][baixar_pdf_relatorio] [![Baixar PDF do Monólito][baixar_pdf_monolito_icon]][baixar_pdf_monolito]
 
-[![Baixar PDF da IC][baixar_pdf_ic_icon]][baixar_pdf_ic]
+[![Baixar PDF da IC][baixar_pdf_ic_icon]][baixar_pdf_ic] [![Baixar PDF do Projeto][baixar_pdf_projeto_icon]][baixar_pdf_projeto]
 
-A documentação oficial da pesquisa é gerada a partir dos códigos-fonte em LaTeX disponíveis na pasta [`LaTeX/`](./LaTeX/). A tabela a seguir detalha a finalidade de cada documento e as diferenças entre eles:
+A documentação oficial da pesquisa é gerada a partir dos códigos-fonte em LaTeX disponíveis na pasta [`LaTeX/`](./LaTeX/), separando estritamente os artefatos entregues na **Iniciação Científica (UFABC)** da **Monografia / Livro Pós-IC**:
 
-| PDF Gerado                                          | Arquivo Fonte                                    | Descrição e Diferenças                                                                                                                                                                                                                    |
-| :-------------------------------------------------- | :----------------------------------------------- | :---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| [📗&nbsp;**`book.pdf`**][baixar_pdf_book]           | [🖋️&nbsp;`book.tex`](./LaTeX/book.tex)           | **Livro e Monografia Independente.** Documento completo e denso estruturado editorialmente em Partes e Capítulos para estudo profundo e distribuição aberta, livre da formatação burocrática de Iniciação Científica.                     |
-| [📘&nbsp;**`projeto.pdf`**][baixar_pdf_projeto]     | [🖋️&nbsp;`projeto.tex`](./LaTeX/projeto.tex)     | Proposta e plano de trabalho inicial do projeto de pesquisa, submetido para a avaliação do edital.                                                                                                                                        |
-| [📙&nbsp;**`relatorio.pdf`**][baixar_pdf_relatorio] | [🖋️&nbsp;`relatorio.tex`](./LaTeX/relatorio.tex) | Relatório formal de acompanhamento da pesquisa com capa institucional e folha de assinaturas da UFABC. Contém o corpo textual (~14 páginas) e todos os apêndices computacionais com o código-fonte C++23 integral (~48 páginas no total). |
-| [📕&nbsp;**`ic.pdf`**][baixar_pdf_ic]               | [🖋️&nbsp;`ic.tex`](./LaTeX/ic.tex)               | Documento principal com formatação limpa para leitura (sem a folha de assinaturas), contendo o relatório completo acompanhado de todos os apêndices computacionais em C++23 (~47 páginas).                                                |
-| [📄&nbsp;**`monolito.pdf`**][baixar_pdf_monolito]   | [🖋️&nbsp;`monolito.tex`](./LaTeX/monolito.tex)   | Versão em arquivo único compilável autossuficiente (sem `\input`), idêntica ao relatório formal, ideal para edição direta e compartilhamento na plataforma Overleaf (~48 páginas).                                                        |
+| PDF Gerado                                          | Escopo             | Arquivo Fonte                                    | Descrição e Diferenças                                                                                                                                                                                                                      |
+| :-------------------------------------------------- | :----------------- | :----------------------------------------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| [📗&nbsp;**`book.pdf`**][baixar_pdf_book]           | **Livro / Pós-IC** | [🖋️&nbsp;`book.tex`](./LaTeX/book.tex)           | **Livro e Monografia Independente.** Obra completa estruturada em Partes e Capítulos, incluindo os 13 motores algorítmicos (com MPM, Kuhn, Hopcroft-Karp e Kuhn-Munkres) e a suíte de benchmarks Pós-IC (`tabelas/book/`, `figuras/book/`). |
+| [🖼️&nbsp;**`poster.pdf`**][baixar_pdf_poster]       | **IC (UFABC)**     | [🖋️&nbsp;`poster.tex`](./LaTeX/poster.tex)       | **Pôster Científico do Simpósio de IC da UFABC (90×120 cm).** Apresenta a síntese teórica, arquitetura C++23, galeria visual da **Segmentação Interativa de Imagens via Corte Mínimo** e os resultados experimentais DIMACS da IC.          |
+| [📘&nbsp;**`projeto.pdf`**][baixar_pdf_projeto]     | **IC (UFABC)**     | [🖋️&nbsp;`projeto.tex`](./LaTeX/projeto.tex)     | Proposta e plano de trabalho inicial do projeto de pesquisa, submetido para a avaliação do edital.                                                                                                                                          |
+| [📙&nbsp;**`relatorio.pdf`**][baixar_pdf_relatorio] | **IC (UFABC)**     | [🖋️&nbsp;`relatorio.tex`](./LaTeX/relatorio.tex) | Relatório formal de acompanhamento da pesquisa com capa institucional e folha de assinaturas da UFABC, contendo o corpo textual e os 9 motores da IC (`tabelas/ic/`, `figuras/ic/`).                                                        |
+| [📕&nbsp;**`ic.pdf`**][baixar_pdf_ic]               | **IC (UFABC)**     | [🖋️&nbsp;`ic.tex`](./LaTeX/ic.tex)               | Documento principal da IC com formatação limpa para leitura (sem a folha de assinaturas), contendo o relatório completo acompanhado dos apêndices computacionais da IC.                                                                     |
+| [📄&nbsp;**`monolito.pdf`**][baixar_pdf_monolito]   | **IC (UFABC)**     | [🖋️&nbsp;`monolito.tex`](./LaTeX/monolito.tex)   | Versão em arquivo único compilável autossuficiente (sem `\input`), idêntica ao relatório formal da IC, ideal para edição direta e compartilhamento na plataforma Overleaf.                                                                  |
 
 ---
 
@@ -85,20 +86,24 @@ Introduzida por Goldberg e Tarjan, esta família quebra o paradigma dos caminhos
 
 ### 🧑‍💻 Algoritmos Implementados
 
-#### ⚡ Algoritmos de Fluxo Máximo
+#### ⚡ Algoritmos de Fluxo Máximo e Emparelhamento Bipartido (`FlowNetwork`)
 
 - 🐢 **[Ford-Fulkerson][ford_fulkerson]**
 - 🚶 **[Edmonds-Karp][edmonds_karp]**
 - 🚀 **[Dinic Algorithm][dinic_algorithm]**
+- 🧱 **[MPM (Malhotra-Kumar-Maheshwari)][mpm_algorithm]** _(Pós-IC / Livro)_
 - ⚙️ **[Push Relabel FIFO][push_relabel]**
 - ⚡ **[Push Relabel Improved][push_relabel_faster]**
+- 🤝 **[Kuhn Algorithm (Emparelhamento Bipartido DFS)][kuhn_algorithm]** _(Pós-IC / Livro)_
+- 🐇 **[Hopcroft-Karp Algorithm (Emparelhamento Bipartido BFS+DFS)][hopcroft_karp]** _(Pós-IC / Livro)_
 
-#### 🧮 Algoritmos de Fluxo de Custo Mínimo
+#### 🧮 Algoritmos de Fluxo de Custo Mínimo e Atribuição (`CostNetwork`)
 
 - 🔄 **[Cycle Canceling][cycle_canceling]**
 - 📉 **[Successive Shortest Path (SPFA)][successive_shortest]**
 - ⚡ **[Successive Shortest Path (Dijkstra + Potenciais)][successive_shortest_dijkstra]**
 - 🌲 **[Network Simplex][network_simplex]**
+- 🎯 **[Kuhn-Munkres / Algoritmo Húngaro (Atribuição Bipartida)][kuhn_munkres]** _(Pós-IC / Livro)_
 
 ### 🎯 Problemas Resolvidos
 
@@ -112,14 +117,19 @@ Abaixo estão listados os problemas clássicos que foram modelados e resolvidos:
 - ✂️ **[Teorema do Fluxo Máximo-Corte Mínimo (_Police Chase_)][police_chase]**
 - 🌐 **[Corte Mínimo Global (_Time Travel_)][time_travel]**
 - 🪙 **[Cobertura Mínima de Vértices (_Coin Grid_)][coin_grid]**
-- 🔄 **[Transformação de Topologia via Emparelhamento Bipartido (_Edição de Rede - SBC 2026 / ICPC 1ª Fase_)][edicao_de_rede_mf]**
+- 🔄 **[Transformação de Rede via Emparelhamento Bipartido (_Edição de Rede - SBC 2026 / ICPC 1ª Fase_)][edicao_de_rede_mf]**
+- ⚡ **[Fluxo Máximo em Grafos Não-Direcionados (_Fast Maximum Flow - SPOJ FASTFLOW_)][fast_maximum_flow]**
+- 🏆 **[Fecho de Peso Máximo / Seleção de Projetos (_Petya and Graph - CF 1082G_)][petya_and_graph]**
+- 🔢 **[Emparelhamento Bipartido sobre Fatores Primos (_Array and Operations - CF 498C_)][array_and_operations]**
+- 🔁 **[Corte Mínimo e Circulação com Limites Inferiores (_Maximum Flow - CF 843E_)][maximum_flow_cf]**
 
 #### 🧮 Fluxo de Custo Mínimo
 
 - 📋 **[Atribuição de Custo Mínimo (_Task Assignment_)][task_assignment]**
 - 📦 **[Transporte com Demanda Fixa (_Parcel Delivery_)][parcel_delivery]**
 - 🚀 **[Caminhos Disjuntos de Custo Mínimo (_Distinct Routes II_)][distinct_routes_2]**
-- 🔄 **[Transformação de Topologia com Custo Mínimo (_Edição de Rede - SBC 2026 / ICPC 1ª Fase_)][edicao_de_rede]**
+- 🔄 **[Transformação de Rede com Custo Mínimo (_Edição de Rede - SBC 2026 / ICPC 1ª Fase_)][edicao_de_rede]**
+- 🎨 **[Circulação de Custo Mínimo com Limites Inferiores em Bipartidos (_Red-Blue Graph - CF 1288F_)][red_blue_graph]**
 
 > [!TIP]
 > Todos os códigos-fonte C++ com as reduções e modelagens para resolver os problemas acima estão disponíveis no diretório **[Implementações/Problemas](./Implementações/Problemas/)**.
@@ -160,8 +170,11 @@ Permite orquestrar todo o projeto diretamente a partir da raiz:
 | :------------------ | :---------------------------------------------------------------------------------------------------------------------------------- |
 | `make` / `make all` | Compila a documentação LaTeX, aplicações práticas e valida a integridade do C++.                                                    |
 | `make setup`        | Configura o ambiente local e ativa os hooks do Git em [`.githooks/`](./.githooks/) para prevenção de commits de binários/artefatos. |
-| `make latex`        | Compila todos os documentos LaTeX (`book.pdf`, `ic.pdf`, `relatorio.pdf`, `projeto.pdf`).                                           |
+| `make latex`        | Compila todos os documentos LaTeX (`book.pdf`, `ic.pdf`, `relatorio.pdf`, `monolito.pdf`, `projeto.pdf`, `poster.pdf`).             |
 | `make book`         | Compila o livro/monografia independente (`book.pdf`).                                                                               |
+| `make poster`       | Compila o pôster científico da Iniciação Científica (`poster.pdf`).                                                                 |
+| `make bench-ic`     | Executa e gera exclusivamente os artefatos de benchmark da IC (`LaTeX/tabelas/ic/`, `LaTeX/figuras/ic/`).                           |
+| `make bench-book`   | Executa e gera os artefatos de benchmark do Livro / Pós-IC (`LaTeX/tabelas/book/`, `LaTeX/figuras/book/`).                          |
 | `make apps`         | Compila todas as ferramentas e aplicações práticas em [`Aplicações/`](./Aplicações/).                                               |
 | `make impl`         | Valida a sintaxe C++23 de todos os motores de fluxo em [`Implementações/`](./Implementações/).                                      |
 | `make test`         | Executa a suíte de testes automatizada de todos os problemas e aplicações.                                                          |
@@ -250,16 +263,22 @@ make clean
 [ford_fulkerson]: ./Implementações/FlowNetwork/FordFulkerson.hpp
 [edmonds_karp]: ./Implementações/FlowNetwork/EdmondsKarp.hpp
 [dinic_algorithm]: ./Implementações/FlowNetwork/Dinic.hpp
+[mpm_algorithm]: ./Implementações/FlowNetwork/MPM.hpp
 [push_relabel]: ./Implementações/FlowNetwork/PushRelabel.hpp
 [push_relabel_faster]: ./Implementações/FlowNetwork/PushRelabelImproved.hpp
+[kuhn_algorithm]: ./Implementações/FlowNetwork/Kuhn.hpp
+[hopcroft_karp]: ./Implementações/FlowNetwork/HopcroftKarp.hpp
 [cycle_canceling]: ./Implementações/CostNetwork/CycleCanceling.hpp
 [successive_shortest]: ./Implementações/CostNetwork/SuccessiveShortest.hpp
 [successive_shortest_dijkstra]: ./Implementações/CostNetwork/SuccessiveShortestDijkstra.hpp
 [network_simplex]: ./Implementações/CostNetwork/NetworkSimplex.hpp
+[kuhn_munkres]: ./Implementações/CostNetwork/KuhnMunkres.hpp
 [baixar_pdf_projeto]: https://github.com/GabrielFrigo4/IC_Networks_Flow/releases/latest/download/projeto.pdf
 [baixar_pdf_projeto_icon]: https://img.shields.io/badge/Projeto-Baixar-0969da?style=for-the-badge&logo=latex&logoColor=white
 [baixar_pdf_book]: https://github.com/GabrielFrigo4/IC_Networks_Flow/releases/latest/download/book.pdf
 [baixar_pdf_book_icon]: https://img.shields.io/badge/Livro-Baixar-2ea44f?style=for-the-badge&logo=gitbook&logoColor=white
+[baixar_pdf_poster]: https://github.com/GabrielFrigo4/IC_Networks_Flow/releases/latest/download/poster.pdf
+[baixar_pdf_poster_icon]: https://img.shields.io/badge/Pôster_IC-Baixar-006633?style=for-the-badge&logo=latex&logoColor=white
 [baixar_pdf_ic]: https://github.com/GabrielFrigo4/IC_Networks_Flow/releases/latest/download/ic.pdf
 [baixar_pdf_ic_icon]: https://img.shields.io/badge/IC-Baixar-cf222e?style=for-the-badge&logo=googledocs&logoColor=white
 [baixar_pdf_relatorio]: https://github.com/GabrielFrigo4/IC_Networks_Flow/releases/latest/download/relatorio.pdf
@@ -272,11 +291,16 @@ make clean
 [police_chase]: https://cses.fi/problemset/task/1695
 [time_travel]: https://judge.beecrowd.com/en/problems/view/2082
 [coin_grid]: https://cses.fi/problemset/task/1709
+[fast_maximum_flow]: https://www.spoj.com/problems/FASTFLOW/
+[petya_and_graph]: https://codeforces.com/problemset/problem/1082/G
+[array_and_operations]: https://codeforces.com/problemset/problem/498/C
+[maximum_flow_cf]: https://codeforces.com/problemset/problem/843/E
 [task_assignment]: https://cses.fi/problemset/task/2129
 [parcel_delivery]: https://cses.fi/problemset/task/2121
 [distinct_routes_2]: https://cses.fi/problemset/task/2130
 [edicao_de_rede_mf]: https://codeforces.com/gym/106679/problem/E
 [edicao_de_rede]: https://codeforces.com/gym/106679/problem/E
+[red_blue_graph]: https://codeforces.com/problemset/problem/1288/F
 [gym_sbc_2026]: https://codeforces.com/gym/106679
 [segmentacao_imagens_codigo]: ./Aplicações/Segmentação%20de%20Imagens/README.md
 [segmentacao_imagens_dataset]: https://vision.cs.uwaterloo.ca/data/maxflow

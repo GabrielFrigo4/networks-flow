@@ -34,6 +34,7 @@ jobs:
                       relatorio.tex
                       monolito.tex
                       projeto.tex
+                      poster.tex
                   working_directory: LaTeX
                   latexmk_shell_escape: true
                   extra_system_packages: "py3-pygments"

@@ -4,13 +4,13 @@
 \apendice{Resultados Experimentais Exaustivos e Análise de Escalabilidade}
 \label{ap:benchmarks_completos}
 
-Este apêndice documenta os resultados computacionais obtidos na totalidade das 80 instâncias canônicas da suíte DIMACS avaliadas na pesquisa (40 para fluxo máximo e 40 para fluxo de custo mínimo), complementando as sínteses apresentadas na Seção~\ref{sec:resultados}. Apresentam-se as medições completas para as famílias Washington, Genrmf e Netgen, acompanhadas das curvas de escalabilidade assintótica em escala logarítmica dupla.
+Este apêndice documenta os resultados computacionais obtidos na totalidade das 80 instâncias padronizadas da suíte DIMACS avaliadas na pesquisa (40 para fluxo máximo e 40 para fluxo de custo mínimo), complementando as sínteses apresentadas na Seção~\ref{sec:resultados}. Apresentam-se as medições completas para as famílias Washington, Genrmf e Netgen, acompanhadas das curvas de escalabilidade assintótica em escala logarítmica dupla.
 
 \subsection{Tabela Exaustiva de Fluxo Máximo}
 
 A Tabela~\ref{tab:benchmarks_maxflow_exhaustive} reporta os tempos médios de execução ($\bar{t}$ em milissegundos) dos cinco algoritmos de fluxo máximo sobre as 40 instâncias DIMACS do protocolo experimental, categorizadas por família estrutural. O menor tempo por instância está destacado em \textbf{negrito}, e a indicação \textbf{TLE} (\textit{Time Limit Exceeded}) denota interrupção por exceder o teto de 16 segundos.
 
-\input{tabelas/table_max_flow_exhaustive}
+\input{tabelas/ic/table_max_flow_exhaustive}
 
 \subsection{Análise de Escalabilidade: Fluxo Máximo}
 
@@ -18,7 +18,7 @@ A Figura~\ref{fig:scalability_maxflow_apendice} ilustra o comportamento assintó
 
 \begin{figure}[!ht]
     \centering
-    \includegraphics[width=0.92\textwidth]{figuras/scalability_maxflow}
+    \includegraphics[width=0.92\textwidth]{figuras/ic/scalability_maxflow}
     \caption{Escalabilidade dos algoritmos de fluxo máximo em função de $|V|$ (escala log-log).}
     \label{fig:scalability_maxflow_apendice}
 \end{figure}
@@ -26,7 +26,7 @@ A Figura~\ref{fig:scalability_maxflow_apendice} ilustra o comportamento assintó
 As curvas experimentais evidenciam a diferenciação entre as classes assintóticas:
 \begin{itemize}[leftmargin=1.5em, itemsep=0.15em, topsep=0.2em, parsep=0em]
     \item \textbf{Ford-Fulkerson:} Apresenta forte sensibilidade às capacidades inteiras da rede. Nas instâncias lineares (\texttt{wash\_line\_50} e \texttt{wash\_line\_100}), onde $f^* > 7 \times 10^7$, o tempo de execução excede o limiar de 16 segundos (TLE), confirmando a dependência $O(|f^*| m)$;
-    \item \textbf{Edmonds-Karp:} Mantém taxa de crescimento compatível com $O(n m^2)$, degradando em redes com grande diâmetro topológico em razão do custo de sucessivas buscas em largura ($O(m)$ por aumento);
+    \item \textbf{Edmonds-Karp:} Mantém taxa de crescimento compatível com $O(n m^2)$, degradando em redes com grande diâmetro em razão do custo de sucessivas buscas em largura ($O(m)$ por aumento);
     \item \textbf{Dinic e Push-Relabel com Heurística de Lacuna:} Apresentam as menores inclinações na escala log-log, indicando menor sensibilidade ao crescimento da rede e mantendo tempos inferiores a 70 ms mesmo em instâncias com mais de 10.000 vértices.
 \end{itemize}
 
@@ -34,13 +34,13 @@ As curvas experimentais evidenciam a diferenciação entre as classes assintóti
 
 A Tabela~\ref{tab:benchmarks_mincost_exhaustive} reporta os dados experimentais completos dos quatro algoritmos de fluxo de custo mínimo na totalidade das 40 instâncias da família Netgen. O menor tempo por instância está destacado em \textbf{negrito}, e a indicação \textbf{TLE} denota interrupção por limite de 16 segundos.
 
-\input{tabelas/table_min_cost_exhaustive}
+\input{tabelas/ic/table_min_cost_exhaustive}
 
 A Figura~\ref{fig:scalability_mincost_apendice} apresenta as curvas de tempo em função de $|V|$ para os algoritmos de custo mínimo na família Netgen.
 
 \begin{figure}[!ht]
     \centering
-    \includegraphics[width=0.92\textwidth]{figuras/scalability_mincost}
+    \includegraphics[width=0.92\textwidth]{figuras/ic/scalability_mincost}
     \caption{Escalabilidade dos algoritmos de fluxo de custo mínimo em função de $|V|$ (escala log-log).}
     \label{fig:scalability_mincost_apendice}
 \end{figure}

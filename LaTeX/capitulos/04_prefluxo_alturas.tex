@@ -181,7 +181,8 @@ A política de Maior Altura associada à Heurística de Lacuna assegura a comple
 \midrule
 \hyperref[ap:ford_fulkerson]{Ford-Fulkerson} & $\mathcal{O}(|A| \cdot |f^*|)$ & DFS (busca caminhos aumentantes arbitrários) \\
 \hyperref[ap:edmonds_karp]{Edmonds-Karp} & $\mathcal{O}(|V| \cdot |A|^2)$ & BFS (caminhos de menor cardinalidade de arcos) \\
-\hyperref[ap:dinic]{Dinic} & $\mathcal{O}(|V|^2 \cdot |A|)$ & Digrafo de níveis e fluxos bloqueadores \\
+\hyperref[ap:dinic]{Dinic} & $\mathcal{O}(|V|^2 \cdot |A|)$ & Digrafo de níveis e fluxos bloqueadores via DFS \\
+\hyperref[ap:mpm]{MPM} & $\mathcal{O}(|V|^3)$ & Fluxo bloqueador por potenciais nodais $\rho(v)$ \\
 \midrule
 \multicolumn{3}{c}{\bannertext{\hyperref[sec:prefluxo]{Vertente Dual: Pré-fluxo e Alturas (Invariante de Corte)}}} \\
 \midrule

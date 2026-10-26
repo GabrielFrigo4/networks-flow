@@ -15,28 +15,31 @@ Este repositório é dedicado à pesquisa de **Iniciação Científica (UFABC)**
 O projeto abrange a interseção entre Ciência da Computação e Otimização Combinatória / Teoria dos Grafos, focando em:
 
 1. **Fundamentos Teóricos e Rigor:** Teoremas clássicos (Ford-Fulkerson, Menger, König, Hall, Dualidade/Folgas Complementares, TUM) com provas matemáticas e rigor conceitual.
-2. **Implementações Algorítmicas de Alta Performance:** Motores em C++23 para _Fluxo Máximo_ (Ford-Fulkerson, Edmonds-Karp, Dinic, Push-Relabel FIFO e com Gap Heuristic) e _Fluxo de Custo Mínimo_ (Cycle Canceling, Successive Shortest Path com SPFA e Dijkstra com potenciais, Network Simplex).
-3. **Modelagem e Reduções:** Aplicação de algoritmos de fluxo em problemas clássicos (emparelhamentos, empacotamento de caminhos, corte mínimo, CSES) e práticos (segmentação de imagens via min-cut).
-4. **Documentação Acadêmica & Livro:** Monografia independente em livro (`LaTeX/book.tex`) e relatórios institucionais da UFABC (`LaTeX/ic.tex`, `LaTeX/relatorio.tex`, `LaTeX/projeto.tex`).
-5. **Validação Experimental:** Benchmarks empíricos e análise de complexidade com instâncias canônicas da literatura (DIMACS) e geradores sintéticos.
+2. **Implementações Algorítmicas de Alta Performance:** Motores em C++23 para _Fluxo Máximo_ (Ford-Fulkerson, Edmonds-Karp, Dinic, MPM, Push-Relabel FIFO, Push-Relabel Improved, Kuhn e Hopcroft-Karp) e _Fluxo de Custo Mínimo_ (Cycle Canceling, Successive Shortest Path com SPFA e Dijkstra com potenciais, Network Simplex e Kuhn-Munkres).
+3. **Modelagem e Reduções:** Aplicação de algoritmos de fluxo em problemas clássicos (emparelhamentos, empacotamento de caminhos, corte mínimo, fechamento de peso máximo, circulação com demandas, CSES/Codeforces/SPOJ) e práticos (segmentação de imagens via min-cut).
+4. **Documentação Acadêmica, Pôster & Livro:** Monografia independente em livro (`LaTeX/book.tex`) e artefatos institucionais da Iniciação Científica da UFABC (`LaTeX/ic.tex`, `LaTeX/relatorio.tex`, `LaTeX/projeto.tex`, `LaTeX/poster.tex`).
+5. **Validação Experimental Segregada (IC vs. Livro):** Benchmarks empíricos e análise de complexidade com instâncias de referência da literatura (DIMACS) e geradores sintéticos, separados entre o escopo entregue na IC (`make bench-ic`) e o escopo expandido Pós-IC do Livro (`make bench-book`).
 
 ---
 
 ## 2. Estrutura do Repositório
 
 - `Implementações/`: Núcleo de algoritmos e estruturas em C++23.
-    - `FlowNetwork/`: Classe base abstrata e algoritmos de fluxo máximo (`FlowNetwork.hpp`, `Dinic.hpp`, `PushRelabel.hpp`, etc.).
-    - `CostNetwork/`: Classe base abstrata e algoritmos de custo mínimo (`CostNetwork.hpp`, `NetworkSimplex.hpp`, etc.).
+    - `FlowNetwork/`: Classe base abstrata e algoritmos de fluxo máximo (`FlowNetwork.hpp`, `Dinic.hpp`, `MPM.hpp`, `PushRelabel.hpp`, `Kuhn.hpp`, `HopcroftKarp.hpp`, etc.).
+    - `CostNetwork/`: Classe base abstrata e algoritmos de custo mínimo (`CostNetwork.hpp`, `NetworkSimplex.hpp`, `KuhnMunkres.hpp`, etc.).
     - `Problemas/`: Resoluções e reduções de problemas clássicos em _Fluxo Máximo_ e _Fluxo de Custo Mínimo_. Cada subpasta contém código-fonte e Makefile de teste dedicado.
 - `Aplicações/`: Casos práticos reais de uso de fluxos.
     - `Segmentação de Imagens/`: Pipeline completo em C++23 de segmentação de primeiro plano/fundo via corte mínimo (`seeds.cpp`, `ppm.cpp`, `main.cpp`).
-- `LaTeX/`: Códigos-fonte da documentação acadêmica e monografia.
-    - `book.tex`: Livro/monografia independente (classe `book`), de alta densidade técnica e livre de amarras burocráticas institucionais.
+- `LaTeX/`: Códigos-fonte da documentação acadêmica, pôster e monografia.
+    - `book.tex`: Livro/monografia independente (classe `book`), de alta densidade técnica e livre de amarras burocráticas institucionais (inclui as expansões Pós-IC).
     - `ic.tex`: Texto técnico completo da IC para leitura limpa.
     - `relatorio.tex`: Relatório formal institucional com capa oficial da UFABC e folha de assinaturas.
     - `projeto.tex`: Proposta e plano de trabalho inicial da pesquisa.
-    - `capitulos/`: Capítulos modulares compartilhados entre os documentos.
+    - `poster.tex`: Pôster científico institucional da IC (formato A0 vertical 90×120 cm) com galeria de segmentação de imagens e benchmarks da IC.
+    - `capitulos/`: Capítulos modulares do Livro.
     - `apendices/`: Listagens de código C++ espelhadas automaticamente da pasta `Implementações/`.
+    - `tabelas/ic/` & `figuras/ic/`: Tabelas e gráficos congelados do ciclo de Iniciação Científica.
+    - `tabelas/book/` & `figuras/book/`: Tabelas e gráficos expandidos do Livro (Pós-IC: inclui MPM e suíte bipartida).
     - `cit.bib`: Base bibliográfica BibTeX.
 - `Experimentos/`: Infraestrutura de benchmarks empíricos (DIMACS, geradores, medição de tempo/memória com Python/C++).
 - `.scripts/`: Ferramentas auxiliares:
@@ -182,17 +185,20 @@ Não basta uma palavra "não estar formalmente errada" ou "parecer elegante/lega
 
 ## 5. Resumo de Comandos Frequentes
 
-| Comando          | Descrição                                                                                |
-| :--------------- | :--------------------------------------------------------------------------------------- |
-| `make all`       | Compila todos os PDFs do LaTeX, as aplicações e valida os headers C++                    |
-| `make impl`      | Valida a sintaxe C++23 de todos os headers em `Implementações/`                          |
-| `make test`      | Executa todos os testes unitários e de problemas do repositório                          |
-| `make format`    | Formata todos os arquivos C++ com `clang-format`                                         |
-| `make sync-code` | Sincroniza códigos C++ com os apêndices do LaTeX                                         |
-| `make book`      | Compila exclusivamente o livro monográfico (`LaTeX/book.pdf`)                            |
-| `make latex`     | Compila todos os documentos LaTeX (`ic.pdf`, `relatorio.pdf`, `projeto.pdf`, `book.pdf`) |
-| `make clean`     | Limpa todos os binários, PDFs gerados e arquivos auxiliares temporários                  |
-| `make setup`     | Configura os hooks do Git a partir de `.githooks/`                                       |
+| Comando           | Descrição                                                                                              |
+| :---------------- | :----------------------------------------------------------------------------------------------------- |
+| `make all`        | Compila todos os PDFs do LaTeX, as aplicações e valida os headers C++                                  |
+| `make impl`       | Valida a sintaxe C++23 de todos os headers em `Implementações/`                                        |
+| `make test`       | Executa todos os testes unitários e de problemas do repositório                                        |
+| `make format`     | Formata todos os arquivos C++ com `clang-format`                                                       |
+| `make sync-code`  | Sincroniza códigos C++ com os apêndices do LaTeX                                                       |
+| `make bench-ic`   | Executa e regenera as tabelas e figuras da Iniciação Científica (`LaTeX/tabelas/ic`, `figuras/ic`)     |
+| `make bench-book` | Executa e regenera as tabelas e figuras do Livro Pós-IC (`LaTeX/tabelas/book`, `figuras/book`)         |
+| `make poster`     | Compila exclusivamente o pôster institucional da IC (`LaTeX/poster.pdf`)                               |
+| `make book`       | Compila exclusivamente o livro monográfico (`LaTeX/book.pdf`)                                          |
+| `make latex`      | Compila todos os documentos LaTeX (`ic.pdf`, `relatorio.pdf`, `projeto.pdf`, `poster.pdf`, `book.pdf`) |
+| `make clean`      | Limpa todos os binários, PDFs gerados e arquivos auxiliares temporários                                |
+| `make setup`      | Configura os hooks do Git a partir de `.githooks/`                                                     |
 
 ---
 

@@ -14,9 +14,9 @@ WORKERS ?= 1
 
 .PHONY: help all \
         bench-all bench-pipeline bench-latex bench-publish bench-research sync-all check-all \
-        latex reports book relatorio ic monolito projeto \
+        latex reports book relatorio ic monolito projeto poster \
         apps impl exp generate dimacs \
-        bench bench-smoke bench-tables bench-plots bench-artifacts \
+        bench bench-ic bench-book bench-smoke bench-tables bench-plots bench-artifacts \
         format clang-format prettier format-cpp format-md test setup clean clear distclean clean-results sync-code
 
 all: help
@@ -44,9 +44,12 @@ help:
 	cmd "ic"               "Compila o texto da IC com leitura limpa (ic.pdf)"; \
 	cmd "monolito"         "Gera e compila o monólito autocontido para Overleaf (monolito.pdf)"; \
 	cmd "projeto"          "Compila a proposta do projeto de pesquisa (projeto.pdf)"; \
+	cmd "poster"           "Compila o pôster do Simpósio de IC da UFABC (poster.pdf)"; \
 	sec "Módulos Individuais & Experimentos:"; \
-	cmd "dimacs"           "Gera todas as 80 instâncias canônicas DIMACS (40 MaxFlow + 40 MinCost)"; \
-	cmd "bench"            "Executa todos os benchmarks nas 80 instâncias (salva CSVs em results/)"; \
+	cmd "dimacs"           "Gera todas as 80 instâncias de referência DIMACS + suíte bipartida"; \
+	cmd "bench"            "Executa todos os benchmarks (IC e Livro/Pós-IC)"; \
+	cmd "bench-ic"         "Executa e gera exclusivamente os benchmarks da IC (tabelas/ic, figuras/ic)"; \
+	cmd "bench-book"       "Executa e gera os benchmarks do Livro / Pós-IC (tabelas/book, figuras/book)"; \
 	cmd "bench-smoke"      "Smoke-test rápido: 1 instância .max e 1 .min (para depuração rápida)"; \
 	cmd "bench-artifacts"  "Gera tabelas finais (compactas, exaustivas) e gráficos para LaTeX"; \
 	sec "Módulos de Código & Experimentos:"; \
@@ -165,6 +168,9 @@ monolito:
 projeto:
 	$(MAKE) -C LaTeX projeto
 
+poster:
+	$(MAKE) -C LaTeX poster
+
 sync-code:
 	$(PYTHON) .scripts/sync_listings.py
 	$(PYTHON) .scripts/build_monolith.py
@@ -189,6 +195,12 @@ dimacs:
 
 bench: exp
 	$(MAKE) -C Experimentos run WORKERS=$(WORKERS) REPEATS=$(REPEATS) TIMEOUT=$(TIMEOUT)
+
+bench-ic: exp
+	$(MAKE) -C Experimentos ic
+
+bench-book: exp
+	$(MAKE) -C Experimentos book
 
 bench-smoke: exp
 	$(MAKE) -C Experimentos bench-smoke

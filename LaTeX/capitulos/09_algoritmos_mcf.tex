@@ -185,7 +185,19 @@ A classe \lstinline{SuccessiveShortestDijkstra} (Código~\ref{lst:successive_sho
 
 \subsection{Equivalência com o Algoritmo Húngaro (Kuhn-Munkres)}
 
-O Algoritmo Húngaro~\cite{kuhn1955hungarian, munkres1957algorithms} para o problema de atribuição bipartida ponderada equivale à execução do método \textit{Successive Shortest Path} com potenciais nodais sobre redes unitárias com balanceamento $b(v) \in \{+1, -1\}$. Os ajustes de potenciais da matriz de custos correspondem à manutenção da não negatividade dos custos reduzidos $\bar{w}_\pi \ge 0$.
+O Algoritmo Húngaro~\cite{kuhn1955hungarian, munkres1957algorithms} para o problema de atribuição bipartida ponderada equivale à execução do método \textit{Successive Shortest Path} com potenciais nodais sobre redes unitárias com balanceamento $b(v) \in \{+1, -1\}$.
+
+Sejam $L = \{1, \dots, n\}$ e $R = \{1, \dots, m\}$ ($n \le m$) as partições de um grafo bipartido com matriz de custos $W = (w_{i,j}) \in \mathbb{R}^{n \times m}$. O algoritmo mantém potenciais duais $u_i$ para $i \in L$ e $v_j$ para $j \in R$ que satisfazem a condição de viabilidade dual:
+\begin{equation}
+    u_i + v_j \le w_{i,j}, \quad \forall (i, j) \in L \times R,
+\end{equation}
+com igualdade $u_i + v_j = w_{i,j}$ para todo par $(i, j)$ pertencente ao emparelhamento corrente $M$. A cada fase $i = 1, \dots, n$, constrói-se uma árvore alternante enraizada em $i$ mantendo, para cada coluna não visitada $j \in R$, a folga dual mínima:
+\begin{equation}
+    \text{minv}[j] = \min_{i_0 \in S_L} \bigl(w_{i_0, j} - u_{i_0} - v_j\bigr),
+\end{equation}
+onde $S_L \subseteq L$ denota o conjunto de linhas já incorporadas à árvore alternante. A seleção de $\Delta = \min_{j \notin S_R} \text{minv}[j]$ e a atualização conjunta de $u$, $v$ e $\text{minv}$ determinam o caminho aumentante de menor custo reduzido para a linha $i$ em tempo $\mathcal{O}(m^2)$, sem necessidade de fila de prioridades. Ao final das $n$ fases, obtém-se a atribuição de custo mínimo em tempo $\mathcal{O}(n \cdot m^2) = \mathcal{O}(|V|^3)$.
+
+Na biblioteca deste projeto, a classe \lstinline{KuhnMunkres} (Código~\ref{lst:kuhn_munkres}, Apêndice~\ref{ap:kuhn_munkres}) herda polimorficamente de \lstinline{CostNetwork}: o método \lstinline{extract_assignment_matrix} extrai a matriz de custos da rede $s \to L \to R \to t$, executa o procedimento primal-dual em $\mathcal{O}(|V|^3)$ e materializa os fluxos unitários ótimos nos arcos da rede residual via \lstinline{push_flow}.
 
 
 \subsection{Comparação entre as Variantes}

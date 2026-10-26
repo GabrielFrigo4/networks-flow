@@ -12,49 +12,47 @@ A infraestrutura de experimentos é organizada nos seguintes módulos:
 
 ```text
 Experimentos/
-├── README.md               # Documentação da metodologia experimental e reprodução
-├── Makefile                # Orquestração de compilação dos drivers e execução dos testes
-├── drivers/                # Harness em C++ para execução e medição de tempo dos algoritmos
-│   ├── max_flow_runner.cpp # Executável polimórfico para motores de Fluxo Máximo
-│   └── min_cost_runner.cpp # Executável polimórfico para motores de Fluxo de Custo Mínimo
-├── parsers/                # Leitores eficientes em C++ para formatos padronizados
-│   ├── dimacs_max.hpp      # Parser do formato DIMACS Max-Flow (.max)
-│   └── dimacs_min.hpp      # Parser do formato DIMACS Min-Cost Flow (.min)
-├── generators/             # Geradores de grafos sintéticos (Python / C++)
-│   ├── random_graph.py     # Gerador de grafos aleatórios (densidade esparsa e densa)
-│   ├── grid_graph.py       # Redes em grade 2D/3D (estilo visão computacional)
-│   └── worst_case.py       # Casos patológicos de pior caso para caminhos aumentantes
-├── instances/              # Diretório de armazenamento de instâncias
-│   ├── dimacs_maxflow/     # Instâncias padronizadas DIMACS (Washington, RMF, Genrmf)
-│   ├── dimacs_mincost/     # Instâncias padronizadas DIMACS (Netgen, Grid)
-│   └── synthetic/          # Grafos sintéticos gerados sob demanda
-├── results/                # Dados brutos coletados (CSV / JSON)
-│   ├── max_flow_results.csv
-│   └── min_cost_results.csv
-└── scripts/                # Automação de testes e processamento estatístico
-    ├── run_benchmarks.py   # Orquestrador com controle de timeout e repetições
-    ├── generate_tables.py  # Conversão de resultados brutos em tabelas LaTeX (booktabs)
-    └── plot_charts.py      # Geração de gráficos comparativos e curvas de escalabilidade
+├── README.md                 # Documentação da metodologia experimental e reprodução
+├── Makefile                  # Orquestração POSIX separada entre IC (make ic) e Livro (make book)
+├── drivers/                  # Harness em C++23 para execução e medição de tempo/memória
+│   ├── max_flow_runner.cpp   # Executável polimórfico para Fluxo Máximo (--suite ic|book)
+│   ├── min_cost_runner.cpp   # Executável polimórfico para Fluxo de Custo Mínimo
+│   └── bipartite_runner.cpp  # Executável para Emparelhamento e Atribuição Bipartida (Pós-IC)
+├── generators/               # Geradores de grafos sintéticos e bipartidos (Python)
+│   ├── random_graph.py       # Gerador de grafos aleatórios de Fluxo Máximo
+│   ├── random_mcf.py         # Gerador de redes de Fluxo de Custo Mínimo
+│   └── bipartite_graph.py    # Gerador da suíte de Emparelhamento (.max) e Atribuição (.min)
+├── instances/                # Diretório de armazenamento de instâncias (gerado sob demanda)
+│   ├── dimacs_maxflow/       # 40 instâncias DIMACS Max-Flow (Washington e Genrmf)
+│   ├── dimacs_mincost/       # 40 instâncias DIMACS Min-Cost Flow (Netgen)
+│   └── bipartite/            # 18 instâncias bipartidas de Emparelhamento e Atribuição
+├── results/                  # Dados coletados separados por escopo
+│   ├── ic/                   # Medições da Iniciação Científica (5 MF + 4 MCF)
+│   └── book/                 # Medições do Livro / Pós-IC (6 MF com MPM + 4 MCF + Suíte Bipartida)
+└── scripts/                  # Automação de testes e processamento estatístico
+    ├── fetch_dimacs.py       # Download e compilação dos geradores oficiais DIMACS
+    ├── run_benchmarks.py     # Orquestrador com separação entre --suite ic e --suite book
+    ├── generate_tables.py    # Geração das tabelas LaTeX em LaTeX/tabelas/{ic,book}/
+    └── plot_charts.py        # Geração dos gráficos PDF em LaTeX/figuras/{ic,book}/
 ```
 
 ---
 
-## ⚡ Algoritmos Avaliados
+## ⚡ Separação de Escopo: IC vs. Livro (Pós-IC)
 
-### 1. Fluxo Máximo
+Para garantir que os relatórios entregues na Iniciação Científica (`ic.pdf`, `relatorio.pdf`, `monolito.pdf`, `poster.pdf`) permaneçam estritamente fiéis aos 9 algoritmos originais da IC, enquanto o Livro (`book.pdf`) incorpore todas as expansões Pós-IC, os benchmarks são divididos em duas suítes independentes:
 
-- **Ford-Fulkerson** — DFS iterativo com caminhos aumentantes genéricos ($\mathcal{O}(\|A\| \cdot \|f^*\|)$)
-- **Edmonds-Karp** — BFS com menor número de arestas ($\mathcal{O}(\|V\| \cdot \|A\|^2)$)
-- **Dinic** — Digrafo de níveis e fluxo bloqueador via DFS ($\mathcal{O}(\|V\|^2 \cdot \|A\|)$)
-- **Push-Relabel (FIFO)** — Elevação e pré-fluxo com fila FIFO ($\mathcal{O}(\|V\|^3)$)
-- **Push-Relabel Improved** — Heurística de salto de rótulos (_Gap Heuristic_) para aceleração prática
+1. **Suíte da IC (`make bench-ic` / `make -C Experimentos ic`):**
+    - **Fluxo Máximo (5 motores):** `FordFulkerson`, `EdmondsKarp`, `Dinic`, `PushRelabel`, `PushRelabelImproved`.
+    - **Custo Mínimo (4 motores):** `CycleCanceling`, `SuccessiveShortest`, `SuccessiveShortestDijkstra`, `NetworkSimplex`.
+    - **Saídas:** `LaTeX/tabelas/ic/` e `LaTeX/figuras/ic/`.
 
-### 2. Fluxo de Custo Mínimo
-
-- **Cycle Canceling** — Cancelamento iterativo de ciclos negativos via Bellman-Ford/SPFA ($\mathcal{O}(\|V\| \cdot \|A\|^2 \cdot C \cdot W)$)
-- **Successive Shortest Path (SPFA)** — Aumentações sucessivas pelo caminho residual mais barato ($\mathcal{O}(\|V\| \cdot \|A\| \cdot F)$)
-- **Successive Shortest Path (Dijkstra + $\pi$)** — Dijkstra com potenciais nodais ($\mathcal{O}(F \cdot \|A\| \log \|V\|)$)
-- **Network Simplex** — Árvore geradora básica viável com pivoteamento de base
+2. **Suíte do Livro / Pós-IC (`make bench-book` / `make -C Experimentos book`):**
+    - **Fluxo Máximo (6 motores):** Inclui o algoritmo **MPM (Malhotra-Kumar-Maheshwari)** em $\mathcal{O}(\|V\|^3)$ nas 40 instâncias DIMACS.
+    - **Custo Mínimo (4 motores):** Avaliados nas 40 instâncias DIMACS Netgen.
+    - **Emparelhamento Bipartido (8 motores):** Compara os algoritmos dedicados **`Kuhn`** e **`HopcroftKarp`** contra os 6 motores gerais de fluxo máximo.
+    - **Atribuição Bipartida (5 motores):** Compara o algoritmo Húngaro dedicado (**`KuhnMunkres`**) contra os 4 motores gerais de fluxo de custo mínimo.
+    - **Saídas:** `LaTeX/tabelas/book/` e `LaTeX/figuras/book/`.
 
 ---
 

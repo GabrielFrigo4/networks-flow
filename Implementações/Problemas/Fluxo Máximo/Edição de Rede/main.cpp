@@ -1,6 +1,9 @@
 #include "../../../FlowNetwork/Dinic.hpp"
 #include "../../../FlowNetwork/EdmondsKarp.hpp"
 #include "../../../FlowNetwork/FordFulkerson.hpp"
+#include "../../../FlowNetwork/HopcroftKarp.hpp"
+#include "../../../FlowNetwork/Kuhn.hpp"
+#include "../../../FlowNetwork/MPM.hpp"
 #include "../../../FlowNetwork/PushRelabel.hpp"
 #include "../../../FlowNetwork/PushRelabelImproved.hpp"
 #include <algorithm>
@@ -8,7 +11,7 @@
 #include <utility>
 #include <vector>
 
-using FlowSolver = PushRelabelImproved;
+using FlowSolver = Kuhn;
 
 struct EdgePair
 {

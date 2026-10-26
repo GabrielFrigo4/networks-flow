@@ -304,8 +304,17 @@ Algoritmos dedicados para emparelhamento bipartido, como Kuhn~\cite{kuhn1955hung
 Essa correspondência traduz-se em paridade assintótica:
 \begin{itemize}
     \item \textbf{Kuhn vs. Ford-Fulkerson:} Executa DFS para encontrar um caminho alternante por iteração em tempo $\mathcal{O}(|V| \cdot |E|)$.
-    \item \textbf{Hopcroft-Karp vs. Dinic:} Opera em fases com BFS global seguida de DFS bloqueadora. O número de fases é limitado por $\mathcal{O}(\sqrt{|V|})$, resultando em $\mathcal{O}(|E| \sqrt{|V|})$~\cite{korte2018combinatorial}, equivalente a Dinic sobre a rede unitária.
+    \item \textbf{Hopcroft-Karp vs. Dinic:} Opera em fases com BFS global seguida de DFS bloqueadora~\cite{hopcroft1973n52, korte2018combinatorial}. O número de fases é limitado por $\mathcal{O}(\sqrt{|V|})$, resultando em $\mathcal{O}(|E| \sqrt{|V|})$, equivalente a Dinic sobre a rede unitária.
 \end{itemize}
+
+\subsection{Implementações Dedicadas Polimórficas: \texttt{Kuhn} e \texttt{HopcroftKarp}}
+
+Para preservar compatibilidade polimórfica integral com a arquitetura orientada a objetos deste projeto, os algoritmos dedicados \lstinline{Kuhn} (Código~\ref{lst:kuhn}, Apêndice~\ref{ap:kuhn}) e \lstinline{HopcroftKarp} (Código~\ref{lst:hopcroft_karp}, Apêndice~\ref{ap:hopcroft_karp}) herdam diretamente de \lstinline{FlowNetwork}:
+\begin{enumerate}
+    \item \textbf{Extração Estrutural Bipartida:} Ao invocar \lstinline{compute_max_flow(source, sink)}, o método \lstinline{extract_bipartite_graph} inspeciona a rede de arcos unitários $s \to L \to R \to t$, identificando as partições $L$ e $R$ e indexando as adjacências diretas de $L$ para $R$.
+    \item \textbf{Execução em Vetores de Emparelhamento:} Em vez de percorrer arcos residuais genéricos com variáveis de capacidade, \lstinline{Kuhn} e \lstinline{HopcroftKarp} operam sobre os vetores diretos \lstinline{match_left[u]} e \lstinline{match_right[v]}, reduzindo o custo constante de memória e de desvios condicionais.
+    \item \textbf{Materialização na Rede Residual:} Concluído o emparelhamento ótimo $M^*$, as unidades de fluxo são registradas nos arcos correspondentes via \lstinline{push_flow}, permitindo que rotinas subsequentes (como a extração de cobertura mínima de vértices pelo Teorema de König ou decomposição de caminhos) consultem \lstinline{get_edges()} de forma transparente.
+\end{enumerate}
 
 Para o caso ponderado (atribuição de custo mínimo), o Algoritmo Húngaro~\cite{kuhn1955hungarian} equivale ao método \textit{Successive Shortest Path} com potenciais nodais, analisado na Seção~\ref{sec:ssp}.
 

@@ -1,0 +1,72 @@
+\begingroup
+\small
+\setlength{\tabcolsep}{3.5pt}
+\begin{longtable}{lrrrrrrrr}
+\caption{Resultados experimentais exaustivos dos motores de fluxo de custo mínimo nas instâncias Netgen.}\label{tab:benchmarks_mincost_exhaustive}\\
+\toprule
+\textbf{Instância} & $|V|$ & $|A|$ & $f^*$ & $z^*$ & \textbf{CC} & \textbf{SSP-SPFA} & \textbf{SSP-Dijk} & \textbf{Simplex} \\
+\midrule
+\endfirsthead
+\caption[]{Resultados experimentais exaustivos dos motores de fluxo de custo mínimo nas instâncias Netgen (continuação)}\\
+\toprule
+\textbf{Instância} & $|V|$ & $|A|$ & $f^*$ & $z^*$ & \textbf{CC} & \textbf{SSP-SPFA} & \textbf{SSP-Dijk} & \textbf{Simplex} \\
+\midrule
+\endhead
+\bottomrule
+\endfoot
+\multicolumn{9}{l}{\textbf{Família DIMACS Netgen: Transbordo Inicial (01 a 10)}} \\
+\midrule
+\texttt{netgen\_01} & 202 & 1.508 & 100.000 & 196.587.626 & 350 & 11,0 & 15,1 & \textbf{5,07} \\
+\texttt{netgen\_02} & 202 & 1.711 & 100.000 & 194.072.029 & 393 & 9,36 & 13,3 & \textbf{4,93} \\
+\texttt{netgen\_03} & 202 & 2.200 & 100.000 & 159.442.947 & 620 & 16,4 & 16,9 & \textbf{6,44} \\
+\texttt{netgen\_04} & 202 & 2.400 & 100.000 & 138.936.551 & 673 & 15,2 & 17,5 & \textbf{6,95} \\
+\texttt{netgen\_05} & 202 & 3.100 & 100.000 & 102.950.805 & 1.071 & 22,3 & 23,7 & \textbf{9,07} \\
+\texttt{netgen\_06} & 302 & 3.474 & 150.000 & 191.968.577 & 2.361 & 41,6 & 42,9 & \textbf{13,3} \\
+\texttt{netgen\_07} & 302 & 4.819 & 150.000 & 172.742.047 & 3.565 & 53,1 & 54,5 & \textbf{19,6} \\
+\texttt{netgen\_08} & 302 & 5.469 & 150.000 & 177.575.586 & 4.221 & 60,3 & 49,3 & \textbf{21,5} \\
+\texttt{netgen\_09} & 302 & 6.375 & 150.000 & 144.994.180 & 5.976 & 61,1 & 57,0 & \textbf{23,2} \\
+\texttt{netgen\_10} & 302 & 6.620 & 150.000 & 148.675.665 & 6.345 & 77,4 & 61,7 & \textbf{26,1} \\
+\midrule
+\multicolumn{9}{l}{\textbf{Família DIMACS Netgen: Transporte com Baixo Fluxo (11 a 15)}} \\
+\midrule
+\texttt{netgen\_11} & 402 & 1.900 & 200 & 473.532 & 94,8 & \textbf{7,79} & 16,0 & 11,2 \\
+\texttt{netgen\_12} & 402 & 2.650 & 200 & 326.853 & 179 & \textbf{9,60} & 19,8 & 17,1 \\
+\texttt{netgen\_13} & 402 & 3.400 & 200 & 258.242 & 262 & \textbf{12,8} & 20,3 & 21,6 \\
+\texttt{netgen\_14} & 402 & 4.150 & 200 & 247.036 & 375 & \textbf{14,1} & 21,7 & 26,0 \\
+\texttt{netgen\_15} & 402 & 4.900 & 200 & 212.597 & 446 & \textbf{15,7} & 23,3 & 30,2 \\
+\midrule
+\multicolumn{9}{l}{\textbf{Família DIMACS Netgen: Transporte com Alta Demanda (16 a 27)}} \\
+\midrule
+\texttt{netgen\_16} & 402 & 1.374 & 400.000 & 6.815.524.469 & 87,4 & 7,29 & 10,1 & \textbf{6,20} \\
+\texttt{netgen\_17} & 402 & 2.511 & 400.000 & 2.646.770.386 & 283 & \textbf{7,22} & 10,2 & 9,61 \\
+\texttt{netgen\_18} & 402 & 1.374 & 400.000 & 6.663.684.919 & 114 & 6,45 & 8,68 & \textbf{6,28} \\
+\texttt{netgen\_19} & 402 & 2.511 & 400.000 & 2.618.979.806 & 282 & \textbf{7,74} & 10,7 & 8,41 \\
+\texttt{netgen\_20} & 402 & 1.484 & 400.000 & 6.749.969.302 & 134 & 5,73 & 9,02 & \textbf{4,64} \\
+\texttt{netgen\_21} & 402 & 2.904 & 400.000 & 2.631.027.973 & 304 & 7,88 & 10,8 & \textbf{7,34} \\
+\texttt{netgen\_22} & 402 & 1.484 & 400.000 & 6.621.515.104 & 144 & \textbf{4,44} & 7,32 & 6,42 \\
+\texttt{netgen\_23} & 402 & 2.904 & 400.000 & 2.630.071.408 & 361 & 8,83 & 10,0 & \textbf{6,35} \\
+\texttt{netgen\_24} & 402 & 1.398 & 400.000 & 6.829.799.687 & 73,9 & \textbf{3,61} & 4,66 & 6,70 \\
+\texttt{netgen\_25} & 402 & 2.692 & 400.000 & 6.396.423.129 & 190 & 11,3 & 10,5 & \textbf{8,76} \\
+\texttt{netgen\_26} & 402 & 1.398 & 400.000 & 5.297.702.923 & 30,8 & \textbf{1,03} & 2,13 & 4,76 \\
+\texttt{netgen\_27} & 402 & 2.692 & 400.000 & 4.863.992.745 & 118 & \textbf{5,14} & 5,82 & 6,78 \\
+\midrule
+\multicolumn{9}{l}{\textbf{Família DIMACS Netgen: Grande Escala (28 a 35)}} \\
+\midrule
+\texttt{netgen\_28} & 1.002 & 3.000 & 1.000.000 & 11.599.233.408 & 1.420 & \textbf{22,2} & 28,4 & 37,4 \\
+\texttt{netgen\_29} & 1.002 & 3.500 & 1.000.000 & 11.700.773.092 & 1.380 & \textbf{31,1} & 35,5 & 39,8 \\
+\texttt{netgen\_30} & 1.002 & 4.500 & 1.000.000 & 8.782.721.260 & 2.479 & 40,7 & \textbf{37,8} & 56,4 \\
+\texttt{netgen\_31} & 1.002 & 4.900 & 1.000.000 & 8.577.913.734 & 2.145 & \textbf{38,8} & 40,4 & 53,5 \\
+\texttt{netgen\_32} & 1.502 & 4.492 & 1.500.000 & 17.996.365.110 & 5.796 & 66,8 & \textbf{65,5} & 107 \\
+\texttt{netgen\_33} & 1.502 & 4.535 & 1.500.000 & 18.424.893.900 & 4.926 & 82,7 & \textbf{68,8} & 111 \\
+\texttt{netgen\_34} & 1.502 & 5.257 & 1.500.000 & 14.596.094.907 & 6.044 & 70,6 & \textbf{69,3} & 105 \\
+\texttt{netgen\_35} & 1.502 & 5.880 & 1.500.000 & 14.350.903.861 & 8.176 & 113 & \textbf{90,9} & 123 \\
+\midrule
+\multicolumn{9}{l}{\textbf{Família DIMACS Netgen: Escala Máxima (36 a 40)}} \\
+\midrule
+\texttt{netgen\_36} & 8.002 & 16.200 & 4.000.000 & 87.957.673.940 & TLE & 5.172 & \textbf{3.497} & 4.047 \\
+\texttt{netgen\_37} & 5.002 & 23.950 & 4.000.000 & 35.607.266.430 & TLE & 4.817 & \textbf{3.064} & 4.091 \\
+\texttt{netgen\_38} & 3.002 & 35.625 & 2.000.000 & 7.265.734.372 & TLE & 3.480 & \textbf{1.978} & 2.107 \\
+\texttt{netgen\_39} & 5.002 & 15.880 & 4.000.000 & 48.660.418.428 & TLE & 2.898 & \textbf{2.089} & 2.862 \\
+\texttt{netgen\_40} & 3.002 & 23.400 & 2.000.000 & 11.068.572.024 & TLE & 1.440 & \textbf{961} & 1.543 \\
+\end{longtable}
+\endgroup

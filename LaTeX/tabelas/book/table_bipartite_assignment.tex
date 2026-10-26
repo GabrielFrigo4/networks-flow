@@ -1,0 +1,21 @@
+\begin{table}[!ht]
+\centering
+\small
+\setlength{\tabcolsep}{3.5pt}
+\begin{tabular}{lrrrrrrrr}
+\toprule
+\textbf{Instância} & $|V|$ & $|A|$ & $z^*$ & \textbf{Húngaro} & \textbf{Simplex} & \textbf{SSP-Dijk} & \textbf{SSP-SPFA} & \textbf{CC} \\
+\midrule
+\texttt{assign\_euclid\_150} & 302 & 22.800 & 113.735 & \textbf{4,71} & 118 & 44,4 & 55,9 & 5.924 \\
+\texttt{assign\_euclid\_220} & 442 & 48.840 & 163.859 & \textbf{13,9} & 392 & 269 & 462 & 29.820 \\
+\texttt{assign\_highcost\_150} & 302 & 22.800 & 1.889.344 & \textbf{4,93} & 108 & 37,2 & 47,3 & 4.225 \\
+\texttt{assign\_highcost\_220} & 442 & 48.840 & 1.638.938 & \textbf{10,1} & 456 & 157 & 228 & 22.467 \\
+\texttt{assign\_uniform\_120} & 242 & 14.640 & 1.715 & \textbf{2,52} & 51,4 & 20,6 & 22,4 & 1.696 \\
+\texttt{assign\_uniform\_180} & 362 & 32.760 & 1.890 & \textbf{6,19} & 215 & 68,5 & 82,9 & 9.680 \\
+\texttt{assign\_uniform\_240} & 482 & 58.080 & 1.795 & \textbf{11,9} & 531 & 216 & 316 & 34.225 \\
+\texttt{assign\_uniform\_80} & 162 & 6.560 & 1.548 & \textbf{1,24} & 13,9 & 6,94 & 6,93 & 361 \\
+\bottomrule
+\end{tabular}
+\caption{Comparação experimental entre o algoritmo Húngaro (Kuhn-Munkres) e motores gerais de fluxo de custo mínimo em instâncias de atribuição bipartida (tempos médios em ms).}
+\label{tab:benchmarks_bipartite_assignment}
+\end{table}

@@ -12,7 +12,7 @@ PDFLATEX = pdflatex
 BIBTEX   = bibtex
 PYTHON   = python3
 
-TARGETS  = ic.pdf relatorio.pdf monolito.pdf projeto.pdf book.pdf
+TARGETS  = ic.pdf relatorio.pdf monolito.pdf projeto.pdf poster.pdf book.pdf
 
 CAPITULOS != find capitulos -name "*.tex" 2> "/dev/null" || true
 APENDICES != find apendices -name "*.tex" 2> "/dev/null" || true
@@ -20,7 +20,7 @@ BOOK_SRC  != find book -name "*.tex" 2> "/dev/null" || true
 UFABC_SRC != find ufabc -name "*.tex" 2> "/dev/null" || true
 IMAGENS   != find imagens -name "*.tex" 2> "/dev/null" || true
 
-.PHONY: default help all reports refresh ic relatorio monolito projeto book clean clear distclean sync-code format format-md latex publish
+.PHONY: default help all reports refresh ic relatorio monolito projeto poster book clean clear distclean sync-code format format-md latex publish
 
 default: help
 
@@ -45,6 +45,7 @@ help:
 	cmd "ic"                  "Compila o relatório de IC com leitura limpa (ic.pdf)"; \
 	cmd "monolito"            "Gera e compila o monólito autocontido (monolito.pdf)"; \
 	cmd "projeto"             "Compila a proposta do projeto de pesquisa (projeto.pdf)"; \
+	cmd "poster"              "Compila o pôster do Simpósio de IC da UFABC (poster.pdf)"; \
 	sec "Qualidade & Formatação:"; \
 	cmd "format"              "Formata documentação Markdown (prettier)"; \
 	sec "Limpeza:"; \
@@ -55,7 +56,7 @@ help:
 all: $(TARGETS)
 	printf "\n==> Todos os documentos foram compilados com sucesso!\n"
 
-reports: ic.pdf relatorio.pdf monolito.pdf
+reports: ic.pdf relatorio.pdf monolito.pdf poster.pdf
 	printf "\n==> Todos os relatórios institucionais foram compilados com sucesso!\n"
 
 publish: reports
@@ -69,6 +70,7 @@ ic: ic.pdf
 relatorio: relatorio.pdf
 monolito: monolito.pdf
 projeto: projeto.pdf
+poster: poster.pdf
 book: book.pdf
 
 sync-code:
@@ -158,6 +160,19 @@ projeto.pdf: projeto.tex cit.bib
 		$(PDFLATEX) -interaction=batchmode -output-directory=build projeto.tex > "/dev/null" 2>&1 || true; \
 		$(PDFLATEX) -interaction=batchmode -output-directory=build projeto.tex > "/dev/null" 2>&1 || true; \
 		cp build/projeto.pdf projeto.pdf 2> "/dev/null" || true; \
+	fi
+	printf "%s\n" "[OK]"
+
+poster.pdf: poster.tex
+	mkdir -p build
+	printf "%s" "-> Compilando poster.pdf... "
+	if command -v $(LATEXMK) > "/dev/null" 2>&1; then \
+		$(LATEXMK) -pdf -silent -interaction=nonstopmode -outdir=build poster.tex > "/dev/null" 2>&1; \
+		cp build/poster.pdf poster.pdf 2> "/dev/null" || true; \
+	else \
+		$(PDFLATEX) -interaction=batchmode -output-directory=build poster.tex > "/dev/null" 2>&1 || true; \
+		$(PDFLATEX) -interaction=batchmode -output-directory=build poster.tex > "/dev/null" 2>&1 || true; \
+		cp build/poster.pdf poster.pdf 2> "/dev/null" || true; \
 	fi
 	printf "%s\n" "[OK]"
 

@@ -1,0 +1,321 @@
+\documentclass[final]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[brazil]{babel}
+\usepackage{lmodern}
+\usepackage[scaled=0.95]{helvet}
+\renewcommand{\familydefault}{\sfdefault}
+
+\usepackage[paperwidth=90cm, paperheight=120cm, margin=0cm]{geometry}
+\usepackage{amsmath, amssymb, amsfonts}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{multicol}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{tikz}
+\usepackage[most]{tcolorbox}
+\usepackage{hyperref}
+
+\definecolor{ufabcgreen}{HTML}{006633}
+\definecolor{ufabcdark}{HTML}{004B25}
+\definecolor{ufabcgold}{HTML}{F2B705}
+\definecolor{boxbg}{HTML}{F7FAF8}
+\definecolor{boxframe}{HTML}{006633}
+\definecolor{textdark}{HTML}{1A1A1A}
+
+\hypersetup{
+    colorlinks=true,
+    urlcolor=ufabcgreen,
+    linkcolor=ufabcgreen
+}
+
+\pagestyle{empty}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0.45em}
+
+\newtcolorbox{posterbox}[1]{
+    enhanced,
+    colback=boxbg,
+    colframe=boxframe,
+    colbacktitle=ufabcgreen,
+    coltitle=white,
+    fonttitle=\fontsize{30}{36}\selectfont\bfseries,
+    title={#1},
+    arc=4mm,
+    boxrule=1.6mm,
+    top=8mm,
+    bottom=8mm,
+    left=10mm,
+    right=10mm,
+    toptitle=5mm,
+    bottomtitle=5mm,
+     before skip=8mm,
+    after skip=8mm
+}
+
+\begin{document}
+\color{textdark}
+\fontsize{23}{30}\selectfont
+
+% ====================================================================
+% CABEÇALHO INSTITUCIONAL (UFABC — SIMPÓSIO DE INICIAÇÃO CIENTÍFICA)
+% ====================================================================
+\noindent
+\begin{tikzpicture}
+    \fill[ufabcgreen] (0,0) rectangle (90cm, 15.5cm);
+    \fill[ufabcgold] (0,0) rectangle (90cm, 0.45cm);
+
+    \node[anchor=west, text=white, text width=58cm, align=left] at (2.5cm, 8.0cm) {
+        {\fontsize{26}{32}\selectfont\bfseries\color{ufabcgold}
+        XVIII SIMPÓSIO DE INICIAÇÃO CIENTÍFICA DA UFABC}\\[0.55cm]
+        {\fontsize{46}{54}\selectfont\bfseries
+        Problemas de Fluxos em Redes:\\
+        Teoria, Algoritmos e Implementações}\\[0.65cm]
+        {\fontsize{28}{34}\selectfont
+        \textbf{Pesquisador:} Gabriel Frigo (\texttt{gabriel.frigo@aluno.ufabc.edu.br}) \quad|\quad
+        \textbf{Orientadora:} Profa.\ Dra.\ Cristiane Maria Sato}\\[0.25cm]
+        {\fontsize{24}{30}\selectfont
+        Centro de Matemática, Computação e Cognição (CMCC) --- Universidade Federal do ABC (UFABC)}
+    };
+
+    \node[anchor=east] at (87.5cm, 8.0cm) {
+        \begin{colorbox}{white}{%
+            \hspace{0.4cm}%
+            \raisebox{-0.5\height}{\includegraphics[height=4.0cm]{poster/logos/ufabc.png}}%
+            \hspace{0.5cm}%
+            \raisebox{-0.5\height}{\includegraphics[height=4.0cm]{poster/logos/cnpq.png}}%
+            \hspace{0.5cm}%
+            \raisebox{-0.5\height}{\includegraphics[height=4.0cm]{poster/logos/toca.png}}%
+            \hspace{0.5cm}%
+            \raisebox{-0.5\height}{\includegraphics[height=4.0cm]{poster/logos/uscs.png}}%
+            \hspace{0.4cm}%
+        }\end{colorbox}
+    };
+\end{tikzpicture}
+
+\vspace{0.6cm}
+
+% ====================================================================
+% CORPO DO PÔSTER (2 COLUNAS)
+% ====================================================================
+\begin{center}
+\begin{minipage}[t]{85cm}
+\setlength{\columnsep}{1.8cm}
+\begin{multicols}{2}
+
+% --------------------------------------------------------------------
+% 1. INTRODUÇÃO E OBJETIVOS
+% --------------------------------------------------------------------
+\begin{posterbox}{1. Introdução e Objetivos}
+Os problemas de \textbf{Fluxo Máximo (MF)} e \textbf{Fluxo de Custo Mínimo (MCF)} constituem modelos centrais da Otimização Combinatória e da Teoria dos Grafos. Dado um digrafo capacitado $G = (V, A)$ com função de capacidade $c: A \to \mathbb{R}_+$, custos $w: A \to \mathbb{R}$, fonte $s \in V$ e sorvedouro $t \in V$, busca-se determinar uma função de fluxo $f: A \to \mathbb{R}_+$ que respeite as restrições de capacidade ($0 \le f(u,v) \le c(u,v)$) e conservação de fluxo ($\sum_{(u,v)\in A} f(u,v) = \sum_{(v,w)\in A} f(v,w), \forall v \in V \setminus \{s,t\}$).
+
+\textbf{Objetivos da Pesquisa de Iniciação Científica:}
+\begin{itemize}
+    \item \textbf{Rigor Teórico:} Demonstração completa dos teoremas clássicos de dualidade, decomposição de fluxos, cortes, transversalidade e otimalidade primal-dual.
+    \item \textbf{Engenharia Algorítmica em C++23:} Desenvolvimento de uma biblioteca orientada a objetos com \textbf{9 motores exatos} (5 para MF e 4 para MCF) livre de dependências externas.
+    \item \textbf{Modelagem e Aplicações:} Reduções polinomiais de problemas combinatórios e implementação de um sistema completo de \textbf{segmentação interativa de imagens via corte mínimo}.
+    \item \textbf{Validação Empírica:} Avaliação experimental reprodutível em \textbf{80 instâncias de referência DIMACS} com validação cruzada automática dos valores ótimos.
+\end{itemize}
+\end{posterbox}
+
+% --------------------------------------------------------------------
+% 2. FUNDAMENTAÇÃO TEÓRICA
+% --------------------------------------------------------------------
+\begin{posterbox}{2. Fundamentação Teórica e Dualidade}
+\textbf{Teorema do Fluxo Máximo e Corte Mínimo (Ford-Fulkerson, 1956):}
+Em toda rede $G = (V, A, c, s, t)$, para um fluxo viável $f$, são equivalentes:
+\begin{enumerate}
+    \item $f$ possui valor $|f|$ máximo na rede;
+    \item A rede residual $G_f = (V, A_f)$ não admite caminhos aumentantes de $s$ a $t$;
+    \item Existe um corte $(S, T)$ com $s \in S, t \in T$ tal que $|f| = c(S, T) = \sum_{(u,v)\in (S,T)} c(u,v)$.
+\end{enumerate}
+
+\textbf{Teorema da Integralidade e Aplicações Combinatórias:}
+Se $c: A \to \mathbb{Z}_+$, existe um fluxo máximo integral $f^*: A \to \mathbb{Z}_+$. Dessa propriedade derivam construtivamente os teoremas de \textbf{Menger} (caminhos disjuntos em arestas e vértices), \textbf{König} ($\nu(G) = \tau(G)$ em grafos bipartidos) e \textbf{Hall} (condição de casamento perfeito $|N_G(S)| \ge |S|$).
+
+\textbf{Fluxo de Custo Mínimo, Total Unimodularidade e Potenciais:}
+A matriz de incidência nó-arco $M \in \{-1, 0, +1\}^{|V|\times |A|}$ de qualquer digrafo é \textbf{Totalmente Unimodular (TUM)}, pois toda submatriz quadrada $B$ possui $\det(B) \in \{0, \pm 1\}$. Pela dualidade da programação linear e folgas complementares, um fluxo viável $f$ é de custo mínimo se, e somente se, existem potenciais nodais $\pi: V \to \mathbb{R}$ tais que o \textbf{custo reduzido} satisfaz:
+\[
+c^\pi(u, v) = w(u, v) + \pi(u) - \pi(v) \ge 0 \quad \forall (u, v) \in A_f.
+\]
+\end{posterbox}
+
+% --------------------------------------------------------------------
+% 3. ARQUITETURA E MOTORES ALGORÍTMICOS EM C++23
+% --------------------------------------------------------------------
+\begin{posterbox}{3. Arquitetura e Motores Algorítmicos em C++23}
+As classes abstratas \texttt{FlowNetwork} e \texttt{CostNetwork} armazenam os arcos diretos e reversos em posições adjacentes de um único vetor contíguo \texttt{std::vector<Edge>}. O arco residual reverso de \texttt{edge\_id} é obtido em $\mathcal{O}(1)$ pela operação bit a bit \texttt{edge\_id \^{} 1}, maximizando a localidade espacial de cache L1/L2.
+
+\vspace{0.3cm}
+\begin{center}
+\renewcommand{\arraystretch}{1.25}
+\begin{tabular}{lllr}
+\toprule
+\textbf{Domínio} & \textbf{Classe C++23} & \textbf{Paradigma / Estratégia} & \textbf{Complexidade} \\
+\midrule
+\textbf{Fluxo} & \texttt{FordFulkerson} & Busca em profundidade (DFS) & $\mathcal{O}(|A| \cdot |f^*|)$ \\
+\textbf{Máximo} & \texttt{EdmondsKarp} & Caminhos aumentantes mínimos (BFS) & $\mathcal{O}(|V| \cdot |A|^2)$ \\
+\textbf{(MF)} & \texttt{Dinic} & Grafo em níveis + fluxo bloqueante & $\mathcal{O}(|V|^2 \cdot |A|)$ \\
+ & \texttt{PushRelabel} & Pré-fluxo com fila FIFO de ativos & $\mathcal{O}(|V|^3)$ \\
+ & \texttt{PushRelabelImproved} & \textit{Highest-Label} + heurística \textit{Gap} & $\mathcal{O}(|V|^2 \sqrt{|A|})$ \\
+\midrule
+\textbf{Custo} & \texttt{CycleCanceling} & Cancelamento de ciclos negativos & $\mathcal{O}(|V| \cdot |A|^2 C U)$ \\
+\textbf{Mínimo} & \texttt{SuccessiveShortest} & Caminhos mínimos sucessivos (SPFA) & $\mathcal{O}(|V| \cdot |A| \cdot |f^*|)$ \\
+\textbf{(MCF)} & \texttt{SuccessiveShortestDijkstra} & Potenciais de Johnson + Dijkstra & $\mathcal{O}(|f^*| |A| \log |V|)$ \\
+ & \texttt{NetworkSimplex} & Árvore geradora (\texttt{thread}/\texttt{depth}) & Polinomial amortizado \\
+\bottomrule
+\end{tabular}
+\end{center}
+\end{posterbox}
+
+% --------------------------------------------------------------------
+% 4. MODELAGEM E REDUÇÕES COMBINATÓRIAS
+% --------------------------------------------------------------------
+\begin{posterbox}{4. Modelagem e Reduções Clássicas em Grafos}
+A biblioteca foi validada na resolução de problemas clássicos da literatura mediante reduções polinomiais para Fluxo Máximo e Fluxo de Custo Mínimo:
+\begin{itemize}
+    \item \textbf{Emparelhamento Bipartido e Cobertura de König (\textit{School Dance}, \textit{Coin Grid}):} Redução a redes de capacidade unitária $s \to L \to R \to t$ e extração construtiva da cobertura mínima de vértices $C^* = (L \setminus S) \cup (R \cap S)$ a partir do corte mínimo residual.
+    \item \textbf{Empacotamento de Caminhos Disjuntos (\textit{Distinct Routes I \& II}):} Aplicação direta do Teorema de Menger em arestas com decomposição do fluxo integral $f^*$ em caminhos $s$-$t$ de cardinalidade máxima e de custo mínimo.
+    \item \textbf{Cortes Mínimos e Transformação de Rede (\textit{Police Chase}, \textit{Time Travel}, \textit{Edição de Rede --- Maratona SBC 2026}):} Identificação de gargalos estruturais e reconfiguração ótima de emparelhamentos perfeitos.
+    \item \textbf{Atribuição e Transporte sob Demanda Fixa (\textit{Task Assignment}, \textit{Parcel Delivery}):} Formulação primal-dual sobre redes bipartidas ponderadas e redes de transbordo capacitadas.
+\end{itemize}
+\end{posterbox}
+
+% --------------------------------------------------------------------
+% 5. CONCLUSÕES E REPRODUTIBILIDADE
+% --------------------------------------------------------------------
+\begin{posterbox}{7. Conclusões e Agradecimentos}
+\begin{itemize}
+    \item A unificação teórica e experimental confirma o impacto prático dos limites assintóticos: \texttt{PushRelabelImproved} (com heurística \textit{Gap}) e \texttt{Dinic} superam os métodos elementares em ordens de grandeza em redes densas e malhas tridimensionais.
+    \item Em Fluxo de Custo Mínimo, o \texttt{NetworkSimplex} primal e o \texttt{SuccessiveShortestDijkstra} demonstram desempenho muito superior ao cancelamento de ciclos primal.
+    \item A modelagem via corte mínimo em grafos permite segmentação exata e globalmente ótima de imagens digitais em poucos milissegundos.
+\end{itemize}
+\textbf{Código-Fonte e Artefatos Reprodutíveis:} \url{https://github.com/Gabrielfrigo4/Network-Flow}\\
+\textbf{Agradecimentos:} À Profa.\ Dra.\ Cristiane Maria Sato pela orientação, à UFABC e ao CNPq pelo fomento à Iniciação Científica.
+\end{posterbox}
+
+\columnbreak
+
+% --------------------------------------------------------------------
+% 5. SEGMENTAÇÃO DE IMAGENS VIA CORTE MÍNIMO
+% --------------------------------------------------------------------
+\begin{posterbox}{5. Segmentação Interativa de Imagens via Corte Mínimo}
+Seguindo a formulação de \textbf{Boykov e Jolly (2001)}, uma imagem digital de dimensão $W \times H$ é mapeada em um grafo $G = (V, A)$ onde $V = \mathcal{P} \cup \{s, t\}$ contém um vértice para cada pixel $p \in \mathcal{P}$.
+\begin{itemize}
+    \item \textbf{Termo de Dados (\textit{t-links}):} Pixels marcados pelo usuário como sementes de objeto ($\mathcal{O}$, em vermelho) recebem $c(s, p) = \infty, c(p, t) = 0$; sementes de fundo ($\mathcal{B}$, em azul) recebem $c(s, p) = 0, c(p, t) = \infty$.
+    \item \textbf{Termo de Fronteira (\textit{n-links}):} Para pares de pixels adjacentes $\{p, q\}$ na vizinhança 4-conexa, a capacidade penaliza cortes em regiões de baixa variação cromática RGB:
+    \[
+    c(p, q) = c(q, p) = \operatorname{round}\!\left(K_0 \cdot \exp\!\left(-\frac{\|I(p) - I(q)\|_2^2}{2\sigma^2}\right)\right) + 1.
+    \]
+\end{itemize}
+O corte mínimo $(S, T)$ obtido a partir dos vértices alcançáveis de $s$ na rede residual $G_{f^*}$ particiona globalmente os pixels entre primeiro plano ($\mathcal{P} \cap S$) e fundo ($\mathcal{P} \cap T$):
+
+\vspace{0.35cm}
+\begin{center}
+\renewcommand{\arraystretch}{1.2}
+\setlength{\tabcolsep}{12pt}
+\begin{tabular}{cccc}
+\toprule
+\textbf{Amostra} & \textbf{1. Imagem Original} & \textbf{2. Sementes (FG / BG)} & \textbf{3. Corte Mínimo $(S, T)$} \\
+\midrule
+\raisebox{2.2cm}{\textbf{\texttt{duck}}} &
+\includegraphics[height=4.8cm]{poster/imagens/duck_orig.png} &
+\includegraphics[height=4.8cm]{poster/imagens/duck_seeds.png} &
+\includegraphics[height=4.8cm]{poster/imagens/duck_seg.png} \\[0.35cm]
+\raisebox{2.2cm}{\textbf{\texttt{ducks}}} &
+\includegraphics[height=4.8cm]{poster/imagens/ducks_orig.png} &
+\includegraphics[height=4.8cm]{poster/imagens/ducks_seeds.png} &
+\includegraphics[height=4.8cm]{poster/imagens/ducks_seg.png} \\[0.35cm]
+\raisebox{2.2cm}{\textbf{\texttt{balloons}}} &
+\includegraphics[height=4.8cm]{poster/imagens/balloons_orig.png} &
+\includegraphics[height=4.8cm]{poster/imagens/balloons_seeds.png} &
+\includegraphics[height=4.8cm]{poster/imagens/balloons_seg.png} \\[0.35cm]
+\raisebox{2.2cm}{\textbf{\texttt{circle}}} &
+\includegraphics[height=4.8cm]{poster/imagens/circle_orig.png} &
+\includegraphics[height=4.8cm]{poster/imagens/circle_seeds.png} &
+\includegraphics[height=4.8cm]{poster/imagens/circle_seg.png} \\
+\bottomrule
+\end{tabular}
+\end{center}
+\end{posterbox}
+
+% --------------------------------------------------------------------
+% 6. RESULTADOS EXPERIMENTAIS (BENCHMARKS DIMACS DA IC)
+% --------------------------------------------------------------------
+\begin{posterbox}{6. Resultados Experimentais (Benchmarks DIMACS da IC)}
+Os 9 algoritmos foram avaliados em \textbf{80 instâncias padronizadas do 1st DIMACS Implementation Challenge}: 40 de Fluxo Máximo (geradores \textit{Washington} e \textit{Genrmf}) e 40 de Custo Mínimo (gerador \textit{Netgen}), compilados com \texttt{g++ -std=c++23 -O2}.
+
+\vspace{0.25cm}
+\begin{center}
+\includegraphics[width=0.48\linewidth]{figuras/ic/bars_maxflow.pdf}\hfill
+\includegraphics[width=0.48\linewidth]{figuras/ic/scalability_maxflow.pdf}\\[0.35cm]
+\includegraphics[width=0.48\linewidth]{figuras/ic/bars_mincost.pdf}\hfill
+\includegraphics[width=0.48\linewidth]{figuras/ic/scalability_mincost.pdf}
+\end{center}
+
+\vspace{0.2cm}
+\begin{center}
+\fontsize{20}{25}\selectfont
+\renewcommand{\arraystretch}{1.18}
+\setlength{\tabcolsep}{10pt}
+\begin{tabular}{lrrr|rrrrr}
+\toprule
+\textbf{Instância (MF)} & $|V|$ & $|A|$ & $f^*$ & \textbf{FF} & \textbf{EK} & \textbf{Dinic} & \textbf{PR} & \textbf{PR-Gap} \\
+\midrule
+\texttt{wash\_mesh\_64} & 4.098 & 12.224 & 105.788 & 23,5 & 25,6 & \textbf{1,53} & 18,3 & 2,84 \\
+\texttt{wash\_rlg\_64} & 4.098 & 12.160 & 29.749 & 16,6 & 28,2 & 2,36 & 27,8 & \textbf{1,96} \\
+\texttt{wash\_dinic\_bad\_500} & 500 & 2.991 & 499 & \textbf{0,35} & \textbf{0,35} & 1,28 & 2,17 & 0,72 \\
+\texttt{genrmf\_wide} & 1.600 & 7.600 & 313.860 & TLE & 36,9 & 4,47 & 463 & \textbf{3,13} \\
+\texttt{genrmf\_huge} & 4.096 & 18.368 & 134.538 & TLE & 106 & \textbf{11,0} & 2.261 & 12,1 \\
+\bottomrule
+\end{tabular}
+
+\vspace{0.35cm}
+\begin{tabular}{lrrrr|rrrr}
+\toprule
+\textbf{Instância (MCF)} & $|V|$ & $|A|$ & $f^*$ & $z^*$ & \textbf{CC} & \textbf{SSP-SPFA} & \textbf{SSP-Dijk} & \textbf{Simplex} \\
+\midrule
+\texttt{netgen\_08} & 402 & 3.005 & 200.000 & 325.197.798 & 1.560 & 50,0 & 52,0 & \textbf{18,5} \\
+\texttt{netgen\_15} & 402 & 4.560 & 4.000 & 4.499.660 & 536 & 25,4 & \textbf{11,5} & 17,9 \\
+\texttt{netgen\_26} & 1.002 & 5.200 & 50.000 & 80.526.278 & 1.660 & 59,0 & \textbf{39,1} & 71,6 \\
+\texttt{netgen\_35} & 1.502 & 11.482 & 100.000 & 203.001.186 & 8.951 & 321 & 234 & \textbf{210} \\
+\texttt{netgen\_40} & 3.002 & 22.800 & 200.000 & 266.224.855 & TLE & 1.448 & 1.240 & \textbf{737} \\
+\bottomrule
+\end{tabular}
+\end{center}
+\end{posterbox}
+
+% --------------------------------------------------------------------
+% 8. REFERÊNCIAS PRINCIPAIS
+% --------------------------------------------------------------------
+\begin{posterbox}{8. Referências Bibliográficas}
+\fontsize{19}{24}\selectfont
+\begin{itemize}
+    \item AHUJA, R.\ K.; MAGNANTI, T.\ L.; ORLIN, J.\ B. \textit{Network Flows: Theory, Algorithms, and Applications}. Prentice Hall, 1993.
+    \item BOYKOV, Y.\ Y.; JOLLY, M.-P. Interactive graph cuts for optimal boundary \& region segmentation of objects in N-D images. In: \textit{Proc.\ IEEE ICCV}, v.\ 1, p.\ 105--112, 2001.
+    \item DINIC, E.\ A. Algorithm for solution of a problem of maximum flow in a network with power estimation. \textit{Soviet Mathematics Doklady}, v.\ 11, p.\ 1277--1280, 1970.
+    \item GOLDBERG, A.\ V.; TARJAN, R.\ E. A new approach to the maximum-flow problem. \textit{Journal of the ACM}, v.\ 35, n.\ 4, p.\ 921--940, 1988.
+\end{itemize}
+\end{posterbox}
+
+\end{multicols}
+\end{minipage}
+\end{center}
+
+\vfill
+
+% ====================================================================
+% RODAPÉ INSTITUCIONAL
+% ====================================================================
+\noindent
+\begin{tikzpicture}
+    \fill[ufabcgreen] (0,0) rectangle (90cm, 2.8cm);
+    \fill[ufabcgold] (0,2.8cm) rectangle (90cm, 3.15cm);
+    \node[text=white, font=\fontsize{22}{28}\selectfont\bfseries] at (45cm, 1.4cm) {
+        Universidade Federal do ABC (UFABC) \quad---\quad Iniciação Científica 2025/2026 \quad---\quad Teoria dos Grafos e Otimização Combinatória
+    };
+\end{tikzpicture}
+
+\end{document}
