@@ -176,7 +176,7 @@ sync-code:
 	$(PYTHON) .scripts/build_monolith.py
 
 ### ================================
-### IMPLEMENTATIONS & EXPERIMENTS
+### IMPLEMENTATIONS & BENCHMARKS
 ### ================================
 apps:
 	$(MAKE) -C Aplicações build
