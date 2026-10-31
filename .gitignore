@@ -1,4 +1,10 @@
-# C/C++
+# ----------------------------------------------------------------
+# Git Ignore: Network Flow Research Suite
+# ----------------------------------------------------------------
+
+# ================================================================
+# C & C++ Build Artefacts & Binaries
+# ================================================================
 *.o
 *.obj
 *.exe
@@ -18,11 +24,15 @@ build/
 out/
 cmake-build-*/
 
-# Clangd cache
+# ================================================================
+# Language Server & Cache Directories
+# ================================================================
 .clangd/
 .cache/
 
-# LaTeX
+# ================================================================
+# LaTeX Auxiliary & Generated Files
+# ================================================================
 *.aux
 *.bbl
 *.blg
@@ -45,23 +55,9 @@ cmake-build-*/
 !**/figuras/*.pdf
 !**/figuras/**/*.pdf
 
-# OS generated files
-.DS_Store
-.DS_Store?
-._*
-.Spotlight-V100
-.Trashes
-ehthumbs.db
-Thumbs.db
-
-# IDEs / Editors
-.vscode/
-.idea/
-*.swp
-*~
-*.bak
-
-# Image Segmentation outputs
+# ================================================================
+# Image Segmentation Outputs
+# ================================================================
 segment
 output.ppm
 **/output.ppm
@@ -69,3 +65,19 @@ seeds
 *seeds.ppm
 **/seeds.ppm
 ppm
+
+# ================================================================
+# Editor Backups & Operating System Cruft
+# ================================================================
+.vscode/
+.idea/
+*.swp
+*~
+*.bak
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db

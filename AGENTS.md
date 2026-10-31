@@ -1,55 +1,50 @@
-# Diretrizes para Agentes de IA (AGENTS.md)
+# 🔬 Network Flow — AI Agent Briefing
 
-Este documento define o contexto, as diretrizes arquiteturais, os padrões de desenvolvimento e as instruções operacionais para agentes de inteligência artificial atuando neste repositório.
+> Iniciação Científica (UFABC / PIBIC): _"Problemas de Fluxos em Redes: Teoria, Algoritmos e Implementações"_.
 
 ---
 
-## 1. Visão Geral do Projeto
+## 🧭 Identidade e Papel
 
-Este repositório é dedicado à pesquisa de **Iniciação Científica (UFABC)**:
+Este repositório é dedicado à pesquisa formal de **Iniciação Científica (UFABC)**:
 
 > **"Problemas de Fluxos em Redes: Teoria, Algoritmos e Implementações"**  
 > **Orientadora:** Profa. Dra. Cristiane Maria Sato  
 > **Pesquisador:** Gabriel Frigo
 
-O projeto abrange a interseção entre Ciência da Computação e Otimização Combinatória / Teoria dos Grafos, focando em:
+O projeto abrange a interseção entre Ciência da Computação e Otimização Combinatória / Teoria dos Grafos:
 
 1. **Fundamentos Teóricos e Rigor:** Teoremas clássicos (Ford-Fulkerson, Menger, König, Hall, Dualidade/Folgas Complementares, TUM) com provas matemáticas e rigor conceitual.
 2. **Implementações Algorítmicas de Alta Performance:** Motores em C++23 para _Fluxo Máximo_ (Ford-Fulkerson, Edmonds-Karp, Dinic, MPM, Push-Relabel FIFO, Push-Relabel Improved, Kuhn e Hopcroft-Karp) e _Fluxo de Custo Mínimo_ (Cycle Canceling, Successive Shortest Path com SPFA e Dijkstra com potenciais, Network Simplex e Kuhn-Munkres).
-3. **Modelagem e Reduções:** Aplicação de algoritmos de fluxo em problemas clássicos (emparelhamentos, empacotamento de caminhos, corte mínimo, fechamento de peso máximo, circulação com demandas, CSES/Codeforces/SPOJ) e práticos (segmentação de imagens via min-cut).
+3. **Modelagem e Reduções:** Aplicação de algoritmos de fluxo em problemas clássicos (emparelhamentos, corte mínimo, fechamento de peso máximo, circulação com demandas) e práticos (segmentação de imagens via min-cut).
 4. **Documentação Acadêmica, Pôster & Livro:** Monografia independente em livro (`LaTeX/book.tex`) e artefatos institucionais da Iniciação Científica da UFABC (`LaTeX/ic.tex`, `LaTeX/relatorio.tex`, `LaTeX/projeto.tex`, `LaTeX/poster.tex`).
-5. **Validação Experimental Segregada (IC vs. Livro):** Benchmarks empíricos e análise de complexidade com instâncias de referência da literatura (DIMACS) e geradores sintéticos, separados entre o escopo entregue na IC (`make bench-ic`) e o escopo expandido Pós-IC do Livro (`make bench-book`).
+5. **Validação Experimental Segregada (IC vs. Livro):** Benchmarks empíricos e análise de complexidade com instâncias de referência da literatura (DIMACS) e geradores sintéticos (`make bench-ic` e `make bench-book`).
 
 ---
 
-## 2. Estrutura do Repositório
+## 📁 Estrutura do Repositório
 
-- `Implementações/`: Núcleo de algoritmos e estruturas em C++23.
-    - `FlowNetwork/`: Classe base abstrata e algoritmos de fluxo máximo (`FlowNetwork.hpp`, `Dinic.hpp`, `MPM.hpp`, `PushRelabel.hpp`, `Kuhn.hpp`, `HopcroftKarp.hpp`, etc.).
-    - `CostNetwork/`: Classe base abstrata e algoritmos de custo mínimo (`CostNetwork.hpp`, `NetworkSimplex.hpp`, `KuhnMunkres.hpp`, etc.).
-    - `Problemas/`: Resoluções e reduções de problemas clássicos em _Fluxo Máximo_ e _Fluxo de Custo Mínimo_. Cada subpasta contém código-fonte e Makefile de teste dedicado.
-- `Aplicações/`: Casos práticos reais de uso de fluxos.
-    - `Segmentação de Imagens/`: Pipeline completo em C++23 de segmentação de primeiro plano/fundo via corte mínimo (`seeds.cpp`, `ppm.cpp`, `main.cpp`).
-- `LaTeX/`: Códigos-fonte da documentação acadêmica, pôster e monografia.
-    - `book.tex`: Livro/monografia independente (classe `book`), de alta densidade técnica e livre de amarras burocráticas institucionais (inclui as expansões Pós-IC).
-    - `ic.tex`: Texto técnico completo da IC para leitura limpa.
-    - `relatorio.tex`: Relatório formal institucional com capa oficial da UFABC e folha de assinaturas.
-    - `projeto.tex`: Proposta e plano de trabalho inicial da pesquisa.
-    - `poster.tex`: Pôster científico institucional da IC (formato A0 vertical 90×120 cm) com galeria de segmentação de imagens e benchmarks da IC.
-    - `capitulos/`: Capítulos modulares do Livro.
-    - `apendices/`: Listagens de código C++ espelhadas automaticamente da pasta `Implementações/`.
-    - `tabelas/ic/` & `figuras/ic/`: Tabelas e gráficos congelados do ciclo de Iniciação Científica.
-    - `tabelas/book/` & `figuras/book/`: Tabelas e gráficos expandidos do Livro (Pós-IC: inclui MPM e suíte bipartida).
-    - `cit.bib`: Base bibliográfica BibTeX.
-- `Experimentos/`: Infraestrutura de benchmarks empíricos (DIMACS, geradores, medição de tempo/memória com Python/C++).
-- `.scripts/`: Ferramentas auxiliares:
-    - `sync_listings.py`: Script de sincronização automática entre `Implementações/` e `LaTeX/apendices/`.
-- `Material/`: Artigos de referência, livros em PDF e insumos teóricos de apoio.
-- `.githooks/`: Hooks de versionamento Git (ex.: `pre-commit` para verificação de artefatos e sincronia de código).
+```text
+Network Flow/
+├── Implementações/            # Motores algorítmicos em C++23 (FlowNetwork, CostNetwork)
+├── Aplicações/                # Casos práticos reais (Segmentação de Imagens via min-cut)
+├── LaTeX/                     # Monografia, livro, relatórios institucionais e pôster A0
+├── Experimentos/              # Benchmarks DIMACS e geradores sintéticos
+├── Material/                  # Artigos de referência e insumos teóricos
+├── .agents/                   # Governança e runbooks cognitivos de IA
+├── .githooks/                 # Ganchos de versionamento Git
+├── .scripts/                  # Scripts de sincronização C++ <-> LaTeX
+├── Makefile                   # Orquestrador unificado de compilação e testes
+├── PRINCIPLES.md              # 22 Princípios de Engenharia aplicados
+├── README.md                  # Apresentação do projeto e índice de algoritmos
+└── TODO.md                    # Roadmap de entregas e backlog de pesquisa
+```
 
 ---
 
-## 3. Padrões de Código e Compilação
+## ⚠️ Regras Críticas para Agentes de IA
+
+### Padrões de Código e Compilação
 
 ### 3.1 Linguagem e Arquitetura C++ (C++23)
 
@@ -81,7 +76,7 @@ MAKEFLAGS += --no-print-directory -s
 
 ---
 
-## 4. Fluxo de Trabalho, Testes e Operações
+### Fluxo de Trabalho, Testes e Operações
 
 ### 4.1 Testes e Validação
 
@@ -183,8 +178,6 @@ Não basta uma palavra "não estar formalmente errada" ou "parecer elegante/lega
 
 ---
 
-## 5. Resumo de Comandos Frequentes
-
 | Comando           | Descrição                                                                                              |
 | :---------------- | :----------------------------------------------------------------------------------------------------- |
 | `make all`        | Compila todos os PDFs do LaTeX, as aplicações e valida os headers C++                                  |
@@ -202,7 +195,7 @@ Não basta uma palavra "não estar formalmente errada" ou "parecer elegante/lega
 
 ---
 
-## 6. Checklist para Agentes ao Concluir Alterações
+### Checklist de Conclusão
 
 1. **Compilação e Sintaxe:**
     - Execute `make impl` para validar a sintaxe e headers C++.
@@ -218,19 +211,61 @@ Não basta uma palavra "não estar formalmente errada" ou "parecer elegante/lega
 
 ---
 
+---
+
 ## 🛡️ Regra da Proatividade e Correção Contínua (Boy Scout Rule)
 
-O agente de IA **DEVE SER ATIVAMENTE PROATIVO** na manutenção e aplicação dos padrões canônicos deste repositório.
+O agente de IA atua de forma proativa na manutenção e aplicação dos padrões canônicos deste repositório.
 
-Se durante a execução de qualquer tarefa (seja criação de novas features, correções pontuais, refatorações ou investigação) o agente identificar qualquer linha de código, script, Makefile ou documentação fora dos padrões estabelecidos, **NÃO DEVE HESITAR NEM IGNORAR**:
+Ao identificar linhas ou artefatos fora dos padrões estabelecidos:
 
-1. **Notificar concisamente** o usuário sobre a divergência encontrada.
-2. **Corrigir imediatamente a inconformidade**, aplicando o padrão canônico correspondente:
-    - **Comentários Narrativos:** Eliminar imediatamente comentários óbvios que apenas narram código executável.
+1. **Notificar concisamente** o usuário sobre o ajuste realizado.
+2. **Corrigir a inconformidade**, aplicando o padrão correspondente:
+    - **Comentários Narrativos:** Eliminar comentários óbvios que apenas narram código executável.
     - **Banners Estruturais:** Ajustar réguas para exatamente 64 hífens no topo ou 32 caracteres com `### ` no corpo.
     - **Portabilidade POSIX:** Substituir bashismos (`[[ ]]`, `&>`, arrays, `source`) por sintaxe estrita POSIX `/bin/sh`.
     - **Shebang Universal:** Garantir sempre `#!/usr/bin/env sh` ou `#!/usr/bin/env python3`.
-    - **Sequências ANSI:** Substituir octais crípticos (``) e `printf` desnecessário por `[ -t 1 ] && echo -n $'\e...'`.
+    - **Sequências ANSI & Escapes:** Não use octais (`\033`, `\001`) para caracteres ou escapes. Use `[ -t 1 ] && echo -n $\x27\e...\x27` ou notação hexadecimal (`\x01`, `\x1b`). Octal é exclusivo para permissões POSIX (`chmod 0755`, `chmod 0644`, `umask`).
     - **Redirecionamento Seguro:** Envolver destinos em aspas duplas (ex: `> "/dev/null" 2>&1`).
     - **Makefiles:** Assegurar cabeçalho `.POSIX: .SILENT:`, `MAKEFLAGS += --no-print-directory -s`, alinhamento estético de variáveis e zero `@` redundante.
     - **Permissões Canônicas:** Aplicar 4 dígitos octais (`chmod 0755`, `chmod 0644`, `chmod 0700`, `chmod 0600`).
+    - **Invariante Out-of-the-Box:** Garantir modos octais corretos no Git Index e auto-cura em tempo de execução sem requerer intervenção manual pós-clone.
+    - **Emissão Semântica de UI:** Substituir `echo` avulsos com emojis pelas rotinas canônicas `_ui_*`.
+    - **Antifragilidade & Resiliência:** Resolução ativa de caminhos em cascata, auto-cura de permissões (0600 em chaves/segredos) e validação defensiva de pré-requisitos.
+    - **Curadoria Cognitiva:** Capturar decisões estruturais e regras tácitas em skills locais compactas (`.agents/skills/`), mantendo-as atualizadas e expurgando ruído obsoleto.
+    - **Refatoração Sem Legado:** Expurgar aliases obsoletos, variáveis mortas e shims de compatibilidade em renomeações.
+    - **Elevação Antifrágil & Shift Seguro:** Usar o bloco explícito `if [ "$(id -u)" -ne 0 ]` para resolução de `ELEVATE` (evitando término fatal sob `set -e` como root) e proteger todo comando `shift` com validação prévia de parâmetros (`[ "$#" -ge N ] && shift N`).
+    - **Simetria de Documentação:** Mover regras ou invariantes universais documentadas erroneamente em sub-membros específicos para o documento de arquitetura do grupo correspondente, eliminando falsas assimetrias.
+
+---
+
+## 🚀 Comandos de Verificação Rápida (Quality Gates)
+
+| Comando           | Finalidade Operacional                                                                   |
+| :---------------- | :--------------------------------------------------------------------------------------- |
+| `make help`       | Exibe o catálogo completo de comandos disponíveis                                        |
+| `make impl`       | Valida a sintaxe C++23 de todos os headers em `Implementações/`                          |
+| `make test`       | Executa todos os testes unitários e de problemas do repositório                          |
+| `make format`     | Formata todos os arquivos C++ com `clang-format`                                         |
+| `make sync-code`  | Sincroniza códigos C++ com os apêndices do LaTeX                                         |
+| `make bench-ic`   | Executa e regenera as tabelas e figuras da Iniciação Científica                          |
+| `make bench-book` | Executa e regenera as tabelas e figuras do Livro Pós-IC                                  |
+| `make poster`     | Compila exclusivamente o pôster institucional da IC (`LaTeX/poster.pdf`)                 |
+| `make book`       | Compila exclusivamente o livro monográfico (`LaTeX/book.pdf`)                            |
+| `make latex`      | Compila todos os documentos LaTeX (`ic.pdf`, `relatorio.pdf`, `projeto.pdf`, `book.pdf`) |
+| `make clean`      | Limpa todos os binários, PDFs gerados e arquivos auxiliares temporários                  |
+| `make setup`      | Configura os githooks locais a partir de `.githooks/`                                    |
+
+---
+
+## 📖 Referências Obrigatórias
+
+Antes de qualquer modificação neste ecossistema, consulte:
+
+- [README.md](README.md) — Apresentação do projeto e índice de algoritmos
+- [PRINCIPLES.md](PRINCIPLES.md) — 22 Princípios de Engenharia aplicados
+- [TODO.md](TODO.md) — Roadmap de tarefas e status operacional
+- [Makefile](Makefile) — Catálogo de compilação e alvos de automação
+- [.agents/rules/cpp-standards.md](.agents/rules/cpp-standards.md) — Padrões e convenções C++23
+- [.agents/rules/latex-standards.md](.agents/rules/latex-standards.md) — Padrões tipográficos de LaTeX
+- [.agents/skills/sync-research/SKILL.md](.agents/skills/sync-research/SKILL.md) — Runbook de sincronização
