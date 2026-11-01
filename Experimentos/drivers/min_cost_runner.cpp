@@ -5,12 +5,22 @@
 
 #include <chrono>
 #include <fstream>
+#include <functional>
 #include <iomanip>
 #include <iostream>
+#include <mutex>
 #include <sstream>
 #include <string>
-#include <sys/resource.h>
+#include <thread>
 #include <vector>
+
+#ifdef _WIN32
+#include <windows.h>
+
+#include <psapi.h>
+#else
+#include <sys/resource.h>
+#endif
 
 struct RawCostArc
 {
@@ -26,12 +36,28 @@ struct CostGraphData
 	std::vector<RawCostArc> arcs;
 };
 
+struct CostAlgoResult
+{
+	std::string algo_name;
+	Long min_cost = 0;
+	double elapsed_ms = 0.0;
+	long mem_kb = 0;
+	std::string status = "OK";
+};
+
 static long get_max_rss_kb()
 {
+#ifdef _WIN32
+	PROCESS_MEMORY_COUNTERS pmc;
+	if (GetProcessMemoryInfo(GetCurrentProcess(), &pmc, sizeof(pmc)))
+		return static_cast<long>(pmc.PeakWorkingSetSize / 1024);
+	return 0;
+#else
 	struct rusage usage{};
 	if (getrusage(RUSAGE_SELF, &usage) == 0)
 		return usage.ru_maxrss;
 	return 0;
+#endif
 }
 
 static CostGraphData load_dimacs_min_cost(const std::string &filepath)
@@ -47,7 +73,6 @@ static CostGraphData load_dimacs_min_cost(const std::string &filepath)
 	Size orig_nodes = 0;
 	std::vector<Long> supply;
 	std::string line;
-
 	while (std::getline(in, line))
 	{
 		if (line.empty() || line[0] == 'c')
@@ -99,10 +124,7 @@ static CostGraphData load_dimacs_min_cost(const std::string &filepath)
 }
 
 template <typename Solver>
-static void run_solver(
-    const std::string &instance_name, const std::string &algo_name,
-    const CostGraphData &data, Long &reference_cost, bool &has_reference
-)
+static CostAlgoResult run_cost_solver_instance(const CostGraphData &data)
 {
 	const long rss_before = get_max_rss_kb();
 	const auto t0 = std::chrono::steady_clock::now();
@@ -117,25 +139,9 @@ static void run_solver(
 	const long rss_after = get_max_rss_kb();
 	const double elapsed_ms = std::chrono::duration<double, std::milli>(t1 - t0)
 	                              .count();
-
-	if (!has_reference)
-	{
-		reference_cost = min_cost;
-		has_reference = true;
-	}
-	else if (min_cost != reference_cost)
-	{
-		std::cerr << "[ERRO DE CONSISTENCIA MCF] " << algo_name << " obteve custo "
-		          << min_cost << " != referencia " << reference_cost << " em "
-		          << instance_name << "\n";
-		std::exit(2);
-	}
-
 	const long mem_kb = std::max(rss_before, rss_after);
 
-	std::cout << instance_name << "," << algo_name << "," << data.num_nodes << ","
-	          << data.arcs.size() << "," << min_cost << "," << std::fixed
-	          << std::setprecision(3) << elapsed_ms << "," << mem_kb << ",OK\n";
+	return {"", min_cost, elapsed_ms, mem_kb, "OK"};
 }
 
 int main(int argc, char **argv)
@@ -151,25 +157,69 @@ int main(int argc, char **argv)
 
 	const CostGraphData data = load_dimacs_min_cost(filepath);
 
+	std::vector<std::pair<std::string, std::function<CostAlgoResult()>>> tasks;
+
+	tasks.push_back({
+	    "NetworkSimplex",
+	    [&data]() { return run_cost_solver_instance<NetworkSimplex>(data); },
+	});
+	tasks.push_back({
+	    "SuccessiveShortestDijkstra",
+	    [&data]() {
+		    return run_cost_solver_instance<SuccessiveShortestDijkstra>(data);
+	    },
+	});
+	tasks.push_back({
+	    "SuccessiveShortest",
+	    [&data]() { return run_cost_solver_instance<SuccessiveShortest>(data); },
+	});
+	tasks.push_back({
+	    "CycleCanceling",
+	    [&data]() { return run_cost_solver_instance<CycleCanceling>(data); },
+	});
+
+	std::vector<CostAlgoResult> results(tasks.size());
+	{
+		std::vector<std::jthread> threads;
+		threads.reserve(tasks.size());
+
+		for (size_t idx = 0; idx < tasks.size(); ++idx)
+		{
+			threads.emplace_back([&tasks, &results, idx]() {
+				auto res = tasks[idx].second();
+				res.algo_name = tasks[idx].first;
+				results[idx] = res;
+			});
+		}
+	}
+
 	Long reference_cost = 0;
 	bool has_reference = false;
 
-	run_solver<NetworkSimplex>(
-	    instance_name, "NetworkSimplex", data, reference_cost, has_reference
-	);
-	run_solver<SuccessiveShortestDijkstra>(
-	    instance_name,
-	    "SuccessiveShortestDijkstra",
-	    data,
-	    reference_cost,
-	    has_reference
-	);
-	run_solver<SuccessiveShortest>(
-	    instance_name, "SuccessiveShortest", data, reference_cost, has_reference
-	);
-	run_solver<CycleCanceling>(
-	    instance_name, "CycleCanceling", data, reference_cost, has_reference
-	);
+	for (const auto &res : results)
+	{
+		if (!has_reference)
+		{
+			reference_cost = res.min_cost;
+			has_reference = true;
+		}
+		else if (res.min_cost != reference_cost)
+		{
+			std::cerr << "[ERRO DE CONSISTENCIA] " << res.algo_name
+			          << " obteve custo " << res.min_cost << " != referencia "
+			          << reference_cost << " em " << instance_name << "\n";
+			std::exit(2);
+		}
+	}
+
+	Size total_edges = data.arcs.size();
+	for (const auto &res : results)
+	{
+		std::cout << instance_name << "," << res.algo_name << "," << data.num_nodes
+		          << "," << total_edges << "," << res.min_cost << "," << std::fixed
+		          << std::setprecision(3) << res.elapsed_ms << "," << res.mem_kb
+		          << "," << res.status << "\n";
+	}
 
 	return 0;
 }

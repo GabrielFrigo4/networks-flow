@@ -1,17 +1,78 @@
-# Binários compilados dos drivers
-drivers/max_flow_runner
-drivers/min_cost_runner
+# ----------------------------------------------------------------
+# Git Ignore: Network Flow Research Suite (Benchmarks & Drivers)
+# ----------------------------------------------------------------
 
-# Resultados brutos (gerados sob demanda)
+# ================================================================
+# COMPILED DRIVERS & RUNNER BINARIES
+# ================================================================
+drivers/max_flow_runner
+drivers/max_flow_runner.exe
+drivers/min_cost_runner
+drivers/min_cost_runner.exe
+
+drivers/*_runner
+drivers/*_runner.exe
+drivers/bin/
+
+# ================================================================
+# EXPERIMENT RESULTS & RAW OUTPUTS
+# ================================================================
+results/**/*.csv
+results/**/*.tsv
+results/**/*.json
+results/**/*.pdf
+results/**/*.tex
+results/**/*.png
+results/**/*.svg
+results/**/*.log
 results/*.csv
+results/*.tsv
 results/*.json
 results/*.pdf
 results/*.tex
+results/*.png
+results/*.svg
+results/*.log
 
-# Instâncias DIMACS (grandes, baixadas sob demanda)
+!results/**/.gitkeep
+!results/.gitkeep
+
+# ================================================================
+# DATASETS & DIMACS INSTANCES (LARGE FILES)
+# ================================================================
+instances/bipartite/
 instances/dimacs_maxflow/
 instances/dimacs_mincost/
 instances/synthetic/
+instances/downloads/
 
-# Geradores compilados e baixados
+instances/**/*.tar.gz
+instances/**/*.tar.bz2
+instances/**/*.zip
+instances/**/*.gz
+instances/**/*.dmx
+instances/**/*.max
+instances/**/*.min
+instances/**/*.net
+instances/**/*.gr
+
+!instances/**/.gitkeep
+!instances/.gitkeep
+
+# ================================================================
+# GENERATORS BUILD ARTEFACTS & TOOLING
+# ================================================================
 build_generators/
+generators/bin/
+generators/build/
+generators/*.tar.gz
+generators/*.zip
+
+# ================================================================
+# RUN LOGS & PROFILING ARTEFACTS
+# ================================================================
+*.prof
+*.pstats
+gmon.out
+perf.data*
+benchmark_run_*.log

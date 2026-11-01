@@ -42,12 +42,12 @@ Experimentos/
 
 Para garantir que os relatórios entregues na Iniciação Científica (`ic.pdf`, `relatorio.pdf`, `monolito.pdf`, `poster.pdf`) permaneçam estritamente fiéis aos 9 algoritmos originais da IC, enquanto o Livro (`book.pdf`) incorpore todas as expansões Pós-IC, os benchmarks são divididos em duas suítes independentes:
 
-1. **Suíte da IC (`make bench-ic` / `make -C Experimentos ic`):**
+1. **Suíte da IC (`make bench-ic` / `(cd Experimentos && make ic)`):**
     - **Fluxo Máximo (5 motores):** `FordFulkerson`, `EdmondsKarp`, `Dinic`, `PushRelabel`, `PushRelabelImproved`.
     - **Custo Mínimo (4 motores):** `CycleCanceling`, `SuccessiveShortest`, `SuccessiveShortestDijkstra`, `NetworkSimplex`.
     - **Saídas:** `LaTeX/tabelas/ic/` e `LaTeX/figuras/ic/`.
 
-2. **Suíte do Livro / Pós-IC (`make bench-book` / `make -C Experimentos book`):**
+2. **Suíte do Livro / Pós-IC (`make bench-book` / `(cd Experimentos && make book)`):**
     - **Fluxo Máximo (6 motores):** Inclui o algoritmo **MPM (Malhotra-Kumar-Maheshwari)** em $\mathcal{O}(\|V\|^3)$ nas 40 instâncias DIMACS.
     - **Custo Mínimo (4 motores):** Avaliados nas 40 instâncias DIMACS Netgen.
     - **Emparelhamento Bipartido (8 motores):** Compara os algoritmos dedicados **`Kuhn`** e **`HopcroftKarp`** contra os 6 motores gerais de fluxo máximo.

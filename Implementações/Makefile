@@ -70,7 +70,7 @@ test:
 		case "$$dir" in *Template*) continue ;; esac; \
 		if [ -f "$${dir}Makefile" ]; then \
 			printf "%s\n" "-> Testando $$dir"; \
-			$(MAKE) -C "$$dir" all > "/dev/null" || exit 1; \
+			(cd "$$dir" && $(MAKE) all > "/dev/null") || exit 1; \
 		fi \
 	done
 	printf "%s\n" "Executando testes dos problemas de Fluxo de Custo Mínimo..."
@@ -78,7 +78,7 @@ test:
 		case "$$dir" in *Template*) continue ;; esac; \
 		if [ -f "$${dir}Makefile" ]; then \
 			printf "%s\n" "-> Testando $$dir"; \
-			$(MAKE) -C "$$dir" all > "/dev/null" || exit 1; \
+			(cd "$$dir" && $(MAKE) all > "/dev/null") || exit 1; \
 		fi \
 	done
 	printf "%s\n" "Todos os problemas foram executados com sucesso!"
@@ -86,7 +86,7 @@ test:
 clean:
 	for dir in Problemas/"Fluxo Máximo"/*/ Problemas/"Fluxo de Custo Mínimo"/*/; do \
 		if [ -f "$${dir}Makefile" ]; then \
-			$(MAKE) -C "$$dir" clean; \
+			(cd "$$dir" && $(MAKE) clean); \
 		fi \
 	done
 

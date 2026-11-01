@@ -2,11 +2,14 @@
 .SILENT:
 MAKEFLAGS += --no-print-directory -s
 
-CXX      = c++
-CXXFLAGS = -Wl,-z,stack-size=268435456 -std=c++23 -O2
-SEG_EXE  = ./segment
-SEED_EXE = ./seeds
-PPM_EXE  = ./ppm
+CXX         = c++
+STACK_FLAG != case "$$(uname -s 2> /dev/null)" in *Windows*|*MINGW*|*MSYS*|*CYGWIN*) echo "-Wl,--stack,268435456" ;; *) echo "-Wl,-z,stack-size=268435456" ;; esac
+CXXFLAGS    = $(STACK_FLAG) -std=c++23 -O2
+
+EXE_EXT  != case "$$(uname -s 2> /dev/null)" in *Windows*|*MINGW*|*MSYS*|*CYGWIN*) echo ".exe" ;; *) echo "" ;; esac
+SEG_EXE   = ./segment$(EXE_EXT)
+SEED_EXE  = ./seeds$(EXE_EXT)
+PPM_EXE   = ./ppm$(EXE_EXT)
 
 .PHONY: default help all build verify seed run test example format format-cpp format-md clean clear
 
@@ -94,4 +97,4 @@ example: $(SEG_EXE)
 	$(SEG_EXE) --input "samples/grid1/source.ppm" --seeds "samples/grid1/source.seeds" --output "samples/grid1/output.ppm"
 
 clean clear:
-	rm -f $(SEG_EXE) $(SEED_EXE) $(PPM_EXE) samples/*/output.ppm samples/*/seeds.ppm
+	rm -f $(SEG_EXE) $(SEED_EXE) $(PPM_EXE) $(SEG_EXE).exe $(SEED_EXE).exe $(PPM_EXE).exe samples/*/output.ppm samples/*/seeds.ppm

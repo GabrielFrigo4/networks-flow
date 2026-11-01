@@ -39,7 +39,7 @@ verify: build test
 
 build:
 	for dir in $(SUBDIRS); do \
-		$(MAKE) -C "$$dir" all; \
+		(cd "$$dir" && $(MAKE) all); \
 	done
 
 apps: build
@@ -48,7 +48,7 @@ format: format-cpp format-md
 
 format-cpp:
 	for dir in $(SUBDIRS); do \
-		$(MAKE) -C "$$dir" format; \
+		(cd "$$dir" && $(MAKE) format); \
 	done
 
 format-md:
@@ -59,12 +59,12 @@ format-md:
 
 test:
 	for dir in $(SUBDIRS); do \
-		$(MAKE) -C "$$dir" test; \
+		(cd "$$dir" && $(MAKE) test); \
 	done
 
 clean:
 	for dir in $(SUBDIRS); do \
-		$(MAKE) -C "$$dir" clean; \
+		(cd "$$dir" && $(MAKE) clean); \
 	done
 
 clear: clean

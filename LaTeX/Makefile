@@ -7,12 +7,12 @@ MAKEFLAGS += --no-print-directory -s
 # Makefile: Network Flow LaTeX Monograph & Reports
 # ----------------------------------------------------------------
 
-LATEXMK  = latexmk
-PDFLATEX = pdflatex
-BIBTEX   = bibtex
-PYTHON   = python3
+LATEXMK   = latexmk
+PDFLATEX  = pdflatex
+BIBTEX    = bibtex
+PYTHON    = python3
 
-TARGETS  = ic.pdf relatorio.pdf monolito.pdf projeto.pdf poster.pdf book.pdf
+TARGETS   = ic.pdf relatorio.pdf monolito.pdf projeto.pdf poster.pdf book.pdf
 
 CAPITULOS != find capitulos -name "*.tex" 2> "/dev/null" || true
 APENDICES != find apendices -name "*.tex" 2> "/dev/null" || true

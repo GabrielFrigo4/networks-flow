@@ -11,6 +11,7 @@ import os
 import sys
 import subprocess
 import urllib.request
+import re
 from pathlib import Path
 
 BASE_URL = "http://archive.dimacs.rutgers.edu/pub/netflow/generators/network"
@@ -41,8 +42,17 @@ def build_washington(build_dir):
     c_file = wash_dir / "washington.c"
     if not c_file.exists():
         download_file(f"{BASE_URL}/washington/washington.c", c_file)
+
+    # Patch POSIX random/srandom and sys/time.h for Windows / MinGW
+    c_content = c_file.read_text(encoding="latin-1")
+    if "srandom(" in c_content or "random(" in c_content or "<sys/time.h>" in c_content:
+        c_content = re.sub(r'#include\s*<sys/time\.h>', '#include <time.h>\n#include <stdlib.h>', c_content)
+        c_content = re.sub(r'\bsrandom\s*\(', 'srand((unsigned int)', c_content)
+        c_content = re.sub(r'\brandom\s*\(\s*\)', '((long)rand())', c_content)
+        c_file.write_text(c_content, encoding="latin-1")
+
     bin_file = wash_dir / "washington"
-    if not bin_file.exists():
+    if not bin_file.exists() and not (wash_dir / "washington.exe").exists():
         log("Compilando gerador Washington...")
         compile_cmd("cc -std=gnu89 -w -Wno-everything -O2 washington.c -o washington", wash_dir)
     return bin_file
@@ -57,8 +67,24 @@ def build_genrmf(build_dir):
         target = rmf_dir / f
         if not target.exists():
             download_file(f"{BASE_URL}/genrmf/{f}", target)
+
+    # Patch POSIX drand48/srand48 for Windows / MinGW
+    m_file = rmf_dir / "math_to_gcc.h"
+    if m_file.exists():
+        m_content = m_file.read_text(encoding="latin-1")
+        m_content = m_content.replace("double drand48(void);", "#include <stdlib.h>\nstatic inline double drand48(void) { return (double)rand() / (RAND_MAX + 1.0); }")
+        m_content = m_content.replace("void srand48(long int);", "static inline void srand48(long int s) { srand((unsigned int)s); }")
+        m_file.write_text(m_content, encoding="latin-1")
+
+    gm_file = rmf_dir / "genmain.c"
+    if gm_file.exists():
+        gm_content = gm_file.read_text(encoding="latin-1")
+        if '#include "math_to_gcc.h"' not in gm_content:
+            gm_content = '#include <stdlib.h>\n#define srand48(s) srand((unsigned int)(s))\n' + gm_content
+            gm_file.write_text(gm_content, encoding="latin-1")
+
     bin_file = rmf_dir / "genrmf"
-    if not bin_file.exists():
+    if not bin_file.exists() and not (rmf_dir / "genrmf.exe").exists():
         log("Compilando gerador Genrmf...")
         compile_cmd(
             "cc -std=gnu89 -w -Wno-everything -O2 genrmf.c genmain.c genio.c -lm -o genrmf", rmf_dir)

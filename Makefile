@@ -8,6 +8,7 @@ MAKEFLAGS += --no-print-directory -s
 # ----------------------------------------------------------------
 
 PYTHON   = python3
+
 REPEATS ?= 2
 TIMEOUT ?= 16
 WORKERS ?= 1
@@ -82,13 +83,13 @@ bench-all: dimacs exp bench-pipeline
 
 bench-pipeline: dimacs exp
 	printf "\n$${_e}[1;34m==> [1/5] Executando benchmarks nas instâncias de referência...$${_e}[0m\n"
-	$(MAKE) -C Experimentos run WORKERS=$(WORKERS) REPEATS=$(REPEATS) TIMEOUT=$(TIMEOUT)
+	(cd "Experimentos" && $(MAKE) run WORKERS=$(WORKERS) REPEATS=$(REPEATS) TIMEOUT=$(TIMEOUT))
 	printf "\n$${_e}[1;34m==> [2/5] Gerando tabelas brutas de experimentos...$${_e}[0m\n"
-	$(MAKE) -C Experimentos tables
+	(cd "Experimentos" && $(MAKE) tables)
 	printf "\n$${_e}[1;34m==> [3/5] Gerando gráficos de desempenho...$${_e}[0m\n"
-	$(MAKE) -C Experimentos plots
+	(cd "Experimentos" && $(MAKE) plots)
 	printf "\n$${_e}[1;34m==> [4/5] Sincronizando CSVs e gerando artefatos finais consolidados para o LaTeX...$${_e}[0m\n"
-	$(MAKE) -C Experimentos sync-csv
+	(cd "Experimentos" && $(MAKE) sync-csv)
 	$(PYTHON) .scripts/generate_bench_artifacts.py
 	printf "\n$${_e}[1;34m==> [5/5] Reconstruindo monólito LaTeX integrado...$${_e}[0m\n"
 	$(PYTHON) .scripts/build_monolith.py
@@ -148,28 +149,28 @@ setup:
 ### LATEX SUITE
 ### ================================
 latex:
-	$(MAKE) -C LaTeX all
+	(cd "LaTeX" && $(MAKE) all)
 
 reports:
-	$(MAKE) -C LaTeX reports
+	(cd "LaTeX" && $(MAKE) reports)
 
 book:
-	$(MAKE) -C LaTeX book
+	(cd "LaTeX" && $(MAKE) book)
 
 relatorio:
-	$(MAKE) -C LaTeX relatorio
+	(cd "LaTeX" && $(MAKE) relatorio)
 
 ic:
-	$(MAKE) -C LaTeX ic
+	(cd "LaTeX" && $(MAKE) ic)
 
 monolito:
-	$(MAKE) -C LaTeX monolito
+	(cd "LaTeX" && $(MAKE) monolito)
 
 projeto:
-	$(MAKE) -C LaTeX projeto
+	(cd "LaTeX" && $(MAKE) projeto)
 
 poster:
-	$(MAKE) -C LaTeX poster
+	(cd "LaTeX" && $(MAKE) poster)
 
 sync-code:
 	$(PYTHON) .scripts/sync_listings.py
@@ -179,59 +180,59 @@ sync-code:
 ### IMPLEMENTATIONS & BENCHMARKS
 ### ================================
 apps:
-	$(MAKE) -C Aplicações build
+	(cd "Aplicações" && $(MAKE) build)
 
 impl:
-	$(MAKE) -C Implementações check
+	(cd "Implementações" && $(MAKE) check)
 
 exp:
-	$(MAKE) -C Experimentos drivers
+	(cd "Experimentos" && $(MAKE) drivers)
 
 generate:
-	$(MAKE) -C Experimentos generate
+	(cd "Experimentos" && $(MAKE) generate)
 
 dimacs:
-	$(MAKE) -C Experimentos dimacs
+	(cd "Experimentos" && $(MAKE) dimacs)
 
 bench: exp
-	$(MAKE) -C Experimentos run WORKERS=$(WORKERS) REPEATS=$(REPEATS) TIMEOUT=$(TIMEOUT)
+	(cd "Experimentos" && $(MAKE) run WORKERS=$(WORKERS) REPEATS=$(REPEATS) TIMEOUT=$(TIMEOUT))
 
 bench-ic: exp
-	$(MAKE) -C Experimentos ic
+	(cd "Experimentos" && $(MAKE) ic)
 
 bench-book: exp
-	$(MAKE) -C Experimentos book
+	(cd "Experimentos" && $(MAKE) book)
 
 bench-smoke: exp
-	$(MAKE) -C Experimentos bench-smoke
+	(cd "Experimentos" && $(MAKE) bench-smoke)
 
 bench-tables:
-	$(MAKE) -C Experimentos tables
+	(cd "Experimentos" && $(MAKE) tables)
 
 bench-plots:
-	$(MAKE) -C Experimentos plots
+	(cd "Experimentos" && $(MAKE) plots)
 
 bench-artifacts:
-	$(MAKE) -C Experimentos sync-csv
+	(cd "Experimentos" && $(MAKE) sync-csv)
 	$(PYTHON) .scripts/generate_bench_artifacts.py
 
 test:
-	$(MAKE) -C Implementações test
-	$(MAKE) -C Aplicações test
+	(cd "Implementações" && $(MAKE) test)
+	(cd "Aplicações" && $(MAKE) test)
 
 ### ================================
 ### CLEANING
 ### ================================
 clean:
-	$(MAKE) -C LaTeX distclean
-	$(MAKE) -C Aplicações clean
-	$(MAKE) -C Implementações clean
-	$(MAKE) -C Experimentos clean
+	(cd "LaTeX" && $(MAKE) distclean)
+	(cd "Aplicações" && $(MAKE) clean)
+	(cd "Implementações" && $(MAKE) clean)
+	(cd "Experimentos" && $(MAKE) clean)
 
 clear: clean
 
 distclean: clean
-	$(MAKE) -C Experimentos distclean
+	(cd "Experimentos" && $(MAKE) distclean)
 
 clean-results:
-	$(MAKE) -C Experimentos clean-results
+	(cd "Experimentos" && $(MAKE) clean-results)
