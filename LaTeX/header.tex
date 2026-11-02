@@ -162,37 +162,37 @@
 % -------------------------------------------------------------------------
 % Partições S e T
 % -------------------------------------------------------------------------
-\definecolor{setSborder}{RGB}{22, 101, 52}     % [COR] Borda e contorno estrutural de S (Emerald 800)
-\definecolor{setStext}{RGB}{20, 83, 45}        % [COR] Tipografia de alto contraste para rótulos de S (Emerald 900)
-\definecolor{setSsource}{RGB}{187, 247, 208}   % [COR] Fundo luminoso para vértice fonte s e sementes (Emerald 200)
-\definecolor{setSnode}{RGB}{220, 252, 231}     % [COR] Fundo pastel para vértices internos de S (Emerald 100)
-\colorlet{setSbg}{green!10}                    % [COR] Fundo pastel suave para região de S / Foreground
+\definecolor{setSborder}{RGB}{22, 101, 52}
+\definecolor{setStext}{RGB}{20, 83, 45}
+\definecolor{setSsource}{RGB}{187, 247, 208}
+\definecolor{setSnode}{RGB}{220, 252, 231}
+\colorlet{setSbg}{green!10}
 
-\definecolor{setTborder}{RGB}{190, 18, 60}     % [COR] Borda e contorno estrutural de T (Rose 700)
-\definecolor{setTtext}{RGB}{159, 18, 57}        % [COR] Tipografia de alto contraste para rótulos de T (Rose 900)
-\definecolor{setTsink}{RGB}{254, 205, 211}     % [COR] Fundo luminoso para vértice sumidouro t e sementes (Rose 200)
-\definecolor{setTnode}{RGB}{255, 228, 230}     % [COR] Fundo pastel para vértices internos de T (Rose 100)
-\colorlet{setTbg}{red!10}                      % [COR] Fundo pastel suave para região de T / Background
+\definecolor{setTborder}{RGB}{190, 18, 60}
+\definecolor{setTtext}{RGB}{159, 18, 57}
+\definecolor{setTsink}{RGB}{254, 205, 211}
+\definecolor{setTnode}{RGB}{255, 228, 230}
+\colorlet{setTbg}{red!10}
 
 % -------------------------------------------------------------------------
 % Fronteira de Corte e Elementos Neutros
 % -------------------------------------------------------------------------
-\definecolor{cutviolet}{RGB}{109, 40, 217}     % [COR] Violeta imperial para fronteira e arestas do corte mínimo
-\definecolor{cutred}{RGB}{225, 29, 72}          % [COR] Vermelho rubro padrão para fronteira de corte mínimo
-\definecolor{darkslate}{RGB}{30, 41, 59}        % [COR] Slate escuro para tipografia e arestas neutras
+\definecolor{cutviolet}{RGB}{109, 40, 217}
+\definecolor{cutred}{RGB}{225, 29, 72}
+\definecolor{darkslate}{RGB}{30, 41, 59}
 
 % -------------------------------------------------------------------------
 % Cores da Capa e Cards
 % -------------------------------------------------------------------------
-\definecolor{topbg}{RGB}{15, 23, 42}           % [COR] Slate 900 profundo da divisória da capa
-\definecolor{bottombg}{RGB}{248, 250, 252}     % [COR] Fundo inferior: Papel Neve (Slate 50)
-\definecolor{accentgold}{RGB}{226, 192, 116}   % [COR] Dourado nobre metálico
-\definecolor{accentcyan}{RGB}{14, 165, 233}    % [COR] Azul ciano vibrante
-\definecolor{cardbg}{RGB}{224, 232, 242}       % [COR] Fundo do card do grafo
-\definecolor{cardborder}{RGB}{186, 202, 220}   % [COR] Borda do card do grafo
+\definecolor{topbg}{RGB}{15, 23, 42}
+\definecolor{bottombg}{RGB}{248, 250, 252}
+\definecolor{accentgold}{RGB}{226, 192, 116}
+\definecolor{accentcyan}{RGB}{14, 165, 233}
+\definecolor{cardbg}{RGB}{224, 232, 242}
+\definecolor{cardborder}{RGB}{186, 202, 220}
 
 % -------------------------------------------------------------------------
-% Aliases de Compatibilidade para a Paleta Semântica
+% Aliases de Compatibilidade
 % -------------------------------------------------------------------------
 \colorlet{scyan}{setSborder}
 \colorlet{scyanbg}{setSnode}
@@ -261,7 +261,7 @@
     concept box/.style={draw, rounded corners=4pt, minimum height=1.4cm, align=center, font=\small},
     legend node/.style={circle, draw, minimum size=4mm, inner sep=0pt},
     % ---------------------------------------------------------------------
-    % Rótulos Padronizados para Arestas
+    % Rótulos de Arestas
     % ---------------------------------------------------------------------
     edge lbl/.style={font=\footnotesize, fill=white, inner sep=1.2pt, pos=0.5},
     edge lbl sloped/.style={edge lbl, sloped},
@@ -307,12 +307,12 @@
 % =========================================================================
 % OPERADORES MATEMÁTICOS E MACROS AUXILIARES
 % =========================================================================
-\DeclareMathOperator{\ccap}{cap}                  % [OPERADOR] Capacidade de corte funcional: cap(S,T)
-\DeclareMathOperator{\cost}{custo}                % [OPERADOR] Custo total de um fluxo: custo(f)
-\DeclareMathOperator{\dist}{dist}                 % [OPERADOR] Distância em caminhos mínimos: dist(u,v)
+\DeclareMathOperator{\ccap}{cap}
+\DeclareMathOperator{\cost}{custo}
+\DeclareMathOperator{\dist}{dist}
 
-\newcommand{\cred}[2][]{\bar{w}_{#1}(#2)}         % [NOTACAO] Custo reduzido: \cred[\pi]{u,v}
-\newcommand{\cres}[2][f]{c_{#1}(#2)}              % [NOTACAO] Capacidade residual: \cres{u,v}
-\newcommand{\Dres}[1][f]{D_{#1}}                  % [NOTACAO] Digrafo residual: \Dres
-\newcommand{\code}[1]{\lstinline{#1}}             % [MACRO] Código inline ergonômico
-\newcommand{\bannertext}[1]{\textbf{\textsf{#1}}} % [MACRO] Cabeçalho destacado de tabela
+\newcommand{\cred}[2][]{\bar{w}_{#1}(#2)}
+\newcommand{\cres}[2][f]{c_{#1}(#2)}
+\newcommand{\Dres}[1][f]{D_{#1}}
+\newcommand{\code}[1]{\lstinline{#1}}
+\newcommand{\bannertext}[1]{\textbf{\textsf{#1}}}
