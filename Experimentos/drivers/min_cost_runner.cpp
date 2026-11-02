@@ -148,12 +148,23 @@ int main(int argc, char **argv)
 {
 	if (argc < 2)
 	{
-		std::cerr << "Uso: " << argv[0] << " <arquivo.min> [nome_instancia]\n";
+		std::cerr << "Uso: " << argv[0]
+		          << " <arquivo.min> [nome_instancia] [--algo nome]\n";
 		return 1;
 	}
 
 	const std::string filepath = argv[1];
-	const std::string instance_name = (argc >= 3) ? argv[2] : filepath;
+	std::string instance_name = filepath;
+	std::string only_algo;
+
+	for (int i = 2; i < argc; ++i)
+	{
+		const std::string arg = argv[i];
+		if (arg == "--algo" && i + 1 < argc)
+			only_algo = argv[++i];
+		else if (!arg.empty() && arg[0] != '-')
+			instance_name = arg;
+	}
 
 	const CostGraphData data = load_dimacs_min_cost(filepath);
 
@@ -177,6 +188,17 @@ int main(int argc, char **argv)
 	    "CycleCanceling",
 	    [&data]() { return run_cost_solver_instance<CycleCanceling>(data); },
 	});
+
+	if (!only_algo.empty())
+		std::erase_if(tasks, [&only_algo](const auto &task) {
+			return task.first != only_algo;
+		});
+
+	if (tasks.empty())
+	{
+		std::cerr << "Algoritmo desconhecido: " << only_algo << "\n";
+		return 1;
+	}
 
 	std::vector<CostAlgoResult> results(tasks.size());
 	{

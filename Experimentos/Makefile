@@ -7,6 +7,10 @@ STACK_FLAG != case "$$(uname -s 2> /dev/null)" in *Windows*|*MINGW*|*MSYS*|*CYGW
 CXXFLAGS    = $(STACK_FLAG) -std=c++23 -O2 -Wall -Wextra -Wpedantic
 
 PYTHON      = python3
+REPEATS    ?= 2
+TIMEOUT    ?= 16
+WORKERS    ?= 1
+RUN_OPTS    = --repeats "$(REPEATS)" --timeout "$(TIMEOUT)" --workers "$(WORKERS)"
 
 EXE_EXT    != case "$$(uname -s 2> /dev/null)" in *Windows*|*MINGW*|*MSYS*|*CYGWIN*) echo ".exe" ;; *) echo "" ;; esac
 
@@ -68,10 +72,10 @@ sync-csv:
 run: run-ic run-book
 
 run-ic: build instances
-	$(PYTHON) scripts/run_benchmarks.py --suite ic --mf-bin "$(MF_BIN)" --mc-bin "$(MC_BIN)" --bp-bin "$(BP_BIN)" --mf-dir "$(INST_MF)" --mc-dir "$(INST_MC)" --bp-dir "$(INST_BP)" --out-dir "$(RES_DIR)/ic"
+	$(PYTHON) scripts/run_benchmarks.py --suite ic --mf-bin "$(MF_BIN)" --mc-bin "$(MC_BIN)" --bp-bin "$(BP_BIN)" --mf-dir "$(INST_MF)" --mc-dir "$(INST_MC)" --bp-dir "$(INST_BP)" --out-dir "$(RES_DIR)/ic" $(RUN_OPTS)
 
 run-book: build instances
-	$(PYTHON) scripts/run_benchmarks.py --suite book --mf-bin "$(MF_BIN)" --mc-bin "$(MC_BIN)" --bp-bin "$(BP_BIN)" --mf-dir "$(INST_MF)" --mc-dir "$(INST_MC)" --bp-dir "$(INST_BP)" --out-dir "$(RES_DIR)/book"
+	$(PYTHON) scripts/run_benchmarks.py --suite book --mf-bin "$(MF_BIN)" --mc-bin "$(MC_BIN)" --bp-bin "$(BP_BIN)" --mf-dir "$(INST_MF)" --mc-dir "$(INST_MC)" --bp-dir "$(INST_BP)" --out-dir "$(RES_DIR)/book" $(RUN_OPTS)
 
 tables:
 	$(PYTHON) scripts/generate_tables.py --suite all

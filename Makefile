@@ -83,7 +83,7 @@ bench-all: dimacs exp bench-pipeline
 
 bench-pipeline: dimacs exp
 	printf "\n$${_e}[1;34m==> [1/5] Executando benchmarks nas instâncias de referência...$${_e}[0m\n"
-	(cd "Experimentos" && $(MAKE) run WORKERS=$(WORKERS) REPEATS=$(REPEATS) TIMEOUT=$(TIMEOUT))
+	(cd "Experimentos" && $(MAKE) WORKERS=$(WORKERS) REPEATS=$(REPEATS) TIMEOUT=$(TIMEOUT) run)
 	printf "\n$${_e}[1;34m==> [2/5] Gerando tabelas brutas de experimentos...$${_e}[0m\n"
 	(cd "Experimentos" && $(MAKE) tables)
 	printf "\n$${_e}[1;34m==> [3/5] Gerando gráficos de desempenho...$${_e}[0m\n"
@@ -195,13 +195,13 @@ dimacs:
 	(cd "Experimentos" && $(MAKE) dimacs)
 
 bench: exp
-	(cd "Experimentos" && $(MAKE) run WORKERS=$(WORKERS) REPEATS=$(REPEATS) TIMEOUT=$(TIMEOUT))
+	(cd "Experimentos" && $(MAKE) WORKERS=$(WORKERS) REPEATS=$(REPEATS) TIMEOUT=$(TIMEOUT) run)
 
 bench-ic: exp
-	(cd "Experimentos" && $(MAKE) ic)
+	(cd "Experimentos" && $(MAKE) WORKERS=$(WORKERS) REPEATS=$(REPEATS) TIMEOUT=$(TIMEOUT) ic)
 
 bench-book: exp
-	(cd "Experimentos" && $(MAKE) book)
+	(cd "Experimentos" && $(MAKE) WORKERS=$(WORKERS) REPEATS=$(REPEATS) TIMEOUT=$(TIMEOUT) book)
 
 bench-smoke: exp
 	(cd "Experimentos" && $(MAKE) bench-smoke)
