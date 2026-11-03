@@ -60,16 +60,16 @@
 
 \newcommand{\destaque}[1]{\textcolor{ufabcgreen}{\textbf{#1}}}
 
-\newcommand{\postersection}[1]{%
-    \par\vspace{0.55em}%
-    {\fontsize{34}{40}\selectfont\bfseries\color{textdark}#1}%
-    \par\vspace{0.2em}%
+\newcommand{\postersection}[1]{
+    \par\vspace{0.55em}
+    {\fontsize{34}{40}\selectfont\bfseries\color{textdark}#1}
+    \par\vspace{0.2em}
 }
 
-\newcommand{\postercaption}[2]{%
-    \par\vspace{0.22em}%
-    {\fontsize{25}{30}\selectfont\raggedright\textbf{#1:} #2\par}%
-    \vspace{0.3em}%
+\newcommand{\postercaption}[2]{
+    \par\vspace{0.22em}
+    {\fontsize{25}{30}\selectfont\raggedright\textbf{#1:} #2\par}
+    \vspace{0.3em}
 }
 
 \begin{document}
@@ -153,7 +153,7 @@
 % =========================================================================
 \vspace*{18.0cm}
 \noindent
-\hspace*{2.6cm}%
+\hspace*{2.6cm}
 % -------------------------------------------------------------------------
 % COLUNA DA ESQUERDA
 % -------------------------------------------------------------------------
@@ -169,15 +169,15 @@ Os problemas de \destaque{Fluxo Máximo (MF)} e \destaque{Fluxo de Custo Mínimo
 
 \vspace{0.2em}
 \noindent
-\setlength{\fboxrule}{0.12em}%
-\setlength{\fboxsep}{0.65em}%
-\fcolorbox{textdark}{white}{%
+\setlength{\fboxrule}{0.12em}
+\setlength{\fboxsep}{0.65em}
+\fcolorbox{textdark}{white}{
     \begin{minipage}{\dimexpr\linewidth-1.3em-0.24em\relax}
         \fontsize{28}{34}\selectfont\raggedright
         \destaque{Problema: Fluxo de Custo Mínimo (MCF)}\\[0.12em]
         \textbf{Entrada:} Digrafo $D=(V, A)$, capacidades $c: A \to \mathbb{R}_{\ge 0}$, custos $w: A \to \mathbb{R}$, fonte $s$ e sumidouro $t$.\\[0.08em]
         \textbf{Saída:} Fluxo viável $f$ de valor $|f|$ máximo que minimiza o custo total $\sum_{a \in A} w(a) f(a)$.
-    \end{minipage}%
+    \end{minipage}
 }
 \vspace{0.15em}
 
@@ -219,7 +219,7 @@ As classes base \texttt{FlowNetwork} e \texttt{CostNetwork} armazenam arcos cont
 % -------------------------------------------------------------------------
 \postersection{SEGMENTAÇÃO DE IMAGENS VIA CORTE MÍNIMO}
 % -------------------------------------------------------------------------
-Seguindo Boykov e Jolly [2], uma imagem de $W \times H$ pixels é modelada como um digrafo com superfonte $s$ (\textit{objeto}) e supersumidouro $t$ (\textit{fundo}). Sementes do usuário definem \textit{T-links} rígidos ($w_s = \infty$ ou $w_t = \infty$) e pixels adjacentes são conectados por \textit{N-links} com peso $w_n(p, q) = \lfloor K \exp(-\|I_p - I_q\|^2 / 2\sigma^2) \rfloor$, onde o corte mínimo global minimiza a energia de fronteira em menos de $96\text{ ms}$ para grades de $40.002$ vértices:
+Seguindo Boykov e Jolly [2], uma imagem de $W \times H$ pixels é modelada como um digrafo com superfonte $s$ (\textit{objeto}) e supersumidouro $t$ (\textit{fundo}). Sementes do usuário definem \textit{T-links} rígidos ($w_s = \infty$ ou $w_t = \infty$) e pixels adjacentes são conectados por \textit{N-links} com peso $w_n(p, q) = \lfloor K \exp(-\|I_p - I_q\|^2 / 2\sigma^2) \rfloor$, onde o corte mínimo global minimiza a energia de fronteira em menos de $96\text{ ms}$ para redes com até $\approx 40.000$ vértices ($|V| = W \cdot H + 2$):
 
 \vspace{0.2em}
 \begin{center}
@@ -228,7 +228,7 @@ Seguindo Boykov e Jolly [2], uma imagem de $W \times H$ pixels é modelada como 
 \setlength{\tabcolsep}{4pt}
 \begin{tabular*}{\linewidth}{@{\extracolsep{\fill}}lcccc@{}}
 \toprule
-\textbf{Etapa} & \texttt{duck} ($150^2$) & \texttt{ducks} ($200^2$) & \texttt{balloons} ($200^2$) & \texttt{circle} ($50^2$) \\
+\textbf{Etapa} & \texttt{duck} ($150 \times 150$) & \texttt{ducks} ($W \times H$) & \texttt{balloons} ($W \times H$) & \texttt{circle} ($50 \times 50$) \\
 \midrule
 \textbf{Original} &
 \includegraphics[valign=c, height=3.4cm, keepaspectratio]{duck_orig.png} &
