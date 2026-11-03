@@ -22,6 +22,7 @@
 \usepackage{booktabs}
 \usepackage{array}
 \usepackage{graphicx}
+\usepackage[export]{adjustbox}
 \usepackage{xcolor}
 \usepackage{tikz}
 \usepackage{enumitem}
@@ -76,19 +77,19 @@
 \fontsize{29}{35}\selectfont
 
 % =========================================================================
-% CABEÇALHO, FAIXA DE AUTORES E RODAPÉ (TIKZ OVERLAY ABSOLUTO)
+% CABEÇALHO, FAIXA DE AUTORES E RODAPÉ
 % =========================================================================
 \begin{tikzpicture}[remember picture, overlay, shift={(current page.north west)}, inner sep=0pt, outer sep=0pt]
 
     % ---------------------------------------------------------------------
-    % Cabeçalho Superior (x = 4.25cm até 56.45cm | y = 0cm até -12cm)
+    % Cabeçalho Superior
     % ---------------------------------------------------------------------
-    \fill[ufabcgreen] (4.25cm, 0cm) -- (56.45cm, 0cm) -- (56.45cm, -8cm) 
-        arc[start angle=0, end angle=-90, radius=4cm] -- (8.25cm, -12cm) 
+    \fill[ufabcgreen] (4.25cm, 0cm) -- (56.45cm, 0cm) -- (56.45cm, -8cm)
+        arc[start angle=0, end angle=-90, radius=4cm] -- (8.25cm, -12cm)
         arc[start angle=-90, end angle=-180, radius=4cm] -- cycle;
 
-    \node[anchor=center, text=white, text width=49.5cm, align=center] at (30.35cm, -6.0cm) {
-        {\fontsize{47}{55}\selectfont\bfseries
+    \node[anchor=center, text=white, text width=62cm, align=center] at (30.35cm, -6.0cm) {
+        {\fontsize{60}{70}\selectfont\bfseries
         PROBLEMAS DE FLUXOS EM REDES:\\[0.18em]
         TEORIA, ALGORITMOS E IMPLEMENTAÇÕES}
     };
@@ -101,7 +102,7 @@
     };
 
     % ---------------------------------------------------------------------
-    % Faixa de Autores e Afiliação (y = -12.4cm até -17.65cm)
+    % Faixa de Autores e Afiliação
     % ---------------------------------------------------------------------
     \node[anchor=north, text width=84.8cm, align=center] at (45.0cm, -12.5cm) {
         {\fontsize{31}{37}\selectfont\bfseries Gabriel Frigo, Cristiane Maria Sato}\\[0.2em]
@@ -112,43 +113,43 @@
     };
 
     % ---------------------------------------------------------------------
-    % Rodapé Inferior (y = -110.8cm até -120.0cm | 20% Apoio / 80% Verde)
+    % Rodapé Inferior
     % ---------------------------------------------------------------------
     \node[anchor=north west] at (1.3cm, -111.3cm) {
         {\fontsize{30}{36}\selectfont\bfseries Apoio:}
     };
 
-    \node[anchor=center] at (2.8cm, -114.7cm) {
-        \includegraphics[height=3.4cm, keepaspectratio]{ufabc.png}
+    \node[anchor=center] at (2.7cm, -114.7cm) {
+        \includegraphics[height=3.2cm, keepaspectratio]{ufabc.png}
     };
-    \node[anchor=center] at (6.7cm, -114.7cm) {
-        \includegraphics[width=4.2cm, keepaspectratio]{uscs.png}
+    \node[anchor=center] at (6.5cm, -114.7cm) {
+        \includegraphics[width=3.9cm, keepaspectratio]{uscs.png}
     };
-    \node[anchor=center] at (4.75cm, -118.1cm) {
-        \includegraphics[height=2.1cm, keepaspectratio]{cnpq.png}
+    \node[anchor=center] at (4.6cm, -118.0cm) {
+        \includegraphics[width=6.6cm, keepaspectratio]{cnpq.png}
     };
-    \node[anchor=center] at (13.5cm, -115.8cm) {
-        \includegraphics[width=8.4cm, keepaspectratio]{toca.png}
+    \node[anchor=center] at (13.7cm, -115.8cm) {
+        \includegraphics[width=7.6cm, keepaspectratio]{toca.png}
     };
 
     \begin{scope}
         \clip (18.4cm, -120.0cm) rectangle (90.0cm, -110.8cm);
         \fill[ufabcgreen] (18.4cm, -120.0cm) rectangle (90.0cm, -110.8cm);
-        \node[anchor=center, opacity=0.35] at (54.2cm, -115.4cm) {
-            \includegraphics[width=72.0cm]{background.png}
+        \node[anchor=center, opacity=0.35] at (36.2cm, -115.4cm) {
+            \includegraphics[width=36.0cm]{background.png}
         };
     \end{scope}
 
     \node[anchor=east, align=right, inner sep=0pt] at (88.4cm, -115.4cm) {
-        {\fontsize{70}{80}\selectfont\bfseries\color{white}\mbox{XVI Encontro de Iniciação Científica}}\\[0.22em]
-        {\fontsize{32}{38}\selectfont\bfseries\color{white}\mbox{XIX Simpósio de Iniciação Científica da UFABC}}\\[0.15em]
-        {\fontsize{32}{38}\selectfont\bfseries\color{white}\mbox{21\textordmasculine{} Congresso de Iniciação Científica da USCS}}
+        {\fontsize{88}{100}\selectfont\bfseries\color{white}\mbox{XVI Encontro de Iniciação Científica}}\\[0.22em]
+        {\fontsize{40}{48}\selectfont\bfseries\color{white}\mbox{XIX Simpósio de Iniciação Científica da UFABC}}\\[0.15em]
+        {\fontsize{40}{48}\selectfont\bfseries\color{white}\mbox{21\textordmasculine{} Congresso de Iniciação Científica da USCS}}
     };
 
 \end{tikzpicture}
 
 % =========================================================================
-% CORPO PRINCIPAL (DUAS COLUNAS DE 41.275cm | ESPAÇAMENTO DE 2.25cm)
+% CORPO PRINCIPAL
 % =========================================================================
 \vspace*{18.0cm}
 \noindent
@@ -222,7 +223,7 @@ Seguindo Boykov e Jolly [2], uma imagem de $W \times H$ pixels é modelada como 
 
 \vspace{0.2em}
 \begin{center}
-{\fontsize{23.5}{28}\selectfont
+{\fontsize{24}{29}\selectfont
 \renewcommand{\arraystretch}{1.12}
 \setlength{\tabcolsep}{4pt}
 \begin{tabular*}{\linewidth}{@{\extracolsep{\fill}}lcccc@{}}
@@ -230,20 +231,20 @@ Seguindo Boykov e Jolly [2], uma imagem de $W \times H$ pixels é modelada como 
 \textbf{Etapa} & \texttt{duck} ($150^2$) & \texttt{ducks} ($200^2$) & \texttt{balloons} ($200^2$) & \texttt{circle} ($50^2$) \\
 \midrule
 \textbf{Original} &
-\raisebox{-0.42\height}{\includegraphics[width=6.8cm, height=4.4cm, keepaspectratio]{duck_orig.png}} &
-\raisebox{-0.42\height}{\includegraphics[width=6.8cm, height=4.4cm, keepaspectratio]{ducks_orig.png}} &
-\raisebox{-0.42\height}{\includegraphics[width=6.8cm, height=4.4cm, keepaspectratio]{balloons_orig.png}} &
-\raisebox{-0.42\height}{\includegraphics[width=6.8cm, height=4.4cm, keepaspectratio]{circle_orig.png}} \\[2.4cm]
+\includegraphics[valign=c, height=3.4cm, keepaspectratio]{duck_orig.png} &
+\includegraphics[valign=c, height=3.4cm, keepaspectratio]{ducks_orig.png} &
+\includegraphics[valign=c, height=3.4cm, keepaspectratio]{balloons_orig.png} &
+\includegraphics[valign=c, height=3.4cm, keepaspectratio]{circle_orig.png} \\[0.4cm]
 \textbf{Sementes} &
-\raisebox{-0.42\height}{\includegraphics[width=6.8cm, height=4.4cm, keepaspectratio]{duck_seeds.png}} &
-\raisebox{-0.42\height}{\includegraphics[width=6.8cm, height=4.4cm, keepaspectratio]{ducks_seeds.png}} &
-\raisebox{-0.42\height}{\includegraphics[width=6.8cm, height=4.4cm, keepaspectratio]{balloons_seeds.png}} &
-\raisebox{-0.42\height}{\includegraphics[width=6.8cm, height=4.4cm, keepaspectratio]{circle_seeds.png}} \\[2.4cm]
+\includegraphics[valign=c, height=3.4cm, keepaspectratio]{duck_seeds.png} &
+\includegraphics[valign=c, height=3.4cm, keepaspectratio]{ducks_seeds.png} &
+\includegraphics[valign=c, height=3.4cm, keepaspectratio]{balloons_seeds.png} &
+\includegraphics[valign=c, height=3.4cm, keepaspectratio]{circle_seeds.png} \\[0.4cm]
 \textbf{Corte $(S,T)$} &
-\raisebox{-0.42\height}{\includegraphics[width=6.8cm, height=4.4cm, keepaspectratio]{duck_seg.png}} &
-\raisebox{-0.42\height}{\includegraphics[width=6.8cm, height=4.4cm, keepaspectratio]{ducks_seg.png}} &
-\raisebox{-0.42\height}{\includegraphics[width=6.8cm, height=4.4cm, keepaspectratio]{balloons_seg.png}} &
-\raisebox{-0.42\height}{\includegraphics[width=6.8cm, height=4.4cm, keepaspectratio]{circle_seg.png}} \\
+\includegraphics[valign=c, height=3.4cm, keepaspectratio]{duck_seg.png} &
+\includegraphics[valign=c, height=3.4cm, keepaspectratio]{ducks_seg.png} &
+\includegraphics[valign=c, height=3.4cm, keepaspectratio]{balloons_seg.png} &
+\includegraphics[valign=c, height=3.4cm, keepaspectratio]{circle_seg.png} \\
 \bottomrule
 \end{tabular*}
 }
@@ -324,13 +325,13 @@ Este trabalho foi financiado pelo CNPq, processo PIBIC 143763/2024-5. Agradecime
 \postersection{BIBLIOGRAFIA}
 % -------------------------------------------------------------------------
 {\fontsize{25}{30}\selectfont
-\begin{itemize}[leftmargin=1.8em, itemsep=0.18em, topsep=0.1em]
-    \item[{[1]}] AHUJA, R.\ K.; MAGNANTI, T.\ L.; ORLIN, J.\ B. \textbf{Network Flows: Theory, Algorithms, and Applications}. Prentice Hall, 1993.
-    \item[{[2]}] BOYKOV, Y.\ Y.; JOLLY, M.-P. Interactive graph cuts for optimal boundary \& region segmentation of objects in N-D images. \textbf{Proc.\ IEEE ICCV}, v. 1, p. 105--112, 2001.
-    \item[{[3]}] DINITZ, E.\ A. Algorithm for solution of a problem of maximum flow in networks with power estimation. \textbf{Soviet Math.\ Doklady}, v. 11, p. 1277--1280, 1970.
-    \item[{[4]}] FORD, L.\ R.; FULKERSON, D.\ R. Maximal flow through a network. \textbf{Canadian Journal of Mathematics}, v. 8, p. 399--404, 1956.
-    \item[{[5]}] GOLDBERG, A.\ V.; TARJAN, R.\ E. A new approach to the maximum-flow problem. \textbf{Journal of the ACM}, v. 35, n. 4, p. 921--940, 1988.
-\end{itemize}
+\begin{enumerate}[label={[\arabic*]}, leftmargin=1.8em, itemsep=0.18em, topsep=0.1em]
+    \item AHUJA, R.\ K.; MAGNANTI, T.\ L.; ORLIN, J.\ B. \textbf{Network Flows: Theory, Algorithms, and Applications}. Prentice Hall, 1993.
+    \item BOYKOV, Y.\ Y.; JOLLY, M.-P. Interactive graph cuts for optimal boundary \& region segmentation of objects in N-D images. \textbf{Proc.\ IEEE ICCV}, v. 1, p. 105--112, 2001.
+    \item DINITZ, E.\ A. Algorithm for solution of a problem of maximum flow in networks with power estimation. \textbf{Soviet Math.\ Doklady}, v. 11, p. 1277--1280, 1970.
+    \item FORD, L.\ R.; FULKERSON, D.\ R. Maximal flow through a network. \textbf{Canadian Journal of Mathematics}, v. 8, p. 399--404, 1956.
+    \item GOLDBERG, A.\ V.; TARJAN, R.\ E. A new approach to the maximum-flow problem. \textbf{Journal of the ACM}, v. 35, n. 4, p. 921--940, 1988.
+\end{enumerate}
 }
 
 \end{minipage}
