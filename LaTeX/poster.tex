@@ -219,32 +219,32 @@ As classes base \texttt{FlowNetwork} e \texttt{CostNetwork} armazenam arcos cont
 % -------------------------------------------------------------------------
 \postersection{SEGMENTAÇÃO DE IMAGENS VIA CORTE MÍNIMO}
 % -------------------------------------------------------------------------
-Seguindo Boykov e Jolly [2], uma imagem de $W \times H$ pixels é modelada como um digrafo com superfonte $s$ (\textit{objeto}) e supersumidouro $t$ (\textit{fundo}). Sementes do usuário definem \textit{T-links} rígidos ($w_s = \infty$ ou $w_t = \infty$) e pixels adjacentes são conectados por \textit{N-links} com peso $w_n(p, q) = \lfloor K \exp(-\|I_p - I_q\|^2 / 2\sigma^2) \rfloor$, onde o corte mínimo global minimiza a energia de fronteira em menos de $96\text{ ms}$ para redes com até $\approx 40.000$ vértices ($|V| = W \cdot H + 2$):
+Seguindo Boykov e Jolly [2], uma imagem de $W \times H$ pixels é modelada como um digrafo com superfonte $s$ (\textit{objeto}) e supersumidouro $t$ (\textit{fundo}). Sementes do usuário definem \textit{T-links} rígidos ($w_s = \infty$ ou $w_t = \infty$) e pixels adjacentes são conectados por \textit{N-links} com peso $w_n(p, q) = \lfloor K \exp(-\|I_p - I_q\|^2 / 2\sigma^2) \rfloor$, onde o corte mínimo global minimiza a energia de fronteira em menos de $96\text{ ms}$ para as redes em grade testadas ($|V| = W \cdot H + 2$):
 
-\vspace{0.2em}
+\vspace{0.4em}
 \begin{center}
 {\fontsize{24}{29}\selectfont
-\renewcommand{\arraystretch}{1.12}
-\setlength{\tabcolsep}{4pt}
-\begin{tabular*}{\linewidth}{@{\extracolsep{\fill}}lcccc@{}}
+\renewcommand{\arraystretch}{1.0}
+\setlength{\tabcolsep}{14pt}
+\begin{tabular*}{\linewidth}{@{\extracolsep{\fill}} l c c c c @{}}
 \toprule
-\textbf{Etapa} & \texttt{duck} ($150 \times 150$) & \texttt{ducks} ($W \times H$) & \texttt{balloons} ($W \times H$) & \texttt{circle} ($50 \times 50$) \\
+\textbf{Etapa} & \texttt{duck} ($32 \times 32$) & \texttt{ducks} ($64 \times 32$) & \texttt{balloons} ($48 \times 48$) & \texttt{circle} ($20 \times 20$) \\
 \midrule
-\textbf{Original} &
-\includegraphics[valign=c, height=3.4cm, keepaspectratio]{duck_orig.png} &
-\includegraphics[valign=c, height=3.4cm, keepaspectratio]{ducks_orig.png} &
-\includegraphics[valign=c, height=3.4cm, keepaspectratio]{balloons_orig.png} &
-\includegraphics[valign=c, height=3.4cm, keepaspectratio]{circle_orig.png} \\[0.4cm]
-\textbf{Sementes} &
-\includegraphics[valign=c, height=3.4cm, keepaspectratio]{duck_seeds.png} &
-\includegraphics[valign=c, height=3.4cm, keepaspectratio]{ducks_seeds.png} &
-\includegraphics[valign=c, height=3.4cm, keepaspectratio]{balloons_seeds.png} &
-\includegraphics[valign=c, height=3.4cm, keepaspectratio]{circle_seeds.png} \\[0.4cm]
-\textbf{Corte $(S,T)$} &
-\includegraphics[valign=c, height=3.4cm, keepaspectratio]{duck_seg.png} &
-\includegraphics[valign=c, height=3.4cm, keepaspectratio]{ducks_seg.png} &
-\includegraphics[valign=c, height=3.4cm, keepaspectratio]{balloons_seg.png} &
-\includegraphics[valign=c, height=3.4cm, keepaspectratio]{circle_seg.png} \\
+\raisebox{2.5cm}{\textbf{Original}} &
+\includegraphics[height=5.6cm, keepaspectratio]{duck_orig.png} &
+\includegraphics[height=5.6cm, keepaspectratio]{ducks_orig.png} &
+\includegraphics[height=5.6cm, keepaspectratio]{balloons_orig.png} &
+\includegraphics[height=5.6cm, keepaspectratio]{circle_orig.png} \\[0.2cm]
+\raisebox{2.5cm}{\textbf{Sementes}} &
+\includegraphics[height=5.6cm, keepaspectratio]{duck_seeds.png} &
+\includegraphics[height=5.6cm, keepaspectratio]{ducks_seeds.png} &
+\includegraphics[height=5.6cm, keepaspectratio]{balloons_seeds.png} &
+\includegraphics[height=5.6cm, keepaspectratio]{circle_seeds.png} \\[0.2cm]
+\raisebox{2.5cm}{\textbf{Corte $(S,T)$}} &
+\includegraphics[height=5.6cm, keepaspectratio]{duck_seg.png} &
+\includegraphics[height=5.6cm, keepaspectratio]{ducks_seg.png} &
+\includegraphics[height=5.6cm, keepaspectratio]{balloons_seg.png} &
+\includegraphics[height=5.6cm, keepaspectratio]{circle_seg.png} \\[0.2cm]
 \bottomrule
 \end{tabular*}
 }
