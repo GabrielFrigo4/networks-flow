@@ -11,7 +11,7 @@
 
 ## 📚 Documentação e Relatórios da Pesquisa
 
-[![Baixar Livro (Monografia)][baixar_pdf_book_icon]][baixar_pdf_book] [![Baixar Pôster IC][baixar_pdf_poster_icon]][baixar_pdf_poster]
+[![Baixar Livro (Monografia)][baixar_pdf_livro_icon]][baixar_pdf_livro] [![Baixar Pôster IC][baixar_pdf_poster_icon]][baixar_pdf_poster]
 
 [![Baixar PDF do Relatório][baixar_pdf_relatorio_icon]][baixar_pdf_relatorio] [![Baixar PDF do Monólito][baixar_pdf_monolito_icon]][baixar_pdf_monolito]
 
@@ -21,7 +21,7 @@ A documentação oficial da pesquisa é gerada a partir dos códigos-fonte em La
 
 | PDF Gerado                                        | Escopo             | Arquivo Fonte                                  | Descrição e Diferenças                                                                                                                                                                                                                     |
 | :------------------------------------------------ | :----------------- | :--------------------------------------------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| [📗&nbsp;**`book.pdf`**][baixar_pdf_book]         | **Livro / Pós-IC** | [🖋️&nbsp;`book.tex`](./LaTeX/book.tex)         | **Livro e Monografia Independente.** Obra completa estruturada em Partes e Capítulos, incluindo os 13 motores algorítmicos (com MPM, Kuhn, Hopcroft-Karp e Kuhn-Munkres) e a suíte de benchmarks Pós-IC (`book/tables/`, `book/figures/`). |
+| [📗&nbsp;**`book.pdf`**][baixar_pdf_livro]        | **Livro / Pós-IC** | [🖋️&nbsp;`book.tex`](./LaTeX/book.tex)         | **Livro e Monografia Independente.** Obra completa estruturada em Partes e Capítulos, incluindo os 13 motores algorítmicos (com MPM, Kuhn, Hopcroft-Karp e Kuhn-Munkres) e a suíte de benchmarks Pós-IC (`book/tables/`, `book/figures/`). |
 | [🖼️&nbsp;**`poster.pdf`**][baixar_pdf_poster]     | **IC (UFABC)**     | [🖋️&nbsp;`poster.tex`](./LaTeX/poster.tex)     | **Pôster Científico do Simpósio de IC da UFABC (90×120 cm).** Apresenta a síntese teórica, arquitetura C++23, galeria visual da **Segmentação Interativa de Imagens via Corte Mínimo** e os resultados experimentais DIMACS da IC.         |
 | [📘&nbsp;**`proposal.pdf`**][baixar_pdf_projeto]  | **IC (UFABC)**     | [🖋️&nbsp;`proposal.tex`](./LaTeX/proposal.tex) | Proposta e plano de trabalho inicial do projeto de pesquisa, submetido para a avaliação do edital.                                                                                                                                         |
 | [📙&nbsp;**`report.pdf`**][baixar_pdf_relatorio]  | **IC (UFABC)**     | [🖋️&nbsp;`report.tex`](./LaTeX/report.tex)     | Relatório formal de acompanhamento da pesquisa com capa institucional e folha de assinaturas da UFABC, contendo o corpo textual e os 9 motores da IC (`tables/`, `figures/`).                                                              |
@@ -275,8 +275,8 @@ make clean
 [kuhn_munkres]: ./Implementações/CostNetwork/KuhnMunkres.hpp
 [baixar_pdf_projeto]: https://github.com/GabrielFrigo4/IC_Networks_Flow/releases/latest/download/proposal.pdf
 [baixar_pdf_projeto_icon]: https://img.shields.io/badge/Projeto-Baixar-0969da?style=for-the-badge&logo=latex&logoColor=white
-[baixar_pdf_book]: https://github.com/GabrielFrigo4/IC_Networks_Flow/releases/latest/download/book.pdf
-[baixar_pdf_book_icon]: https://img.shields.io/badge/Livro-Baixar-2ea44f?style=for-the-badge&logo=gitbook&logoColor=white
+[baixar_pdf_livro]: https://github.com/GabrielFrigo4/IC_Networks_Flow/releases/latest/download/book.pdf
+[baixar_pdf_livro_icon]: https://img.shields.io/badge/Livro-Baixar-2ea44f?style=for-the-badge&logo=gitbook&logoColor=white
 [baixar_pdf_poster]: https://github.com/GabrielFrigo4/IC_Networks_Flow/releases/latest/download/poster.pdf
 [baixar_pdf_poster_icon]: https://img.shields.io/badge/Pôster_IC-Baixar-006633?style=for-the-badge&logo=latex&logoColor=white
 [baixar_pdf_ic]: https://github.com/GabrielFrigo4/IC_Networks_Flow/releases/latest/download/ic.pdf
