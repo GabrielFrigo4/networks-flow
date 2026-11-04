@@ -285,8 +285,7 @@ int main(int argc, char **argv)
 		tasks.push_back({
 		    "NetworkSimplex",
 		    [&data]() {
-			    return run_assignment_solver_instance<CostBench::NetworkSimplex>(
-			        data
+			    return run_assignment_solver_instance<CostBench::NetworkSimplex>(data
 			    );
 		    },
 		});
@@ -308,8 +307,7 @@ int main(int argc, char **argv)
 		tasks.push_back({
 		    "CycleCanceling",
 		    [&data]() {
-			    return run_assignment_solver_instance<CostBench::CycleCanceling>(
-			        data
+			    return run_assignment_solver_instance<CostBench::CycleCanceling>(data
 			    );
 		    },
 		});

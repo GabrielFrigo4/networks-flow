@@ -195,9 +195,8 @@ int main(int argc, char **argv)
 		    [&data]() { return run_solver_instance<FordFulkerson>(data); },
 		});
 	if (should_run("MPM"))
-		tasks.push_back({"MPM", [&data]() {
-			                 return run_solver_instance<MPM>(data);
-		                 }});
+		tasks.push_back({"MPM", [&data]() { return run_solver_instance<MPM>(data); }}
+		);
 
 	std::vector<AlgoResult> results(tasks.size());
 	{
