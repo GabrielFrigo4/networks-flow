@@ -31,9 +31,9 @@ jobs:
                   root_file: |
                       book.tex
                       ic.tex
-                      relatorio.tex
-                      monolito.tex
-                      projeto.tex
+                      report.tex
+                      monolith.tex
+                      proposal.tex
                       poster.tex
                   working_directory: LaTeX
                   latexmk_shell_escape: true

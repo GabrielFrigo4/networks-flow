@@ -111,23 +111,23 @@ Os scripts no diretório \code{Experimentos/} automatizam a execução deste pro
 
 A Tabela~\ref{tab:results_maxflow} apresenta os tempos médios de execução ($\bar{t}$ em ms) e o fluxo ótimo $f^*$ obtidos pelos seis algoritmos de fluxo máximo (\lstinline{FordFulkerson}, \lstinline{EdmondsKarp}, \lstinline{Dinic}, \lstinline{MPM}, \lstinline{PushRelabel} e \lstinline{PushRelabelImproved}) nas 40 instâncias de referência DIMACS (Washington e Genrmf). O menor tempo por instância está destacado em \textbf{negrito}.
 
-\IfFileExists{tabelas/book/table_max_flow.tex}{
-\input{tabelas/book/table_max_flow}
+\IfFileExists{book/tables/table_max_flow.tex}{
+\input{book/tables/table_max_flow}
 }{}
 
-\IfFileExists{figuras/book/scalability_maxflow.pdf}{
+\IfFileExists{book/figures/scalability_maxflow.pdf}{
 \begin{figure}[!ht]
     \centering
-    \includegraphics[width=0.92\textwidth]{figuras/book/scalability_maxflow}
+    \includegraphics[width=0.92\textwidth]{book/figures/scalability_maxflow}
     \caption{Escalabilidade dos algoritmos de fluxo máximo em função de $|V|$ (escala log-log).}
     \label{fig:scalability_maxflow}
 \end{figure}
 }{}
 
-\IfFileExists{figuras/book/bars_maxflow.pdf}{
+\IfFileExists{book/figures/bars_maxflow.pdf}{
 \begin{figure}[!ht]
     \centering
-    \includegraphics[width=0.98\textwidth]{figuras/book/bars_maxflow}
+    \includegraphics[width=0.98\textwidth]{book/figures/bars_maxflow}
     \caption{Comparação direta dos tempos médios de execução por instância (algoritmos de fluxo máximo).}
     \label{fig:bars_maxflow}
 \end{figure}
@@ -138,23 +138,23 @@ A Tabela~\ref{tab:results_maxflow} apresenta os tempos médios de execução ($\
 
 A Tabela~\ref{tab:results_mincost} apresenta os resultados para os algoritmos de fluxo de custo mínimo nas 40 instâncias de referência Netgen da suíte DIMACS, reportando o custo ótimo $z^*$ e o menor tempo por instância em \textbf{negrito}.
 
-\IfFileExists{tabelas/book/table_min_cost.tex}{
-\input{tabelas/book/table_min_cost}
+\IfFileExists{book/tables/table_min_cost.tex}{
+\input{book/tables/table_min_cost}
 }{}
 
-\IfFileExists{figuras/book/scalability_mincost.pdf}{
+\IfFileExists{book/figures/scalability_mincost.pdf}{
 \begin{figure}[!ht]
     \centering
-    \includegraphics[width=0.92\textwidth]{figuras/book/scalability_mincost}
+    \includegraphics[width=0.92\textwidth]{book/figures/scalability_mincost}
     \caption{Escalabilidade dos algoritmos de fluxo de custo mínimo em função de $|V|$ (escala log-log).}
     \label{fig:scalability_mincost}
 \end{figure}
 }{}
 
-\IfFileExists{figuras/book/bars_mincost.pdf}{
+\IfFileExists{book/figures/bars_mincost.pdf}{
 \begin{figure}[!ht]
     \centering
-    \includegraphics[width=0.98\textwidth]{figuras/book/bars_mincost}
+    \includegraphics[width=0.98\textwidth]{book/figures/bars_mincost}
     \caption{Comparação direta dos tempos médios de execução por instância (algoritmos de fluxo de custo mínimo).}
     \label{fig:bars_mincost}
 \end{figure}
@@ -165,27 +165,27 @@ A Tabela~\ref{tab:results_mincost} apresenta os resultados para os algoritmos de
 
 Para quantificar o ganho prático das estruturas dedicadas em relação às reduções gerais de fluxo, avaliaram-se os motores \lstinline{Kuhn} e \lstinline{HopcroftKarp} frente aos seis motores de fluxo máximo nas 10 instâncias de emparelhamento bipartido (Tabela~\ref{tab:benchmarks_bipartite_matching} e Figura~\ref{fig:bars_bipartite_matching}), bem como o algoritmo Húngaro (\lstinline{KuhnMunkres}) frente aos quatro motores de custo mínimo nas 8 instâncias de atribuição ponderada (Tabela~\ref{tab:benchmarks_bipartite_assignment} e Figura~\ref{fig:bars_bipartite_assignment}).
 
-\IfFileExists{tabelas/book/table_bipartite_matching.tex}{
-\input{tabelas/book/table_bipartite_matching}
+\IfFileExists{book/tables/table_bipartite_matching.tex}{
+\input{book/tables/table_bipartite_matching}
 }{}
 
-\IfFileExists{figuras/book/bars_bipartite_matching.pdf}{
+\IfFileExists{book/figures/bars_bipartite_matching.pdf}{
 \begin{figure}[!ht]
     \centering
-    \includegraphics[width=0.95\textwidth]{figuras/book/bars_bipartite_matching}
+    \includegraphics[width=0.95\textwidth]{book/figures/bars_bipartite_matching}
     \caption{Tempos médios de execução nas instâncias de emparelhamento bipartido máximo: algoritmos dedicados (\texttt{HopcroftKarp} e \texttt{Kuhn}) versus motores gerais de fluxo máximo.}
     \label{fig:bars_bipartite_matching}
 \end{figure}
 }{}
 
-\IfFileExists{tabelas/book/table_bipartite_assignment.tex}{
-\input{tabelas/book/table_bipartite_assignment}
+\IfFileExists{book/tables/table_bipartite_assignment.tex}{
+\input{book/tables/table_bipartite_assignment}
 }{}
 
-\IfFileExists{figuras/book/bars_bipartite_assignment.pdf}{
+\IfFileExists{book/figures/bars_bipartite_assignment.pdf}{
 \begin{figure}[!ht]
     \centering
-    \includegraphics[width=0.95\textwidth]{figuras/book/bars_bipartite_assignment}
+    \includegraphics[width=0.95\textwidth]{book/figures/bars_bipartite_assignment}
     \caption{Tempos médios de execução nas instâncias de atribuição bipartida ponderada: algoritmo Húngaro (\texttt{KuhnMunkres}) versus motores gerais de fluxo de custo mínimo.}
     \label{fig:bars_bipartite_assignment}
 \end{figure}

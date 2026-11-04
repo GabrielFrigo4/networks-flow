@@ -15,7 +15,7 @@ WORKERS ?= 1
 
 .PHONY: help all \
         bench-all bench-pipeline bench-latex bench-publish bench-research sync-all check-all \
-        latex reports book relatorio ic monolito projeto poster \
+        latex reports book report ic monolith proposal poster \
         apps impl exp generate dimacs \
         bench bench-ic bench-book bench-smoke bench-tables bench-plots bench-artifacts \
         format clang-format prettier format-cpp format-md test setup clean clear distclean clean-results sync-code
@@ -38,19 +38,19 @@ help:
 	cmd "sync-all"         "Sincroniza algoritmos C++, gera artefatos e reconstrói o monólito"; \
 	cmd "check-all"        "Valida headers C++23, compilação de drivers, testes e integridade de sync"; \
 	sec "Compilação de Relatórios & Livro:"; \
-	cmd "reports"          "Compila os relatórios institucionais (ic.pdf, relatorio.pdf, monolito.pdf)"; \
-	cmd "latex"            "Compila todos os documentos da suíte LaTeX (book, ic, relatorio, monolito)"; \
+	cmd "reports"          "Compila os relatórios institucionais (ic.pdf, report.pdf, monolith.pdf, poster.pdf)"; \
+	cmd "latex"            "Compila todos os documentos da suíte LaTeX (6 PDFs)"; \
 	cmd "book"             "Compila exclusivamente a monografia do livro (book.pdf)"; \
-	cmd "relatorio"        "Compila o relatório formal institucional UFABC (relatorio.pdf)"; \
+	cmd "report"           "Compila o relatório formal institucional UFABC (report.pdf)"; \
 	cmd "ic"               "Compila o texto da IC com leitura limpa (ic.pdf)"; \
-	cmd "monolito"         "Gera e compila o monólito autocontido para Overleaf (monolito.pdf)"; \
-	cmd "projeto"          "Compila a proposta do projeto de pesquisa (projeto.pdf)"; \
+	cmd "monolith"         "Gera e compila o monólito autocontido para Overleaf (monolith.pdf)"; \
+	cmd "proposal"         "Compila a proposta do projeto de pesquisa (proposal.pdf)"; \
 	cmd "poster"           "Compila o pôster do Simpósio de IC da UFABC (poster.pdf)"; \
 	sec "Módulos Individuais & Experimentos:"; \
 	cmd "dimacs"           "Gera todas as 80 instâncias de referência DIMACS + suíte bipartida"; \
 	cmd "bench"            "Executa todos os benchmarks (IC e Livro/Pós-IC)"; \
-	cmd "bench-ic"         "Executa e gera exclusivamente os benchmarks da IC (tabelas/ic, figuras/ic)"; \
-	cmd "bench-book"       "Executa e gera os benchmarks do Livro / Pós-IC (tabelas/book, figuras/book)"; \
+	cmd "bench-ic"         "Executa e gera exclusivamente os benchmarks da IC (LaTeX/tables, LaTeX/figures)"; \
+	cmd "bench-book"       "Executa e gera os benchmarks do Livro / Pós-IC (LaTeX/book/tables, LaTeX/book/figures)"; \
 	cmd "bench-smoke"      "Smoke-test rápido: 1 instância .max e 1 .min (para depuração rápida)"; \
 	cmd "bench-artifacts"  "Gera tabelas finais (compactas, exaustivas) e gráficos para LaTeX"; \
 	sec "Módulos de Código & Experimentos:"; \
@@ -157,17 +157,17 @@ reports:
 book:
 	(cd "LaTeX" && $(MAKE) book)
 
-relatorio:
-	(cd "LaTeX" && $(MAKE) relatorio)
+report:
+	(cd "LaTeX" && $(MAKE) report)
 
 ic:
 	(cd "LaTeX" && $(MAKE) ic)
 
-monolito:
-	(cd "LaTeX" && $(MAKE) monolito)
+monolith:
+	(cd "LaTeX" && $(MAKE) monolith)
 
-projeto:
-	(cd "LaTeX" && $(MAKE) projeto)
+proposal:
+	(cd "LaTeX" && $(MAKE) proposal)
 
 poster:
 	(cd "LaTeX" && $(MAKE) poster)

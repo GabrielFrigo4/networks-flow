@@ -55,7 +55,7 @@ Para capacidades inteiras, uma sequência desfavorável de caminhos pode demanda
 
 \begin{figure}[!ht]
 \centering
-\input{imagens/ford_fulkerson_patologico.tex}
+\input{diagrams/ford_fulkerson_pathological.tex}
 \caption{Contraexemplo patológico de Ford-Fulkerson com capacidades $M = 10^6$ e arco central unitário $c=1$. (a)~Rede com fluxo máximo $|f^*| = 2M$. (b)~DFS ingênua alternando caminhos pelo arco central, aumentando $\delta=1$ por passo em $2 \times 10^6$ iterações. Em contrapartida, métodos baseados em BFS priorizam caminhos de menor distância: Edmonds-Karp encerra em $2$ iterações e Dinic em $1$ única fase de fluxo bloqueador.}
 \label{fig:ford_fulkerson_patologico}
 \end{figure}
@@ -129,7 +129,7 @@ A classe correspondente está estruturada como \lstinline{Dinic} (Código~\ref{l
 
 \begin{figure}[!ht]
 \centering
-\input{imagens/grafo_niveis.tex}
+\input{diagrams/level_graph.tex}
 \caption{Digrafo de Níveis no Algoritmo de Dinic (organizado em colunas, onde cada coluna da esquerda para a direita representa um nível crescente). Arcos azuis são os arcos admissíveis (avançam exatamente um nível: $d(v) = d(u)+1$), que compõem o Digrafo de Níveis. Arcos cinza tracejados são excluídos por não avançarem nível. O Fluxo Bloqueador é extraído apenas sobre os arcos azuis.}
 \label{fig:grafo_niveis}
 \end{figure}

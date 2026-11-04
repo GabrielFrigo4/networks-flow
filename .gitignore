@@ -50,10 +50,10 @@ cmake-build-*/
 *.vrb
 *.pdf
 !Material/**
-!LaTeX/figuras/*.pdf
-!LaTeX/figuras/**/*.pdf
-!**/figuras/*.pdf
-!**/figuras/**/*.pdf
+!LaTeX/figures/*.pdf
+!LaTeX/figures/**/*.pdf
+!**/figures/*.pdf
+!**/figures/**/*.pdf
 
 # ================================================================
 # IMAGE SEGMENTATION OUTPUTS

@@ -13,7 +13,7 @@
     headheight=14.5pt
 }
 
-\input{header.tex}
+\input{common/header.tex}
 
 \setstretch{1.18}
 
@@ -39,56 +39,56 @@
 \begin{document}
 \setlength{\emergencystretch}{3em}
 
-\input{book/capa.tex}
+\input{book/cover.tex}
 
 \mainmatter
 
 \divisaobloco{bloco:max_flow}{Teoria Estrutural e Algoritmos de Fluxo Máximo}
-\input{capitulos/01_fundamentos.tex}
-\input{capitulos/02_mfmc.tex}
-\input{capitulos/03_caminhos_aumentantes.tex}
-\input{capitulos/04_prefluxo_alturas.tex}
+\input{book/chapters/01_fundamentals.tex}
+\input{book/chapters/02_max_flow_min_cut.tex}
+\input{book/chapters/03_augmenting_paths.tex}
+\input{book/chapters/04_preflow_push.tex}
 
 \divisaobloco{bloco:aplicacoes}{Reduções Combinatórias, Teoria Estrutural e Aplicações}
-\input{capitulos/05_grafos_bipartidos.tex}
-\input{capitulos/06_conectividade.tex}
-\input{capitulos/07_segmentacao.tex}
+\input{book/chapters/05_bipartite_graphs.tex}
+\input{book/chapters/06_connectivity.tex}
+\input{book/chapters/07_segmentation.tex}
 
 \divisaobloco{bloco:min_cost}{Fluxo de Custo Mínimo e o Algoritmo Network Simplex}
-\input{capitulos/08_custo_minimo_teoria.tex}
-\input{capitulos/09_algoritmos_mcf.tex}
-\input{capitulos/10_network_simplex.tex}
-\input{capitulos/11_mcf_sintese.tex}
+\input{book/chapters/08_min_cost_theory.tex}
+\input{book/chapters/09_min_cost_algorithms.tex}
+\input{book/chapters/10_network_simplex.tex}
+\input{book/chapters/11_min_cost_synthesis.tex}
 
 \divisaobloco{bloco:benchmarks}{Validação Experimental e Engenharia de Desempenho}
-\input{capitulos/12_benchmarks.tex}
+\input{book/chapters/12_benchmarks.tex}
 
-\input{book/epilogo.tex}
+\input{book/epilogue.tex}
 
 \backmatter
 
 \bibliographystyle{plain}
-\bibliography{cit}
+\bibliography{common/references}
 
 \appendix
 \part{Apêndices e Implementações em C++23}
 
-\input{apendices/00_arquitetura.tex}
-\input{apendices/01_flownetwork.tex}
-\input{apendices/02_ford_fulkerson.tex}
-\input{apendices/03_edmonds_karp.tex}
-\input{apendices/04_dinic.tex}
-\input{apendices/12_mpm.tex}
-\input{apendices/05_push_relabel.tex}
-\input{apendices/06_push_relabel_improved.tex}
-\input{apendices/13_kuhn.tex}
-\input{apendices/14_hopcroft_karp.tex}
-\input{apendices/07_costnetwork.tex}
-\input{apendices/08_cycle_canceling.tex}
-\input{apendices/09_ssp_spfa.tex}
-\input{apendices/10_ssp_dijkstra.tex}
-\input{apendices/11_network_simplex.tex}
-\input{apendices/15_kuhn_munkres.tex}
-\input{apendices/12_github.tex}
+\input{appendices/00_architecture.tex}
+\input{appendices/01_flownetwork.tex}
+\input{appendices/02_ford_fulkerson.tex}
+\input{appendices/03_edmonds_karp.tex}
+\input{appendices/04_dinic.tex}
+\input{appendices/12_mpm.tex}
+\input{appendices/05_push_relabel.tex}
+\input{appendices/06_push_relabel_improved.tex}
+\input{appendices/13_kuhn.tex}
+\input{appendices/14_hopcroft_karp.tex}
+\input{appendices/07_costnetwork.tex}
+\input{appendices/08_cycle_canceling.tex}
+\input{appendices/09_ssp_spfa.tex}
+\input{appendices/10_ssp_dijkstra.tex}
+\input{appendices/11_network_simplex.tex}
+\input{appendices/15_kuhn_munkres.tex}
+\input{appendices/16_github.tex}
 
 \end{document}

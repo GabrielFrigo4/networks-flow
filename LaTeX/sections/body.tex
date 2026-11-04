@@ -11,67 +11,67 @@
 % RESUMO E INTRODUÇÃO (COMPARTILHAM UMA ÚNICA PÁGINA)
 % =========================================================================
 \pagestyle{textual}
-\input{ufabc/resumo.tex}
+\input{sections/abstract.tex}
 
 \vspace{0.35cm}
 
-\input{ufabc/introducao.tex}
+\input{sections/introduction.tex}
 \clearpage
 
 % =========================================================================
 % METODOLOGIA (MÁXIMO 1 PÁGINA)
 % =========================================================================
-\input{ufabc/metodologia.tex}
+\input{sections/methodology.tex}
 \clearpage
 
 % =========================================================================
 % FUNDAMENTAÇÃO, RESULTADOS E APLICAÇÃO
 % =========================================================================
-\input{ufabc/fundamentacao.tex}
+\input{sections/background.tex}
 
-\input{ufabc/resultados.tex}
+\input{sections/results.tex}
 
-\input{ufabc/segmentacao.tex}
+\input{sections/segmentation.tex}
 
-\input{ufabc/conclusoes.tex}
+\input{sections/conclusions.tex}
 
 \newpage
 \section{Bibliografia}
 \bibliographystyle{plain}
-\bibliography{cit}
+\bibliography{common/references}
 
 \newpage
 \appendix
 \renewcommand{\theHsection}{apendice.\arabic{section}}
 \providecommand{\apendice}[1]{\section{#1}}
 
-\input{ufabc/apendice_benchmarks.tex}
+\input{sections/benchmarks_appendix.tex}
 
 \newpage
 \begin{center}{\Large\textbf{Apêndice Computacional: Implementações em C++23}}\end{center}
 
-\input{apendices/00_arquitetura.tex}
+\input{appendices/00_architecture.tex}
 
-\input{apendices/01_flownetwork.tex}
+\input{appendices/01_flownetwork.tex}
 
-\input{apendices/02_ford_fulkerson.tex}
+\input{appendices/02_ford_fulkerson.tex}
 
-\input{apendices/03_edmonds_karp.tex}
+\input{appendices/03_edmonds_karp.tex}
 
-\input{apendices/04_dinic.tex}
+\input{appendices/04_dinic.tex}
 
-\input{apendices/05_push_relabel.tex}
+\input{appendices/05_push_relabel.tex}
 
-\input{apendices/06_push_relabel_improved.tex}
+\input{appendices/06_push_relabel_improved.tex}
 
-\input{apendices/07_costnetwork.tex}
+\input{appendices/07_costnetwork.tex}
 
-\input{apendices/08_cycle_canceling.tex}
+\input{appendices/08_cycle_canceling.tex}
 
-\input{apendices/09_ssp_spfa.tex}
+\input{appendices/09_ssp_spfa.tex}
 
-\input{apendices/10_ssp_dijkstra.tex}
+\input{appendices/10_ssp_dijkstra.tex}
 
-\input{apendices/11_network_simplex.tex}
+\input{appendices/11_network_simplex.tex}
 
-\input{apendices/12_github.tex}
+\input{appendices/16_github.tex}

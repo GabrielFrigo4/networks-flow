@@ -39,7 +39,7 @@ Seja $I$ uma imagem com $n = W \times H$ pixels. A rede de segmentação $D = (V
 
 \begin{figure}[!ht]
 \centering
-\input{imagens/segmentacao_rede_3d.tex}
+\input{diagrams/segmentation_network_3d.tex}
 \caption{Modelagem de grade $3 \times 3$ de pixels como rede de fluxo para segmentação: N-links bidirecionais entre vizinhos planares sobre o grid e T-links verticais conectando cada pixel aos terminais $s$ e $t$.}
 \label{fig:segmentacao_grafo}
 \end{figure}
@@ -59,7 +59,7 @@ O corte mínimo minimiza a soma da energia regional e de fronteira.
 
 \begin{figure}[!ht]
 \centering
-\input{imagens/segmentacao_corte_2d.tex}
+\input{diagrams/segmentation_cut_2d.tex}
 \caption{Estrutura do corte mínimo na segmentação: os pixels superiores ($p_1, p_2$) são atribuídos a $S$ e os inferiores ($p_3, p_4$) a $T$. O corte secciona os N-links de menor capacidade e os T-links cruzados, preservando os T-links infinitos das sementes.}
 \label{fig:segmentacao_corte}
 \end{figure}

@@ -52,7 +52,7 @@ Além disso, as seguintes condições são equivalentes: (i) $f$ é um fluxo má
 
 \begin{figure}[!ht]
 \centering
-\input{imagens/corte_minimo.tex}
+\input{diagrams/min_cut.tex}
 \caption{Estrutura do corte mínimo $(S,T)$: arcos que cruzam de $S$ para $T$ (em violeta) estão saturados ($f = c$), e fluxos no sentido reverso de $T$ para $S$ são nulos.}
 \label{fig:corte_minimo}
 \end{figure}
@@ -72,7 +72,7 @@ A Figura~\ref{fig:ford_fulkerson_patologico} ilustra um comportamento subótimo 
 \begin{figure}[!ht]
 \centering
 \resizebox{0.92\textwidth}{!}{%
-\input{imagens/ford_fulkerson_patologico.tex}%
+\input{diagrams/ford_fulkerson_pathological.tex}%
 }
 \caption{Contraexemplo patológico de Ford-Fulkerson com $M = 10^6$ e arco central unitário $c=1$: (a) rede com fluxo ótimo $|f^*| = 2M$; (b) busca ingênua por DFS alternando caminhos em zigue-zague com aumento $\delta = 1$, demandando $2 \times 10^6$ iterações. Em contraste, métodos baseados em BFS (Edmonds-Karp e Dinic) priorizam caminhos mais curtos ($s \to u \to t$ e $s \to v \to t$), saturando a rede em 2 passos ou em 1 única fase.}
 \label{fig:ford_fulkerson_patologico}
@@ -84,7 +84,7 @@ A Figura~\ref{fig:ford_fulkerson_patologico} ilustra um comportamento subótimo 
 
 \begin{figure}[!ht]
 \centering
-\input{imagens/grafo_niveis.tex}
+\input{diagrams/level_graph.tex}
 \caption{Digrafo de Níveis no algoritmo de Dinic: arcos azuis são admissíveis ($d(v) = d(u)+1$) e integram a fase de fluxo bloqueador; arcos cinza tracejados não avançam nível e são desconsiderados na fase.}
 \label{fig:grafo_niveis}
 \end{figure}
@@ -108,7 +108,7 @@ Com política de seleção de vértices ativos em fila FIFO, a complexidade assi
 
 \begin{figure}[!ht]
 \centering
-\input{imagens/gap_heuristica.tex}
+\input{diagrams/gap_heuristic.tex}
 \caption{Mecanismo da Heurística de Lacuna: a restrição $h(u) \le h(v) + 1$ impede arcos residuais com salto de altura superior a uma unidade. O esvaziamento do nível intermediário $h=3$ comprova que vértices com $h \ge 4$ estão desconectados do sumidouro.}
 \label{fig:gap_prova}
 \end{figure}
@@ -122,7 +122,7 @@ A formulação de fluxo máximo permite resolver problemas clássicos em grafos 
 
 \begin{figure}[!ht]
 \centering
-\input{imagens/fluxo_bipartido.tex}
+\input{diagrams/bipartite_flow.tex}
 \caption{Redução do problema de Emparelhamento Máximo Bipartido para Fluxo Máximo: (a) grafo bipartido original; (b) rede com superfonte $s$, supersumidouro $t$ e capacidades unitárias. Os arcos azuis com $f(u, v) = 1$ indicam as arestas do emparelhamento máximo $|f^*| = 3$.}
 \label{fig:fluxo_bipartido}
 \end{figure}
@@ -190,7 +190,7 @@ Cada iteração do Network Simplex executa quatro passos: (i) \textbf{Pricing:} 
 
 \begin{figure}[!ht]
 \centering
-\input{imagens/simplex_pivoteamento.tex}
+\input{diagrams/simplex_pivoting.tex}
 \caption{Iteração do Network Simplex: (a) o arco não básico violador $(3,4)$ com $\bar{w}_\pi < 0$ fecha um ciclo fundamental em $T$; (b) o fluxo é aumentado por $\delta$ e o arco saturado $(2,4)$ deixa a base, restabelecendo a base em árvore.}
 \label{fig:simplex_pivoteamento}
 \end{figure}

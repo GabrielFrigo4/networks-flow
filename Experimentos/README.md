@@ -32,27 +32,27 @@ Experimentos/
 └── scripts/                  # Automação de testes e processamento estatístico
     ├── fetch_dimacs.py       # Download e compilação dos geradores oficiais DIMACS
     ├── run_benchmarks.py     # Orquestrador com separação entre --suite ic e --suite book
-    ├── generate_tables.py    # Geração das tabelas LaTeX em LaTeX/tabelas/{ic,book}/
-    └── plot_charts.py        # Geração dos gráficos PDF em LaTeX/figuras/{ic,book}/
+    ├── generate_tables.py    # Geração das tabelas LaTeX em LaTeX/tables/ e LaTeX/book/tables/
+    └── plot_charts.py        # Geração dos gráficos PDF em LaTeX/figures/ e LaTeX/book/figures/
 ```
 
 ---
 
 ## ⚡ Separação de Escopo: IC vs. Livro (Pós-IC)
 
-Para garantir que os relatórios entregues na Iniciação Científica (`ic.pdf`, `relatorio.pdf`, `monolito.pdf`, `poster.pdf`) permaneçam estritamente fiéis aos 9 algoritmos originais da IC, enquanto o Livro (`book.pdf`) incorpore todas as expansões Pós-IC, os benchmarks são divididos em duas suítes independentes:
+Para garantir que os relatórios entregues na Iniciação Científica (`ic.pdf`, `report.pdf`, `monolith.pdf`, `poster.pdf`) permaneçam estritamente fiéis aos 9 algoritmos originais da IC, enquanto o Livro (`book.pdf`) incorpore todas as expansões Pós-IC, os benchmarks são divididos em duas suítes independentes:
 
 1. **Suíte da IC (`make bench-ic` / `(cd Experimentos && make ic)`):**
     - **Fluxo Máximo (5 motores):** `FordFulkerson`, `EdmondsKarp`, `Dinic`, `PushRelabel`, `PushRelabelImproved`.
     - **Custo Mínimo (4 motores):** `CycleCanceling`, `SuccessiveShortest`, `SuccessiveShortestDijkstra`, `NetworkSimplex`.
-    - **Saídas:** `LaTeX/tabelas/ic/` e `LaTeX/figuras/ic/`.
+    - **Saídas:** `LaTeX/tables/` e `LaTeX/figures/`.
 
 2. **Suíte do Livro / Pós-IC (`make bench-book` / `(cd Experimentos && make book)`):**
     - **Fluxo Máximo (6 motores):** Inclui o algoritmo **MPM (Malhotra-Kumar-Maheshwari)** em $\mathcal{O}(\|V\|^3)$ nas 40 instâncias DIMACS.
     - **Custo Mínimo (4 motores):** Avaliados nas 40 instâncias DIMACS Netgen.
     - **Emparelhamento Bipartido (8 motores):** Compara os algoritmos dedicados **`Kuhn`** e **`HopcroftKarp`** contra os 6 motores gerais de fluxo máximo.
     - **Atribuição Bipartida (5 motores):** Compara o algoritmo Húngaro dedicado (**`KuhnMunkres`**) contra os 4 motores gerais de fluxo de custo mínimo.
-    - **Saídas:** `LaTeX/tabelas/book/` e `LaTeX/figuras/book/`.
+    - **Saídas:** `LaTeX/book/tables/` e `LaTeX/book/figures/`.
 
 ---
 

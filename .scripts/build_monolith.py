@@ -60,8 +60,8 @@ def format_monolith_content(text: str) -> str:
 def generate_monolith(check_only: bool = False) -> bool:
     repo_root = find_repo_root()
     latex_dir = repo_root / "LaTeX"
-    entry_point = latex_dir / "relatorio.tex"
-    output_path = latex_dir / "monolito.tex"
+    entry_point = latex_dir / "report.tex"
+    output_path = latex_dir / "monolith.tex"
 
     if not entry_point.exists():
         sys.stderr.write(f"Arquivo de entrada não encontrado: {entry_point}\n")
@@ -86,7 +86,7 @@ def generate_monolith(check_only: bool = False) -> bool:
     if check_only:
         if not output_path.exists():
             sys.stderr.write(
-                f"Arquivo monolito não encontrado: {output_path}\n")
+                f"Arquivo monolith.tex não encontrado: {output_path}\n")
             return False
         current_content = output_path.read_text(encoding="utf-8")
         if current_content != final_content:

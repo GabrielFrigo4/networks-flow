@@ -38,7 +38,7 @@ _is_artifact() {
 		*.aux|*.bbl|*.blg|*.log|*.toc|*.fls|*.fdb_latexmk|*.synctex.gz|*.bcf|*.run.xml|*.xdv|*.nav|*.snm|*.vrb)
 			return 0
 			;;
-		Material/*|LaTeX/figuras/*|*/figuras/*)
+		Material/*|LaTeX/figures/*|*/figures/*)
 			return 1
 			;;
 		*.pdf)
@@ -85,7 +85,7 @@ fi
 if [ -f ".scripts/build_monolith.py" ]; then
 	echo "  ↳ Validating LaTeX monolith synchronization..."
 	if ! python3 .scripts/build_monolith.py --check > "/dev/null" 2>&1; then
-		echo "❌ [pre-commit] LaTeX/monolito.tex is out of sync with modular sources!" >&2
+		echo "❌ [pre-commit] LaTeX/monolith.tex is out of sync with modular sources!" >&2
 		echo "   Run 'python3 .scripts/build_monolith.py' before committing." >&2
 		exit 1
 	fi

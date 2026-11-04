@@ -52,7 +52,7 @@ Progresso das etapas finais para conclusão institucional da iniciação cientí
 
 ## 🚀 Futuras Expansões (Pós-IC)
 
-Desenvolvimento algorítmico e pesquisa teórica concluídos na fase Pós-IC e integrados exclusivamente ao livro monográfico ([`LaTeX/book.tex`](./LaTeX/book.tex)), mantendo os artefatos institucionais da Iniciação Científica ([`LaTeX/ic.tex`](./LaTeX/ic.tex), [`LaTeX/relatorio.tex`](./LaTeX/relatorio.tex) e [`LaTeX/poster.tex`](./LaTeX/poster.tex)) congelados no escopo original entregue.
+Desenvolvimento algorítmico e pesquisa teórica concluídos na fase Pós-IC e integrados exclusivamente ao livro monográfico ([`LaTeX/book.tex`](./LaTeX/book.tex)), mantendo os artefatos institucionais da Iniciação Científica ([`LaTeX/ic.tex`](./LaTeX/ic.tex), [`LaTeX/report.tex`](./LaTeX/report.tex) e [`LaTeX/poster.tex`](./LaTeX/poster.tex)) congelados no escopo original entregue.
 
 | Algoritmo / Componente                                                               | Referência Teórica          |           Complexidade            | LaTeX (Livro) | Implementação | Foco e Descrição Técnica                                                                                    |
 | :----------------------------------------------------------------------------------- | :-------------------------- | :-------------------------------: | :-----------: | :-----------: | :---------------------------------------------------------------------------------------------------------- |
@@ -68,7 +68,7 @@ Desenvolvimento algorítmico e pesquisa teórica concluídos na fase Pós-IC e i
 - [x] **Hopcroft-Karp:** Implementar motor dedicado de emparelhamento bipartido máximo em C++23 ([`HopcroftKarp.hpp`](./Implementações/FlowNetwork/HopcroftKarp.hpp)) herdando de [`FlowNetwork`](./Implementações/FlowNetwork/FlowNetwork.hpp) com complexidade $\mathcal{O}(\|E\| \sqrt{\|V\|})$.
 - [x] **Algoritmo Húngaro (Kuhn-Munkres):** Implementar algoritmo Húngaro em C++23 ([`KuhnMunkres.hpp`](./Implementações/CostNetwork/KuhnMunkres.hpp)) herdando de [`CostNetwork`](./Implementações/CostNetwork/CostNetwork.hpp) para problema de atribuição de custo mínimo em $\mathcal{O}(\|V\|^3)$.
 - [x] **MPM (Malhotra, Kumar, Maheshwari):** Implementar classe `MPM` ([`MPM.hpp`](./Implementações/FlowNetwork/MPM.hpp)) herdando de [`FlowNetwork`](./Implementações/FlowNetwork/FlowNetwork.hpp) com fluxo bloqueador em $\mathcal{O}(\|V\|^3)$ e validar nas 40 instâncias DIMACS.
-- [x] **Benchmark Bipartido e Separação IC vs. Livro:** Separar os artefatos experimentais da IC (`LaTeX/tabelas/ic/`, `LaTeX/figuras/ic/`, `make bench-ic`) dos artefatos expandidos do Livro Pós-IC (`LaTeX/tabelas/book/`, `LaTeX/figuras/book/`, `make bench-book`).
+- [x] **Benchmark Bipartido e Separação IC vs. Livro:** Separar os artefatos experimentais da IC (`LaTeX/tables/`, `LaTeX/figures/`, `make bench-ic`) dos artefatos expandidos do Livro Pós-IC (`LaTeX/book/tables/`, `LaTeX/book/figures/`, `make bench-book`).
 
 ---
 

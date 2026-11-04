@@ -38,7 +38,7 @@ Este runbook orienta o agente na execução de testes algorítmicos e na sincron
 
 Ao redigir, revisar ou alterar qualquer arquivo `.tex` no projeto:
 
-### 1. IC / Relatórios Institucionais (`LaTeX/ufabc/`, `LaTeX/ic.tex`, `LaTeX/relatorio.tex`)
+### 1. IC / Relatórios Institucionais (`LaTeX/sections/`, `LaTeX/ic.tex`, `LaTeX/report.tex`)
 
 - **Não complexa:** Estrutura sintática limpa e acessível.
 - **Acadêmica:** Rigor conceitual, impessoalidade e formalidade científica.
@@ -48,7 +48,7 @@ Ao redigir, revisar ou alterar qualquer arquivo `.tex` no projeto:
 - **Mais matemática:** Priorizar definições formais, notação de conjuntos, proposições e equações explícitas.
 - **Mais direta:** Enunciados objetivos e declarativos.
 
-### 2. Livro / Monografia (`LaTeX/capitulos/`, `LaTeX/book.tex`, `LaTeX/book/`)
+### 2. Livro / Monografia (`LaTeX/book/chapters/`, `LaTeX/book.tex`, `LaTeX/book/`)
 
 - Mesma sobriedade e concisão de IC/Relatório (sem floreios, pouco rebuscada, direta e matemática).
 - Ausência de limite de páginas: permite demonstrações completas e detalhadas, intuições bem fundamentadas e exemplos passo a passo, sem nunca adotar tom prolixo, dramático ou informal.

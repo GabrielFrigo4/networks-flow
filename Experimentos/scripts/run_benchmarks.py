@@ -397,7 +397,10 @@ def main():
         root_dir = os.path.dirname(
             os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
         )
-        tables_dir = os.path.join(root_dir, "LaTeX", "tabelas", args.suite)
+        suite_dir = os.path.join(root_dir, "LaTeX")
+        if args.suite == "book":
+            suite_dir = os.path.join(suite_dir, "book")
+        tables_dir = os.path.join(suite_dir, "tables")
         os.makedirs(tables_dir, exist_ok=True)
         for path in csvs:
             shutil.copyfile(path, os.path.join(tables_dir, os.path.basename(path)))
