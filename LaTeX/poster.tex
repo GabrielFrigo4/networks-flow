@@ -159,30 +159,55 @@
 % -------------------------------------------------------------------------
 \postersection{INTRODUÇÃO}
 % -------------------------------------------------------------------------
-Os problemas de \destaque{Fluxo Máximo (MF)} e \destaque{Fluxo de Custo Mínimo (MCF)} são modelos centrais da Otimização Combinatória [1]. Em um digrafo capacitado $D = (V, A)$ com fonte $s$ e sumidouro $t$, um fluxo viável $f: A \to \mathbb{R}_{\ge 0}$ respeita as capacidades ($0 \le f(a) \le c(a)$) e a conservação nodal $\sum_{(u,v)\in A} f(u,v) = \sum_{(v,w)\in A} f(v,w)$ para todo $v \in V \setminus \{s, t\}$.
+Os problemas de \destaque{Fluxo Máximo (MF)} e \destaque{Fluxo de Custo Mínimo (MCF)} são modelos centrais da Otimização Combinatória [1]. Em uma rede $D=(V,A)$, um fluxo viável respeita as capacidades ($0\le f(a)\le c(a)$) e conserva o fluxo nos vértices intermediários. Seu valor $|f|$ é o fluxo líquido enviado da fonte $s$ ao sumidouro $t$.
 
-\vspace{0.2em}
+\vspace{0.18em}
 \noindent
 \setlength{\fboxrule}{0.12em}
-\setlength{\fboxsep}{0.65em}
+
+% -------------------------------------------------------------------------
+% CAIXA FLUXO MÁXIMO
+% -------------------------------------------------------------------------
 \fcolorbox{textdark}{white}{
-    \begin{minipage}{\dimexpr\linewidth-1.3em-0.24em\relax}
-        \fontsize{28}{34}\selectfont\raggedright
-        \destaque{Problema: Fluxo de Custo Mínimo (MCF)}\\[0.12em]
-        \textbf{Entrada:} Digrafo $D=(V, A)$, capacidades $c: A \to \mathbb{R}_{\ge 0}$, custos $w: A \to \mathbb{R}$, fonte $s$ e sumidouro $t$.\\[0.08em]
-        \textbf{Saída:} Fluxo viável $f$ de valor $|f|$ máximo que minimiza o custo total $\sum_{a \in A} w(a) f(a)$.
+    \begin{minipage}{\dimexpr\linewidth-0.84em-0.24em\relax}
+        \vspace{0.18em}
+        \fontsize{23}{27}\selectfont\raggedright
+        \destaque{Problema: Fluxo Máximo (MF)}\\[0.10em]
+        \textbf{Entrada:} Digrafo $D=(V,A)$ com capacidades $c$,
+        fonte $s$ e sumidouro $t$.\\[0.08em]
+        \textbf{Saída:} Fluxo viável $f$ que maximiza seu valor:
+        $\displaystyle \max_f |f|$.
     \end{minipage}
 }
-\vspace{0.15em}
+\vspace{0.18em}
 
-Esta pesquisa integra a demonstração rigorosa dos teoremas estruturais e de dualidade, o desenvolvimento de uma biblioteca orientada a objetos em \textbf{C++23} com nove motores exatos de alta performance e aplicações em redução combinatória e visão computacional.
+% -------------------------------------------------------------------------
+% CAIXA FLUXO DE CUSTO MÍNIMO
+% -------------------------------------------------------------------------
+\noindent
+\fcolorbox{textdark}{white}{
+    \begin{minipage}{\dimexpr\linewidth-0.84em-0.24em\relax}
+        \vspace{0.18em}
+        \fontsize{23}{27}\selectfont\raggedright
+        \destaque{Problema: Fluxo de Custo Mínimo (MCF)}\\[0.10em]
+        \textbf{Entrada:} Digrafo $D=(V,A)$, capacidades $c$,
+        custos $w$, fonte $s$, sumidouro $t$ e valor requerido $q$.\\[0.08em]
+        \textbf{Saída:} Fluxo viável $f$ de valor $q$ que minimiza
+        o custo total $\displaystyle \sum_{a\in A}w(a)f(a)$.
+    \end{minipage}
+}
+\vspace{0.18em}
+
+\textbf{Exemplo:} $q=10$ exige transportar exatamente 10 unidades, mesmo que a rede comporte mais.
+
+A pesquisa integra teoria, nove motores exatos em \textbf{C++23} e aplicações em redução combinatória e visão computacional.
 
 % -------------------------------------------------------------------------
 \postersection{FUNDAMENTAÇÃO TEÓRICA E MOTORES EM C++23}
 % -------------------------------------------------------------------------
 \begin{itemize}[leftmargin=1.2em, itemsep=0.18em, topsep=0.1em]
     \item \destaque{Fluxo Máximo e Corte Mínimo} (Ford-Fulkerson, 1956 [4]): O valor máximo de um $st$-fluxo coincide com a capacidade mínima de um $st$-corte, $\max_f |f| = \min_{(S,T)} c(S,T)$. Sob capacidades inteiras, o \textbf{Teorema da Integralidade} garante solução ótima inteira, viabilizando reduções diretas aos teoremas de \textbf{König}, \textbf{Menger} e \textbf{Hall}.
-    \item \destaque{Otimalidade em Custo Mínimo e Network Simplex:} Um fluxo $f$ é de custo mínimo se e só se a rede residual $D_f$ não contém ciclos negativos (Klein) ou, equivalentemente, existem potenciais nodais $\pi: V \to \mathbb{R}$ tais que o custo reduzido satisfaz $\bar{w}_\pi(u,v) = w(u,v) - \pi(u) + \pi(v) \ge 0$. Pela \textbf{Total Unimodularidade} da matriz nó-arco, o \textit{Network Simplex} mantém árvores geradoras $(T, L, U)$ com aritmética puramente inteira.
+    \item \destaque{Otimalidade em Custo Mínimo e Network Simplex:} Um fluxo $f$ é de custo mínimo se e só se a rede residual $D_f$ não contém ciclos negativos (Klein) ou, equivalentemente, existem potenciais nodais $\pi: V \to \mathbb{R}$ tais que o custo reduzido satisfaz $\bar{w}_\pi(u,v) = w(u,v) - \pi(u) + \pi(v) \ge 0$. Com capacidades e demandas inteiras, a \textbf{Total Unimodularidade} da matriz nó-arco garante soluções básicas inteiras; o \textit{Network Simplex} mantém árvores geradoras $(T, L, U)$.
 \end{itemize}
 
 As classes base \texttt{FlowNetwork} e \texttt{CostNetwork} armazenam arcos contíguos em \texttt{std::vector<Edge>} com indexação reversa em $\mathcal{O}(1)$ via \texttt{id \textasciicircum\ 1}, maximizando a localidade de cache L1/L2:
@@ -204,7 +229,7 @@ As classes base \texttt{FlowNetwork} e \texttt{CostNetwork} armazenam arcos cont
 \textbf{Custo} & \texttt{CycleCanceling} & Cancelamento de ciclos negativos & $\mathcal{O}(|V| |A|^2 C U)$ \\
 \textbf{Mínimo} & \texttt{SuccessiveShortest} & Caminhos sucessivos via SPFA & $\mathcal{O}(|V| |A| |f^*|)$ \\
 \textbf{(MCF)} & \destaque{SuccessiveShortestDijkstra} & Potenciais de Johnson + Dijkstra & $\mathcal{O}(|f^*| |A| \log |V|)$ \\
- & \destaque{NetworkSimplex} & Pivoteamento primal em árvore (\texttt{thread}) & Polinomial \\
+ & \destaque{NetworkSimplex} & Pivoteamento primal em árvore (\texttt{thread}) & Sem garantia polinomial \\
 \bottomrule
 \end{tabular*}
 }
@@ -213,7 +238,7 @@ As classes base \texttt{FlowNetwork} e \texttt{CostNetwork} armazenam arcos cont
 % -------------------------------------------------------------------------
 \postersection{SEGMENTAÇÃO DE IMAGENS VIA CORTE MÍNIMO}
 % -------------------------------------------------------------------------
-Seguindo Boykov e Jolly [2], uma imagem de $W \times H$ pixels é modelada como um digrafo com superfonte $s$ (\textit{objeto}) e supersumidouro $t$ (\textit{fundo}). Sementes do usuário definem \textit{T-links} rígidos ($w_s = \infty$ ou $w_t = \infty$) e pixels adjacentes são conectados por \textit{N-links} com peso $w_n(p, q) = \lfloor K \exp(-\|I_p - I_q\|^2 / 2\sigma^2) \rfloor$, onde o corte mínimo global minimiza a energia de fronteira em menos de $96\text{ ms}$ para as redes em grade testadas ($|V| = W \cdot H + 2$):
+Seguindo Boykov e Jolly [2], uma imagem de $W \times H$ pixels é modelada como um digrafo com superfonte $s$ (\textit{objeto}) e supersumidouro $t$ (\textit{fundo}). Sementes do usuário definem \textit{T-links} rígidos ($w_s = \infty$ ou $w_t = \infty$) e pixels adjacentes são conectados por \textit{N-links} com peso $w_n(p, q) = \lfloor K \exp(-\|I_p - I_q\|^2 / 2\sigma^2) \rfloor$, onde o corte mínimo global minimiza a energia de fronteira em menos de $100\text{ ms}$ para as redes em grade testadas ($|V| = W \cdot H + 2$):
 
 \vspace{0.4em}
 \begin{center}
@@ -258,7 +283,7 @@ Seguindo Boykov e Jolly [2], uma imagem de $W \times H$ pixels é modelada como 
 % -------------------------------------------------------------------------
 \postersection{RESULTADOS EXPERIMENTAIS (DIMACS)}
 % -------------------------------------------------------------------------
-Os algoritmos foram avaliados em \textbf{80 instâncias padronizadas do 1st DIMACS Implementation Challenge} (famílias \textit{Washington}, \textit{Genrmf} e \textit{Netgen}), compilados com \texttt{g++ -O2} em FreeBSD 15.1 (Core i7-1255U). O tempo de CPU foi isolado via \texttt{std::chrono}, com validação automática de 100\% das soluções ótimas $f^*$ e $z^*$.
+Os algoritmos foram avaliados em \textbf{80 instâncias padronizadas do 1st DIMACS Implementation Challenge} (famílias \textit{Washington}, \textit{Genrmf} e \textit{Netgen}), compilados com \texttt{g++ -O2} em FreeBSD 15.1 (Core i7-1255U). O tempo de execução foi medido com \texttt{std::chrono}, excluindo etapas de I/O, com validação automática de 100\% das soluções ótimas $f^*$ e $z^*$.
 
 \vspace{0.15em}
 \begin{center}
@@ -292,7 +317,7 @@ Os algoritmos foram avaliados em \textbf{80 instâncias padronizadas do 1st DIMA
 
 \begin{tabular*}{\linewidth}{@{\extracolsep{\fill}}lrrrr|rrrr@{}}
 \toprule
-\textbf{Instância (MCF)} & $|V|$ & $|A|$ & $f^*$ & $z^*$ & \textbf{CC} & \textbf{SSP-SPFA} & \textbf{SSP-Dijk} & \textbf{Simplex} \\
+\textbf{Instância (MCF)} & $|V|$ & $|A|$ & $q$ & $z^*$ & \textbf{CC} & \textbf{SSP-SPFA} & \textbf{SSP-Dijk} & \textbf{Simplex} \\
 \midrule
 \texttt{netgen\_08} & 302   & 5.469  & 150k & 177,6M & 4.221 & 60,3  & 49,3  & \destaque{21,5} \\
 \texttt{netgen\_15} & 402   & 4.900  & 200  & 212,6k & 446   & \destaque{15,7}  & 23,3  & 30,2 \\
@@ -301,19 +326,19 @@ Os algoritmos foram avaliados em \textbf{80 instâncias padronizadas do 1st DIMA
 \bottomrule
 \end{tabular*}
 }
-\postercaption{Tabela 2}{Tempos médios de CPU (ms) em instâncias representativas DIMACS (TLE = limite de 16 s).}
+\postercaption{Tabela 2}{Tempos médios (ms); no MCF, $q$ é o valor requerido (TLE = 16 s).}
 
 \textbf{Síntese e Discussão dos Resultados:}
 \begin{itemize}[leftmargin=1.2em, itemsep=0.18em, topsep=0.1em]
-    \item \destaque{Impacto da Gap Heuristic:} O \texttt{PushRelabelImproved} acelerou o Push-Relabel FIFO em até \textbf{444$\times$} em redes de grande diâmetro (\texttt{wash\_line\_100}), eliminando rerrotulações de vértices desconectados do sumidouro [5].
+    \item \destaque{Impacto da Gap Heuristic:} Em \texttt{wash\_line\_100}, o \texttt{PushRelabelImproved} levou \textbf{52,7 ms}, contra mais de 16 s do Push-Relabel FIFO; a heurística evita rerrotulações de vértices desconectados do sumidouro [5].
     \item \destaque{Fluxo Bloqueador vs. BFS:} O algoritmo de \texttt{Dinic} superou o \texttt{EdmondsKarp} de \textbf{14$\times$ a 100$\times$} em grafos densos, enquanto o \texttt{FordFulkerson} sofreu TLE nas instâncias com vazão $f^* > 7 \times 10^7$.
-    \item \destaque{Potenciais vs. Ciclos Negativos:} Em custo mínimo, o \texttt{NetworkSimplex} dominou as redes de transbordo e o \texttt{SSP-Dijkstra} com potenciais nodais ($\bar{w}_\pi \ge 0$) escalou melhor nas instâncias massivas (\texttt{netgen\_38} e \texttt{netgen\_40}), superando o \texttt{CycleCanceling} em mais de \textbf{80$\times$}.
+    \item \destaque{Potenciais vs. Ciclos Negativos:} O \texttt{NetworkSimplex} foi competitivo em transbordo; nas maiores redes, o \texttt{SSP-Dijkstra} superou o SPFA e, na \texttt{netgen\_08}, foi \textbf{85$\times$} mais rápido que o \texttt{CycleCanceling}.
 \end{itemize}
 
 % -------------------------------------------------------------------------
 \postersection{AGRADECIMENTOS}
 % -------------------------------------------------------------------------
-Este trabalho foi financiado pelo CNPq, processo PIBIC 143763/2024-5. Agradecimentos à Profa.\ Dra.\ Cristiane Maria Sato pela orientação e à UFABC. Repositório público em C++23: \url{https://github.com/GabrielFrigo4/networks-flow}.
+Este trabalho foi financiado pelo CNPq: edital 01/2025 PIC/PIBIC/PIBITI/PIBIC-AF. Agradecimentos à Profa.\ Dra.\ Cristiane Maria Sato pela orientação e à UFABC. Repositório público em C++23: \url{https://github.com/GabrielFrigo4/networks-flow}.
 
 % -------------------------------------------------------------------------
 \postersection{BIBLIOGRAFIA}
