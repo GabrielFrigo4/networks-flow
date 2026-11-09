@@ -228,6 +228,11 @@ clean:
 	(cd "Aplicações" && $(MAKE) clean)
 	(cd "Implementações" && $(MAKE) clean)
 	(cd "Experimentos" && $(MAKE) clean)
+	rm -rf .venv bin/ build/ dist/ .tmp/ *.log
+	find . -type d -name "__pycache__" -exec rm -rf {} + 2> "/dev/null" || true
+	find . -type d -name ".pytest_cache" -exec rm -rf {} + 2> "/dev/null" || true
+	find . -type d -name ".ruff_cache" -exec rm -rf {} + 2> "/dev/null" || true
+	find . -type d -name ".mypy_cache" -exec rm -rf {} + 2> "/dev/null" || true
 
 clear: clean
 

@@ -29,7 +29,7 @@ Experimentos/
 ├── results/                  # Dados coletados separados por escopo
 │   ├── ic/                   # Medições da Iniciação Científica (5 MF + 4 MCF)
 │   └── book/                 # Medições do Livro / Pós-IC (6 MF com MPM + 4 MCF + Suíte Bipartida)
-└── scripts/                  # Automação de testes e processamento estatístico
+└── .scripts/                 # Automação de testes e processamento estatístico
     ├── fetch_dimacs.py       # Download e compilação dos geradores oficiais DIMACS
     ├── run_benchmarks.py     # Orquestrador com separação entre --suite ic e --suite book
     ├── generate_tables.py    # Geração das tabelas LaTeX em LaTeX/tables/ e LaTeX/book/tables/

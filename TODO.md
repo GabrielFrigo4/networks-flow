@@ -281,16 +281,16 @@ Infraestrutura completa de testes empíricos implementada em C++23 e Python para
 | Parser DIMACS (Min Cost Flow)         | [`dimacs_min.hpp`](./Experimentos/parsers/dimacs_min.hpp)           |   ✅   | Leitor em C++ otimizado para o formato padronizado DIMACS (`.min`).                                  |
 | Driver C++ de Medição (Max Flow)      | [`max_flow_runner.cpp`](./Experimentos/drivers/max_flow_runner.cpp) |   ✅   | Executável para rodar motores de fluxo máximo com `std::chrono::high_resolution_clock`.              |
 | Driver C++ de Medição (Min Cost Flow) | [`min_cost_runner.cpp`](./Experimentos/drivers/min_cost_runner.cpp) |   ✅   | Executável para rodar motores de custo mínimo com medição de tempo e validação.                      |
-| Script Orquestrador de Execuções      | [`run_benchmarks.py`](./Experimentos/scripts/run_benchmarks.py)     |   ✅   | Automação em Python para varrer instâncias, aplicar timeouts e coletar médias e desvio padrão.       |
-| Pipeline de Tabelas LaTeX             | [`generate_tables.py`](./Experimentos/scripts/generate_tables.py)   |   ✅   | Script para processar CSVs de resultados e compilar tabelas LaTeX formatadas em `booktabs`.          |
-| Pipeline de Gráficos e Figuras        | [`plot_charts.py`](./Experimentos/scripts/plot_charts.py)           |   ✅   | Geração de curvas de complexidade assintótica empírica em escala log-log com `matplotlib`/`seaborn`. |
+| Script Orquestrador de Execuções      | [`run_benchmarks.py`](./Experimentos/.scripts/run_benchmarks.py)    |   ✅   | Automação em Python para varrer instâncias, aplicar timeouts e coletar médias e desvio padrão.       |
+| Pipeline de Tabelas LaTeX             | [`generate_tables.py`](./Experimentos/.scripts/generate_tables.py)  |   ✅   | Script para processar CSVs de resultados e compilar tabelas LaTeX formatadas em `booktabs`.          |
+| Pipeline de Gráficos e Figuras        | [`plot_charts.py`](./Experimentos/.scripts/plot_charts.py)          |   ✅   | Geração de curvas de complexidade assintótica empírica em escala log-log com `matplotlib`/`seaborn`. |
 
 ## 🏋️ Instâncias e Geradores Sintéticos
 
 | Nome                                    | Código-Fonte                                                   | LaTeX | Implementação | Descrição                                                                                               |
 | :-------------------------------------- | :------------------------------------------------------------- | :---: | :-----------: | :------------------------------------------------------------------------------------------------------ |
-| Coleções DIMACS (Max Flow)              | [`fetch_dimacs.py`](./Experimentos/scripts/fetch_dimacs.py)    |  ✅   |      ✅       | Download e organização de instâncias clássicas da literatura (Washington, RMF, Genrmf).                 |
-| Coleções DIMACS (Min Cost Flow)         | [`fetch_dimacs.py`](./Experimentos/scripts/fetch_dimacs.py)    |  ✅   |      ✅       | Download e organização de instâncias de referência de custo mínimo (Netgen, Grid).                      |
+| Coleções DIMACS (Max Flow)              | [`fetch_dimacs.py`](./Experimentos/.scripts/fetch_dimacs.py)   |  ✅   |      ✅       | Download e organização de instâncias clássicas da literatura (Washington, RMF, Genrmf).                 |
+| Coleções DIMACS (Min Cost Flow)         | [`fetch_dimacs.py`](./Experimentos/.scripts/fetch_dimacs.py)   |  ✅   |      ✅       | Download e organização de instâncias de referência de custo mínimo (Netgen, Grid).                      |
 | Gerador: Grafos Aleatórios Esparsos     | [`random_graph.py`](./Experimentos/generators/random_graph.py) |  ✅   |      ✅       | Geração controlada de grafos com $\|A\| \approx 4\|V\|$ variando $\|V\|$ em escala logarítmica.         |
 | Gerador: Grafos Aleatórios Densos       | [`random_graph.py`](./Experimentos/generators/random_graph.py) |  ✅   |      ✅       | Geração controlada de grafos com $\|A\| \approx \|V\|^2 / 10$ para testar limites de algoritmos densos. |
 | Gerador: Redes em Grade (Grid 2D/3D)    | [`grid_graph.py`](./Experimentos/generators/grid_graph.py)     |  ✅   |      ✅       | Estrutura em grade simulando problemas de visão computacional / segmentação.                            |

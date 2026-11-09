@@ -229,7 +229,7 @@ As instâncias padronizadas foram obtidas a partir dos geradores oficiais do **F
 
 * **Arquivo Histórico Oficial:** Universidade de Rutgers
 * **Repositório:** [`http://archive.dimacs.rutgers.edu/pub/netflow/generators/network/`](http://archive.dimacs.rutgers.edu/pub/netflow/generators/network/)
-* **Automação:** O script [`Experimentos/scripts/fetch_dimacs.py`](../scripts/fetch_dimacs.py) realiza o download, compilação dos geradores em C e produção determinística dos grafos.
+* **Automação:** O script [`Experimentos/.scripts/fetch_dimacs.py`](../.scripts/fetch_dimacs.py) realiza o download, compilação dos geradores em C e produção determinística dos grafos.
 
 ---
 

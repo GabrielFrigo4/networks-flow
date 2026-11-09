@@ -57,7 +57,7 @@ $(BP_BIN): $(BP_SRC)
 
 instances:
 	mkdir -p "$(INST_MF)" "$(INST_MC)" "$(INST_BP)" "$(RES_DIR)/ic" "$(RES_DIR)/book"
-	$(PYTHON) scripts/fetch_dimacs.py --maxflow-dir "$(INST_MF)" --mincost-dir "$(INST_MC)"
+	$(PYTHON) .scripts/fetch_dimacs.py --maxflow-dir "$(INST_MF)" --mincost-dir "$(INST_MC)"
 	$(PYTHON) generators/bipartite_graph.py --suite "$(INST_BP)"
 
 dimacs: instances
@@ -72,20 +72,24 @@ sync-csv:
 run: run-ic run-book
 
 run-ic: build instances
-	$(PYTHON) scripts/run_benchmarks.py --suite ic --mf-bin "$(MF_BIN)" --mc-bin "$(MC_BIN)" --bp-bin "$(BP_BIN)" --mf-dir "$(INST_MF)" --mc-dir "$(INST_MC)" --bp-dir "$(INST_BP)" --out-dir "$(RES_DIR)/ic" $(RUN_OPTS)
+	$(PYTHON) .scripts/run_benchmarks.py --suite ic --mf-bin "$(MF_BIN)" --mc-bin "$(MC_BIN)" --bp-bin "$(BP_BIN)" --mf-dir "$(INST_MF)" --mc-dir "$(INST_MC)" --bp-dir "$(INST_BP)" --out-dir "$(RES_DIR)/ic" $(RUN_OPTS)
 
 run-book: build instances
-	$(PYTHON) scripts/run_benchmarks.py --suite book --mf-bin "$(MF_BIN)" --mc-bin "$(MC_BIN)" --bp-bin "$(BP_BIN)" --mf-dir "$(INST_MF)" --mc-dir "$(INST_MC)" --bp-dir "$(INST_BP)" --out-dir "$(RES_DIR)/book" $(RUN_OPTS)
+	$(PYTHON) .scripts/run_benchmarks.py --suite book --mf-bin "$(MF_BIN)" --mc-bin "$(MC_BIN)" --bp-bin "$(BP_BIN)" --mf-dir "$(INST_MF)" --mc-dir "$(INST_MC)" --bp-dir "$(INST_BP)" --out-dir "$(RES_DIR)/book" $(RUN_OPTS)
 
 tables:
-	$(PYTHON) scripts/generate_tables.py --suite all
+	$(PYTHON) .scripts/generate_tables.py --suite all
 
 plots:
-	$(PYTHON) scripts/plot_charts.py --suite all
+	$(PYTHON) .scripts/plot_charts.py --suite all
 
 clean:
 	rm -f "$(MF_BIN)" "$(MC_BIN)" "$(BP_BIN)" "$(MF_BIN).exe" "$(MC_BIN).exe" "$(BP_BIN).exe"
-	rm -rf "$(INST_MF)" "$(INST_MC)" "$(INST_BP)" "$(RES_DIR)"
+	rm -rf "$(INST_MF)" "$(INST_MC)" "$(INST_BP)" "$(RES_DIR)" .venv
+	find . -type d -name "__pycache__" -exec rm -rf {} + 2> "/dev/null" || true
+	find . -type d -name ".pytest_cache" -exec rm -rf {} + 2> "/dev/null" || true
+	find . -type d -name ".ruff_cache" -exec rm -rf {} + 2> "/dev/null" || true
+	find . -type d -name ".mypy_cache" -exec rm -rf {} + 2> "/dev/null" || true
 
 distclean: clean
 
