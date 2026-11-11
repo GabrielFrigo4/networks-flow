@@ -38,7 +38,7 @@ if hasattr(sys.stdout, "reconfigure"):
 
 
 def paint(code, text):
-    return f"\033[{code}m{text}\033[0m" if COLOR else text
+    return f"\x1b[{code}m{text}\x1b[0m" if COLOR else text
 
 
 def out(text=""):
@@ -207,7 +207,7 @@ def run_suite(title, binary, directory, ext, csv_path, algos, extra, kind, label
 
     def on_done(line):
         with LOCK:
-            print("\033[K" + line if COLOR else line, flush=True)
+            print("\x1b[K" + line if COLOR else line, flush=True)
 
     def record(handle, result):
         collected[result["name"]] = result["rows"]

@@ -119,7 +119,7 @@ Este diretório serve como validação empírica da corretude e da eficiência d
     - Se $M_1 \neq M_2$, retorna `-1`.
     - Constrói rede bipartida com super-fonte e super-sumidouro.
     - Arestas idênticas têm custo 0, arestas com 1 ponta comum têm custo 1, e um nó `Dummy` intermediário conecta todas as conexões iniciais e finais com custo $1 + 1 = 2$.
-    - Resolução direta com o algoritmo [`NetworkSimplex`](../../CostNetwork/NetworkSimplex.hpp).
+    - Resolução direta com o algoritmo [`NetworkSimplex`](../CostNetwork/NetworkSimplex.hpp).
 
 ---
 

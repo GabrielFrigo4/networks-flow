@@ -43,7 +43,6 @@ def build_washington(build_dir):
     if not c_file.exists():
         download_file(f"{BASE_URL}/washington/washington.c", c_file)
 
-    # Patch POSIX random/srandom and sys/time.h for Windows / MinGW
     c_content = c_file.read_text(encoding="latin-1")
     if "srandom(" in c_content or "random(" in c_content or "<sys/time.h>" in c_content:
         c_content = re.sub(r'#include\s*<sys/time\.h>', '#include <time.h>\n#include <stdlib.h>', c_content)
@@ -68,7 +67,6 @@ def build_genrmf(build_dir):
         if not target.exists():
             download_file(f"{BASE_URL}/genrmf/{f}", target)
 
-    # Patch POSIX drand48/srand48 for Windows / MinGW
     m_file = rmf_dir / "math_to_gcc.h"
     if m_file.exists():
         m_content = m_file.read_text(encoding="latin-1")
@@ -100,7 +98,6 @@ def build_netgen(build_dir):
         if not target.exists():
             download_file(f"{BASE_URL}/netgen/{f}", target)
 
-    # Patch POSIX random conflict in C code
     for src in ["netgen.h", "netgen.c", "random.c"]:
         p = net_dir / src
         content = p.read_text(encoding="latin-1")
@@ -122,7 +119,6 @@ def generate_maxflow_instances(wash_bin, rmf_bin, out_dir):
     log(f"Gerando instâncias DIMACS Max-Flow em {out_dir}...")
 
     wash_jobs = [
-        # Malhas Planas (Washington Mesh - 8 instâncias)
         (1, 16, 16, 1000, out_dir / "wash_mesh_16.max"),
         (1, 24, 24, 1000, out_dir / "wash_mesh_24.max"),
         (1, 32, 32, 1000, out_dir / "wash_mesh_32.max"),
@@ -131,7 +127,6 @@ def generate_maxflow_instances(wash_bin, rmf_bin, out_dir):
         (1, 80, 80, 1000, out_dir / "wash_mesh_80.max"),
         (1, 96, 96, 1000, out_dir / "wash_mesh_96.max"),
         (1, 128, 128, 1000, out_dir / "wash_mesh_128.max"),
-        # Grafos em Camadas Aleatórias (Washington RLG - 8 instâncias)
         (2, 16, 16, 1000, out_dir / "wash_rlg_16.max"),
         (2, 24, 24, 1000, out_dir / "wash_rlg_24.max"),
         (2, 32, 32, 1000, out_dir / "wash_rlg_32.max"),
@@ -140,19 +135,16 @@ def generate_maxflow_instances(wash_bin, rmf_bin, out_dir):
         (2, 80, 80, 1000, out_dir / "wash_rlg_80.max"),
         (2, 96, 96, 1000, out_dir / "wash_rlg_96.max"),
         (2, 128, 128, 1000, out_dir / "wash_rlg_128.max"),
-        # Linhas com Gargalos (Washington Basic Line - 6 instâncias)
         (6, 10, 10, 4, out_dir / "wash_line_10.max"),
         (6, 20, 20, 4, out_dir / "wash_line_20.max"),
         (6, 30, 30, 4, out_dir / "wash_line_30.max"),
         (6, 50, 50, 4, out_dir / "wash_line_50.max"),
         (6, 75, 75, 4, out_dir / "wash_line_75.max"),
         (6, 100, 100, 4, out_dir / "wash_line_100.max"),
-        # Linhas com Capacidades Exponenciais (Washington Exp-Line - 4 instâncias)
         (7, 10, 10, 4, out_dir / "wash_exp_line_10.max"),
         (7, 20, 20, 4, out_dir / "wash_exp_line_20.max"),
         (7, 30, 30, 4, out_dir / "wash_exp_line_30.max"),
         (7, 50, 50, 4, out_dir / "wash_exp_line_50.max"),
-        # Casos Adversariais e Estruturais Especiais (4 instâncias)
         (9, 250, 0, 1000, out_dir / "wash_dinic_bad_250.max"),
         (9, 500, 0, 1000, out_dir / "wash_dinic_bad_500.max"),
         (10, 500, 0, 1000, out_dir / "wash_gold_bad_500.max"),
@@ -171,7 +163,6 @@ def generate_maxflow_instances(wash_bin, rmf_bin, out_dir):
                 sys.exit(1)
 
     rmf_jobs = [
-        # Redes Tridimensionais / Planos Sequenciais (Genrmf - 10 instâncias)
         (4, 16, 10000, 1000, out_dir / "genrmf_small.max"),
         (8, 16, 10000, 1000, out_dir / "genrmf_medium.max"),
         (16, 4, 10000, 1000, out_dir / "genrmf_wide.max"),
@@ -217,7 +208,9 @@ def generate_mincost_instances(net_bin, problems_file, out_dir):
 
 def write_provenance_documentation(doc_dir):
     readme_path = doc_dir / "README.md"
-    content = """# 📚 Proveniência e Especificação das Instâncias de Teste
+    content = (
+        """
+# 📚 Proveniência e Especificação das Instâncias de Teste
 
 Este diretório armazena os conjuntos de dados e instâncias canônicas utilizados para avaliação experimental dos algoritmos de fluxo.
 
@@ -293,6 +286,7 @@ Para baixar os geradores oficiais e recriar toda a suíte de instâncias:
 make dimacs
 ```
 """
+    ).lstrip()
     readme_path.write_text(content, encoding="utf-8")
     try:
         subprocess.run(["prettier", "--write", str(readme_path)],

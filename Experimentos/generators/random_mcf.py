@@ -85,7 +85,6 @@ def main():
     sink_nodes = nodes[num_src : num_src + num_snk]
     transship_nodes = nodes[num_src + num_snk :]
 
-    # Distribute positive supplies among sources
     supplies = {i: 0 for i in range(1, N + 1)}
     src_shares = [random.randint(1, 100) for _ in range(num_src)]
     src_total = sum(src_shares)
@@ -98,7 +97,6 @@ def main():
             allocated_src += val
         supplies[s_node] = val
 
-    # Distribute negative supplies (demands) among sinks
     snk_shares = [random.randint(1, 100) for _ in range(num_snk)]
     snk_total = sum(snk_shares)
     allocated_snk = 0
@@ -110,11 +108,9 @@ def main():
             allocated_snk += val
         supplies[t_node] = -val
 
-    # Guarantee feasibility: create directed paths from each source to a transshipment node to sinks
     edges = set()
     arcs = []
 
-    # Connect each source to a subset of transshipment nodes with capacity >= supply
     for s_node in source_nodes:
         targets = random.sample(
             transship_nodes, min(len(transship_nodes), max(1, len(transship_nodes) // 2))
@@ -125,7 +121,6 @@ def main():
             cost = random.randint(1, args.max_cost)
             arcs.append((s_node, target, 0, cap, cost))
 
-    # Connect transshipment nodes to sinks
     for t_node in sink_nodes:
         demand = abs(supplies[t_node])
         origins = random.sample(
@@ -138,7 +133,6 @@ def main():
                 cost = random.randint(1, args.max_cost)
                 arcs.append((origin, t_node, 0, cap, cost))
 
-    # Connect transshipment nodes among themselves in a random tree to ensure strong internal connectivity
     shuffled_trans = list(transship_nodes)
     random.shuffle(shuffled_trans)
     for i in range(len(shuffled_trans) - 1):
@@ -149,7 +143,6 @@ def main():
             cost = random.randint(1, args.max_cost)
             arcs.append((u, v, 0, cap, cost))
 
-    # Add extra random arcs according to density
     if args.density == "sparse":
         target_arcs = 4 * N
     else:
@@ -166,7 +159,6 @@ def main():
 
     M = len(arcs)
 
-    # Output in standard DIMACS .min format
     print(
         f"c Random Min-Cost Flow instance: {N} nodes, {M} arcs, density={args.density}, total_supply={total_supply}, seed={args.seed}"
     )

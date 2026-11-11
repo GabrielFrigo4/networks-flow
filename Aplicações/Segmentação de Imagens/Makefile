@@ -3,10 +3,10 @@
 MAKEFLAGS += --no-print-directory -s
 
 CXX         = c++
-STACK_FLAG != case "$$(uname -s 2> /dev/null)" in *Windows*|*MINGW*|*MSYS*|*CYGWIN*) echo "-Wl,--stack,268435456" ;; *) echo "-Wl,-z,stack-size=268435456" ;; esac
+STACK_FLAG != case "$$(uname -s 2> "/dev/null")" in *Windows*|*MINGW*|*MSYS*|*CYGWIN*) echo "-Wl,--stack,268435456" ;; *) echo "-Wl,-z,stack-size=268435456" ;; esac
 CXXFLAGS    = $(STACK_FLAG) -std=c++23 -O2
 
-EXE_EXT  != case "$$(uname -s 2> /dev/null)" in *Windows*|*MINGW*|*MSYS*|*CYGWIN*) echo ".exe" ;; *) echo "" ;; esac
+EXE_EXT  != case "$$(uname -s 2> "/dev/null")" in *Windows*|*MINGW*|*MSYS*|*CYGWIN*) echo ".exe" ;; *) echo "" ;; esac
 SEG_EXE   = ./segment$(EXE_EXT)
 SEED_EXE  = ./seeds$(EXE_EXT)
 PPM_EXE   = ./ppm$(EXE_EXT)

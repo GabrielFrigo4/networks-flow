@@ -3,7 +3,7 @@
 MAKEFLAGS += --no-print-directory -s
 
 CXX         = c++
-STACK_FLAG != case "$$(uname -s 2> /dev/null)" in *Windows*|*MINGW*|*MSYS*|*CYGWIN*) echo "-Wl,--stack,268435456" ;; *) echo "-Wl,-z,stack-size=268435456" ;; esac
+STACK_FLAG != case "$$(uname -s 2> "/dev/null")" in *Windows*|*MINGW*|*MSYS*|*CYGWIN*) echo "-Wl,--stack,268435456" ;; *) echo "-Wl,-z,stack-size=268435456" ;; esac
 CXXFLAGS    = $(STACK_FLAG) -std=c++23 -O2 -Wall -Wextra -Wpedantic
 
 PYTHON      = python3
@@ -12,7 +12,7 @@ TIMEOUT    ?= 16
 WORKERS    ?= 1
 RUN_OPTS    = --repeats "$(REPEATS)" --timeout "$(TIMEOUT)" --workers "$(WORKERS)"
 
-EXE_EXT    != case "$$(uname -s 2> /dev/null)" in *Windows*|*MINGW*|*MSYS*|*CYGWIN*) echo ".exe" ;; *) echo "" ;; esac
+EXE_EXT    != case "$$(uname -s 2> "/dev/null")" in *Windows*|*MINGW*|*MSYS*|*CYGWIN*) echo ".exe" ;; *) echo "" ;; esac
 
 MF_BIN      = ./max_flow_runner$(EXE_EXT)
 MC_BIN      = ./min_cost_runner$(EXE_EXT)
